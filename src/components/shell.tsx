@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import type { CatalogItem } from "@/lib/types";
+import { plainMath } from "@/lib/math-text";
 import { sections } from "@/lib/sections";
 import { useProgress } from "@/lib/progress";
+import { RichText } from "./rich-text";
 import { SearchDialog } from "./search-dialog";
 
 function lessonActive(pathname: string, slug: string) {
@@ -157,7 +159,7 @@ export function AppShell({
                           type="checkbox"
                           className="mt-2 h-3.5 w-3.5 shrink-0 accent-[var(--accent)]"
                           checked={checked}
-                          aria-label={`Mark ${item.title} complete`}
+                          aria-label={`Mark ${plainMath(item.title)} complete`}
                           onChange={() => toggle(item.slug)}
                         />
                         <Link
@@ -166,7 +168,7 @@ export function AppShell({
                             active ? "bg-sunken text-accent" : "text-muted hover:text-ink"
                           }`}
                         >
-                          {item.title}
+                          <RichText text={item.title} />
                         </Link>
                       </li>
                     );

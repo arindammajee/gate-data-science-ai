@@ -4,7 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import type { CatalogItem } from "@/lib/types";
+import { plainMath } from "@/lib/math-text";
 import { getSection } from "@/lib/sections";
+import { RichText } from "./rich-text";
 
 export function SearchDialog({
   catalog,
@@ -20,22 +22,33 @@ export function SearchDialog({
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
 
+  const indexed = useMemo(
+    () =>
+      catalog.map((item) => ({
+        item,
+        plainTitle: plainMath(item.title),
+        plainSyllabus: plainMath(item.syllabus),
+        plainKeywords: item.keywords.map((keyword) => plainMath(keyword)).join(" "),
+        plainSummary: plainMath(item.summary),
+      })),
+    [catalog],
+  );
   const fuse = useMemo(
     () =>
-      new Fuse(catalog, {
+      new Fuse(indexed, {
         keys: [
-          { name: "title", weight: 0.4 },
-          { name: "syllabus", weight: 0.22 },
-          { name: "keywords", weight: 0.24 },
-          { name: "summary", weight: 0.14 },
+          { name: "plainTitle", weight: 0.4 },
+          { name: "plainSyllabus", weight: 0.22 },
+          { name: "plainKeywords", weight: 0.24 },
+          { name: "plainSummary", weight: 0.14 },
         ],
         threshold: 0.38,
         ignoreLocation: true,
       }),
-    [catalog],
+    [indexed],
   );
 
-  const results = query.trim() ? fuse.search(query.trim()).slice(0, 12).map((hit) => hit.item) : [];
+  const results = query.trim() ? fuse.search(query.trim()).slice(0, 12).map((hit) => hit.item.item) : [];
 
   useEffect(() => {
     if (!open) return;
@@ -109,8 +122,12 @@ export function SearchDialog({
                     <span className="block text-xs uppercase tracking-[0.14em] text-faint">
                       {section ? `${section.num}. ${section.short}` : item.section}
                     </span>
-                    <span className="block font-serif text-lg leading-snug">{item.title}</span>
-                    <span className="mt-0.5 block text-sm text-muted">{item.summary}</span>
+                    <span className="block font-serif text-lg leading-snug">
+                      <RichText text={item.title} />
+                    </span>
+                    <span className="mt-0.5 block text-sm text-muted">
+                      <RichText text={item.summary} />
+                    </span>
                   </button>
                 </li>
               );

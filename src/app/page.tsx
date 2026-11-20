@@ -2,6 +2,7 @@ import { Home } from "@/components/home";
 import { JsonLd } from "@/components/json-ld";
 import { getCatalog } from "@/lib/content";
 import { sections } from "@/lib/sections";
+import { plainMath } from "@/lib/math-text";
 import { HOME_DESCRIPTION, HOME_TITLE, SITE_NAME, pageMetadata, pageUrl } from "@/lib/site";
 
 export const metadata = pageMetadata({
@@ -35,8 +36,8 @@ export default function Page() {
     },
     syllabusSections: sections.map((section) => ({
       "@type": "Syllabus",
-      name: section.title,
-      description: section.blurb,
+      name: plainMath(section.title),
+      description: plainMath(section.blurb),
     })),
   };
 

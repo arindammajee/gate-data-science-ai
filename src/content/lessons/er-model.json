@@ -74,7 +74,7 @@
   ],
   "traps": [
     "Using the partial key of a weak entity as its whole primary key. The owner key is part of that primary key.",
-    "Making a new relation for a $1$-$N$ relationship, or storing an $M$-$N$ relationship as a single foreign key. The new relation is the $M$-$N case, and the multivalued attribute.",
+    "Making a new relation for a $1$-$N$ relationship, or storing an $M$-$N$ relationship as a single foreign key. The new relation is the $M$-$N$ case, and the multivalued attribute.",
     "Giving a composite attribute, or a derived attribute such as age, a relation of its own. Composite attributes become columns. Derived attributes are computed.",
     "Reading a double line as cardinality. Totality says whether every entity participates. Cardinality says how many."
   ],

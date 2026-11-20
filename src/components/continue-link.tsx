@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { CatalogItem } from "@/lib/types";
 import { useProgress } from "@/lib/progress";
+import { RichText } from "./rich-text";
 
 export function ContinueLink({ lessons }: { lessons: CatalogItem[] }) {
   const { ready, completed } = useProgress();
@@ -17,7 +18,8 @@ export function ContinueLink({ lessons }: { lessons: CatalogItem[] }) {
   const starting = !ready || completed.size === 0;
   return (
     <Link href={`/lesson/${next.slug}`} className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink">
-      {starting ? `Start: ${next.title}` : `Continue: ${next.title}`}
+      {starting ? "Start: " : "Continue: "}
+      <RichText text={next.title} />
     </Link>
   );
 }

@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MD } from "@/components/markdown";
 import { PrintButton } from "@/components/print-button";
+import { RichText } from "@/components/rich-text";
 import { Tex } from "@/components/tex";
 import { getCheatsheet } from "@/lib/cheatsheets";
+import { plainMath } from "@/lib/math-text";
 import { getSection, sections } from "@/lib/sections";
 import { pageMetadata } from "@/lib/site";
 
@@ -24,8 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     });
   }
   return pageMetadata({
-    title: `${section.short} Formula Cheat Sheet | GATE DA 2027`,
-    description: `${section.title} formulas and shortcuts for GATE Data Science and AI (GATE DA 2027). A one-page cheat sheet for the notes and practice questions.`,
+    title: `${plainMath(section.short)} Formula Cheat Sheet | GATE DA 2027`,
+    description: `${plainMath(section.title)} formulas and shortcuts for GATE Data Science and AI (GATE DA 2027). A one-page cheat sheet for the notes and practice questions.`,
     path: `/section/${section.slug}/cheatsheet`,
   });
 }
@@ -54,16 +56,28 @@ export default async function CheatSheetPage({ params }: { params: Promise<{ slu
       <div className="mt-8 space-y-8">
         {blocks.map((block) => (
           <section key={block.heading} className="sheet-block">
-            <h2 className="font-serif text-2xl">{block.heading}</h2>
+            <h2 className="font-serif text-2xl">
+              <RichText text={block.heading} />
+            </h2>
             <hr className="rule mt-2" />
-            {block.intro && <p className="mt-3 text-sm text-muted">{block.intro}</p>}
+            {block.intro && (
+              <p className="mt-3 text-sm text-muted">
+                <RichText text={block.intro} />
+              </p>
+            )}
             {block.rows && (
               <div className="mt-3 space-y-3">
                 {block.rows.map((row) => (
                   <figure key={`${block.heading}-${row.name}`} className="rounded-2xl border border-line bg-raised px-4 py-3">
-                    <figcaption className="text-sm text-faint">{row.name}</figcaption>
+                    <figcaption className="text-sm text-faint">
+                      <RichText text={row.name} />
+                    </figcaption>
                     <Tex latex={row.latex} display />
-                    {row.note && <figcaption className="text-sm text-muted">{row.note}</figcaption>}
+                    {row.note && (
+                      <figcaption className="text-sm text-muted">
+                        <MD className="tight">{row.note}</MD>
+                      </figcaption>
+                    )}
                   </figure>
                 ))}
               </div>

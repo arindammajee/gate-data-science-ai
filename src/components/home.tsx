@@ -3,6 +3,7 @@ import { sections } from "@/lib/sections";
 import { weeks } from "@/lib/order";
 import type { CatalogItem } from "@/lib/types";
 import { Tex } from "./tex";
+import { RichText } from "./rich-text";
 import { ContinueLink } from "./continue-link";
 
 const facts = [
@@ -95,8 +96,12 @@ export function Home({ catalog }: { catalog: CatalogItem[] }) {
                 </p>
                 <p className="text-xs uppercase tracking-[0.14em] text-faint">{section.weeks}</p>
               </div>
-              <h3 className="mt-2 font-serif text-2xl leading-snug">{section.title}</h3>
-              <p className="mt-2 text-sm text-muted">{section.blurb}</p>
+              <h3 className="mt-2 font-serif text-2xl leading-snug">
+                <RichText text={section.title} />
+              </h3>
+              <p className="mt-2 text-sm text-muted">
+                <RichText text={section.blurb} />
+              </p>
               <p className="mt-3 text-sm text-faint">
                 {(() => {
                   const count = counts.get(section.slug) ?? 0;
@@ -140,7 +145,9 @@ export function Home({ catalog }: { catalog: CatalogItem[] }) {
                   <tr key={section.slug} className="border-b border-line align-top">
                     <td className="py-3 pr-4">{section.short}</td>
                     <td className="py-3 pr-4 font-mono text-accent">{section.budget}</td>
-                    <td className="py-3 text-muted">{section.blurb}</td>
+                    <td className="py-3 text-muted">
+                      <RichText text={section.blurb} />
+                    </td>
                   </tr>
                 ))}
               </tbody>

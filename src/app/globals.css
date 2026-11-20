@@ -97,6 +97,7 @@ body {
 .tight p { margin: 0; }
 
 .katex { color: inherit; font-size: 1.05em; }
+h1 .katex, h2 .katex, h3 .katex, dt .katex, a .katex, button .katex { font-size: 0.92em; }
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;

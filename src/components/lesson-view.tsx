@@ -6,6 +6,7 @@ import type { CatalogItem, Lesson } from "@/lib/types";
 import type { SectionMeta } from "@/lib/sections";
 import { useProgress } from "@/lib/progress";
 import { MD, SafeSvg } from "./markdown";
+import { RichText } from "./rich-text";
 import { Tex } from "./tex";
 import { Practice } from "./questions";
 
@@ -43,12 +44,18 @@ export function LessonView({
             {section.num < 8 ? `Section ${section.num}` : "General aptitude"} · {section.short}
           </Link>
         </p>
-        <h1 className="mt-2 font-serif text-4xl leading-tight sm:text-5xl">{lesson.title}</h1>
-        <p className="mt-3 text-lg text-muted">{lesson.summary}</p>
+        <h1 className="mt-2 font-serif text-4xl leading-tight sm:text-5xl">
+          <RichText text={lesson.title} />
+        </h1>
+        <p className="mt-3 text-lg text-muted">
+          <RichText text={lesson.summary} />
+        </p>
         <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm text-faint">
           <div>
             <dt className="inline">Syllabus line: </dt>
-            <dd className="inline text-muted">{lesson.syllabus}</dd>
+            <dd className="inline text-muted">
+              <RichText text={lesson.syllabus} />
+            </dd>
           </div>
           <div>
             <dt className="inline">Time: </dt>
@@ -94,7 +101,9 @@ export function LessonView({
           <dl className="mt-4 space-y-5">
             {lesson.definitions.map((definition) => (
               <div key={definition.term}>
-                <dt className="font-serif text-xl">{definition.term}</dt>
+                <dt className="font-serif text-xl">
+                  <RichText text={definition.term} />
+                </dt>
                 <dd className="mt-1 text-muted">
                   <MD>{definition.body}</MD>
                 </dd>
@@ -109,7 +118,9 @@ export function LessonView({
           <div className="mt-4 space-y-4">
             {lesson.formulas.map((formula) => (
               <figure key={formula.name} className="rounded-2xl border border-line bg-raised p-4">
-                <figcaption className="text-sm uppercase tracking-[0.14em] text-faint">{formula.name}</figcaption>
+                <figcaption className="text-sm tracking-[0.14em] text-faint">
+                  <RichText text={formula.name} textTransform="uppercase" />
+                </figcaption>
                 <Tex latex={formula.latex} display />
                 {formula.note && (
                   <figcaption className="text-sm text-muted">
@@ -140,7 +151,9 @@ export function LessonView({
             {lesson.examples.map((example, index) => (
               <article key={example.title} className="rounded-2xl border border-line p-4 sm:p-5">
                 <p className="text-xs uppercase tracking-[0.16em] text-accent">Example {index + 1}</p>
-                <h3 className="mt-1 font-serif text-2xl">{example.title}</h3>
+                <h3 className="mt-1 font-serif text-2xl">
+                  <RichText text={example.title} />
+                </h3>
                 <div className="mt-3">
                   <MD>{example.prompt}</MD>
                 </div>
@@ -214,7 +227,9 @@ export function LessonView({
           {prev ? (
             <Link href={`/lesson/${prev.slug}`} className="rounded-2xl border border-line p-4 hover:border-accent">
               <span className="text-xs uppercase tracking-[0.14em] text-faint">Previous</span>
-              <span className="mt-1 block font-serif text-xl">{prev.title}</span>
+              <span className="mt-1 block font-serif text-xl">
+                <RichText text={prev.title} />
+              </span>
             </Link>
           ) : (
             <span />
@@ -222,7 +237,9 @@ export function LessonView({
           {next && (
             <Link href={`/lesson/${next.slug}`} className="rounded-2xl border border-line p-4 text-right hover:border-accent sm:col-start-2">
               <span className="text-xs uppercase tracking-[0.14em] text-faint">Next</span>
-              <span className="mt-1 block font-serif text-xl">{next.title}</span>
+              <span className="mt-1 block font-serif text-xl">
+                <RichText text={next.title} />
+              </span>
             </Link>
           )}
         </nav>

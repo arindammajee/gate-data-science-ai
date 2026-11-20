@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import type { CatalogItem } from "@/lib/types";
+import { plainMath } from "@/lib/math-text";
 import { useProgress } from "@/lib/progress";
+import { RichText } from "./rich-text";
 
 export function SectionLessons({ lessons }: { lessons: CatalogItem[] }) {
   const { completed, toggle, setMany } = useProgress();
@@ -32,16 +34,20 @@ export function SectionLessons({ lessons }: { lessons: CatalogItem[] }) {
                 type="checkbox"
                 className="mt-1 h-4 w-4 accent-[var(--accent)]"
                 checked={checked}
-                aria-label={`Mark ${lesson.title} complete`}
+                aria-label={`Mark ${plainMath(lesson.title)} complete`}
                 onChange={() => toggle(lesson.slug)}
               />
               <div className="min-w-0 flex-1">
                 <Link href={`/lesson/${lesson.slug}`} className="font-serif text-xl hover:text-accent">
                   <span className="mr-2 font-mono text-sm text-faint">{index + 1}.</span>
-                  {lesson.title}
+                  <RichText text={lesson.title} />
                 </Link>
-                <p className="text-sm text-muted">{lesson.summary}</p>
-                <p className="text-xs text-faint">{lesson.minutes} min · {lesson.syllabus}</p>
+                <p className="text-sm text-muted">
+                  <RichText text={lesson.summary} />
+                </p>
+                <p className="text-xs text-faint">
+                  {lesson.minutes} min · <RichText text={lesson.syllabus} />
+                </p>
               </div>
             </li>
           );

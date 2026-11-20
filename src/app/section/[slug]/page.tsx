@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MD } from "@/components/markdown";
+import { RichText } from "@/components/rich-text";
 import { SectionLessons } from "@/components/section-lessons";
 import { getCatalog } from "@/lib/content";
+import { plainMath } from "@/lib/math-text";
 import { getSection, sections } from "@/lib/sections";
 import { pageMetadata } from "@/lib/site";
 
@@ -23,8 +25,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     });
   }
   return pageMetadata({
-    title: `${section.title} Notes | GATE DA 2027 Data Science and AI`,
-    description: `${section.title} notes and practice questions for GATE DA 2027. ${section.blurb}`,
+    title: `${plainMath(section.title)} Notes | GATE DA 2027 Data Science and AI`,
+    description: `${plainMath(section.title)} notes and practice questions for GATE DA 2027. ${plainMath(section.blurb)}`,
     path: `/section/${slug}`,
   });
 }
@@ -41,8 +43,12 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
       <p className="text-xs uppercase tracking-[0.18em] text-accent">
         {section.num === 8 ? "Common to every paper" : `Section ${section.num} of the DA syllabus`}
       </p>
-      <h1 className="mt-2 font-serif text-4xl leading-tight sm:text-5xl">{section.title}</h1>
-      <p className="mt-4 text-lg text-muted">{section.blurb}</p>
+      <h1 className="mt-2 font-serif text-4xl leading-tight sm:text-5xl">
+        <RichText text={section.title} />
+      </h1>
+      <p className="mt-4 text-lg text-muted">
+        <RichText text={section.blurb} />
+      </p>
       <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm text-faint">
         <div>
           Study budget <span className="text-muted">{section.budget}</span>

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import type { CatalogItem } from "@/lib/types";
+import { plainMath } from "@/lib/math-text";
+import { RichText } from "./rich-text";
 import type { WeekPlan } from "@/lib/order";
 import { getSection } from "@/lib/sections";
 import { useProgress } from "@/lib/progress";
@@ -32,7 +34,7 @@ export function TrackView({
           <p className="font-serif text-3xl">{ready ? `${percent}%` : "—"}</p>
           {next && (
             <Link href={`/lesson/${next.slug}`} className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-accent-ink">
-              {done === 0 ? "Start" : "Continue"}: {next.title}
+              {done === 0 ? "Start" : "Continue"}: <RichText text={next.title} />
             </Link>
           )}
         </div>
@@ -91,12 +93,16 @@ export function TrackView({
                         type="checkbox"
                         className="mt-1 h-4 w-4 accent-[var(--accent)]"
                         checked={checked}
-                        aria-label={`Mark ${item.title} complete`}
+                        aria-label={`Mark ${plainMath(item.title)} complete`}
                         onChange={() => toggle(slug)}
                       />
                       <Link href={`/lesson/${slug}`} className="min-w-0 flex-1 hover:text-accent">
-                        <span className={checked ? "text-muted line-through decoration-line" : ""}>{item.title}</span>
-                        <span className="mt-0.5 block text-xs text-faint">{item.minutes} min · {item.syllabus}</span>
+                        <span className={checked ? "text-muted line-through decoration-line" : ""}>
+                          <RichText text={item.title} />
+                        </span>
+                        <span className="mt-0.5 block text-xs text-faint">
+                          {item.minutes} min · <RichText text={item.syllabus} />
+                        </span>
                       </Link>
                     </li>
                   );

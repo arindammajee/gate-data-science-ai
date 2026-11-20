@@ -3,6 +3,7 @@ import { JsonLd } from "@/components/json-ld";
 import { LessonView } from "@/components/lesson-view";
 import { getCatalog, getLesson, getNeighbors } from "@/lib/content";
 import { getSection } from "@/lib/sections";
+import { plainMath } from "@/lib/math-text";
 import { SITE_NAME, pageMetadata, pageUrl } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -21,8 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       path: `/lesson/${slug}`,
     });
   }
-  const title = `${lesson.title} | GATE DA 2027 Notes and Practice Questions`;
-  const description = `${lesson.title} notes for GATE Data Science and AI (GATE DA 2027). Definitions, formulas, worked examples, and original practice questions on ${lesson.syllabus}.`;
+  const title = `${plainMath(lesson.title)} | GATE DA 2027 Notes and Practice Questions`;
+  const description = `${plainMath(lesson.title)} notes for GATE Data Science and AI (GATE DA 2027). Definitions, formulas, worked examples, and original practice questions on ${plainMath(lesson.syllabus)}.`;
   return pageMetadata({ title, description, path: `/lesson/${slug}`, type: "article" });
 }
 
@@ -34,19 +35,19 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   if (!section) notFound();
   const { prev, next } = getNeighbors(slug);
   const url = pageUrl(`/lesson/${slug}`);
-  const description = `${lesson.title} notes for GATE Data Science and AI (GATE DA 2027). Definitions, formulas, worked examples, and original practice questions on ${lesson.syllabus}.`;
+  const description = `${plainMath(lesson.title)} notes for GATE Data Science and AI (GATE DA 2027). Definitions, formulas, worked examples, and original practice questions on ${plainMath(lesson.syllabus)}.`;
   const resource = {
     "@context": "https://schema.org",
     "@type": ["LearningResource", "Article"],
-    name: lesson.title,
-    headline: lesson.title,
+    name: plainMath(lesson.title),
+    headline: plainMath(lesson.title),
     description,
     url,
     inLanguage: "en",
     isAccessibleForFree: true,
     learningResourceType: "Lesson notes and practice questions",
     educationalLevel: "GATE DA 2027",
-    teaches: lesson.syllabus,
+    teaches: plainMath(lesson.syllabus),
     isPartOf: {
       "@type": "Course",
       name: SITE_NAME,
