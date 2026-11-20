@@ -37,7 +37,7 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /gate-data-science-ai
-          NEXT_PUBLIC_SITE_URL: https://arindammajee.github.io/gate-data-science-ai
+          NEXT_PUBLIC_SITE_URL: https://arindammajee.com/gate-data-science-ai
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

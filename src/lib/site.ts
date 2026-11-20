@@ -18,7 +18,7 @@ export function basePath(): string {
 /**
  * Absolute URL of the site root, without a trailing slash.
  * On GitHub Pages this includes the repo path, for example
- * https://arindammajee.github.io/gate-data-science-ai
+ * https://arindammajee.com/gate-data-science-ai
  */
 export function siteUrl(): string {
   const raw = (process.env.NEXT_PUBLIC_SITE_URL || "http://127.0.0.1:4178").trim();

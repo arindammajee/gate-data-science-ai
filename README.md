@@ -25,7 +25,7 @@ Canonical URLs, the sitemap, and Open Graph tags use `NEXT_PUBLIC_SITE_URL`. Git
 
 ```bash
 NEXT_PUBLIC_BASE_PATH=/gate-data-science-ai \
-NEXT_PUBLIC_SITE_URL=https://arindammajee.github.io/gate-data-science-ai \
+NEXT_PUBLIC_SITE_URL=https://arindammajee.com/gate-data-science-ai \
 npm run build
 ```
 
@@ -33,7 +33,7 @@ See `.env.example`.
 
 ## GitHub Pages
 
-Pushes to `main` run `.github/workflows/deploy.yml`, which builds with that base path and deploys the `out/` folder with GitHub Actions. The live site is [https://arindammajee.github.io/gate-data-science-ai/](https://arindammajee.github.io/gate-data-science-ai/).
+Pushes to `main` run `.github/workflows/deploy.yml`, which builds with that base path and deploys the `out/` folder with GitHub Actions. The live site is [https://arindammajee.com/gate-data-science-ai/](https://arindammajee.com/gate-data-science-ai/).
 
 ## Syllabus
 
