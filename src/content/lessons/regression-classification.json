@@ -1,0 +1,180 @@
+{
+  "slug": "regression-classification",
+  "section": "machine-learning",
+  "title": "Regression and classification",
+  "syllabus": "Regression and classification",
+  "minutes": 25,
+  "summary": "Supervised learning predicts a number in regression and a label in classification. The loss is part of the problem, and training error is not test error.",
+  "keywords": [
+    "supervised learning",
+    "regression",
+    "classification",
+    "training error",
+    "i.i.d."
+  ],
+  "intuition": "Supervised learning starts from rows that already have an answer. Each row has features, the inputs, and a label, the answer. If the label is a number you want to predict, such as a travel time in minutes, the task is regression. If the label is a class, such as late or on time, the task is classification. Coding a class as 0 or 1 does not change the task into regression. The decision is still which label to emit.\n\nThe loss is part of the problem statement, not a decoration you choose after comparing models. Squared error charges the square of the gap. Absolute error charges the size of the gap. Zero-one loss charges 1 for a wrong class and 0 for a right one. Two predictors can switch order when the loss changes, so a claim that one model is better is unfinished until the loss is named.\n\nTraining error is the loss on the rows used to build the model. Test error is the loss on rows that were not used to build it. Training error is the optimistic number: those answers have already been seen. The i.i.d. assumption is an assumption, not a diagnostic the algorithm runs. It says the rows are independent draws from one distribution, and that the test rows come from that same distribution. If the test period is a different season, the assumption is false and a small training error does not travel.",
+  "definitions": [
+    {
+      "term": "Regression",
+      "body": "A supervised task whose label is a number. The prediction is a number, and the loss usually charges the distance between the prediction and the label."
+    },
+    {
+      "term": "Classification",
+      "body": "A supervised task whose label is a class. The prediction is a label. Storing the class as 0 or 1 does not make the task a regression."
+    },
+    {
+      "term": "Training error and test error",
+      "body": "Training error is the average loss on the rows used to fit the model. Test error is the average loss on rows held out from the fit. They are not interchangeable."
+    },
+    {
+      "term": "i.i.d. assumption",
+      "body": "The assumption that the rows are independent and identically distributed, and that test rows are drawn from that same distribution. It is assumed. It is not something the fit checks."
+    },
+    {
+      "term": "Loss",
+      "body": "The function that scores one prediction against one label. It is part of the problem statement. Squared error, absolute error, and zero-one loss can rank the same predictors differently."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Mean squared error",
+      "latex": "\\frac{1}{n}\\sum_{i=1}^{n}(y_i-\\hat y_i)^2",
+      "note": "A regression loss. The sum of squared errors is the same ranking as the mean, since $n$ is fixed."
+    },
+    {
+      "name": "Zero-one error",
+      "latex": "\\frac{1}{n}\\sum_{i=1}^{n}\\mathbf{1}\\{\\hat y_i\\neq y_i\\}",
+      "note": "A classification loss. Each mistake contributes 1, and a correct label contributes 0."
+    }
+  ],
+  "properties": [
+    "Regression predicts a number. Classification predicts a label. The feature columns are the inputs in both tasks; the label column decides which task you are in.",
+    "The loss is chosen when the problem is stated. On the labels 0, 0, 6, absolute error and squared error prefer different constant predictors.",
+    "Training error uses the fitting rows. Test error uses rows that were not used to fit. Reporting the training figure as if it were the test figure is a different claim.",
+    "The i.i.d. assumption says the rows are independent draws from one distribution, including the test rows. A shift between the training period and the test period violates it.",
+    "A training error of 0 does not determine the test error. A model can match every fitting row and miss the held-out rows.",
+    "Features are the inputs. Labels are the answers. A procedure that never sees labels is not supervised learning."
+  ],
+  "examples": [
+    {
+      "title": "Training squared error is not the test figure",
+      "prompt": "A numeric predictor is scored by squared error. The training pairs $(y,\\hat y)$ are $(3,3)$, $(5,4)$, $(8,8)$, $(10,7)$. The test pairs are $(6,9)$, $(4,4)$, $(12,8)$. Find both sums of squared errors.",
+      "steps": [
+        "Training squared errors: $(3-3)^2=0$, $(5-4)^2=1$, $(8-8)^2=0$, $(10-7)^2=9$. The sum is $0+1+0+9=10$.",
+        "Test squared errors: $(6-9)^2=9$, $(4-4)^2=0$, $(12-8)^2=16$. The sum is $9+0+16=25$.",
+        "The training mean is $10/4=2.5$ and the test mean is $25/3$. Quoting 10, or 2.5, as the test performance replaces a sum that was not computed with one that was."
+      ],
+      "answer": "The sum of squared training errors is 10. The sum of squared test errors is 25."
+    },
+    {
+      "title": "The loss decides which predictor wins",
+      "prompt": "The labels are 0, 0, and 6. Predictor A says 1, 1, 1. Predictor B says 0, 0, 0. Compare total absolute error and total squared error.",
+      "steps": [
+        "Absolute error of A is $|0-1|+|0-1|+|6-1|=1+1+5=7$. Absolute error of B is $|6-0|=6$. Absolute error prefers B.",
+        "Squared error of A is $1^2+1^2+5^2=1+1+25=27$. Squared error of B is $6^2=36$. Squared error prefers A.",
+        "The same three predictions have changed order. Until the loss is part of the problem statement, 'better' is not a determined word."
+      ],
+      "answer": "Absolute error prefers B, with totals 7 and 6. Squared error prefers A, with totals 27 and 36."
+    },
+    {
+      "title": "A label is still a label when it is stored as 0 or 1",
+      "prompt": "Four training labels are 1, 1, 0, 0 and the predictions are 1, 0, 0, 0. Two test labels are 0, 1 and the predictions are 1, 0. Score them with zero-one loss.",
+      "steps": [
+        "The training mistakes are the second row only. One mistake in four rows is a training error of $1/4$.",
+        "Both test rows are wrong, so the test error is $2/2=1$.",
+        "The symbols 0 and 1 are class codes. The loss counted disagreements. It did not charge $(1-0)^2$ as a numeric gap, which would have been a regression reading of the same codes."
+      ],
+      "answer": "Training zero-one error is $1/4$. Test zero-one error is 1. The task is classification."
+    }
+  ],
+  "traps": [
+    "Quoting the training sum of squares, 10, as if it were the test sum, 25. The test rows were not the fitting rows.",
+    "Treating the i.i.d. statement as a fact the fit verifies. It is an assumption. A test season that differs from the training season violates it, and the training error need not carry over.",
+    "Ranking A and B without naming the loss. Absolute error ranks B ahead of A. Squared error ranks A ahead of B. The loss is part of the problem.",
+    "Calling a spam-or-not decision a regression because the class was coded 0 or 1. The prediction is a label, so the task is classification.",
+    "Computing test error on rows that were used to fit the model. Those rows are training rows, and the number is a training error."
+  ],
+  "python": "train = [(3, 3), (5, 4), (8, 8), (10, 7)]\ntest = [(6, 9), (4, 4), (12, 8)]\ntrain_sse = sum((y - yh) ** 2 for y, yh in train)\ntest_sse = sum((y - yh) ** 2 for y, yh in test)\nassert train_sse == 10 and test_sse == 25\nabs_a = abs(0 - 1) + abs(0 - 1) + abs(6 - 1)\nsq_a = 1 + 1 + 25\nabs_b = abs(6 - 0)\nsq_b = 36\nassert abs_a == 7 and abs_b == 6 and sq_a == 27 and sq_b == 36\ntrain_err = sum(p != y for p, y in zip([1, 0, 0, 0], [1, 1, 0, 0]))\ntest_err = sum(p != y for p, y in zip([1, 0], [0, 1]))\nassert train_err == 1 and test_err == 2\nprint(test_sse)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "On the training pairs $(3,3)$, $(5,4)$, $(8,8)$, and $(10,7)$, the sum of squared errors is",
+      "options": [
+        "10",
+        "4",
+        "25",
+        "0"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 10. The squared gaps are $0$, $1$, $0$, and $9$, and $0+1+0+9=10$. Option B is the sum of absolute training gaps, $0+1+0+3=4$. Option C is the test sum of squares."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A model emits the label spam or the label not spam. The supervised task is",
+      "options": [
+        "classification",
+        "regression, because the labels can be coded as 0 and 1",
+        "unsupervised clustering of unlabelled rows",
+        "the construction of a sampling distribution"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The prediction is a class label, so the task is classification. Coding the class as 0 or 1 does not turn the decision into a numeric regression. Clustering would not use the spam labels, so C is a different setup."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Labels are 0, 0, and 6. Predictor A says 1, 1, 1 and predictor B says 0, 0, 0. Which of the following are true?",
+      "options": [
+        "Total absolute error is 7 for A and 6 for B, so absolute error prefers B.",
+        "Total squared error is 27 for A and 36 for B, so squared error prefers A.",
+        "The preferred predictor does not depend on the loss.",
+        "The loss is part of stating which predictor is better."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Absolute totals are $1+1+5=7$ and $6$, so B wins that comparison. Squared totals are $1+1+25=27$ and $36$, so A wins that one. The ranking changed with the loss, which is why the loss belongs in the problem statement and C is false."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of supervised error and the i.i.d. assumption?",
+      "options": [
+        "Under the i.i.d. assumption, rows are independent draws from one distribution, and the test rows come from it too.",
+        "Training error is computed on rows used to fit the model.",
+        "The i.i.d. statement is an assumption, not a check the fitting procedure runs.",
+        "Test error is always smaller than training error."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The assumption is independence plus a shared distribution, training error is the fit-set loss, and nothing in the fit proves the assumption. D is false: the worked test sum of squares is 25 and the training sum is 10, so the held-out number can be larger."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "On the test pairs $(6,9)$, $(4,4)$, and $(12,8)$, the sum of squared errors is an integer. Enter it.",
+      "options": [],
+      "answer": [
+        "25"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **25**. The squared gaps are $(6-9)^2=9$, $(4-4)^2=0$, and $(12-8)^2=16$. The sum is $9+0+16=25$."
+    }
+  ]
+}

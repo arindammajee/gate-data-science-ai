@@ -1,0 +1,164 @@
+{
+  "slug": "chi-squared-distribution",
+  "section": "probability",
+  "title": "Chi-squared distribution",
+  "syllabus": "Chi-squared distribution",
+  "minutes": 30,
+  "summary": "A chi-squared random variable with k degrees of freedom is a sum of squares of k independent standard normals. Its mean is k and its variance is 2k. For normal samples, (n-1) times the sample variance over σ squared follows chi-squared with n-1 degrees of freedom.",
+  "keywords": [
+    "chi-squared",
+    "degrees of freedom",
+    "sample variance",
+    "sum of squares",
+    "normal sample"
+  ],
+  "intuition": "A chi-squared random variable is a sum of squares. Take $k$ independent standard normal variables and add their squares. The sum has the chi-squared distribution with $k$ degrees of freedom. The mean of that sum is $k$, one for each square, because a standard normal has second moment 1. The variance is $2k$. Both formulas are linear in the degrees of freedom, and the variance grows twice as fast as the mean.\n\nThe same family appears as the exact sampling law of a normal sample's variance. If $X_1,\\ldots,X_n$ are i.i.d. normal with variance $\\sigma^2$, and $s^2$ is the sample variance with divisor $n-1$, then\n\n$$\n\\frac{(n-1)s^2}{\\sigma^2}\\sim \\chi^2_{n-1}.\n$$\n\nThe divisor $n-1$ is the sample-variance divisor. With that definition, $(n-1)s^2$ equals the sum of squared deviations from the sample mean, and dividing by $\\sigma^2$ produces chi-squared with $n-1$ degrees of freedom. One degree of freedom is lost to estimating the mean. This exact statement needs normal data. Finite variance alone is not enough.\n\nThis object is not the chi-squared goodness-of-fit statistic. That statistic is a function of observed and expected counts, and it is only approximately chi-squared when the counts are not tiny. The two lessons share a name because the test compares its statistic with a chi-squared reference distribution. The distribution in this lesson is the exact law of a sum of normal squares, and of the scaled sample variance.",
+  "definitions": [
+    {
+      "term": "Chi-squared with k degrees of freedom",
+      "body": "The distribution of $Z_1^2+\\cdots+Z_k^2$ when the $Z_i$ are i.i.d. standard normal. The degrees of freedom are $k$."
+    },
+    {
+      "term": "Mean and variance",
+      "body": "A chi-squared random variable with $k$ degrees of freedom has mean $k$ and variance $2k$."
+    },
+    {
+      "term": "Scaled sample variance",
+      "body": "For i.i.d. normal data, with $s^2$ the sample variance using divisor $n-1$, the ratio $(n-1)s^2/\\sigma^2$ is chi-squared with $n-1$ degrees of freedom."
+    },
+    {
+      "term": "Relation to the test statistic",
+      "body": "The goodness-of-fit statistic $\\sum (O-E)^2/E$ is a different function, of counts. Under a null it is approximately chi-squared for large expected counts. It is not itself the sum of squares of standard normals."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Sum of squares",
+      "latex": "Z_1^2+\\cdots+Z_k^2\\sim\\chi^2_k,\\qquad \\mathbb{E}=k,\\ \\mathrm{Var}=2k",
+      "note": "The $Z_i$ are i.i.d. standard normal."
+    },
+    {
+      "name": "Normal sample variance",
+      "latex": "\\frac{(n-1)s^2}{\\sigma^2}\\sim\\chi^2_{n-1}",
+      "note": "Requires i.i.d. normal data. Here $s^2$ divides by $n-1$, so $(n-1)s^2=\\sum (X_i-\\bar X)^2$."
+    }
+  ],
+  "properties": [
+    "The chi-squared distribution with $k$ degrees of freedom is the law of the sum of squares of $k$ independent standard normals. The mean is $k$ and the variance is $2k$.",
+    "For i.i.d. normal observations, $(n-1)s^2/\\sigma^2\\sim\\chi^2_{n-1}$, where $s^2$ uses the sample divisor $n-1$.",
+    "The identity $(n-1)s^2=\\sum_{i=1}^n (X_i-\\bar X)^2$ is the reason the degrees of freedom are $n-1$ rather than $n$. Estimating the mean costs one degree of freedom.",
+    "The exact chi-squared law for the sample variance needs normal data. It is not claimed for every i.i.d. sample with a finite variance.",
+    "The chi-squared goodness-of-fit statistic is related only through its reference distribution. It is a function of counts, approximately chi-squared under the null, and it is not the same object as $Z_1^2+\\cdots+Z_k^2$."
+  ],
+  "examples": [
+    {
+      "title": "Four standard normals",
+      "prompt": "Let $Z_1,\\ldots,Z_4$ be i.i.d. standard normal, and let $W=Z_1^2+Z_2^2+Z_3^2+Z_4^2$. Find the distribution, the mean, and the variance of $W$.",
+      "steps": [
+        "A sum of squares of 4 independent standard normals is chi-squared with 4 degrees of freedom.",
+        "The mean is the degrees of freedom, so $\\mathbb{E}[W]=4$.",
+        "The variance is twice the degrees of freedom, so $\\mathrm{Var}(W)=8$."
+      ],
+      "answer": "The variable $W$ is chi-squared with 4 degrees of freedom, mean 4, and variance 8."
+    },
+    {
+      "title": "Sample variance of eight normal observations",
+      "prompt": "Let $X_1,\\ldots,X_8$ be i.i.d. normal with variance $\\sigma^2$, and let $s^2$ be the sample variance with divisor $n-1$. Identify the distribution of $7s^2/\\sigma^2$, and give its mean and variance.",
+      "steps": [
+        "The sample size is $n=8$, so the degrees of freedom are $n-1=7$. The ratio $(n-1)s^2/\\sigma^2=7s^2/\\sigma^2$ is chi-squared with 7 degrees of freedom. This uses normality of the sample.",
+        "The sample variance divides by $7$, not by $8$. With that definition, $7s^2$ equals the sum of squared deviations from $\\bar X$.",
+        "A chi-squared variable with 7 degrees of freedom has mean 7 and variance $2\\times 7=14$. Those are properties of the reference distribution, not a claim that the observed value of $s^2$ equals $\\sigma^2$."
+      ],
+      "answer": "The ratio $7s^2/\\sigma^2$ is chi-squared with 7 degrees of freedom. Its mean is 7 and its variance is 14."
+    }
+  ],
+  "traps": [
+    "Using variance $k$ or $k^2$ instead of $2k$. The mean is $k$. The variance is $2k$.",
+    "Assigning $(n-1)s^2/\\sigma^2$ the degrees of freedom $n$, or using a population variance that divides by $n$ inside $s^2$ and still quoting $\\chi^2_{n-1}$. The sample variance in this identity divides by $n-1$.",
+    "Claiming the exact chi-squared law for non-normal samples. The cheat-sheet identity needs i.i.d. normal data.",
+    "Identifying this distribution with the goodness-of-fit statistic $\\sum (O-E)^2/E$. That statistic is compared with a chi-squared reference law. It is not the definition of the chi-squared distribution."
+  ],
+  "python": "assert 2 * 4 == 8\nassert 8 - 1 == 7\nassert 2 * 7 == 14\nassert 2 * 6 == 12\nassert 2 * 9 == 18\nassert 12 - 1 == 11\nprint(8, 14, 9)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A chi-squared random variable has 6 degrees of freedom. Its variance is",
+      "options": [
+        "$12$",
+        "$6$",
+        "$36$",
+        "$3$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $12$.\n\nThe variance is $2k=2\\times 6=12$. Option B is the mean, which equals the degrees of freedom. Option C is $k^2$. Option D is $k/2$. The mean and the variance are different: 6 and 12."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "For 12 i.i.d. normal observations, $(n-1)s^2/\\sigma^2$ follows a chi-squared distribution with how many degrees of freedom?",
+      "options": [
+        "$11$",
+        "$12$",
+        "$10$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $11$.\n\nThe exact sampling law for i.i.d. normal data uses $n-1=11$ degrees of freedom. The sample variance $s^2$ divides by $n-1$, and $(n-1)s^2/\\sigma^2$ is chi-squared with that same $n-1$. Option B forgets the degree of freedom lost to the sample mean. The result needs normality; it is not a general fact about every sample of size 12."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the chi-squared distribution with $k$ degrees of freedom?",
+      "options": [
+        "It is the distribution of the sum of squares of $k$ i.i.d. standard normals.",
+        "The mean equals $k$.",
+        "The variance equals $2k$.",
+        "Every goodness-of-fit statistic $\\sum (O-E)^2/E$ is exactly a sum of squares of standard normals, for any sample size."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe distribution is defined by that sum of squares, with mean $k$ and variance $2k$. Option D confuses the distribution with the count statistic from the test lesson. That statistic is only approximately chi-squared, and only under its null when expected counts are not tiny. It is not constructed as $Z_1^2+\\cdots+Z_k^2$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The variables $X_1,\\ldots,X_n$ are i.i.d. normal with variance $\\sigma^2$, and $s^2$ is the sample variance with divisor $n-1$. Which of the following are true?",
+      "options": [
+        "The ratio $(n-1)s^2/\\sigma^2$ is chi-squared with $n-1$ degrees of freedom.",
+        "The numerator identity $(n-1)s^2=\\sum (X_i-\\bar X)^2$ uses the $n-1$ divisor inside $s^2$.",
+        "The mean of $(n-1)s^2/\\sigma^2$ is $n-1$.",
+        "The same exact chi-squared law holds for i.i.d. samples from every distribution with finite variance."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nFor i.i.d. normal data the scaled sample variance is chi-squared with $n-1$ degrees of freedom, hence has mean $n-1$. The factor $n-1$ matches the sample-variance definition, so it converts $s^2$ into the sum of squared deviations. Option D drops the normality assumption. Finite variance is not enough for this exact law."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A chi-squared random variable has variance 18. Enter its degrees of freedom.",
+      "options": [],
+      "answer": [
+        "9"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **9**.\n\nThe variance is $2k=18$, so $k=9$. The mean is then also 9. Halving the variance recovers the degrees of freedom; using $k=18$ would confuse the variance with the mean."
+    }
+  ]
+}

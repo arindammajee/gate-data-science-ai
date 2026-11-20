@@ -1,0 +1,160 @@
+{
+  "slug": "linear-dependence-independence",
+  "section": "linear-algebra",
+  "title": "Linear dependence and independence",
+  "syllabus": "Linear dependence and independence of vectors",
+  "minutes": 30,
+  "summary": "A set is linearly dependent when a nontrivial linear combination equals zero. A set that contains zero is dependent, and so is any set larger than the dimension.",
+  "keywords": [
+    "linear dependence",
+    "linear independence",
+    "null space",
+    "dimension",
+    "columns"
+  ],
+  "intuition": "Dependence is a relation among vectors, not a property of a single arrow's length. The vectors $v_1,\\ldots,v_k$ are linearly dependent when some linear combination equals the zero vector without every coefficient being zero. They are linearly independent when the only combination that produces zero is the one with all coefficients zero. One nontrivial relation is enough to make the whole set dependent.\n\nTwo tests catch most examination sets before any row reduction. A set that contains the zero vector is dependent: the coefficient $1$ on the zero vector, and $0$ on everything else, is a nontrivial combination that sums to zero. And in a space of dimension $n$, more than $n$ vectors are always dependent. Three vectors in $\\mathbb{R}^2$ cannot be independent, whatever they look like. The converse is false: fewer than $n$ vectors can still be dependent, for instance two copies of the same nonzero vector.\n\nFor a matrix the same definition is a statement about $Ax=0$. The columns are dependent exactly when some nonzero column of coefficients $x$ satisfies $Ax=0$. Independence of the columns is the statement that the null space is $\\{0\\}$. That is why rank, nullity, and dependence are one fact said three ways: the number of independent columns, the number of pivots, and $n$ minus the dimension of the solution set of $Ax=0$.",
+  "definitions": [
+    {
+      "term": "Linear dependence",
+      "body": "Vectors $v_1,\\ldots,v_k$ are linearly dependent when $\\sum_{i=1}^k c_i v_i=0$ for some coefficient vector $c\\neq 0$. The combination is called nontrivial because at least one $c_i$ is nonzero."
+    },
+    {
+      "term": "Linear independence",
+      "body": "The same vectors are linearly independent when $\\sum c_i v_i=0$ forces every $c_i=0$. A single nonzero vector is independent. The empty set is independent, and it is not needed in the questions below."
+    },
+    {
+      "term": "Dependence of columns",
+      "body": "The columns of an $m\\times n$ matrix $A$ are linearly dependent if and only if $Ax=0$ has a solution $x\\neq 0$. They are independent if and only if the null space is $\\{0\\}$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Dependence",
+      "latex": "\\sum_{i=1}^k c_i v_i=0\\ \\text{for some }c\\neq 0",
+      "note": "The cheat-sheet form of the definition. Independence is the same equation with the conclusion $c=0$."
+    },
+    {
+      "name": "Columns and the null space",
+      "latex": "A\\begin{pmatrix}c_1\\\\\\vdots\\\\c_n\\end{pmatrix}=c_1 a_1+\\cdots+c_n a_n",
+      "note": "$Ax=0$ with $x\\neq 0$ is a nontrivial linear combination of the columns. Square and invertible matrices are exactly the ones whose columns are independent."
+    }
+  ],
+  "properties": [
+    "Any set that contains the zero vector is linearly dependent. In particular $\\{0\\}$ is dependent, because $1\\cdot 0=0$.",
+    "In a space of dimension $n$, any set of more than $n$ vectors is linearly dependent. Any independent set has at most $n$ vectors.",
+    "A set of fewer than $n$ vectors may still be dependent. The count is a one-sided test.",
+    "The columns of $A$ are linearly dependent if and only if $Ax=0$ has a nontrivial solution.",
+    "Two vectors are dependent if and only if one of them is a scalar multiple of the other. For three or more, one of them may fail to be a multiple of a single neighbour even though the whole set is dependent."
+  ],
+  "examples": [
+    {
+      "title": "Four vectors in $\\mathbb{R}^3$, and a subset that is independent",
+      "prompt": "Let $v_1=(1,0,0)$, $v_2=(1,1,0)$, $v_3=(1,1,1)$, and $v_4=(2,1,0)$ in $\\mathbb{R}^3$. Show that $\\{v_1,v_2,v_3,v_4\\}$ is dependent, and that $\\{v_1,v_2,v_3\\}$ is independent.",
+      "steps": [
+        "Four vectors in a space of dimension $3$ must be dependent. An explicit relation is $v_4=v_1+v_2$, since $(1,0,0)+(1,1,0)=(2,1,0)$. So $1\\cdot v_1+1\\cdot v_2+0\\cdot v_3-1\\cdot v_4=0$, and the coefficients are not all zero.",
+        "For the first three, suppose $a(1,0,0)+b(1,1,0)+c(1,1,1)=(0,0,0)$. The third coordinate forces $c=0$, the second then forces $b=0$, and the first forces $a=0$.",
+        "The same conclusion is the determinant of the matrix with those columns, $\\begin{pmatrix}1&1&1\\\\0&1&1\\\\0&0&1\\end{pmatrix}$, which is upper triangular with determinant $1\\neq 0$. Three independent vectors in $\\mathbb{R}^3$ form a basis; adding $v_4$ destroys independence."
+      ],
+      "answer": "The four vectors are dependent because $v_1+v_2-v_4=0$ and also because $4>3$. The first three are independent."
+    },
+    {
+      "title": "Columns and a nontrivial solution of $Ax=0$",
+      "prompt": "Let $A=\\begin{pmatrix}1&2&3\\\\2&4&6\\\\1&0&1\\end{pmatrix}$. Decide whether the columns are linearly dependent, and produce a nonzero $x$ with $Ax=0$.",
+      "steps": [
+        "The columns are $a_1=(1,2,1)$, $a_2=(2,4,0)$, $a_3=(3,6,1)$. Compare $a_3-a_1=(2,4,0)$, which is exactly $a_2$. So $a_3-a_1-a_2=0$.",
+        "In matrix form that relation is $A\\begin{pmatrix}-1\\\\-1\\\\1\\end{pmatrix}=0$. The coefficient vector is not zero, so the columns are linearly dependent.",
+        "The first two columns are independent: $a(1,2,1)+b(2,4,0)=(0,0,0)$ forces $a+2b=0$ and $a=0$ from the third coordinate, then $b=0$. A maximal independent subset of the columns has two vectors, which is the rank."
+      ],
+      "answer": "The columns are dependent. One nontrivial solution is $x=(-1,-1,1)$, and $Ax=0$."
+    }
+  ],
+  "traps": [
+    "Reading 'more vectors than the dimension' backwards. Fewer vectors than the dimension does not imply independence. Two equal nonzero columns are dependent in any $\\mathbb{R}^n$.",
+    "Thinking a set of nonzero vectors is automatically independent. Dependence can hide in a relation such as $v_1+v_2-v_4=0$ with every vector nonzero.",
+    "A set that contains the zero vector is dependent even when the other vectors are independent. The coefficient $1$ on zero is already a nontrivial relation.",
+    "Confusing $Ax=0$ having the trivial solution with independence. The trivial solution always exists. Independence needs it to be the only solution."
+  ],
+  "python": "def mul(A, x):\n    return [sum(A[i][k] * x[k] for k in range(len(x))) for i in range(len(A))]\n\nA = [[1, 2, 3], [2, 4, 6], [1, 0, 1]]\nx = [-1, -1, 1]\nassert mul(A, x) == [0, 0, 0]\n# triangular independent triple has det 1\nT = [[1, 1, 1], [0, 1, 1], [0, 0, 1]]\ndet = T[0][0] * T[1][1] * T[2][2]\nassert det == 1\nprint(0)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which set is linearly dependent?",
+      "options": [
+        "$\\{(1,0),\\ (0,1)\\}$ in $\\mathbb{R}^2$",
+        "$\\{(1,0),\\ (0,1),\\ (1,1)\\}$ in $\\mathbb{R}^2$",
+        "$\\{(1,0,0),\\ (1,1,0),\\ (1,1,1)\\}$ in $\\mathbb{R}^3$",
+        "$\\{(1,2)\\}$ in $\\mathbb{R}^2$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Three vectors in $\\mathbb{R}^2$ exceed the dimension, so they are dependent; explicitly $(1,0)+(0,1)-(1,1)=0$. Option A is the standard basis. Option C is independent because a triangular arrangement with nonzero diagonals forces every coefficient to vanish. Option D is a single nonzero vector, which is independent."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The columns of a matrix $A$ are linearly dependent if and only if",
+      "options": [
+        "$Ax=0$ has only the solution $x=0$",
+        "$Ax=0$ has a solution $x\\neq 0$",
+        "$A$ is square",
+        "every entry of $A$ is nonzero"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. By definition $Ax$ is the linear combination of the columns with coefficients from $x$. A nonzero $x$ in the null space is a nontrivial relation, and every nontrivial relation arises this way. Option A is independence, not dependence. Shape and the pattern of zeros do not decide the question by themselves."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Any set that contains the zero vector is linearly dependent.",
+        "Any five vectors in $\\mathbb{R}^4$ are linearly dependent.",
+        "If $Ax=0$ has a solution other than $x=0$, the columns of $A$ are linearly dependent.",
+        "Every set of two vectors in $\\mathbb{R}^3$ is linearly dependent."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The combination with coefficient $1$ on the zero vector is nontrivial. Five vectors exceed $\\dim\\mathbb{R}^4=4$. A nontrivial null vector is a dependence relation among the columns. D is false: $(1,0,0)$ and $(0,1,0)$ are independent in $\\mathbb{R}^3$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $v_1=(1,0)$, $v_2=(2,0)$, and $v_3=(0,1)$. Which of the following are true?",
+      "options": [
+        "$\\{v_1,v_2\\}$ is linearly dependent.",
+        "$\\{v_1,v_3\\}$ is linearly independent.",
+        "$\\{v_1,v_2,v_3\\}$ is linearly independent.",
+        "$2v_1-v_2+0v_3=0$ is a nontrivial linear combination equal to zero."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Here $v_2=2v_1$, so $2v_1-v_2=0$ with a nonzero coefficient, and the same relation shows the three-vector set is dependent. The pair $v_1,v_3$ is the standard basis of $\\mathbb{R}^2$ up to order of the second coordinate, and $a(1,0)+b(0,1)=(0,0)$ forces $a=b=0$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "For $A=\\begin{pmatrix}1&2&3\\\\2&4&6\\\\1&0&1\\end{pmatrix}$, the size of a largest linearly independent subset of the columns is an integer $r$. Enter $r$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. The relation $(-1)a_1+(-1)a_2+1\\cdot a_3=0$ shows that three columns are dependent, so $r\\le 2$. The first two columns are independent: the third coordinates give $a\\cdot 1+b\\cdot 0=0$, hence $a=0$, and then $2b=0$. So the largest independent subset has $2$ columns. That number is the rank."
+    }
+  ]
+}

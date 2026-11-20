@@ -1,0 +1,161 @@
+{
+  "slug": "gaussian-elimination",
+  "section": "linear-algebra",
+  "title": "Gaussian elimination",
+  "syllabus": "Gaussian elimination",
+  "minutes": 35,
+  "summary": "Forward elimination reaches a row echelon form, partial pivoting swaps in a large pivot, and back substitution reads off the unknowns. For n equations the arithmetic is O(n^3), and the determinant is the product of the pivots times (-1) to the number of row swaps.",
+  "keywords": [
+    "Gaussian elimination",
+    "row echelon",
+    "partial pivoting",
+    "back substitution",
+    "determinant",
+    "pivots"
+  ],
+  "intuition": "Gaussian elimination solves a linear system by clearing entries, one column at a time. Forward elimination uses the pivot row to subtract multiples from the rows below it, until the coefficient matrix is in row echelon form: zeros strictly below each pivot. Back substitution then starts at the last pivot and works upward, one unknown at a time. Nothing in that description scales a row to make the pivot equal to $1$. Leaving the pivots as they are is what makes the determinant easy to read.\n\nPartial pivoting chooses the pivot before the subtraction. In column $k$, among the entries in row $k$ and below, the algorithm swaps into the pivot position the entry of largest absolute value. The multipliers that follow then have absolute value at most $1$, which keeps the arithmetic from amplifying rounding error. A swap changes the sign of the determinant and it changes which permutation sits in front of an LU factorization. It does not change the solution of the system.\n\nThe cost is cubic. Clearing column $k$ touches a shrinking $(n-k)\\times(n-k)$ block, and the sum of those costs over $k$ is $O(n^3)$ arithmetic operations for $n$ equations in $n$ unknowns. Back substitution is only $O(n^2)$, so the elimination dominates. If no row is scaled, the determinant of the coefficient matrix is the product of the pivots that remain on the diagonal of the echelon form, multiplied by $(-1)^s$, where $s$ is the number of row swaps. A zero pivot that partial pivoting cannot repair, because the whole rest of the column is zero, means the matrix is singular and the product is zero.",
+  "definitions": [
+    {
+      "term": "Forward elimination",
+      "body": "Forward elimination replaces rows below the current pivot by themselves minus a multiple of the pivot row, until every entry strictly below a pivot is zero. The coefficient matrix is then in row echelon form."
+    },
+    {
+      "term": "Partial pivoting",
+      "body": "At column $k$, partial pivoting swaps row $k$ with a row below it, if needed, so that the pivot is an entry of largest absolute value in that column on or below the diagonal position."
+    },
+    {
+      "term": "Back substitution",
+      "body": "Once the system is in row echelon form, back substitution solves the last equation for the last unknown and substitutes upward. Each step uses one new pivot."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Determinant from pivots",
+      "latex": "\\det(A)=(-1)^s\\prod_i p_i",
+      "note": "The $p_i$ are the pivots after elimination, and $s$ is the number of row swaps. Rows must not be scaled. A zero pivot contributes a zero determinant."
+    },
+    {
+      "name": "Operation count",
+      "latex": "O(n^3)",
+      "note": "Forward elimination on $n$ equations in $n$ unknowns. Back substitution is $O(n^2)$ and does not change the total."
+    }
+  ],
+  "properties": [
+    "Forward elimination produces a row echelon form. Back substitution recovers the unknowns from that form and the updated right-hand side.",
+    "Partial pivoting, at step $k$, selects a largest-absolute-value entry in column $k$ on or below row $k$, and swaps that row into the pivot position.",
+    "The arithmetic for $n$ equations in $n$ unknowns is $O(n^3)$. The cubic term is the elimination; back substitution is quadratic.",
+    "If rows are not scaled, $\\det(A)$ equals the product of the pivots times $(-1)^s$, with $s$ the number of row swaps.",
+    "Adding a multiple of one row to another row does not change the determinant. Each row swap multiplies it by $-1$. Scaling a row by $c$ would multiply it by $c$, which is why a determinant read off from pivots assumes you did not scale."
+  ],
+  "examples": [
+    {
+      "title": "Elimination with no swap",
+      "prompt": "Solve $A x=b$ for $A=\\begin{pmatrix}2&1&1\\\\4&3&3\\\\2&1&2\\end{pmatrix}$ and $b=\\begin{pmatrix}4\\\\10\\\\5\\end{pmatrix}$ by elimination, and read off $\\det A$.",
+      "steps": [
+        "The augmented matrix is $\\begin{pmatrix}2&1&1&4\\\\4&3&3&10\\\\2&1&2&5\\end{pmatrix}$. The first-column pivot $2$ is already a largest absolute value. The multiplier for row $2$ is $4/2=2$, and row $2$ becomes $(0,1,1\\mid 2)$. The multiplier for row $3$ is $2/2=1$, and row $3$ becomes $(0,0,1\\mid 1)$.",
+        "The entry below the second pivot is already $0$, so no further elimination and no row swap is required. The echelon coefficient matrix is $U=\\begin{pmatrix}2&1&1\\\\0&1&1\\\\0&0&1\\end{pmatrix}$, with pivots $2,1,1$.",
+        "Back substitution: $z=1$, then $y+z=2$ so $y=1$, then $2x+y+z=4$ so $2x+2=4$ and $x=1$. Zero swaps give $\\det A=(2)(1)(1)=2$."
+      ],
+      "answer": "The solution is $(x,y,z)=(1,1,1)$. The pivots are $2,1,1$, there were no row swaps, and $\\det A=2$."
+    },
+    {
+      "title": "Partial pivoting and one sign change",
+      "prompt": "Solve $\\begin{pmatrix}0&1&1\\\\2&1&1\\\\1&1&2\\end{pmatrix}\\begin{pmatrix}x\\\\y\\\\z\\end{pmatrix}=\\begin{pmatrix}2\\\\4\\\\4\\end{pmatrix}$ with partial pivoting, and compute the determinant from the pivots.",
+      "steps": [
+        "In column $1$ the absolute values are $0,2,1$. Swap row $1$ with row $2$. The augmented matrix becomes $\\begin{pmatrix}2&1&1&4\\\\0&1&1&2\\\\1&1&2&4\\end{pmatrix}$. That is one row swap.",
+        "The multiplier for row $3$ is $1/2$. Row $3$ becomes $\\bigl(0,\\ \\tfrac12,\\ \\tfrac32\\mid 2\\bigr)$. In column $2$, compare $|1|$ and $|\\tfrac12|$; the pivot stays. The multiplier is $\\tfrac12$, and row $3$ becomes $(0,0,1\\mid 1)$.",
+        "Back substitution gives $z=1$, $y+1=2$ so $y=1$, and $2x+1+1=4$ so $x=1$. The pivots are $2,1,1$ and $s=1$, so $\\det A=(-1)^1(2)(1)(1)=-2$."
+      ],
+      "answer": "The solution is $(1,1,1)$. One row swap and pivots $2,1,1$ give $\\det A=-2$."
+    }
+  ],
+  "traps": [
+    "Reading the determinant as the product of the pivots after you have scaled every pivot row to $1$. Each scaling by $1/p_i$ divides the determinant by $p_i$. The product-of-pivots rule needs the unscaled pivots, times $(-1)^s$.",
+    "Ignoring a row swap in the sign. For $\\begin{pmatrix}0&1&1\\\\2&1&1\\\\1&1&2\\end{pmatrix}$ the pivots are $2,1,1$ and there is one swap, so the determinant is $-2$, not $2$.",
+    "Choosing the pivot as the largest entry in the whole matrix, or as the diagonal entry with no comparison. Partial pivoting looks only at the current column, on and below the current row.",
+    "Quoting an $O(n^2)$ cost for the whole algorithm because back substitution is quadratic. Forward elimination of $n$ equations is $O(n^3)$, and it dominates."
+  ],
+  "python": "def mulv(A, x):\n    return [sum(A[i][j] * x[j] for j in range(len(x))) for i in range(len(A))]\n\ndef det3(A):\n    a, b, c = A\n    return (\n        a[0] * (b[1] * c[2] - b[2] * c[1])\n        - a[1] * (b[0] * c[2] - b[2] * c[0])\n        + a[2] * (b[0] * c[1] - b[1] * c[0])\n    )\n\nA = [[2, 1, 1], [4, 3, 3], [2, 1, 2]]\nassert mulv(A, [1, 1, 1]) == [4, 10, 5]\nassert det3(A) == 2 * 1 * 1  # no swaps\nB = [[0, 1, 1], [2, 1, 1], [1, 1, 2]]\nassert mulv(B, [1, 1, 1]) == [2, 4, 4]\nassert det3(B) == -2  # one swap, pivots 2, 1, 1\nprint(2)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Partial pivoting chooses the next pivot as",
+      "options": [
+        "an entry of largest absolute value in the current column, on or below the current row",
+        "the smallest entry in the matrix",
+        "the current diagonal entry, with no row swap allowed",
+        "the last row of the matrix, always"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. At column $k$, partial pivoting looks at rows $k$ through $n$ in that column and swaps the largest absolute value into the pivot position. It does not search the whole matrix, it does not forbid swaps, and it does not automatically take the last row."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Gaussian elimination on a system of $n$ equations in $n$ unknowns uses how many arithmetic operations?",
+      "options": [
+        "$O(n)$",
+        "$O(n^2)$",
+        "$O(n^3)$",
+        "$O(\\log n)$"
+      ],
+      "answer": [
+        "C"
+      ],
+      "solution": "The answer is **C**. Forward elimination performs a cubic amount of arithmetic: each of about $n$ stages clears a shrinking square block, and the total is $O(n^3)$. Back substitution is only $O(n^2)$, so it does not change the big-O class of the whole solve. Logarithmic cost is the wrong model; elimination does not halve the matrix in the sense binary search does."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Forward elimination produces a row echelon form, and back substitution solves for the unknowns.",
+        "If no row is scaled and $s$ row swaps are used, the determinant is the product of the pivots times $(-1)^s$.",
+        "Partial pivoting swaps rows to place a large absolute value in the pivot position.",
+        "Gaussian elimination on $n$ equations uses $O(n)$ arithmetic operations."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Elimination clears below the pivots, back substitution reads the echelon system, the determinant formula is the product of the unscaled pivots with a sign for each swap, and partial pivoting is the largest-absolute-value swap in the active part of the column. The operation count is $O(n^3)$, not $O(n)$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}2&1&1\\\\4&3&3\\\\2&1&2\\end{pmatrix}$, reduced with no row swaps to $U=\\begin{pmatrix}2&1&1\\\\0&1&1\\\\0&0&1\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "The pivots are $2$, $1$, and $1$.",
+        "$\\det A=2$.",
+        "The reduction used one row swap.",
+        "The multiplier that cleared the $(2,1)$ entry was $2$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The diagonal entries of $U$ are the pivots $2,1,1$. No swap was required because the first pivot $2$ was already largest in its column, so $\\det A=(-1)^0\\cdot 2\\cdot 1\\cdot 1=2$. The $(2,1)$ entry of $A$ is $4$, and $4/2=2$ is the multiplier. Option C contradicts the absence of a swap."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Enter $\\det\\begin{pmatrix}2&1&1\\\\4&3&3\\\\2&1&2\\end{pmatrix}$, obtained as the product of the pivots $2$, $1$, and $1$ with no row swaps.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. Elimination with no scaling and no row swaps leaves pivots $2,1,1$. The determinant is $(-1)^0\\cdot 2\\cdot 1\\cdot 1=2$. The same value is $\\det U$, since each elimination step subtracted a multiple of one row from another and did not change the determinant."
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "slug": "normalization-transformation",
+  "section": "databases",
+  "title": "Feature scaling",
+  "syllabus": "Data transformation such as normalization",
+  "minutes": 30,
+  "summary": "Min-max scaling, z-scores, and decimal scaling change the units of a feature. They are not the normal forms 1NF, 2NF, 3NF, and BCNF.",
+  "keywords": [
+    "min-max",
+    "z-score",
+    "decimal scaling",
+    "feature scaling",
+    "k-NN",
+    "k-means"
+  ],
+  "intuition": "Two columns can both be numbers and still live on incompatible rulers. Income in rupees runs into the tens of thousands. Age runs through a few dozen years. Euclidean distance adds squared gaps, so the income gap drowns the age gap. k-nearest neighbours and k-means both use that distance: neighbours and cluster assignments then follow whichever column has the largest numbers. Feature scaling puts the columns on comparable footing before those distances are computed.\n\nThis is the preprocessing word 'normalization'. It is a different word from the normal forms in the relational-design lessons. First normal form, second normal form, third normal form, and Boyce-Codd normal form are statements about functional dependencies and redundant schemas. Min-max scaling, a z-score, and decimal scaling do not change a schema and do not remove a transitive dependency. If a question says 'normalize the relation', it is about keys. If it says 'normalize the features before k-means', it is about this page.\n\nMin-max sends the training minimum to 0 and the training maximum to 1. A z-score subtracts the mean and divides by the standard deviation; in this lesson that deviation is the population one, with divisor $n$. Decimal scaling divides by a power of ten so the largest absolute value falls below 1. All three are unit changes. None of them is 1NF, 2NF, 3NF, or BCNF.",
+  "definitions": [
+    {
+      "term": "Min-max scaling",
+      "body": "Replace $x$ by $(x-\\min)/(\\max-\\min)$, using the minimum and maximum of the training column. The training minimum maps to 0 and the training maximum maps to 1."
+    },
+    {
+      "term": "Z-score",
+      "body": "Replace $x$ by $(x-\\mu)/\\sigma$. Here $\\sigma$ is the population standard deviation: the square root of the average squared deviation, divisor $n$, not $n-1$."
+    },
+    {
+      "term": "Decimal scaling",
+      "body": "Replace $x$ by $x/10^{j}$, where $j$ is the smallest integer such that every scaled absolute value is strictly below 1."
+    },
+    {
+      "term": "Not a normal form",
+      "body": "Feature scaling is not 1NF, 2NF, 3NF, or BCNF. Those are schema constraints on functional dependencies. Scaling rewrites numbers and leaves the relation schema alone."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Min-max",
+      "latex": "x'=\\frac{x-\\min}{\\max-\\min}",
+      "note": "Undefined when the column is constant, because the denominator is 0. A test value outside the training range lands outside $[0,1]$."
+    },
+    {
+      "name": "Z-score",
+      "latex": "z=\\frac{x-\\mu}{\\sigma}",
+      "note": "With the population deviation, $\\sigma=\\sqrt{\\frac{1}{n}\\sum_i(x_i-\\mu)^2}$. The z-scores of the same column sum to 0."
+    },
+    {
+      "name": "Decimal scaling",
+      "latex": "x'=\\frac{x}{10^{j}}",
+      "note": "$j$ is the smallest integer with $\\max|x'|<1$."
+    }
+  ],
+  "properties": [
+    "Min-max, z-score, and decimal scaling are feature scaling. Saying so does not say anything about 1NF, 2NF, 3NF, or BCNF.",
+    "On the column that was just scaled, population z-scores sum to 0, because they are proportional to deviations from the mean and those deviations sum to 0.",
+    "Euclidean k-NN and the assignment step of k-means both use distances. A column with a much larger numeric range dominates those distances until it is scaled.",
+    "Fit the minimum, maximum, mean, and deviation on the training rows, then apply those constants to later rows. Refitting them on the test rows lets the test sample decide the ruler.",
+    "A constant column has $\\max=\\min$ and $\\sigma=0$. Both formulas divide by zero. The column carries no distance and is left unscaled.",
+    "Min-max is sensitive to a single extreme training value, because that value becomes the min or the max and squeezes everyone else."
+  ],
+  "examples": [
+    {
+      "title": "Population z-scores and min-max on four numbers",
+      "prompt": "Scale the column 3, 3, 7, 7. Use the population standard deviation, divisor $n$. Give the z-score of 7 and the min-max images of 3 and 7.",
+      "steps": [
+        "The mean is $(3+3+7+7)/4=5$. The squared deviations are 4, 4, 4, and 4, so the population variance is $16/4=4$ and $\\sigma=2$.",
+        "The z-score of 7 is $(7-5)/2=1$. The z-score of 3 is $(3-5)/2=-1$. The four z-scores are $-1,-1,1,1$, and they sum to 0.",
+        "Min-max uses minimum 3 and maximum 7. Then $(3-3)/(7-3)=0$ and $(7-3)/(7-3)=1$."
+      ],
+      "answer": "The population z-score of 7 is 1, and of 3 is $-1$. Min-max sends 3 to 0 and 7 to 1."
+    },
+    {
+      "title": "The nearest neighbour flips after min-max",
+      "prompt": "Training points A $(0,0)$ and B $(10,500)$ fix the ranges: the first feature runs from 0 to 10, the second from 0 to 500. Query Q is $(0,400)$. Who is the Euclidean nearest neighbour before min-max scaling, and who is it after?",
+      "steps": [
+        "Unscaled squared distance from Q to A is $400^{2}=160000$. From Q to B it is $10^{2}+100^{2}=10100$. B is closer, because the second coordinate's units dominate.",
+        "Min-max sends A to $(0,0)$, B to $(1,1)$, and Q to $(0, 400/500)=(0, 0.8)$.",
+        "Scaled squared distance to A is $0.8^{2}=0.64$. To B it is $1^{2}+0.2^{2}=1.04$. A is now closer. The same Euclidean geometry, with the second feature no longer drowning the first, is what k-NN and the assignment step of k-means would use."
+      ],
+      "answer": "Before scaling, B is closer to Q (squared distance 10,100 against 160,000). After min-max, A is closer (squared distance 0.64 against 1.04)."
+    }
+  ],
+  "traps": [
+    "Confusing this page with 1NF, 2NF, 3NF, or BCNF. Those are normal forms of a relation. Min-max and z-score do not look at functional dependencies. The words are not interchangeable.",
+    "Using divisor $n-1$ and still quoting the population z-score. On 3, 3, 7, 7 the population z-score of 7 is 1. The sample deviation divides 16 by 3, and the z-score is no longer 1.",
+    "Skipping scaling before Euclidean k-NN or k-means. The worked query changes its nearest neighbour from B to A once the large-range feature is brought back to $[0,1]$.",
+    "Scaling a constant column. The min-max denominator and the z-score denominator are both zero.",
+    "Refitting min and max on the test rows, or clipping every out-of-range test value back into $[0,1]$ without saying so. The training constants are part of the fitted preprocessing."
+  ],
+  "python": "xs = [3, 3, 7, 7]\nmu = sum(xs) / len(xs)\nsigma = (sum((x - mu) ** 2 for x in xs) / len(xs)) ** 0.5\nassert mu == 5 and sigma == 2\nassert (7 - mu) / sigma == 1\nassert sum((x - mu) / sigma for x in xs) == 0\n# Q against A and B, before and after min-max.\nassert 400 ** 2 > 10 ** 2 + 100 ** 2\nassert 0.8 ** 2 < 1 ** 2 + 0.2 ** 2\nj = 0\nwhile abs(4321) / 10 ** j >= 1:\n    j += 1\nassert j == 4\nprint(j)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For the column 3, 3, 7, 7, using the population standard deviation with divisor $n$, the z-score of 7 is",
+      "options": [
+        "$1$",
+        "$2$",
+        "$0$",
+        "$4$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1$. The mean is 5. The population variance is $(4+4+4+4)/4=4$, so $\\sigma=2$. Then $(7-5)/2=1$. Option B is $\\sigma$ itself. Option D is the variance."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Min-max scaling of a feature is which operation?",
+      "options": [
+        "Rewriting a relation until it is in BCNF",
+        "Mapping $x$ to $(x-\\min)/(\\max-\\min)$",
+        "Replacing $x$ by its rank in the column",
+        "The same rewrite as second normal form"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Min-max scaling is $(x-\\min)/(\\max-\\min)$. Options A and D are normal forms, which are a different use of the word normalization and do not rescale a column. Ranking is a different transformation."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of feature scaling?",
+      "options": [
+        "The z-score used here is $(x-\\mu)/\\sigma$.",
+        "Min-max and z-score are not 1NF, 2NF, 3NF, or BCNF.",
+        "Euclidean k-NN is unaffected by the units of a feature.",
+        "Decimal scaling divides by a power of ten so the largest absolute value drops below 1."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The z-score formula and the separation from the normal forms are the content of this lesson, and decimal scaling is the power-of-ten rule. C is false: a feature with a huge range dominates Euclidean distance, which is why k-NN and k-means see different neighbours after scaling."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Points A $(0,0)$ and B $(10,500)$, with those values as the feature ranges, and query Q $(0,400)$. Which of the following are true?",
+      "options": [
+        "Before scaling, B is closer to Q than A is, in Euclidean distance.",
+        "After min-max scaling, A is closer to Q than B is.",
+        "Min-max maps Q to $(0, 0.8)$.",
+        "The unscaled Euclidean distance from Q to A is 100."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Unscaled squared distances are $400^{2}=160000$ to A and $10^{2}+100^{2}=10100$ to B, so B is closer. Min-max maps Q to $(0, 400/500)=(0, 0.8)$, A to $(0,0)$, and B to $(1,1)$. Squared distances become $0.64$ and $1.04$, so A is closer. D is false: the unscaled distance to A is 400, not 100."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Decimal scaling chooses the smallest integer $j$ such that $4321/10^{j}$ is strictly below 1. Enter $j$.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**. Dividing by $10^{3}$ leaves $4.321$, which is not below 1. Dividing by $10^{4}$ leaves $0.4321$, which is below 1. The smallest such integer is 4."
+    }
+  ]
+}

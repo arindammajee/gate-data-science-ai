@@ -1,0 +1,170 @@
+{
+  "slug": "queues",
+  "section": "programming",
+  "title": "Queues",
+  "syllabus": "Queues",
+  "minutes": 25,
+  "summary": "A queue is first-in first-out. collections.deque gives O(1) enqueue and dequeue, list.pop(0) does not, and a circular buffer is the fixed-array version of the same idea.",
+  "keywords": [
+    "queue",
+    "FIFO",
+    "deque",
+    "circular buffer",
+    "enqueue",
+    "dequeue"
+  ],
+  "intuition": "A queue returns the oldest item first. Enqueue adds at the back. Dequeue removes from the front. That first-in first-out order is how a line of people works, and it is the opposite of a stack. Using a stack where a waiting line was required serves the last arrival before everyone who was already waiting.\n\nA Python list can store the items, and it is a bad dequeue. `pop(0)` removes the front and then slides every later element one slot left, so one dequeue is $O(n)$. `collections.deque` is the standard-library structure that makes `append` and `popleft` both $O(1)$. The back and the front are both real ends.\n\nA circular buffer is the same idea in a fixed array. A head index marks the front, a tail index marks the next free slot at the back, and both move with wrap-around modulo the capacity. A separate count tells a full buffer from an empty one, because head and tail can coincide in both situations. The wrap is what keeps enqueue and dequeue $O(1)$ without shifting elements.\n\n$$\\text{enqueue and dequeue are }O(1).$$",
+  "definitions": [
+    {
+      "term": "Queue",
+      "body": "A queue is a first-in first-out sequence. Dequeue removes the oldest item, the one that has been waiting the longest. A stack removes the newest item instead."
+    },
+    {
+      "term": "Enqueue and dequeue",
+      "body": "Enqueue inserts at the back. Dequeue removes from the front and returns that item. With `collections.deque`, enqueue is `append` and dequeue is `popleft`. Both are $O(1)$."
+    },
+    {
+      "term": "Linear cost of pop(0)",
+      "body": "`list.pop(0)` removes index $0$ and shifts every remaining element. On a list of $n$ elements that shift is $\\Theta(n)$. The same shift makes `insert(0)` linear. A queue implemented that way is not an $O(1)$ queue."
+    },
+    {
+      "term": "Circular buffer",
+      "body": "A fixed array stores the items. Head and tail indexes advance modulo the capacity. A count, or one unused slot, distinguishes full from empty. Dequeue reads `data[head]` and advances head. Enqueue writes `data[tail]` and advances tail."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Queue operations",
+      "latex": "\\text{enqueue and dequeue are }O(1)",
+      "note": "Use `collections.deque`, a linked list with a tail pointer, or a circular buffer. Do not use `list.pop(0)`."
+    },
+    {
+      "name": "Front removal on a list",
+      "latex": "\\text{list.pop}(0)=\\Theta(n)",
+      "note": "The remaining $n-1$ elements each move one index toward the front."
+    },
+    {
+      "name": "Circular indexes",
+      "latex": "\\text{head},\\text{tail}\\leftarrow (\\text{head}+1)\\bmod m,\\ (\\text{tail}+1)\\bmod m",
+      "note": "Capacity $m$ stays fixed. The stored count changes by $+1$ on enqueue and by $-1$ on dequeue."
+    }
+  ],
+  "properties": [
+    "A queue is FIFO. After enqueue of $4$, $5$, $6$, the first dequeue returns $4$. A stack would have returned $6$.",
+    "`collections.deque.append` and `collections.deque.popleft` are $O(1)$. So are `appendleft` and `pop`, which means a deque can also implement a stack.",
+    "`list.pop(0)` is $O(n)$. It is a correct FIFO removal and it is the wrong complexity for a queue primitive.",
+    "A circular buffer of capacity $4$ that enqueues $1, 2, 3$, dequeues once, then enqueues $4$ and $5$, holds $[2, 3, 4, 5]$ in queue order. The sum of the stored values is $14$.",
+    "Head and tail can be equal both when the buffer is empty and when it is full. A count, or a deliberately unused slot, is what tells those two states apart."
+  ],
+  "examples": [
+    {
+      "title": "A deque trace",
+      "prompt": "Start with an empty `collections.deque`. Append $2$, $8$, and $5$, then `popleft`, then append $7$. What is the queue, front to back?",
+      "steps": [
+        "After the three appends the deque is `[2, 8, 5]`. The front is $2$ and the back is $5$.",
+        "`popleft` removes the front and returns $2$. The deque is now `[8, 5]`. This removal does not shift the later elements the way `list.pop(0)` would.",
+        "Appending $7$ puts it at the back. The deque is `[8, 5, 7]`. The new front is $8$, the length is $3$, and the last element is $7$."
+      ],
+      "answer": "The queue is `[8, 5, 7]`. The dequeued value was $2$, the oldest item, not $5$."
+    },
+    {
+      "title": "A circular buffer of capacity 4",
+      "prompt": "Use an array of length $4$, with head, tail, and a count. Enqueue $1, 2, 3$, dequeue once, then enqueue $4$ and $5$. List the stored values from the front.",
+      "steps": [
+        "Enqueue writes $1$ at index $0$, $2$ at index $1$, and $3$ at index $2$. Head is $0$, tail is $3$, and the count is $3$.",
+        "Dequeue reads index $0$, returns $1$, and advances head to $1$. The count is $2$. The logical queue is $[2, 3]$.",
+        "Enqueue writes $4$ at index $3$ and advances tail from $3$ to $0$, wrapping modulo $4$. Enqueue writes $5$ at index $0$ and advances tail to $1$. The count is $4$.",
+        "Reading from head gives indexes $1, 2, 3, 0$, that is the values $2, 3, 4, 5$. Their sum is $2+3+4+5=14$. No element was shifted."
+      ],
+      "answer": "The buffer holds $[2, 3, 4, 5]$ from front to back, and the stored sum is $14$."
+    }
+  ],
+  "traps": [
+    "Using `list.pop(0)` and calling it $O(1)$. The pop itself is cheap only after the later elements have been moved, and that move is $O(n)$.",
+    "Treating a queue as LIFO. Enqueue $4$, $5$, $6$ and then dequeue returns $4$. Returning $6$ is a stack pop.",
+    "Letting head catch tail with no count. After wrapping, head equal to tail can mean empty or full. Dequeue on the empty reading, or enqueue on the full reading, overwrites or reads a stale slot.",
+    "A circular buffer does not grow by itself. Capacity $4$ with a count of $4$ is full. Another enqueue without a dequeue overflows it."
+  ],
+  "python": "from collections import deque\n\nq = deque()\nfor value in (2, 8, 5):\n    q.append(value)\nassert q.popleft() == 2\nq.append(7)\nassert list(q) == [8, 5, 7]\n\ndata = [None] * 4\nhead = tail = count = 0\n\ndef enqueue(value):\n    global tail, count\n    data[tail] = value\n    tail = (tail + 1) % 4\n    count += 1\n\ndef dequeue():\n    global head, count\n    value = data[head]\n    head = (head + 1) % 4\n    count -= 1\n    return value\n\nfor value in (1, 2, 3):\n    enqueue(value)\nassert dequeue() == 1\nenqueue(4)\nenqueue(5)\nstored, i = [], head\nfor _ in range(count):\n    stored.append(data[i])\n    i = (i + 1) % 4\nassert stored == [2, 3, 4, 5] and sum(stored) == 14\np = deque([9, 4, 6, 1])\np.popleft()\np.popleft()\np.append(3)\nassert p[0] == 6\nprint(list(q), sum(stored), p[0])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "An empty queue receives enqueue $4$, enqueue $5$, enqueue $6$, then dequeue. The dequeued value is",
+      "options": [
+        "$4$",
+        "$6$",
+        "$5$",
+        "an error, because the queue was empty at the start"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4$.\n\nEnqueue adds at the back, so the queue becomes $[4, 5, 6]$. Dequeue removes the front, which is the oldest item, $4$. The value $6$ is what a stack pop would return. The queue is not empty at the moment of the dequeue; it holds three items."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Removing the front element of a Python list with `pop(0)` costs",
+      "options": [
+        "$O(n)$",
+        "$O(1)$",
+        "$O(\\log n)$",
+        "$O(n^{2})$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $O(n)$.\n\n`pop(0)` deletes index $0$ and shifts each of the other $n-1$ elements one place left. That shift is linear in the length of the list. Constant time is what `collections.deque.popleft` provides, not what a list gives at the front. A binary search is the logarithmic bound, and it is a different algorithm."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "`collections.deque` supports $O(1)$ `append` and $O(1)$ `popleft`.",
+        "A queue is last-in first-out.",
+        "A circular buffer implements a queue by wrapping the head and tail indexes.",
+        "Dequeue removes the most recently inserted element."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nBoth ends of a deque are $O(1)$, which is why `append` plus `popleft` is a queue. A circular buffer stores the same FIFO order in a fixed array: head walks forward modulo the capacity on dequeue, and tail does the same on enqueue.\n\nLast-in first-out is a stack. Dequeue removes the oldest element, not the newest. Removing the newest element is pop on a stack."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Start with an empty deque. Append $2$, append $8$, append $5$, `popleft`, then append $7$. Which of the following are true?",
+      "options": [
+        "The front is $8$.",
+        "The length is $3$.",
+        "The front is $2$.",
+        "The last element is $7$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe three appends build `[2, 8, 5]`. `popleft` removes $2$, leaving `[8, 5]`. Appending $7$ builds `[8, 5, 7]`. The front is $8$, the length is $3$, and the back is $7$.\n\nThe value $2$ was the front before the dequeue. After `popleft` it is gone, so it is not the front of the final queue."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Start with an empty deque. Enqueue $9$, $4$, $6$, and $1$, then dequeue twice, then enqueue $3$. Enter the integer at the front.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**.\n\nAfter the four enqueues the deque is `[9, 4, 6, 1]`. The first dequeue removes $9$ and the second removes $4$, leaving `[6, 1]`. Enqueue puts $3$ at the back, so the deque is `[6, 1, 3]`. The front is $6$. A stack would have been popping $1$ and then $6$ instead."
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "slug": "confidence-interval",
+  "section": "probability",
+  "title": "Confidence interval",
+  "syllabus": "Confidence interval",
+  "minutes": 30,
+  "summary": "A confidence interval for a mean uses a normal critical value when σ is known and a t critical value when σ is estimated. The confidence level is the coverage of the procedure over repeated samples, not a probability attached to one computed interval.",
+  "keywords": [
+    "confidence interval",
+    "coverage",
+    "z critical value",
+    "t critical value",
+    "standard error"
+  ],
+  "intuition": "A confidence interval is a procedure that turns data into an interval. For a normal mean with known $\\sigma$, the 95% procedure is\n\n$$\n\\bar x \\pm 1.96\\, \\frac{\\sigma}{\\sqrt{n}},\n$$\n\nusing the conventional critical value $z_{0.025}=1.96$. If $\\sigma$ is unknown and the observations are modelled as normal, replace $\\sigma$ by the sample standard deviation $s$ and replace the normal critical value by $t_{n-1,\\alpha/2}$. The degrees of freedom are $n-1$ because $s^2$ uses the sample divisor $n-1$. A t critical value is not something to invent. If a decision or a numerical endpoint needs one, the question supplies it.\n\nThe 95% is a property of the procedure before the data are seen. Draw a sample, build the interval, draw another sample, build another interval. About 95% of those intervals contain the true mean. After you have computed one interval, that interval is a fixed set of numbers. It either contains $\\mu$ or it does not. The confidence level is not a probability you assign to that finished interval, and it is not the proportion of the data that fell inside it.\n\nThe half-width shrinks like $1/\\sqrt{n}$ when the scale stays fixed. Doubling the sample size multiplies the half-width by $1/\\sqrt{2}$. It does not cut the half-width in half. Cutting it in half requires multiplying $n$ by 4. Using $z$ together with $s$ is a large-sample approximation. The exact interval under a normal model with unknown $\\sigma$ is the t interval.",
+  "definitions": [
+    {
+      "term": "Interval with known scale",
+      "body": "When $\\sigma$ is known, the interval is $\\bar x \\pm z_{\\alpha/2}\\,\\sigma/\\sqrt{n}$. For 95% confidence the conventional normal critical value is $z_{0.025}=1.96$."
+    },
+    {
+      "term": "Interval with estimated scale",
+      "body": "When $\\sigma$ is unknown and the data are modelled as normal, the interval is $\\bar x \\pm t_{n-1,\\alpha/2}\\, s/\\sqrt{n}$. The sample standard deviation $s$ uses the divisor $n-1$."
+    },
+    {
+      "term": "Coverage",
+      "body": "A 95% confidence procedure produces intervals that contain the true parameter in 95% of repeated samples. The percentage describes the procedure."
+    },
+    {
+      "term": "Realised interval",
+      "body": "Once the data are plugged in, the interval is a fixed set of numbers. It covers the parameter or it does not. The 95% is not a posterior probability for that one interval."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Known σ",
+      "latex": "\\bar x\\pm z_{\\alpha/2}\\,\\sigma/\\sqrt{n}",
+      "note": "Conventional normal values: $z_{0.025}=1.96$, $z_{0.05}=1.645$, $z_{0.005}=2.576$."
+    },
+    {
+      "name": "Unknown σ",
+      "latex": "\\bar x\\pm t_{n-1,\\alpha/2}\\,s/\\sqrt{n}",
+      "note": "Degrees of freedom $n-1$. Use a t critical value given in the problem. Do not invent one."
+    }
+  ],
+  "properties": [
+    "With $\\sigma$ known, the interval is $\\bar x\\pm z_{\\alpha/2}\\,\\sigma/\\sqrt{n}$. The 95% normal critical value used here is $z_{0.025}=1.96$.",
+    "With $\\sigma$ unknown and normal data, the interval uses $s$ and $t_{n-1,\\alpha/2}$. The degrees of freedom are $n-1$, not $n$.",
+    "A 95% confidence interval is a procedure with 95% coverage in repeated samples. A realised interval is not assigned probability 0.95 of containing $\\mu$.",
+    "The half-width is proportional to $1/\\sqrt{n}$. Multiplying $n$ by 4 halves the half-width when the scale is unchanged. Multiplying $n$ by 2 does not.",
+    "Substituting $s$ into the z interval is a large-sample approximation. Under a normal model with unknown $\\sigma$, the procedure that matches the model is the t interval."
+  ],
+  "examples": [
+    {
+      "title": "Known σ, 95% interval",
+      "prompt": "A sample of size $n=25$ has mean $\\bar x=40$. The population standard deviation is known to be $\\sigma=10$. Build the 95% confidence interval for the mean.",
+      "steps": [
+        "The standard error is $\\sigma/\\sqrt{n}=10/5=2$.",
+        "The conventional critical value is $z_{0.025}=1.96$. The half-width is $1.96\\times 2=3.92$.",
+        "The interval is $40\\pm 3.92$, that is $(36.08, 43.92)$. The 95% is the coverage of this procedure. This particular interval either contains the mean or it does not."
+      ],
+      "answer": "The 95% interval is $(36.08, 43.92)$. The half-width is $3.92$."
+    },
+    {
+      "title": "Unknown σ, with a supplied t value",
+      "prompt": "A normal sample of size $n=16$ has $\\bar x=20$ and sample standard deviation $s=4$, using the divisor $n-1$. A table supplies $t_{15,0.025}=2.131$. Build the 95% interval.",
+      "steps": [
+        "The scale is estimated, so the interval uses $t$ with $n-1=15$ degrees of freedom, not a z critical value invented for this sample.",
+        "The standard error is $s/\\sqrt{n}=4/4=1$. The supplied critical value gives half-width $2.131\\times 1=2.131$.",
+        "The interval is $20\\pm 2.131$, that is $(17.869, 22.131)$. The number 2.131 is an input from the table named in the problem. It is not derived in the arithmetic."
+      ],
+      "answer": "Using the supplied critical value, the interval is $(17.869, 22.131)$."
+    }
+  ],
+  "traps": [
+    "Reading a realised 95% interval as 'the probability that $\\mu$ is in this interval is 0.95'. The 95% is the coverage of the procedure. The finished interval is fixed.",
+    "Using a z critical value with $s$ and calling the result exact for a small normal sample. That substitution is a large-sample approximation. The normal-data interval with unknown $\\sigma$ uses $t_{n-1}$.",
+    "Inventing a t critical value. Use $z_{0.025}=1.96$ when the normal critical value is appropriate. When a t value is required, it has to be given in the question.",
+    "Taking the degrees of freedom to be $n$, or dividing the sample variance by $n$ and still quoting $t_{n-1}$. The sample standard deviation in the t interval uses the divisor $n-1$."
+  ],
+  "python": "assert 196 * 2 == 392\nassert 4000 - 392 == 3608 and 4000 + 392 == 4392\nassert 20000 - 2131 == 17869 and 20000 + 2131 == 22131\nassert 196 * 20 // 10 == 392\nassert 7 * 7 == 49\nprint(3.92, 2.131, 49)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A sample of size $n=100$ has mean $50$, and $\\sigma=20$ is known. The half-width of the 95% confidence interval for the mean is",
+      "options": [
+        "$3.92$",
+        "$1.96$",
+        "$39.2$",
+        "$0.392$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3.92$.\n\nThe standard error is $20/\\sqrt{100}=2$, and the conventional critical value is $z_{0.025}=1.96$. The half-width is $1.96\\times 2=3.92$. Option B stops at the critical value. Option D divides by $n$ instead of by $\\sqrt{n}$, giving $1.96\\times 20/100=0.392$. Option C is $1.96\\times 20$, with the sample size ignored."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A 95% confidence interval for a mean has been computed from one sample. Which statement is correct?",
+      "options": [
+        "In repeated samples, about 95% of the intervals produced by this procedure contain the true mean.",
+        "The probability that the true mean lies in this computed interval is 0.95.",
+        "Exactly 95% of the observations lie inside the interval.",
+        "The interval has p-value 0.05."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe confidence level is the coverage of the procedure over repeated samples. Once the interval has been computed it is a fixed set of numbers, so B assigns a probability to a finished interval and is the wrong reading. C confuses a confidence interval with a band that contains a proportion of the data. D confuses an interval with a test's p-value. A p-value is computed under a null hypothesis. It is not a label on the interval."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of a confidence interval for a mean?",
+      "options": [
+        "When $\\sigma$ is known, the interval is $\\bar x\\pm z_{\\alpha/2}\\,\\sigma/\\sqrt{n}$.",
+        "When $\\sigma$ is unknown and the data are modelled as normal, the interval uses $t_{n-1,\\alpha/2}$ and $s$.",
+        "The conventional normal critical value $z_{0.025}$ used for a 95% interval is 1.96.",
+        "The t interval has $n$ degrees of freedom."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nKnown $\\sigma$ uses a normal critical value. Unknown $\\sigma$ under a normal model uses $s$ and a t critical value on $n-1$ degrees of freedom, because the sample variance divides by $n-1$. The value $z_{0.025}=1.96$ is the conventional normal input. Option D uses $n$ instead of $n-1$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Replacing $\\sigma$ by $s$ and still using a normal critical value is a large-sample approximation.",
+        "A realised interval is a fixed set of numbers. The random object was the procedure, before the data were seen.",
+        "With the scale held fixed, the half-width is proportional to $1/\\sqrt{n}$.",
+        "Doubling the sample size cuts the half-width in half."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe exact normal-data procedure with unknown $\\sigma$ is the t interval. Coverage is a repeated-sampling property of the procedure. The half-width tracks $1/\\sqrt{n}$, so doubling $n$ multiplies the half-width by $1/\\sqrt{2}$, not by $1/2$. Halving the half-width takes a factor of 4 in the sample size. Option D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "For a 95% confidence interval with known $\\sigma=7$, the half-width equals $1.96$. Enter the sample size $n$.",
+      "options": [],
+      "answer": [
+        "49"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **49**.\n\nThe half-width is $1.96\\times \\sigma/\\sqrt{n}=1.96\\times 7/\\sqrt{n}$. Set this equal to $1.96$. Then $7/\\sqrt{n}=1$, so $\\sqrt{n}=7$ and $n=49$. The critical value cancels. The same cancellation is why a target half-width of $1.96$ with $\\sigma=7$ is the sample size that makes the standard error equal to 1."
+    }
+  ]
+}

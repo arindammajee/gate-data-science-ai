@@ -1,0 +1,166 @@
+{
+  "slug": "measures",
+  "section": "databases",
+  "title": "Measures",
+  "syllabus": "Measures",
+  "minutes": 30,
+  "summary": "Distributive measures roll up from partial aggregates, algebraic measures need those pieces stored, and holistic measures do not. Inventory is semi-additive: do not sum it across time.",
+  "keywords": [
+    "distributive",
+    "algebraic",
+    "holistic",
+    "semi-additive",
+    "inventory"
+  ],
+  "intuition": "A roll-up asks for a measure at a coarser level, computed from numbers you may already have aggregated. Whether that is possible depends on the measure. Distributive measures can be rebuilt from the partial aggregates alone: the sum of the sums is the total sum, and the minimum of the group minima is the global minimum. Algebraic measures can be rebuilt from a fixed handful of distributive pieces. The average is the sum divided by the count, so a roll-up that stored only the averages has thrown the pieces away. Holistic measures, such as the median and the mode, do not come from any fixed-size set of those pieces. The median of the medians is not the median.\n\nAdditivity is a second cut, about which dimensions you may sum along. Sales revenue is additive across store, product, and day. An inventory level is semi-additive. Summing units on hand across stores gives the stock in the chain that day. Summing Monday's stock and Tuesday's stock double-counts the same units sitting on the shelf, so inventory is not additive across time. A ratio such as a profit margin is non-additive. The sum of two margins is not a margin, and the unweighted average of two margins is not the margin of the combined stores. Recompute it from the summed profits and the summed revenues.\n\nThe practical rule for the average is the one that fails in public: do not average averages unless you still have the counts. A group of 4 with average 10 and a group of 6 with average 20 do not roll up to 15.",
+  "definitions": [
+    {
+      "term": "Distributive measure",
+      "body": "A measure whose aggregate is computable from the aggregates of a partition, using the same operation. Sum, count, minimum, and maximum are distributive. The minimum of the group minima is the global minimum."
+    },
+    {
+      "term": "Algebraic measure",
+      "body": "A measure computable from a fixed number of distributive measures. The average is algebraic: it is the total sum divided by the total count. Storing the averages without the counts is not enough."
+    },
+    {
+      "term": "Holistic measure",
+      "body": "A measure that is not determined by any fixed-size collection of distributive summaries. Median and mode are holistic. The median of the group medians is not the median of the combined rows."
+    },
+    {
+      "term": "Additive, semi-additive, non-additive",
+      "body": "An additive measure may be summed along every dimension. A semi-additive measure may be summed along some dimensions and not others. A non-additive measure, such as a ratio, may not be summed along any dimension."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Weighted average",
+      "latex": "\\frac{\\sum_g \\mathrm{sum}_g}{\\sum_g \\mathrm{count}_g}",
+      "note": "This is the roll-up of an average. The unweighted mean of the group averages equals this only when the counts match, or by accident."
+    },
+    {
+      "name": "Combined margin",
+      "latex": "\\frac{\\sum_g \\mathrm{profit}_g}{\\sum_g \\mathrm{revenue}_g}",
+      "note": "Margin is non-additive. Sum the parts, then divide. Do not add the margins, and do not average them without weights."
+    }
+  ],
+  "properties": [
+    "Sum, count, minimum, and maximum are distributive. They roll up from the partial aggregates. Average is not distributive; it is algebraic and needs the sums and the counts.",
+    "A roll-up of averages is wrong unless the counts are kept. Groups of 4 and 6 with averages 10 and 20 roll up to 16, not to $(10+20)/2=15$.",
+    "Median and mode are holistic. In the worked split, the group medians are 2 and 4, and the median of the six combined values is $7/2$, not 3.",
+    "Sales units are additive across store and across day. Inventory units on hand are semi-additive: sum them across stores on one day, and do not sum them across days.",
+    "A ratio of two additive measures is non-additive. The combined margin is total profit over total revenue, not the sum or the unweighted mean of the store margins.",
+    "Count is distributive and average is algebraic. Both summarise a group, and they do not roll up by the same rule."
+  ],
+  "examples": [
+    {
+      "title": "Why the average of the averages is 15 and the truth is 16",
+      "prompt": "One group has 4 people and average 10. Another has 6 people and average 20. What do you get by averaging the two averages, and what is the average of all 10 people?",
+      "steps": [
+        "The unweighted mean of the averages is $(10+20)/2=15$. Each group has one vote, so the group of 6 is under-weighted.",
+        "The group sums are $4\\times 10=40$ and $6\\times 20=120$. The combined sum is 160 and the combined count is 10.",
+        "The correct average is $160/10=16$. If the roll-up stored only 10 and 20, the counts would be gone and 16 would not be determined. Storing sum and count keeps the algebraic measure computable."
+      ],
+      "answer": "The unweighted roll-up is 15. The correct overall average is 16, from sums 40 and 120 and counts 4 and 6."
+    },
+    {
+      "title": "Median, inventory, and a margin",
+      "prompt": "Group medians: the values 1, 2, 9 have median 2, and 3, 4, 5 have median 4. Separately, store A holds 5 units on Monday and 5 on Tuesday, while store B holds 7 on each day. Also, store A earns profit 20 on revenue 100 and store B earns profit 50 on revenue 200. Which summaries survive a careless roll-up?",
+      "steps": [
+        "The six values sort as 1, 2, 3, 4, 5, 9. With an even count, the median is the average of the 3rd and 4th values, $(3+4)/2=7/2$. Averaging the group medians gives $(2+4)/2=3$, which is not $7/2$. The median does not roll up from the medians.",
+        "Monday's stock across stores is $5+7=12$, a real chain total for that day. Adding Monday and Tuesday for store A gives $5+5=10$, which double-counts units that stayed on the shelf. Inventory is semi-additive: across stores, not across time.",
+        "The combined margin is $(20+50)/(100+200)=70/300=7/30$. The unweighted mean of the margins $1/5$ and $1/4$ is $9/40$. Since $7/30\\neq 9/40$, margin is non-additive."
+      ],
+      "answer": "The combined median is $7/2$, not 3. Monday's inventory across the two stores is 12, and the two days must not be added. The combined margin is $7/30$, not $9/40$."
+    }
+  ],
+  "traps": [
+    "Averaging the averages 10 and 20 to get 15. The groups have counts 4 and 6, and the roll-up is 16. Without the counts the average is not determined.",
+    "Summing inventory across days. Five units on Monday plus five units on Tuesday is not a stock of ten. Inventory is semi-additive, and time is the dimension that does not add.",
+    "Treating the median as algebraic. The group medians 2 and 4 do not determine the combined median $7/2$. Mode has the same status: it is holistic.",
+    "Adding profit margins, or averaging $0.2$ and $0.25$ and calling the result the company margin. The combined margin is $7/30$, and $9/40$ is a different number.",
+    "Rolling a minimum up with weights. The minimum of the group minima is the global minimum. Counts matter for the average. They do not matter for the minimum."
+  ],
+  "python": "assert (4 * 10 + 6 * 20) / 10 == 16\nassert (10 + 20) / 2 == 15\ncombined = [1, 2, 9, 3, 4, 5]\ncombined.sort()\nmedian = (combined[2] + combined[3]) / 2\nassert median == 3.5\nassert (2 + 4) / 2 != median\nassert 5 + 7 == 12\nassert 70 / 300 == 7 / 30\nassert 9 / 40 != 7 / 30\nprint(16)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A group of 4 has average 10 and a group of 6 has average 20. The correct overall average is",
+      "options": [
+        "16",
+        "15",
+        "30",
+        "10"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 16. The sums are $4\\times 10=40$ and $6\\times 20=120$, so the overall average is $160/10=16$. Option B is the unweighted mean of the two averages, which ignores the unequal counts."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Units on hand, recorded at a store once each day, are which kind of measure?",
+      "options": [
+        "Semi-additive: sum them across stores, and do not sum them across days",
+        "Additive across every dimension, including time",
+        "Holistic, because the sum of two days is a median",
+        "A dimension attribute rather than a measure"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Inventory can be summed across stores on one day. Summing the same shelf across Monday and Tuesday double-counts the units, so the measure is semi-additive and time is the dimension that does not add. It is still a measure, and the sum of two days is not a median."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of these measure classes?",
+      "options": [
+        "Sum, count, minimum, and maximum are distributive.",
+        "The average is algebraic and equals the total sum divided by the total count.",
+        "The median is holistic.",
+        "For groups of size 4 and 6, the average of the averages 10 and 20 is the overall average."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Sum, count, min, and max roll up from partial aggregates. The average needs the sum and the count. The median does not roll up from group medians. D is false: those groups roll up to 16, while $(10+20)/2=15$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Store A has profit 20 on revenue 100. Store B has profit 50 on revenue 200. Which of the following are true?",
+      "options": [
+        "The combined margin is $70/300$.",
+        "The unweighted average of the two margins is $9/40$, which is not the combined margin.",
+        "Margin is non-additive.",
+        "The sum of the two store margins is the combined margin."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Combined profit over combined revenue is $(20+50)/(100+200)=70/300=7/30$. The store margins are $1/5$ and $1/4$, and their unweighted mean is $9/40$. Those fractions differ because $9\\cdot 30=270$ and $7\\cdot 40=280$, so margin is non-additive. D adds the ratios and is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Groups of 4 and 6 people have averages 10 and 20. Enter the correct overall average as an integer.",
+      "options": [],
+      "answer": [
+        "16"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **16**. Total sum $4\\times 10+6\\times 20=160$, total count $4+6=10$, and $160/10=16$."
+    }
+  ]
+}

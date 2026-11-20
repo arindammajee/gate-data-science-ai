@@ -1,0 +1,166 @@
+{
+  "slug": "decision-trees",
+  "section": "machine-learning",
+  "title": "Decision trees",
+  "syllabus": "Decision trees",
+  "minutes": 30,
+  "summary": "An axis-aligned tree splits one feature at a time. Gini and entropy score a node, information gain scores a split, and the split is chosen greedily. A deep tree can drive training impurity to zero and still overfit.",
+  "keywords": [
+    "decision tree",
+    "Gini",
+    "entropy",
+    "information gain",
+    "axis-aligned split"
+  ],
+  "intuition": "A decision tree asks one yes-or-no question at a time, and each question cuts on a single coordinate: $x_j\\le t$, never a tilted line. The regions that come out are rectangles aligned with the axes. At a node, the algorithm tries candidate cuts and keeps the one that most reduces impurity. That reduction is the information gain: the impurity of the parent, minus the same impurity averaged over the children and weighted by how many points each child holds.\n\nTwo impurity scores are enough here. Gini, $1-\\sum_k p_k^2$, is the probability that two randomly drawn labels from the node disagree. Entropy, $-\\sum_k p_k\\log_2 p_k$, is the average number of bits needed to name the label. Both are zero exactly on a pure node, and for two classes both are largest when the classes are balanced. The base of the logarithm must stay $2$ if the number is going to be read in bits; $0\\log 0$ is taken to be $0$, because a missing class adds no uncertainty.\n\nThe choice at each node is greedy. It maximises the gain of that cut and does not reconsider the cut after later splits are known. A first cut with gain zero can still be the start of a perfect tree, and the greedy rule will never make it if it stops when the gain is zero. Growing until every leaf is pure drives training impurity to zero by memorising the sample. That leaf can be a single noisy point. Depth is capacity, and unused capacity is how a tree overfits.",
+  "definitions": [
+    {
+      "term": "Axis-aligned split",
+      "body": "A question $x_j\\le t$ that uses one feature and one threshold. The decision boundary is a union of pieces of these cuts, not an arbitrary oblique line."
+    },
+    {
+      "term": "Gini impurity",
+      "body": "At a node with class proportions $p_k$, the Gini impurity is $1-\\sum_k p_k^2$. It is $0$ when the node is pure and $1/2$ when two classes are equally common."
+    },
+    {
+      "term": "Entropy",
+      "body": "The entropy of the same proportions is $-\\sum_k p_k\\log_2 p_k$, with the convention $0\\log_2 0=0$. A pure node has entropy $0$. A balanced two-class node has entropy $1$ bit."
+    },
+    {
+      "term": "Information gain",
+      "body": "Parent impurity minus the weighted average of the child impurities, with weights $n_j/n$. The greedy step chooses a split that maximises this gain. It is not a proof that the finished tree is globally optimal."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Gini and entropy",
+      "latex": "G=1-\\sum_k p_k^2, \\qquad H=-\\sum_k p_k\\log_2 p_k",
+      "note": "Use $\\log_2$. Take $0\\log_2 0=0$. Both scores are $0$ on a pure node."
+    },
+    {
+      "name": "Information gain",
+      "latex": "\\mathrm{IG}=I_{\\mathrm{parent}}-\\sum_j\\frac{n_j}{n}I(v_j)",
+      "note": "$I$ is either Gini or entropy, used on the parent and on every child. The weights are the child sizes, not equal shares unless the children happen to be the same size."
+    }
+  ],
+  "properties": [
+    "Gini and entropy are nonnegative. For a binary node they are zero only when one proportion is $0$ or $1$, and they are maximised at $p=\\tfrac12$ (Gini $\\tfrac12$, entropy $1$).",
+    "Information gain is zero when every child has the same impurity as the parent. A split that merely copies the parent proportions, in particular a split into two balanced halves of a balanced parent, has gain zero.",
+    "The weights $n_j/n$ sum to $1$. Dropping them, or weighting a leaf of $4$ points the same as a leaf of $8$, is a different number from the information gain.",
+    "The split is chosen greedily. Maximising the gain at the current node does not guarantee a globally optimal tree. A cut of gain zero can be required before later cuts become pure.",
+    "A tree grown until every training point is alone has training impurity $0$. Depth that isolates noise overfits; a shallow tree has the opposite bias, toward regions that are too coarse.",
+    "Splits in this lesson are axis-aligned and binary. The lesson stops at one tree. It does not average many trees."
+  ],
+  "examples": [
+    {
+      "title": "One binary split, scored by Gini",
+      "prompt": "Twelve points, $6$ of class $A$ and $6$ of class $B$. A split puts $4$ points of class $A$ and none of class $B$ on the left, and $2$ of class $A$ with $6$ of class $B$ on the right. Compute the Gini information gain.",
+      "steps": [
+        "The parent proportions are $\\tfrac12$ and $\\tfrac12$, so the parent Gini is $1-2\\cdot(\\tfrac12)^2=\\tfrac12$.",
+        "The left child is pure, so its Gini is $0$. The right child has proportions $\\tfrac14$ and $\\tfrac34$, so its Gini is $1-(\\tfrac14)^2-(\\tfrac34)^2=1-\\tfrac{1}{16}-\\tfrac{9}{16}=\\tfrac{3}{8}$.",
+        "The weighted child impurity is $\\tfrac{4}{12}\\cdot 0+\\tfrac{8}{12}\\cdot\\tfrac{3}{8}=\\tfrac{2}{3}\\cdot\\tfrac{3}{8}=\\tfrac14$. Information gain is $\\tfrac12-\\tfrac14=\\tfrac14$."
+      ],
+      "answer": "The Gini information gain is $\\tfrac14$. The weighting matters: an unweighted average of the child Ginis would have been $\\tfrac{3}{16}$, and $\\tfrac12-\\tfrac{3}{16}=\\tfrac{5}{16}$, which is not the gain."
+    },
+    {
+      "title": "The same split, scored by entropy",
+      "prompt": "Use the same $12$ points and the same split. Parent entropy is $1$ bit because the parent is balanced. Compute the entropy information gain, taking $\\log_2 3\\approx 1.5849625$.",
+      "steps": [
+        "The left child is pure, so its entropy is $0$. On the right, $\\log_2(\\tfrac14)=-2$ and $\\log_2(\\tfrac34)=\\log_2 3-2\\approx 1.5849625-2=-0.4150375$.",
+        "Right-child entropy is $-(\\tfrac14)(-2)-(\\tfrac34)(-0.4150375)=0.5+0.311278125=0.811278125$.",
+        "The weighted child entropy is $\\tfrac{8}{12}\\cdot 0.811278125=\\tfrac23\\cdot 0.811278125=0.540852083$. Information gain is $1-0.540852083=0.459147917$."
+      ],
+      "answer": "The entropy information gain is about $0.45915$. It is not the Gini gain $\\tfrac14$: the two scores can prefer the same split and still produce different numbers."
+    }
+  ],
+  "traps": [
+    "Forgetting the size weights. On the twelve-point split the children have $4$ and $8$ points. Weighting them equally produces Gini gain $\\tfrac{5}{16}$ instead of $\\tfrac14$.",
+    "Using $\\ln$ or $\\log_{10}$ in the entropy while the lesson's formula uses $\\log_2$. The gain's numeric value changes. A pure node is still $0$, but a balanced binary node is no longer $1$ bit.",
+    "Treating $0\\log_2 0$ as undefined and refusing a pure node. The convention in the sum is $0$. A pure node has entropy $0$ and Gini $0$.",
+    "Reading a greedy gain as a global optimum. Four XOR points, $(0,0)\\mapsto 0$, $(0,1)\\mapsto 1$, $(1,0)\\mapsto 1$, $(1,1)\\mapsto 0$, give Gini gain $0$ for every axis-aligned first split, because each side is one $0$ and one $1$. A depth-$2$ tree that splits both coordinates separates them. A rule that stops at gain $0$ never builds that tree.",
+    "Growing until every leaf is pure and expecting the test error to fall with every extra level. Training impurity falls. Test error can rise once leaves start copying noise."
+  ],
+  "python": "# Gini information gain of the 12-point split, and the entropy gain.\nparent = 1 - 2 * (0.5 ** 2)\nright = 1 - (0.25 ** 2) - (0.75 ** 2)\ngain = parent - (8 / 12) * right\nassert abs(gain - 0.25) < 1e-12\n\nimport math\nh_right = -(0.25) * math.log2(0.25) - (0.75) * math.log2(0.75)\ngain_h = 1 - (8 / 12) * h_right\nassert abs(gain_h - 0.459147917) < 1e-8\nprint(gain)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A node contains $6$ points of class $A$ and $2$ points of class $B$. Its Gini impurity is",
+      "options": [
+        "$\\tfrac38$",
+        "$\\tfrac12$",
+        "$\\tfrac14$",
+        "$\\tfrac{9}{16}$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $\\tfrac38$.\n\nThe proportions are $\\tfrac34$ and $\\tfrac14$. Gini is $1-(\\tfrac34)^2-(\\tfrac14)^2=1-\\tfrac{9}{16}-\\tfrac{1}{16}=\\tfrac{6}{16}=\\tfrac38$. Option D is the sum of the squared proportions, which is what Gini subtracts from $1$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Nine points have $6$ of class $A$ and $3$ of class $B$. A split makes a pure left leaf of $3$ points of class $A$, and a right leaf of $3$ of class $A$ with $3$ of class $B$. The Gini information gain is",
+      "options": [
+        "$\\tfrac19$",
+        "$\\tfrac49$",
+        "$\\tfrac12$",
+        "$\\tfrac13$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $\\tfrac19$.\n\nParent Gini is $1-(\\tfrac69)^2-(\\tfrac39)^2=1-\\tfrac49-\\tfrac19=\\tfrac49$. The left child has Gini $0$. The right child is balanced, so its Gini is $\\tfrac12$. Weighted child impurity is $\\tfrac{6}{9}\\cdot\\tfrac12=\\tfrac13$. Gain is $\\tfrac49-\\tfrac13=\\tfrac49-\\tfrac39=\\tfrac19$. Option B stops at the parent impurity."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of Gini, entropy, and the split rule in this lesson?",
+      "options": [
+        "A pure node has Gini $0$ and entropy $0$, taking $0\\log_2 0=0$.",
+        "A two-class node with proportions $\\tfrac12,\\tfrac12$ has entropy $1$ when the logarithm is base $2$.",
+        "Choosing the split of largest information gain is a greedy step, not a guarantee of a globally optimal tree.",
+        "Driving every leaf to purity cannot raise test error, because training impurity only falls."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nBoth impurities vanish on a pure node, and the balanced binary entropy is $-\\tfrac12\\log_2\\tfrac12-\\tfrac12\\log_2\\tfrac12=1$. The split rule looks only at the current node. D is false: a pure tree can memorise noise, so test error can rise while training impurity falls."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Four points carry XOR labels: $(0,0)\\mapsto 0$, $(0,1)\\mapsto 1$, $(1,0)\\mapsto 1$, $(1,1)\\mapsto 0$. Which of the following are true?",
+      "options": [
+        "Every nontrivial axis-aligned first split has Gini information gain $0$.",
+        "A depth-$2$ axis-aligned tree can separate the four points.",
+        "The root Gini, with two points of each label, is $\\tfrac12$.",
+        "The four points are linearly separable by one threshold $w_1 x_1+w_2 x_2+b$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA split on $x_1$ puts $(0,0)$ and $(0,1)$ on one side and the other two points on the other side. Each side is one $0$ and one $1$, so each child Gini equals the parent Gini $\\tfrac12$ and the gain is $0$. The same happens for $x_2$. Splitting $x_1$ and then $x_2$ isolates each point, so a depth-$2$ tree succeeds where the greedy first step sees nothing. D is false: the two labels are the XOR pattern, which is not linearly separable."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Twelve points, $6$ of class $A$ and $6$ of class $B$, are split into a pure leaf of $4$ points of class $A$ and a leaf of $2$ of class $A$ with $6$ of class $B$. The Gini information gain is $g$. Enter $100g$.",
+      "options": [],
+      "answer": [
+        "25"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **25**.\n\nParent Gini is $\\tfrac12$. The pure leaf has Gini $0$. The leaf of eight points has proportions $\\tfrac14$ and $\\tfrac34$, so Gini $\\tfrac38$. Weighted impurity is $\\tfrac{8}{12}\\cdot\\tfrac38=\\tfrac14$. Then $g=\\tfrac12-\\tfrac14=\\tfrac14$, and $100g=25$."
+    }
+  ]
+}

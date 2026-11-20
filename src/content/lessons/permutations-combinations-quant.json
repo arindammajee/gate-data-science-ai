@@ -1,0 +1,162 @@
+{
+  "slug": "permutations-combinations-quant",
+  "section": "aptitude",
+  "title": "Permutations and combinations",
+  "syllabus": "Permutations and combinations",
+  "minutes": 25,
+  "summary": "Count a committee with combinations when order does not matter, and count a seating with permutations when it does. This is the aptitude version of the counting rules.",
+  "keywords": [
+    "permutation",
+    "combination",
+    "nPr",
+    "nCr",
+    "order matters"
+  ],
+  "intuition": "The only decision that changes the count is whether order matters. A committee of three people is the same committee if you list the names in a different order, so you count combinations. Three distinct chairs are different assignments if two people swap seats, so you count permutations. State that choice before you write a factorial. Writing the wrong one is not a small arithmetic slip; it answers a different question.\n\nOnce the choice is made, the formulas are mechanical. The permutation $nPr$ is the number of ways to fill $r$ ordered places from $n$ distinct objects: $n$ choices for the first place, $n-1$ for the second, and so on, which is $n!/(n-r)!$. The combination $nCr$ is that count divided by $r!$, because each unordered group of size $r$ corresponds to $r!$ listings. So $nPr=nCr\\times r!$.\n\nThis lesson stops at that counting story. It does not compute a conditional probability, and it does not put the committee into a probability model. If a later question asks for a probability, the count you learned here is only the numerator or the denominator, and only after the question says the outcomes are equally likely.",
+  "definitions": [
+    {
+      "term": "Permutation",
+      "body": "An arrangement in which order matters. The number of permutations of $n$ distinct objects taken $r$ at a time is $nPr=n!/(n-r)!$."
+    },
+    {
+      "term": "Combination",
+      "body": "A selection in which order does not matter. The number of combinations of $n$ distinct objects taken $r$ at a time is $nCr=n!/(r!(n-r)!)$."
+    },
+    {
+      "term": "Committee versus seating",
+      "body": "A committee, a shortlist, or a handful of items drawn from a bag is a combination when the group is what matters. Distinct chairs, distinct prizes, or a queue are permutations."
+    },
+    {
+      "term": "Factorial link",
+      "body": "$nPr=nCr\\times r!$. Dividing by $r!$ removes the internal order of each group."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Permutation",
+      "latex": "{}^{n}P_{r}=\\frac{n!}{(n-r)!}",
+      "note": "Order matters. For $r=n$ this is $n!$."
+    },
+    {
+      "name": "Combination",
+      "latex": "{}^{n}C_{r}=\\frac{n!}{r!(n-r)!}",
+      "note": "Order does not matter. Also written $\\binom{n}{r}$."
+    }
+  ],
+  "properties": [
+    "Use $nCr$ when two selections that contain the same objects are the same outcome. Use $nPr$ when a different order is a different outcome.",
+    "$nPr=n(n-1)\\cdots(n-r+1)$, a product of $r$ descending factors.",
+    "$nCr=nPr/r!$. For the worked pair below, $336/6=56$.",
+    "$nC0=1$ and $nCn=1$. There is one way to choose nothing and one way to choose everyone.",
+    "$nCr=nC(n-r)$. Choosing the $r$ who are in is the same count as choosing the $n-r$ who are out."
+  ],
+  "examples": [
+    {
+      "title": "A committee, so order does not matter",
+      "prompt": "A club of 8 students chooses a committee of 3. How many committees are there?",
+      "steps": [
+        "A committee is the same set of three people whatever order the names are written, so this is a combination.",
+        "$8C3=8!/(3!\\,5!)$. The descending product is $8\\times 7\\times 6=336$, and $3!=6$.",
+        "$336/6=56$. There are 56 committees."
+      ],
+      "answer": "There are 56 committees. Order does not matter, so the count is $8C3=56$."
+    },
+    {
+      "title": "Three distinct chairs, so order matters",
+      "prompt": "Eight students are available and three distinct chairs are to be filled. How many seatings are there?",
+      "steps": [
+        "The chairs are distinct, so swapping two people changes the seating. Order matters, and the count is a permutation.",
+        "$8P3=8!/(8-3)!=8\\times 7\\times 6$.",
+        "That product is 336. It is also $8C3\\times 3!=56\\times 6$, the committee count with the $3!$ internal orders put back."
+      ],
+      "answer": "There are 336 seatings. Order matters, so the count is $8P3=336$."
+    }
+  ],
+  "traps": [
+    "Counting a committee with $nPr$. For 3 out of 8 that gives 336, which is the seating, not the committee.",
+    "Counting distinct chairs with $nCr$. For 3 out of 8 that gives 56 and throws away the order.",
+    "Writing $nCr=n!/r!$ and forgetting the $(n-r)!$ in the denominator.",
+    "Turning the count into a probability without being told that the outcomes are equally likely. This lesson stops at the count."
+  ],
+  "python": "import math\nassert math.comb(8, 3) == 56\nassert math.perm(8, 3) == 336\nassert math.comb(8, 3) * math.factorial(3) == math.perm(8, 3)\nassert math.comb(10, 4) == 210\nassert math.factorial(5) == 120\nassert math.comb(7, 2) == 21\nassert math.perm(6, 2) == 30\nprint(56)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A committee of 4 is chosen from 10 people. The order of selection does not matter. The number of committees is",
+      "options": [
+        "210",
+        "5040",
+        "40",
+        "10000"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 210. Order does not matter, so the count is $10C4=(10\\times 9\\times 8\\times 7)/(4\\times 3\\times 2\\times 1)=210$. Option B is $10P4=5040$, the count if the four places were distinct."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Five distinct students sit in a row of five distinct chairs. The number of seatings is",
+      "options": [
+        "120",
+        "25",
+        "32",
+        "10"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 120. The chairs are distinct and every student is seated, so the count is $5!=120$. Option D, 10, is $5\\times 2$ and is not a permutation of five people. A combination $5C5=1$ would say that order does not matter, which contradicts distinct chairs."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For selections from 8 distinct people, $8C3=56$ and $8P3=336$. Which of the following are true?",
+      "options": [
+        "A committee of 3, where order does not matter, can be chosen in 56 ways.",
+        "Filling 3 distinct chairs, where order matters, can be done in 336 ways.",
+        "$nPr=nCr$ for every $n$ and every $r$.",
+        "Order matters for the seating and does not matter for the committee."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. A committee ignores order, so it uses the combination 56. Distinct chairs keep order, so they use the permutation 336. In general $nPr=nCr\\times r!$, which equals $nCr$ only for special $r$ such as 0 or 1, not for every $r$. Here $336\\neq 56$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "The number of ways to choose 2 lab partners from 7 students, where the pair is unordered, is an integer. Enter that number.",
+      "options": [],
+      "answer": [
+        "21"
+      ],
+      "solution": "The answer is **21**. The pair is unordered, so the count is $7C2=(7\\times 6)/2=21$. The ordered count would be $7P2=42$, which doubles every pair and is not what was asked.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "First prize and second prize are distinct and are awarded to two different people chosen from 6. The number of outcomes is",
+      "options": [
+        "30",
+        "15",
+        "36",
+        "12"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 30. The prizes are distinct, so order matters and the count is $6P2=6\\times 5=30$. Option B is $6C2=15$, which would be correct only if the two prizes were identical."
+    }
+  ]
+}

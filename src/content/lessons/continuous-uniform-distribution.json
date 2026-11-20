@@ -1,0 +1,164 @@
+{
+  "slug": "continuous-uniform-distribution",
+  "section": "probability",
+  "title": "Continuous uniform distribution",
+  "syllabus": "Uniform distribution (continuous)",
+  "minutes": 25,
+  "summary": "On an interval [a, b] the continuous uniform density is the constant 1/(b-a). The mean is the midpoint and the variance is (b-a) squared over 12. The cdf rises as a straight line between the endpoints.",
+  "keywords": [
+    "continuous uniform",
+    "interval",
+    "density",
+    "cdf",
+    "variance"
+  ],
+  "intuition": "The continuous uniform distribution is the model for a point chosen from an interval when no subinterval is preferred over any other of the same length. On [a, b] the density is the constant 1/(b-a). The height is exactly what it needs to be so that the rectangle of width b-a has area 1. Outside [a, b] the density is 0. A longer interval means a shorter height, not a larger probability: the total probability is still 1.\n\nThe mean is the midpoint (a+b)/2. The variance is (b-a)^2/12. Both follow from integrating against the constant density, and both are worth memorising because the integrals are the same every time. Notice the square on the length. Stretching the interval by 2 multiplies the variance by 4. The standard deviation is the length divided by $\\sqrt{12}$, not the length divided by 12.\n\nThe cdf is 0 to the left of a, 1 to the right of b, and a straight line in between:\n\n$$\nF(x)=\\frac{x-a}{b-a},\\qquad a\\le x\\le b.\n$$\n\nThat line is the running area of the rectangle. Its slope is the density 1/(b-a). This is not the discrete uniform distribution. A discrete uniform on n integers has variance (n^2-1)/12 and puts mass on points. The continuous law puts mass on no single point, so P(X=x)=0 everywhere, including at a and at b. Probabilities are lengths of subintervals divided by b-a.",
+  "definitions": [
+    {
+      "term": "Continuous uniform law",
+      "body": "The distribution of a point chosen from the interval $[a,b]$ with $a<b$, written so that every subinterval's probability is proportional to its length."
+    },
+    {
+      "term": "Density",
+      "body": "The constant $f(x)=1/(b-a)$ for $a\\le x\\le b$, and $f(x)=0$ otherwise. The constant is the reciprocal of the length."
+    },
+    {
+      "term": "CDF",
+      "body": "For $x$ between $a$ and $b$, $F(x)=(x-a)/(b-a)$. It is 0 for $x<a$ and 1 for $x>b$. The graph on $[a,b]$ is a straight line."
+    },
+    {
+      "term": "Length probability",
+      "body": "If $a\\le c<d\\le b$, then $P(c<X<d)=(d-c)/(b-a)$. Endpoints do not change the probability."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Density, mean, variance",
+      "latex": "f(x)=\\frac{1}{b-a},\\quad \\mathbb{E}[X]=\\frac{a+b}{2},\\quad \\mathrm{Var}(X)=\\frac{(b-a)^2}{12}",
+      "note": "On $a\\le x\\le b$. The variance uses the squared length, divided by 12."
+    },
+    {
+      "name": "CDF",
+      "latex": "F(x)=\\frac{x-a}{b-a},\\qquad a\\le x\\le b",
+      "note": "Linear between the endpoints. The derivative is the constant density."
+    }
+  ],
+  "properties": [
+    "On $[a,b]$ the density is the constant $1/(b-a)$, the mean is the midpoint $(a+b)/2$, and the variance is $(b-a)^2/12$.",
+    "The cdf is linear between $a$ and $b$, with $F(a)=0$ and $F(b)=1$. Its slope equals the density.",
+    "A subinterval of $[a,b]$ has probability equal to its length divided by $b-a$. In particular $P(X=x)=0$ for every $x$.",
+    "The variance depends on the length and not on where the interval sits. Shifting $[a,b]$ to $[a+c,b+c]$ changes the mean by $c$ and leaves the variance unchanged.",
+    "The discrete uniform variance $(n^2-1)/12$ is a different formula. Do not use it for an interval, and do not use $(b-a)^2/12$ for a set of integers."
+  ],
+  "examples": [
+    {
+      "title": "Uniform on [2, 8]",
+      "prompt": "Let $X$ be continuous uniform on $[2,8]$. Find the density, the mean, the variance, $P(3<X<5)$, and $F(5)$.",
+      "steps": [
+        "The length is $8-2=6$, so the density is $1/6$ on $[2,8]$ and 0 elsewhere. The mean is $(2+8)/2=5$.",
+        "The variance is $6^2/12=36/12=3$.",
+        "The probability $P(3<X<5)$ is the length $2$ divided by $6$, which is $1/3$. The cdf at 5 is $(5-2)/6=1/2$, the straight-line value halfway in probability from 2 to 8. The point 5 has probability 0."
+      ],
+      "answer": "The density is $1/6$, the mean is $5$, the variance is $3$, $P(3<X<5)=1/3$, and $F(5)=1/2$."
+    },
+    {
+      "title": "Uniform on the unit interval",
+      "prompt": "Let $U$ be continuous uniform on $[0,1]$. Find the mean, the variance, and $P(U\\le 1/4)$.",
+      "steps": [
+        "Here $a=0$ and $b=1$, so the density is $1$ on $[0,1]$. The mean is $(0+1)/2=1/2$.",
+        "The variance is $(1-0)^2/12=1/12$.",
+        "The cdf is $F(u)=u$ on $[0,1]$, so $P(U\\le 1/4)=1/4$. The same number is the length of $[0,1/4]$ divided by the length of $[0,1]$."
+      ],
+      "answer": "The mean is $1/2$, the variance is $1/12$, and $P(U\\le 1/4)=1/4$."
+    }
+  ],
+  "traps": [
+    "Using the discrete variance $(n^2-1)/12$ for an interval, or using $(b-a)^2/12$ for equally likely integers. The supports are different.",
+    "Taking the mean to be $b/2$, or the length $b-a$, when the left endpoint is not 0. The mean is $(a+b)/2$. On $[-2,4]$ that is $1$, not $2$ and not $3$.",
+    "Reading the density $1/(b-a)$ as the probability of a point. Every point still has probability 0. The density is the probability of an interval of length 1 only when that interval sits inside $[a,b]$ and the length is 1.",
+    "Forgetting the square in $(b-a)^2/12$. Doubling the length multiplies the variance by 4, not by 2."
+  ],
+  "python": "from fractions import Fraction\nlength = 8 - 2\nmean = Fraction(2 + 8, 2)\nvar = Fraction(length ** 2, 12)\nassert length == 6 and mean == 5 and var == 3\nassert Fraction(5 - 3, 6) == Fraction(1, 3)\nassert Fraction(5 - 2, 6) == Fraction(1, 2)\nassert Fraction(1, 12) == Fraction((1 - 0) ** 2, 12)\nassert Fraction(6 ** 2, 12) == 3\nprint(float(mean), float(var))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "X is continuous uniform on $[0,10]$. The variance of X is",
+      "options": [
+        "$25/3$",
+        "$5$",
+        "$5/6$",
+        "$100$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $25/3$.\n\nThe length is 10, so the variance is $10^2/12=100/12=25/3$. Option B is the mean $(0+10)/2=5$. Option D is the squared length before dividing by 12. Option C does not match $(b-a)^2/12$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "X is continuous uniform on $[-2, 4]$. The mean of X is",
+      "options": [
+        "$1$",
+        "$2$",
+        "$3$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1$.\n\nThe midpoint is $(-2+4)/2=1$. The length is 6, so half the length is 3, and the variance is $6^2/12=3$. Option C is that number, not the mean. Option B is the right endpoint divided by 2. Option D would be the midpoint only if the interval were symmetric about 0."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "X is continuous uniform on $[a,b]$ with $a<b$. Which of the following are true?",
+      "options": [
+        "The density equals $1/(b-a)$ on $[a,b]$.",
+        "The mean equals $(a+b)/2$.",
+        "The variance equals $(b-a)^2/12$.",
+        "The cdf on $[a,b]$ is exponential in $x$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThose are the density, the midpoint mean, and the variance of the continuous uniform law. The cdf on $[a,b]$ is the straight line $(x-a)/(b-a)$, not an exponential function. An exponential cdf belongs to the exponential distribution."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "X is continuous uniform on $[2,8]$. Which of the following are true?",
+      "options": [
+        "The probability $P(3<X<5)$ equals $1/3$.",
+        "The variance equals 3.",
+        "The cdf satisfies $F(5)=1/2$.",
+        "The probability $P(X=5)$ equals $1/6$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe length is 6, so $P(3<X<5)=2/6=1/3$ and the variance is $36/12=3$. The cdf is $(x-2)/6$, so $F(5)=3/6=1/2$. The density at 5 is $1/6$, but $X$ is continuous, so $P(X=5)=0$. Option D confuses the density with a point probability."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "X is continuous uniform on $[0, \\theta]$ with $\\theta>0$, and $\\mathrm{Var}(X)=3$. Enter $\\theta$.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**.\n\nThe variance is $\\theta^2/12=3$, so $\\theta^2=36$. The positive endpoint is $\\theta=6$. As a check, the length is 6 and $36/12=3$. The mean of this law is $\\theta/2=3$, which is not the quantity the equation asked for."
+    }
+  ]
+}

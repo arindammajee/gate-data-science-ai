@@ -1,0 +1,173 @@
+{
+  "slug": "propositional-logic",
+  "section": "artificial-intelligence",
+  "title": "Propositional logic",
+  "syllabus": "Logic, propositional",
+  "minutes": 30,
+  "summary": "Atoms, connectives, models, and entailment, plus modus ponens and one resolution step. Material implication is a truth function, not a cause.",
+  "keywords": [
+    "entailment",
+    "satisfiable",
+    "valid",
+    "modus ponens",
+    "resolution",
+    "material implication"
+  ],
+  "intuition": "Propositional logic builds sentences from atoms and the connectives $\\neg$, $\\wedge$, $\\vee$, $\\to$, and $\\leftrightarrow$. An atom is a proposition that is true or false. A model is a truth assignment to the atoms. The sentence is then true or false in that model by the truth tables of the connectives. There is no third truth value in this lesson.\n\nA sentence is satisfiable when at least one model makes it true, valid when every model makes it true, and unsatisfiable when none do. Entailment is a relation between sentences, not a connective inside them. $\\alpha\\models\\beta$ means every model of $\\alpha$ is a model of $\\beta$. Equivalently, the set of models of $\\alpha$ is a subset of the set of models of $\\beta$. A truth table on two or three atoms is enough to see it: list the models of the premises and check the conclusion in each of them.\n\n$$\nP\\to Q\\equiv \\neg P\\vee Q\n$$\n\nThe material conditional $P\\to Q$ is false in exactly one row, the row where $P$ is true and $Q$ is false. A false antecedent makes the conditional true. That is a truth table, not a claim that $P$ causes $Q$. Modus ponens reads the table in one direction: from $P$ and $P\\to Q$, the only remaining row has $Q$ true. Resolution is the matching clause rule. From $(\\ell\\vee C)$ and $(\\neg\\ell\\vee D)$ infer $C\\vee D$. Resolving $P$ with $\\neg P\\vee Q$ is modus ponens again.\n",
+  "definitions": [
+    {
+      "term": "Model",
+      "body": "A truth assignment to the atoms. A sentence is true or false in a model. $M(\\alpha)$ is the set of models in which $\\alpha$ is true."
+    },
+    {
+      "term": "Satisfiable and valid",
+      "body": "Satisfiable: true in at least one model. Valid: true in every model. Unsatisfiable: true in no model. Valid sentences are satisfiable; the converse fails."
+    },
+    {
+      "term": "Entailment",
+      "body": "$\\alpha\\models\\beta$ if and only if every model of $\\alpha$ is a model of $\\beta$, that is $M(\\alpha)\\subseteq M(\\beta)$. Entailment is not the same claim as the converse $\\beta\\models\\alpha$."
+    },
+    {
+      "term": "Clause",
+      "body": "A disjunction of literals. Resolution takes $(\\ell\\vee C)$ and $(\\neg\\ell\\vee D)$ to the clause $C\\vee D$. The empty clause has no model."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Entailment",
+      "latex": "\\alpha\\models\\beta\\iff M(\\alpha)\\subseteq M(\\beta)",
+      "note": "Every model of the left side is a model of the right side. One countermodel is enough to refute entailment."
+    },
+    {
+      "name": "Material implication",
+      "latex": "P\\to Q\\equiv \\neg P\\vee Q",
+      "note": "False only in the row where $P$ is true and $Q$ is false. A false $P$ makes the implication true. This is not causation."
+    },
+    {
+      "name": "Resolution",
+      "latex": "(\\ell\\vee C),\\ (\\neg\\ell\\vee D)\\ \\vdash\\ C\\vee D",
+      "note": "Modus ponens is the case $C$ empty and $\\ell=P$, with the other clause $\\neg P\\vee Q$, giving $Q$."
+    }
+  ],
+  "properties": [
+    "$P\\to Q$ is false only when $P$ is true and $Q$ is false. In the other three rows of the two-atom table it is true, including both rows where $P$ is false.",
+    "$\\alpha\\models\\beta$ if and only if $M(\\alpha)\\subseteq M(\\beta)$. One model of $\\alpha$ in which $\\beta$ is false refutes the entailment.",
+    "$\\alpha\\models\\beta$ if and only if $\\alpha\\wedge\\neg\\beta$ is unsatisfiable, and if and only if $\\alpha\\to\\beta$ is valid, when $\\alpha$ and $\\beta$ are single sentences.",
+    "Modus ponens is sound: $P$ and $P\\to Q$ entail $Q$. Affirming the consequent is not: $Q$ and $P\\to Q$ do not entail $P$.",
+    "Resolution is sound. From $(\\ell\\vee C)$ and $(\\neg\\ell\\vee D)$ the resolvent is $C\\vee D$. Complementary literals are required; two copies of the same literal do not resolve."
+  ],
+  "examples": [
+    {
+      "title": "The conditional has one false row",
+      "prompt": "Build the truth table of $P\\to Q$ and of $\\neg P\\vee Q$. Then decide whether $\\{P,\\ P\\to Q\\}$ entails $Q$, and whether $\\{Q,\\ P\\to Q\\}$ entails $P$.",
+      "steps": [
+        "The four rows $(P,Q)$ are $(T,T)$, $(T,F)$, $(F,T)$, $(F,F)$. The implication is $T,F,T,T$ in that order. $\\neg P\\vee Q$ is the same four bits, so the two sentences are equivalent.",
+        "The implication is false only for $(T,F)$. Both rows with $P$ false are true. Nothing in the table says that $P$ brings $Q$ about; the false antecedent simply fails the one bad row.",
+        "Models of $\\{P,\\ P\\to Q\\}$: $P$ kills the last two rows, and $P\\to Q$ kills $(T,F)$. The only survivor is $(T,T)$, and $Q$ is true there. So the set entails $Q$. That is modus ponens.",
+        "Models of $\\{Q,\\ P\\to Q\\}$ include $(F,T)$: $Q$ is true and the implication is true, while $P$ is false. That one model blocks entailment of $P$."
+      ],
+      "answer": "$P\\to Q$ matches $\\neg P\\vee Q$ and is false only at $(T,F)$. $\\{P,\\ P\\to Q\\}\\models Q$. $\\{Q,\\ P\\to Q\\}$ does not entail $P$."
+    },
+    {
+      "title": "Resolution on a three-atom chain",
+      "prompt": "From the clauses $\\{P\\}$, $\\{\\neg P,\\ Q\\}$, and $\\{\\neg Q,\\ R\\}$, derive $R$ by resolution. Then count the models of $(P\\to Q)\\wedge(Q\\to R)$.",
+      "steps": [
+        "Resolve $\\{P\\}$ with $\\{\\neg P,\\ Q\\}$ on $P$. The resolvent is $\\{Q\\}$.",
+        "Resolve $\\{Q\\}$ with $\\{\\neg Q,\\ R\\}$ on $Q$. The resolvent is $\\{R\\}$. Each step is an instance of $(\\ell\\vee C)$ with $(\\neg\\ell\\vee D)$.",
+        "The sentence $(P\\to Q)\\wedge(Q\\to R)$ is a weaker claim: it does not include the unit clause $P$. Its models on $(P,Q,R)$ are $(F,F,F)$, $(F,F,T)$, $(F,T,T)$, and $(T,T,T)$. That is $4$ models out of $8$.",
+        "In all four, $P\\to R$ is true, so the sentence entails $P\\to R$. The model $(F,F,F)$ has $R$ false, so the sentence does not entail $R$. The unit clause $P$ was what forced $R$ in the resolution."
+      ],
+      "answer": "Resolution yields $R$. The conditional chain alone has $4$ models and entails $P\\to R$ without entailing $R$."
+    }
+  ],
+  "traps": [
+    "Reading $P\\to Q$ as '$P$ causes $Q$'. The sentence is true whenever $P$ is false, including when $Q$ is false. Causation is not a row of this table.",
+    "Treating a false antecedent as a false implication. $(F,F)$ and $(F,T)$ are both true rows of $P\\to Q$.",
+    "Affirming the consequent. From $Q$ and $P\\to Q$ the model $(F,T)$ keeps $P$ false, so $P$ is not entailed.",
+    "Resolving two clauses that do not contain complementary literals. $(P\\vee Q)$ and $(P\\vee R)$ do not resolve on $P$.",
+    "Taking $\\alpha\\models\\beta$ to mean the sentences are equivalent. Entailment can run in one direction. $P\\wedge Q$ entails $P$, and $P$ does not entail $P\\wedge Q$."
+  ],
+  "python": "def implies(p, q):\n    return (not p) or q\n\nrows = [(p, q, implies(p, q)) for p in (False, True) for q in (False, True)]\nassert [r for r in rows if not r[2]] == [(True, False, False)]\nassert all(implies(p, q) == ((not p) or q) for p, q, _ in rows)\nmp = [(p, q) for p in (False, True) for q in (False, True) if p and implies(p, q)]\nassert mp == [(True, True)]\n\ndef chain(p, q, r):\n    return implies(p, q) and implies(q, r)\n\nsat = [(p, q, r) for p in (0, 1) for q in (0, 1) for r in (0, 1) if chain(bool(p), bool(q), bool(r))]\nassert sat == [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 1, 1)]\nassert all((not p) or r for p, q, r in sat)\nassert not all(r for p, q, r in sat)\n\ndef resolve(c1, c2):\n    for lit in c1:\n        neg = lit[1:] if lit.startswith(\"~\") else \"~\" + lit\n        if neg in c2:\n            return (c1 - {lit}) | (c2 - {neg})\n    return None\n\nassert resolve({\"~P\", \"Q\"}, {\"P\"}) == {\"Q\"}\nassert resolve({\"~Q\", \"R\"}, {\"Q\"}) == {\"R\"}\ncount = sum((p or q or r) and not (p and q and r) for p in (0, 1) for q in (0, 1) for r in (0, 1))\nassert count == 6\nprint(len(sat), count)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In the truth table of $P\\to Q$, the conditional is false in which row?",
+      "options": [
+        "$P$ true and $Q$ false",
+        "$P$ false and $Q$ false",
+        "$P$ false and $Q$ true",
+        "$P$ true and $Q$ true"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. $P\\to Q$ is equivalent to $\\neg P\\vee Q$, which is false only when $\\neg P$ is false and $Q$ is false, that is when $P$ is true and $Q$ is false. The other three rows are true, so a false antecedent does not make the implication false."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Resolve the clauses $(R\\vee\\neg S)$ and $(S\\vee T)$ on the complementary pair $S$ and $\\neg S$. The resolvent is",
+      "options": [
+        "$R\\vee T$",
+        "$R\\vee S$",
+        "$\\neg S\\vee T$",
+        "$R\\vee\\neg T$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $R\\vee T$. The schema is $(\\ell\\vee C)$ and $(\\neg\\ell\\vee D)$ with $\\ell=S$, $C=R$, and $D=T$. Cancel $S$ and $\\neg S$ and keep $R\\vee T$. The literal $S$ does not survive, and the sign of $T$ does not flip."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Let the knowledge base be $\\{P,\\ P\\to Q\\}$. Which of the following are true?",
+      "options": [
+        "The knowledge base entails $Q$.",
+        "Its only model is the row where $P$ and $Q$ are both true.",
+        "The knowledge base entails $\\neg Q$.",
+        "Modus ponens is the step from $P$ and $P\\to Q$ to $Q$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. $P$ removes every row where $P$ is false, and $P\\to Q$ removes the row where $P$ is true and $Q$ is false. The remaining row is $(T,T)$, so $Q$ is true in every model of the base and $\\neg Q$ is not. That one-row check is modus ponens."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A valid sentence is true in every model.",
+        "A satisfiable sentence is true in at least one model.",
+        "$\\alpha\\models\\beta$ if and only if every model of $\\alpha$ is a model of $\\beta$.",
+        "$P\\to Q$ means that $P$ causes $Q$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Validity, satisfiability, and entailment are the three model-theoretic claims in the lesson, and C is the subset statement $M(\\alpha)\\subseteq M(\\beta)$. Material implication does not add a causal reading: it is false in one truth-table row and true in the other three."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Atoms $P,Q,R$ range over truth assignments. How many of the $8$ assignments satisfy $(P\\vee Q\\vee R)\\wedge\\neg(P\\wedge Q\\wedge R)$?",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**. The conjunction says at least one atom is true, and not all three are true. There are $2^3-1=7$ assignments that are not all false, and the single all-true assignment is then removed, leaving $6$. The same count is $\\binom{3}{1}+\\binom{3}{2}=3+3=6$."
+    }
+  ]
+}

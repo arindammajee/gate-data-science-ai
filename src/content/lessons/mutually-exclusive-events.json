@@ -1,0 +1,154 @@
+{
+  "slug": "mutually-exclusive-events",
+  "section": "probability",
+  "title": "Mutually exclusive events",
+  "syllabus": "Mutually exclusive events.",
+  "minutes": 25,
+  "summary": "Mutually exclusive events have intersection probability 0, so their union probability is the sum. Positive mutually exclusive events are dependent.",
+  "keywords": [
+    "mutually exclusive",
+    "disjoint",
+    "addition rule",
+    "dependent",
+    "partition"
+  ],
+  "intuition": "Mutually exclusive events cannot happen together. For two events that means $P(A\\cap B)=0$. On a finite uniform sample space this is the same as the sets being disjoint; in general the probability statement is the one the addition rule uses. If every pairwise intersection of a larger family has probability 0, the family is mutually exclusive, and the probability of the union is the sum of the probabilities.\n\nThat addition rule is inclusion-exclusion with the overlap removed. It is not a rival of the general formula $P(A\\cup B)=P(A)+P(B)-P(A\\cap B)$. The general formula still holds, and the intersection term is zero, so the sum is what remains.\n\nThe important collision with independence is numerical. If $P(A)>0$ and $P(B)>0$, then $P(A)P(B)>0$. Mutual exclusion says the intersection probability is 0, so it cannot equal the product. Nonzero mutually exclusive events are dependent. The empty event is the exception that makes the hypothesis necessary: an event of probability 0 is disjoint in probability from every event, and the product rule can still hold.",
+  "definitions": [
+    {
+      "term": "Mutually exclusive events",
+      "body": "Two events $A$ and $B$ are mutually exclusive when $P(A\\cap B)=0$. A family is mutually exclusive when every pair has intersection probability 0. On a finite set of equally likely outcomes this matches pairwise disjoint sets."
+    },
+    {
+      "term": "Addition rule for disjoint events",
+      "body": "If $A$ and $B$ are mutually exclusive, then $P(A\\cup B)=P(A)+P(B)$. For a finite mutually exclusive family, the probability of the union is the sum of the probabilities."
+    },
+    {
+      "term": "Exhaustive family",
+      "body": "Events are exhaustive when their union is the sample space. A partition is a mutually exclusive exhaustive family of nonempty events. Mutual exclusion alone does not force the probabilities to sum to 1."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Intersection of mutually exclusive events",
+      "latex": "P(A\\cap B)=0",
+      "note": "The defining equation. It is not $P(A\\cap B)=P(A)P(B)$."
+    },
+    {
+      "name": "Addition rule",
+      "latex": "P(A\\cup B)=P(A)+P(B)",
+      "note": "Holds when $P(A\\cap B)=0$. For three pairwise disjoint events, $P(A\\cup B\\cup C)=P(A)+P(B)+P(C)$."
+    }
+  ],
+  "properties": [
+    "If $P(A)>0$, $P(B)>0$, and $P(A\\cap B)=0$, then $A$ and $B$ are not independent, because $P(A)P(B)>0$.",
+    "The addition rule extends to any finite number of pairwise disjoint events: the union probability is the sum.",
+    "Mutually exclusive events need not cover the sample space. Their probabilities sum to $P(\\text{union})$, which may be strictly less than 1.",
+    "If $A$ and $B$ are mutually exclusive, then $P(A\\mid B)=0$ whenever $P(B)>0$. Occurrence of $B$ rules $A$ out.",
+    "A partition is mutually exclusive and exhaustive. The probabilities of the blocks then sum to 1."
+  ],
+  "examples": [
+    {
+      "title": "Two blocks of a die",
+      "prompt": "A fair die is rolled. Let $A=\\{1,2\\}$ and $B=\\{4,5,6\\}$. Show that $A$ and $B$ are mutually exclusive, compute $P(A\\cup B)$, and decide whether they are independent.",
+      "steps": [
+        "The sets are disjoint, so $A\\cap B=\\emptyset$ and $P(A\\cap B)=0$. The events are mutually exclusive.",
+        "Equal likelihood gives $P(A)=2/6=1/3$ and $P(B)=3/6=1/2$. The addition rule yields $P(A\\cup B)=1/3+1/2=5/6$, which matches the five faces $\\{1,2,4,5,6\\}$.",
+        "The independence product is $(1/3)(1/2)=1/6$, which is not 0. Both probabilities are positive, so the events are dependent."
+      ],
+      "answer": "$P(A\\cup B)=5/6$, and the events are dependent because $P(A)P(B)=1/6\\neq 0$."
+    },
+    {
+      "title": "Three disjoint events that do not fill the space",
+      "prompt": "Events $A$, $B$, and $C$ are pairwise disjoint, with $P(A)=1/4$, $P(B)=1/5$, and $P(C)=1/2$. Find $P(A\\cup B\\cup C)$.",
+      "steps": [
+        "Pairwise disjoint means every intersection probability that inclusion-exclusion would subtract is 0, including the triple intersection.",
+        "The addition rule for three events therefore has no correction terms: $P(A\\cup B\\cup C)=1/4+1/5+1/2$.",
+        "On the denominator 20 this is $5/20+4/20+10/20=19/20$. The remaining probability $1/20$ sits outside all three events, so the family is not a partition."
+      ],
+      "answer": "$P(A\\cup B\\cup C)=19/20$. The three probabilities do not sum to 1."
+    }
+  ],
+  "traps": [
+    "Treating mutually exclusive events as independent. If both probabilities are positive, the product rule fails.",
+    "Adding probabilities of events that overlap. The plain sum is legal only when the relevant intersections have probability 0.",
+    "Assuming mutually exclusive events cover the sample space. Exhaustive is a separate condition; without it the probabilities need not sum to 1.",
+    "Using $P(A\\cup B)=P(A)+P(B)-P(A)P(B)$ for disjoint events. That subtraction is the independence formula, and here the intersection probability is 0 rather than the product."
+  ],
+  "python": "from fractions import Fraction\nassert Fraction(1, 3) + Fraction(1, 2) == Fraction(5, 6)\nassert Fraction(1, 3) * Fraction(1, 2) != 0\nunion3 = Fraction(1, 4) + Fraction(1, 5) + Fraction(1, 2)\nassert union3 == Fraction(19, 20)\nassert Fraction(2, 7) + Fraction(3, 7) == Fraction(5, 7)\nprint(float(union3))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Events $A$ and $B$ are mutually exclusive, with $P(A)=3/10$ and $P(B)=2/5$. Then $P(A\\cup B)$ equals",
+      "options": [
+        "$7/10$",
+        "$3/25$",
+        "$1/10$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $7/10$.\n\nMutual exclusion gives the plain sum $3/10+2/5=3/10+4/10=7/10$. Option B is the product $(3/10)(2/5)=3/25$, which is the intersection probability only under independence, and these events are not independent."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Events $A$ and $B$ satisfy $P(A)=1/4$, $P(B)=1/3$, and $P(A\\cap B)=0$. Which statement is correct?",
+      "options": [
+        "$A$ and $B$ are dependent.",
+        "$A$ and $B$ are independent.",
+        "$P(A\\cap B)=(1/4)(1/3)$.",
+        "$P(A\\cup B)=1/4+1/3-(1/4)(1/3)$."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nBoth probabilities are positive and the intersection has probability 0, so $P(A\\cap B)\\neq P(A)P(B)=1/12$. The events are dependent. The union probability is the plain sum $1/4+1/3=7/12$, not the expression in D, which subtracts a nonzero product."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "If $P(A)>0$, $P(B)>0$, and $P(A\\cap B)=0$, then $A$ and $B$ are not independent.",
+        "If $A$, $B$, and $C$ are pairwise disjoint, then $P(A\\cup B\\cup C)=P(A)+P(B)+P(C)$.",
+        "Mutually exclusive events with positive probability are independent.",
+        "If $P(A\\cap B)=0$, then $P(A\\cup B)=P(A)+P(B)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA is the sign clash between a zero intersection and a positive product. B is the addition rule for a pairwise disjoint triple; the pairwise hypothesis already kills the triple intersection. D is the two-event addition rule. C is the reversed claim and is false whenever both probabilities are positive."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Events $A$ and $B$ are mutually exclusive, with $P(A)=2/7$ and $P(B)=3/7$. Let $p=P(A\\cup B)$. Enter $7p$.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**.\n\nThe intersection probability is 0, so $p=2/7+3/7=5/7$ and $7p=5$. The events are dependent because $(2/7)(3/7)\\neq 0$, but that product is not used in the union."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Events $A$, $B$, and $C$ are pairwise disjoint, with $P(A)=1/4$, $P(B)=1/5$, and $P(C)=1/2$. Let $p=P(A\\cup B\\cup C)$. Enter $20p$.",
+      "options": [],
+      "answer": [
+        "19"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **19**.\n\nPairwise disjoint events add: $p=1/4+1/5+1/2=5/20+4/20+10/20=19/20$. Therefore $20p=19$. The family is not exhaustive; the missing probability is $1/20$."
+    }
+  ]
+}

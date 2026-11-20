@@ -1,0 +1,164 @@
+{
+  "slug": "t-distribution",
+  "section": "probability",
+  "title": "Student's t distribution",
+  "syllabus": "Student's t-distribution",
+  "minutes": 30,
+  "summary": "A t random variable is a standard normal divided by the square root of an independent chi-squared variable over its degrees of freedom. The tails are heavier than the normal, the mean is 0 for more than one degree of freedom, and the variance is ν over ν minus 2 when ν exceeds 2.",
+  "keywords": [
+    "Student t",
+    "degrees of freedom",
+    "heavy tails",
+    "variance",
+    "normal limit"
+  ],
+  "intuition": "Student's t distribution is the law you get when a standard normal numerator is scaled by an independent estimate of spread. Let $Z$ be standard normal, let $V$ be chi-squared with $\\nu$ degrees of freedom, and let $Z$ and $V$ be independent. Then\n\n$$\nT=\\frac{Z}{\\sqrt{V/\\nu}}\n$$\n\nhas the t distribution with $\\nu$ degrees of freedom. The denominator is larger than 1 when the chi-squared variable is larger than its mean, and smaller than 1 when the chi-squared variable is smaller. Dividing by a random positive quantity that is sometimes small produces occasional large values. The tails are heavier than the tails of $N(0,1)$.\n\nThe mean is 0 when $\\nu>1$. For one degree of freedom the mean does not exist: that case is the Cauchy distribution. The variance is $\\nu/(\\nu-2)$ when $\\nu>2$. It is larger than 1, which is the variance of the standard normal, and it falls toward 1 as $\\nu$ grows. For $\\nu\\le 2$ the variance formula does not apply, because the second moment is infinite. As $\\nu\\to\\infty$, the t distribution approaches the standard normal. A large degrees-of-freedom t critical value is close to the corresponding normal critical value, and a small one is not.",
+  "definitions": [
+    {
+      "term": "t ratio",
+      "body": "If $Z\\sim N(0,1)$ and $V\\sim\\chi^2_{\\nu}$ are independent, then $T=Z/\\sqrt{V/\\nu}$ has the Student t distribution with $\\nu$ degrees of freedom."
+    },
+    {
+      "term": "Heavier tails",
+      "body": "Relative to $N(0,1)$, a t distribution puts more probability on large $|T|$. Its variance, when it exists, is greater than 1."
+    },
+    {
+      "term": "Mean",
+      "body": "The mean is 0 when $\\nu>1$. It is undefined when $\\nu=1$."
+    },
+    {
+      "term": "Variance",
+      "body": "When $\\nu>2$, $\\mathrm{Var}(T)=\\nu/(\\nu-2)$. The formula is not used at $\\nu\\le 2$, where the variance is infinite."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Representation",
+      "latex": "T=\\frac{Z}{\\sqrt{V/\\nu}},\\qquad Z\\sim N(0,1),\\ V\\sim\\chi^2_\\nu,\\ Z\\perp V",
+      "note": "The numerator and the chi-squared denominator are independent."
+    },
+    {
+      "name": "Mean and variance",
+      "latex": "\\mathbb{E}[T]=0\\ (\\nu>1),\\qquad \\mathrm{Var}(T)=\\frac{\\nu}{\\nu-2}\\ (\\nu>2)",
+      "note": "As $\\nu\\to\\infty$ the variance tends to 1 and the distribution tends to $N(0,1)$."
+    }
+  ],
+  "properties": [
+    "The construction is $T=Z/\\sqrt{V/\\nu}$ with $Z$ standard normal, $V$ chi-squared with $\\nu$ degrees of freedom, and $Z$ independent of $V$.",
+    "The tails are heavier than standard normal tails. For $\\nu>2$ the variance $\\nu/(\\nu-2)$ is strictly greater than 1.",
+    "The mean is 0 for every $\\nu>1$. At $\\nu=1$ the mean does not exist.",
+    "The variance formula $\\nu/(\\nu-2)$ requires $\\nu>2$. At $\\nu=2$ the second moment is infinite, so the formula is not 'zero in the denominator, hence zero variance'.",
+    "As $\\nu\\to\\infty$, $T$ approaches $N(0,1)$ in distribution, and the variance approaches 1."
+  ],
+  "examples": [
+    {
+      "title": "Five degrees of freedom",
+      "prompt": "Let $T$ have a t distribution with $\\nu=5$. Find the mean and the variance, and compare the variance with that of $N(0,1)$.",
+      "steps": [
+        "Since $\\nu=5>1$, the mean is 0.",
+        "Since $\\nu=5>2$, the variance is $5/(5-2)=5/3$.",
+        "The standard normal variance is 1, and $5/3>1$, which is the second-moment form of the heavier-tail comparison. The representation is $T=Z/\\sqrt{V/5}$ with $V\\sim\\chi^2_5$ independent of $Z$."
+      ],
+      "answer": "The mean is $0$ and the variance is $5/3$, which is larger than 1."
+    },
+    {
+      "title": "Four degrees of freedom, and the boundary",
+      "prompt": "Find the variance of a t random variable with 4 degrees of freedom, and say what happens to the variance as the degrees of freedom grow.",
+      "steps": [
+        "For $\\nu=4>2$, the variance is $4/(4-2)=2$.",
+        "The same arithmetic at $\\nu=2$ would divide by zero. That is a signal to stop: the variance is infinite for $\\nu\\le 2$, and the formula $\\nu/(\\nu-2)$ is only for $\\nu>2$.",
+        "As $\\nu\\to\\infty$, $\\nu/(\\nu-2)=1/(1-2/\\nu)\\to 1$, and the distribution approaches $N(0,1)$. The variance 2 at $\\nu=4$ is far from that limit."
+      ],
+      "answer": "The variance at 4 degrees of freedom is 2. It approaches 1 as $\\nu\\to\\infty$, and it is not defined by the same formula at $\\nu\\le 2$."
+    }
+  ],
+  "traps": [
+    "Using the variance $\\nu/(\\nu-2)$ when $\\nu\\le 2$. At $\\nu=1$ even the mean fails to exist, and at $\\nu=2$ the variance is infinite.",
+    "Replacing the variance by $\\nu-2$, or by $\\nu$. At $\\nu=4$ the correct variance $4/2=2$ happens to equal $\\nu-2$, but at $\\nu=5$ the variance is $5/3$, not 3.",
+    "Forgetting the independence in the representation. The chi-squared denominator has to be independent of the standard normal numerator.",
+    "Treating a t distribution as having the same tails as $N(0,1)$ for small $\\nu$. The approach to the normal law is a limit as $\\nu\\to\\infty$, not an equality at $\\nu=5$ or $\\nu=8$."
+  ],
+  "python": "from fractions import Fraction\nassert Fraction(5, 5 - 2) == Fraction(5, 3)\nassert Fraction(4, 4 - 2) == 2\nassert Fraction(8, 8 - 2) == Fraction(4, 3)\nassert Fraction(3, 3 - 2) == 3\nprint(float(Fraction(5, 3)), 2, 3)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A t random variable has 8 degrees of freedom. Its variance is",
+      "options": [
+        "$4/3$",
+        "$8$",
+        "$1$",
+        "$6$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4/3$.\n\nFor $\\nu=8>2$ the variance is $\\nu/(\\nu-2)=8/6=4/3$. Option B is the degrees of freedom. Option C is the standard normal variance, which is the limit as $\\nu\\to\\infty$ and not the value at 8. Option D is $\\nu-2=6$, which is the denominator of the variance formula, not the variance."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A t random variable has 10 degrees of freedom. Its mean is",
+      "options": [
+        "$0$",
+        "$10$",
+        "$1$",
+        "undefined"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $0$.\n\nThe mean exists and equals 0 whenever $\\nu>1$. Ten degrees of freedom satisfy that condition. The mean is undefined at $\\nu=1$, which is option D, but that is not this case. The variance at $\\nu=10$ is $10/8=5/4$, a different question from the mean."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the t distribution with $\\nu$ degrees of freedom?",
+      "options": [
+        "It is the law of $Z/\\sqrt{V/\\nu}$ with $Z$ standard normal, $V$ chi-squared with $\\nu$ degrees of freedom, and $Z$ independent of $V$.",
+        "The variance equals $\\nu/(\\nu-2)$ when $\\nu>2$.",
+        "The tails are heavier than the tails of $N(0,1)$.",
+        "The variance formula $\\nu/(\\nu-2)$ applies for every $\\nu>0$, including $\\nu=1$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe representation requires an independent chi-squared denominator. The variance formula needs $\\nu>2$, and the tails are heavier than the standard normal tails. Option D applies the formula where the second moment does not exist. At $\\nu=1$ the expression $1/(1-2)$ is negative, which cannot be a variance."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The mean of a t random variable is 0 whenever $\\nu>1$.",
+        "As $\\nu\\to\\infty$, the t distribution approaches $N(0,1)$.",
+        "At $\\nu=4$ the variance equals 2.",
+        "The variance equals $\\nu-2$ for every $\\nu>2$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe mean is 0 for $\\nu>1$, and the distribution approaches the standard normal as the degrees of freedom grow. At $\\nu=4$ the variance is $4/(4-2)=2$. Option D matches that one number and fails in general: at $\\nu=5$ the variance is $5/3$, while $\\nu-2=3$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A t distribution has variance 3, and the degrees of freedom satisfy $\\nu>2$. Enter $\\nu$.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\nSolve $\\nu/(\\nu-2)=3$. Then $\\nu=3\\nu-6$, so $2\\nu=6$ and $\\nu=3$. The condition $\\nu>2$ holds, so the variance formula applies. As a check, $3/(3-2)=3$."
+    }
+  ]
+}

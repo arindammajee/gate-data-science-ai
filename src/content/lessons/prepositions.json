@@ -1,0 +1,169 @@
+{
+  "slug": "prepositions",
+  "section": "aptitude",
+  "title": "Prepositions",
+  "syllabus": "Prepositions of time and place, and a few fixed pairs",
+  "minutes": 25,
+  "summary": "Choose in, on, and at for months and years, days and dates, and clock times, and the matching place uses, plus depend on, consist of, and different from.",
+  "keywords": [
+    "in on at",
+    "time",
+    "place",
+    "depend on",
+    "consist of",
+    "different from"
+  ],
+  "intuition": "The prepositions of time in this block are a closed set of three. In covers a month or a year: in March, in 2024. On covers a day or a date: on Monday, on 14 July. At covers a clock time: at 09:40, at noon. The same three shrink a place. In covers a region or an enclosed space: in Pune, in the cabinet. On covers a surface: on the bench, on the wall. At covers a point: at the gate, at the corner.\n\nA second, smaller cluster is the verb or adjective that will not take a substitute. Depend takes on. Consist takes of when it means 'is made up of'. Different takes from. Those three are worth learning because the near misses, depend of, consist with, and different than, are exactly the shapes the options use. A few further high-frequency pairs are enough; this is not a dictionary. Interested takes in, good takes at, and listen takes to.\n\nComprise is the trap next to consist. The parts consist of copper and tin. They comprise copper and tin, with no of. 'Comprise of' copies the preposition from consist and attaches it to the wrong verb.",
+  "definitions": [
+    {
+      "term": "Preposition of time",
+      "body": "In for a month or a year, on for a day or a date, at for a clock time."
+    },
+    {
+      "term": "Preposition of place",
+      "body": "In for a region or an enclosed space, on for a surface, at for a point."
+    },
+    {
+      "term": "Depend on, consist of, different from",
+      "body": "The three fixed pairs to memorize as pairs. The preposition is part of the choice, not a free swap."
+    },
+    {
+      "term": "Comprise without of",
+      "body": "Comprise does not take of. Consist of and be composed of do. 'Comprise of' is the error."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Time",
+      "latex": "\\text{in}+\\text{month or year},\\ \\text{on}+\\text{day or date},\\ \\text{at}+\\text{clock time}",
+      "note": "In March, in 2024. On Monday, on 14 July. At 09:40."
+    },
+    {
+      "name": "Place",
+      "latex": "\\text{in}+\\text{region},\\ \\text{on}+\\text{surface},\\ \\text{at}+\\text{point}",
+      "note": "In Pune, on the wall, at the gate."
+    },
+    {
+      "name": "Fixed pairs",
+      "latex": "\\text{depend on},\\ \\text{consist of},\\ \\text{different from}",
+      "note": "Also interested in, good at, and listen to. Comprise takes no of."
+    }
+  ],
+  "properties": [
+    "In July, in 2019. On Tuesday, on 12 May. At 4 p.m., at noon.",
+    "In a city, a country, or a room. On a table, a wall, or a bench. At a gate, a corner, or a station treated as a point.",
+    "Depend on, not depend of and not depend from.",
+    "Consist of for composition. Different from, not different than, in the standard used here.",
+    "Interested in, good at, listen to. These are the extra high-frequency pairs; do not invent a preposition for a verb that is not one of them.",
+    "'The alloy comprises copper and tin' has no of. 'The alloy consists of copper and tin' keeps of."
+  ],
+  "examples": [
+    {
+      "title": "A year, a day, and a clock time",
+      "prompt": "Fill the prepositions: 'The audit began ___ 2023, the visit is ___ Monday, and the call is ___ 4 p.m.'",
+      "steps": [
+        "2023 is a year, so the preposition is in.",
+        "Monday is a day, so the preposition is on.",
+        "4 p.m. is a clock time, so the preposition is at."
+      ],
+      "answer": "The audit began in 2023, the visit is on Monday, and the call is at 4 p.m."
+    },
+    {
+      "title": "Depend, consist, and different",
+      "prompt": "Fill the prepositions: 'The yield depends ___ the temperature. The alloy consists ___ copper and tin. The result is different ___ the trial run.'",
+      "steps": [
+        "Depend selects on. Depend of is the near miss.",
+        "Consist, meaning composition, selects of. Comprise would take no preposition here, but the verb in the sentence is consist.",
+        "Different selects from. Different than is the form this lesson rejects."
+      ],
+      "answer": "Depends on, consists of, and different from."
+    }
+  ],
+  "traps": [
+    "On 2024 for a year, in Monday for a day, or on 5 p.m. for a clock time. The three sizes are in, on, and at in that order.",
+    "Depend of, consist with, and different than. The fixed pairs are depend on, consist of, and different from.",
+    "Comprise of. Comprise does not take of; consist of does.",
+    "Interested on, or listen at. The pairs are interested in and listen to."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The samples arrived ___ March, the review is ___ a Monday, and the call is ___ 09:40. Which sequence of prepositions is correct?",
+      "options": [
+        "in, on, at",
+        "on, in, at",
+        "at, on, in",
+        "in, at, on"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, in, on, at. March is a month, so in. A Monday is a day, so on. 09:40 is a clock time, so at. The other sequences give a month, a day, or a clock time the preposition that belongs to a different size of time."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which sentence is correct?",
+      "options": [
+        "The mixture consists of acid and water, and the colour is different from the control.",
+        "The mixture consists with acid and water, and the colour is different than the control.",
+        "The mixture comprises of acid and water, and the colour is different from the control.",
+        "The mixture consists of acid and water, and the colour is different than the control."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Consist of and different from are the fixed pairs. Consist with swaps the preposition. Comprise of adds an of that comprise does not take. Different than is the form rejected in this lesson, even when consist of is right beside it."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "She is interested in spectroscopy.",
+        "The meeting is at 10:30.",
+        "He depends of the calibration.",
+        "The notebook is on the table."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Interested in is the fixed pair. At introduces the clock time 10:30. On introduces the surface of the table. Depends of breaks the pair depend on; the preposition has to be on."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which sentence places the month and the date correctly?",
+      "options": [
+        "The team arrived in July, and the review is on 14 July.",
+        "The team arrived on July, and the review is in 14 July.",
+        "The team arrived at July, and the review is on 14 July.",
+        "The team arrived in July, and the review is at 14 July."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. July is a month and takes in. 14 July is a date and takes on. On July treats a month as a day. In 14 July treats a date as a month or a year. At 14 July treats a date as a clock time."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "How many of the following five sentences are correct? (1) The workshop is in Pune. (2) The switch is on the wall. (3) Meet me at the gate. (4) This batch is different than the last one. (5) The protocol consists of four steps. Enter the count.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "solution": "The answer is **4**. A city takes in, a surface takes on, and a point such as the gate takes at, so the first three are correct. Sentence 4 uses different than, which this lesson rejects in favour of different from. Sentence 5 uses consist of, the right pair. The correct sentences are 1, 2, 3, and 5.",
+      "tolerance": 0
+    }
+  ]
+}

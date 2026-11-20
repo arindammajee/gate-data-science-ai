@@ -1,0 +1,177 @@
+{
+  "slug": "uninformed-search",
+  "section": "artificial-intelligence",
+  "title": "Uninformed search",
+  "syllabus": "Search: uninformed",
+  "minutes": 30,
+  "summary": "Breadth-first, depth-first, uniform-cost, and iterative deepening, with the cost hypothesis that makes each one complete or optimal.",
+  "keywords": [
+    "breadth-first search",
+    "depth-first search",
+    "uniform-cost search",
+    "iterative deepening",
+    "branching factor"
+  ],
+  "intuition": "Uninformed search is the case with no estimate of the remaining cost. The algorithm knows the successors of a node and the cost of a step, and it has no heuristic. Breadth-first search, depth-first search, uniform-cost search, and iterative deepening differ in expansion order and in the memory they keep. Write $b$ for the branching factor, $d$ for the depth of the shallowest goal, and $m$ for the deepest branch the search may follow. Those three letters are not interchangeable.\n\nBreadth-first search expands by depth. When every step costs 1, the first goal it selects for expansion is a shallowest goal, so the path is optimal. The frontier stores a whole level, and both time and space are $O(b^d)$. Depth-first search follows one branch to the end. The stack holds the current path and the untried siblings along it, which is $O(bm)$ space. The goal it returns need not be shallow, and a branch that never ends keeps it from trying the others, so it is not complete on infinite branches.\n\n$$\nc(n,a,n')\\ge\\varepsilon>0\n$$\n\nUniform-cost search expands in order of path cost $g$. Under the hypothesis that every step costs at least some $\\varepsilon>0$, it is complete and optimal. The goal test belongs on expansion: the first time the goal is generated can be a costly path, with a cheaper path still sitting in the frontier. Iterative deepening repeats depth-limited depth-first search with limits $0,1,2,\\ldots$. Shallow nodes are generated again at every larger limit, and the deepest iteration dominates, so the time is $O(b^d)$ for a unit-cost goal at depth $d$. The space is the depth-first stack, $O(bd)$.\n",
+  "definitions": [
+    {
+      "term": "Branching factor",
+      "body": "The maximum number of successors of a node, written $b$. A depth-$d$ layer then has on the order of $b^d$ nodes."
+    },
+    {
+      "term": "Completeness",
+      "body": "A search is complete when a goal at finite depth is eventually expanded, under the cost hypothesis stated for that algorithm."
+    },
+    {
+      "term": "Optimality",
+      "body": "A search is optimal when the path it returns has the smallest path cost among all paths from the start to a goal. For unit step costs that is a shallowest goal."
+    },
+    {
+      "term": "Path cost $g$",
+      "body": "The sum of the step costs from the start to the node along the path being considered. Uniform-cost search orders the frontier by $g$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Breadth-first cost",
+      "latex": "T_{\\mathrm{BFS}}=O(b^{d}),\\quad S_{\\mathrm{BFS}}=O(b^{d})",
+      "note": "Unit step costs. Optimal because the first goal expanded has minimum depth."
+    },
+    {
+      "name": "Depth-first space",
+      "latex": "S_{\\mathrm{DFS}}=O(bm)",
+      "note": "$m$ is the deepest branch followed. Time is $O(b^m)$. Not optimal, and not complete on an infinite branch."
+    },
+    {
+      "name": "Iterative deepening",
+      "latex": "T_{\\mathrm{IDS}}=O(b^{d}),\\quad S_{\\mathrm{IDS}}=O(bd)",
+      "note": "Complete and optimal for unit step costs. Shallow levels are repeated; the last iteration dominates the time."
+    },
+    {
+      "name": "Uniform-cost hypothesis",
+      "latex": "c(n,a,n')\\ge\\varepsilon>0",
+      "note": "With that lower bound, uniform-cost search is complete and optimal. Test the goal when it is selected for expansion."
+    }
+  ],
+  "properties": [
+    "Breadth-first search is complete. It is optimal when every step costs 1. Time and space are both $O(b^d)$.",
+    "Depth-first search uses $O(bm)$ space. It is not optimal. It is not complete when some branch is infinite.",
+    "Uniform-cost search is complete and optimal when every step costs at least $\\varepsilon>0$. Expand in order of $g$, and test the goal on expansion.",
+    "Iterative deepening is complete and optimal for unit step costs. Space is $O(bd)$. Time is $O(b^d)$ because the iteration at depth $d$ dominates.",
+    "On a graph, record a state when it is first generated so a cycle does not make the search run forever. The unit-cost claims above are about the number of edges on a tree, or about the first time a state is reached."
+  ],
+  "examples": [
+    {
+      "title": "One tree, two goals",
+      "prompt": "The tree is ordered left to right. $S$ has children $A$ then $B$. $A$ has child $C$, $C$ has child $G_1$, and $B$ has child $G_2$. Both $G_1$ and $G_2$ are goals. Every edge costs 1. Trace breadth-first search and depth-first search. A node is expanded when it is taken off the frontier, and the search stops when the expanded node is a goal.",
+      "steps": [
+        "Breadth-first search expands $S$, then $A$, then $B$. Expanding $A$ puts $C$ on the queue after $B$. Expanding $B$ puts $G_2$ on the queue after $C$. The next expansion is $C$, which puts $G_1$ behind $G_2$.",
+        "The next node off the queue is $G_2$. The path is $S-B-G_2$, two edges, cost $2$. $G_1$ is still on the queue at depth $3$ and is not expanded.",
+        "Depth-first search, popping the left child first, expands $S$, then $A$, then $C$, then $G_1$. It stops at $G_1$. The path $S-A-C-G_1$ has three edges, cost $3$.",
+        "The same tree has an optimal cost of $2$. Depth-first search returned $3$, so this run is not optimal. Breadth-first search returned the unit-cost optimum."
+      ],
+      "answer": "Breadth-first search returns $G_2$ at cost $2$. Depth-first search returns $G_1$ at cost $3$."
+    },
+    {
+      "title": "Uniform cost, and the repeated work in iterative deepening",
+      "prompt": "A second graph has edges $S\\xrightarrow{1}A\\xrightarrow{3}G$ and $S\\xrightarrow{2}B\\xrightarrow{1}G$. Separately, run iterative deepening on the unit-cost tree of the first example, with depth limits $0$, $1$, and $2$.",
+      "steps": [
+        "Uniform-cost search expands $S$ at $g=0$ and generates $A$ at cost $1$ and $B$ at cost $2$. It expands $A$ next. That generates $G$ at cost $1+3=4$.",
+        "$B$ is still open at cost $2$, which is less than $4$, so $B$ is expanded next and generates $G$ at cost $2+1=3$. The goal is then expanded at cost $3$. The path $S-B-G$ is optimal.",
+        "If the program had returned $G$ at the moment it was first generated, it would have returned cost $4$ and missed $S-B-G$. The goal test is on expansion.",
+        "On the unit-cost tree, the depth-$0$ iteration expands $S$ only ($1$ node). The depth-$1$ iteration expands $S,A,B$ ($3$ nodes). The depth-$2$ iteration expands $S,A,C,B,G_2$ ($5$ nodes) and stops at $G_2$. The total is $1+3+5=9$."
+      ],
+      "answer": "Uniform-cost search returns cost $3$. The first generated copy of $G$ had cost $4$. Iterative deepening expands $9$ nodes before it expands $G_2$, and the path cost is $2$."
+    }
+  ],
+  "traps": [
+    "Calling breadth-first search optimal when step costs are not all $1$. Unequal positive costs are the uniform-cost case.",
+    "Calling depth-first search complete on a tree that has an infinite branch to the left of the only goal.",
+    "Returning a goal from uniform-cost search at the moment it is generated. On the lesson graph that returns $4$ and the optimum is $3$.",
+    "Giving iterative deepening the space bound $O(b^d)$. The space is $O(bd)$. The time is the quantity that stays $O(b^d)$.",
+    "Swapping $d$ and $m$. The shallowest goal sits at depth $d$. The deepest branch the search may follow has length $m$, and $m$ can be much larger than $d$."
+  ],
+  "python": "from collections import deque\nimport heapq\n\ntree = {\"S\": [\"A\", \"B\"], \"A\": [\"C\"], \"B\": [\"G2\"], \"C\": [\"G1\"], \"G1\": [], \"G2\": []}\ngoals = {\"G1\", \"G2\"}\n\ndef bfs():\n    q = deque([\"S\"])\n    order = []\n    while q:\n        n = q.popleft()\n        order.append(n)\n        if n in goals:\n            return order, n\n        q.extend(tree[n])\n\ndef dfs():\n    stack = [\"S\"]\n    seen = set()\n    order = []\n    while stack:\n        n = stack.pop()\n        if n in seen:\n            continue\n        seen.add(n)\n        order.append(n)\n        if n in goals:\n            return order, n\n        stack.extend(reversed(tree[n]))\n\ndef dls(limit):\n    stack = [(\"S\", 0)]\n    order = []\n    while stack:\n        n, d = stack.pop()\n        order.append(n)\n        if n in goals:\n            return order, n\n        if d == limit:\n            continue\n        stack.extend((c, d + 1) for c in reversed(tree[n]))\n    return order, None\n\nbo, bg = bfs()\ndo, dg = dfs()\nassert bo == [\"S\", \"A\", \"B\", \"C\", \"G2\"] and bg == \"G2\"\nassert do == [\"S\", \"A\", \"C\", \"G1\"] and dg == \"G1\"\ntotal = sum(len(dls(limit)[0]) for limit in range(3))\nassert total == 9 and dls(2)[1] == \"G2\"\ngraph = {\"S\": [(\"A\", 1), (\"B\", 2)], \"A\": [(\"G\", 3)], \"B\": [(\"G\", 1)], \"G\": []}\npq = [(0, \"S\")]\nbest = {\"S\": 0}\nfirst_gen = None\nfinal = None\nwhile pq:\n    g, n = heapq.heappop(pq)\n    if g != best.get(n, 10**9):\n        continue\n    if n == \"G\":\n        final = g\n        break\n    for m, c in graph[n]:\n        ng = g + c\n        if m == \"G\" and first_gen is None:\n            first_gen = ng\n        if ng < best.get(m, 10**9):\n            best[m] = ng\n            heapq.heappush(pq, (ng, m))\nassert final == 3 and first_gen == 4\nassert 1 + 3 + 9 == 13\nprint(bg, dg, total, final)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In a tree, $S$ has children $A$ then $B$, $A$ has child $C$, $C$ has child goal $G_1$, and $B$ has child goal $G_2$. Every edge costs $1$. Breadth-first search expands left to right and stops when the expanded node is a goal. It returns",
+      "options": [
+        "$G_2$ at cost $2$",
+        "$G_1$ at cost $3$",
+        "$G_2$ at cost $1$",
+        "$G_1$ at cost $2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $G_2$ at cost $2$. The expansion order is $S,A,B,C,G_2$. The path $S-B-G_2$ has two unit edges. $G_1$ is generated only when $C$ is expanded, and by then $G_2$ is already at the front of the queue."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which statement matches the cost hypothesis for uninformed search?",
+      "options": [
+        "Depth-first search is complete on every infinite tree.",
+        "Breadth-first search is optimal for arbitrary positive step costs.",
+        "Uniform-cost search is complete and optimal when every step costs at least $\\varepsilon>0$.",
+        "Iterative deepening stores $O(b^d)$ nodes."
+      ],
+      "answer": [
+        "C"
+      ],
+      "solution": "The answer is **C**. Uniform-cost search needs every step cost bounded below by some $\\varepsilon>0$; under that hypothesis it is complete and optimal. Depth-first search is not complete on an infinite branch. Breadth-first optimality needs unit costs. Iterative deepening uses $O(bd)$ space."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Breadth-first search uses $O(b^d)$ time and $O(b^d)$ space.",
+        "Depth-first search uses $O(bm)$ space.",
+        "Depth-first search is optimal when every step costs $1$.",
+        "Iterative deepening is complete and optimal for unit step costs, with space $O(bd)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Breadth-first search keeps a whole level, hence $O(b^d)$ time and space, and it is the unit-cost optimal algorithm. Depth-first space is $O(bm)$, but the goal it finds need not be shallow, so C is false. Iterative deepening keeps the depth-first stack, $O(bd)$, and for unit costs it returns a shallowest goal."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Edges are $S\\xrightarrow{1}A\\xrightarrow{3}G$ and $S\\xrightarrow{2}B\\xrightarrow{1}G$. Uniform-cost search tests a goal when the goal is selected for expansion. Which of the following are true?",
+      "options": [
+        "The path $S-A-G$ costs $4$.",
+        "The path $S-B-G$ costs $3$.",
+        "The cost returned by uniform-cost search is $3$.",
+        "The first time $G$ is generated, its path cost is already $3$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Adding the edges gives $1+3=4$ and $2+1=3$. Uniform-cost search expands $A$ before $B$, so $G$ is generated first at cost $4$. It does not stop there: $B$ at cost $2$ is expanded next and produces $G$ at cost $3$, and that copy is the one selected for expansion. D describes the generation event, not the expansion."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A complete $3$-ary tree of depth $2$ counts the root as depth $0$, and every internal node has exactly $3$ children. How many nodes does the tree contain?",
+      "options": [],
+      "answer": [
+        "13"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **13**. The levels have $1$, $3$, and $3^2=9$ nodes. The total is $1+3+9=13$, which is also $(3^3-1)/(3-1)=26/2=13$. Breadth-first search generates every one of these nodes if the only goal is the last node at depth $2$."
+    }
+  ]
+}

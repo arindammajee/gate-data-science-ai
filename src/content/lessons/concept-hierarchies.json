@@ -1,0 +1,166 @@
+{
+  "slug": "concept-hierarchies",
+  "section": "databases",
+  "title": "Concept hierarchies",
+  "syllabus": "Concept hierarchy",
+  "minutes": 30,
+  "summary": "Roll-up moves to a coarser level and drill-down moves to a finer one. The levels may be a schema hierarchy such as city, state, country, or a set-grouping defined in the query.",
+  "keywords": [
+    "roll-up",
+    "drill-down",
+    "schema hierarchy",
+    "set-grouping",
+    "snowflake"
+  ],
+  "intuition": "A concept hierarchy runs from the specific to the general. City sits under state, and state sits under country. Roll-up moves up that ladder and aggregates the measure. Drill-down moves down and shows the finer level. The ladder can live in the schema, or it can be a grouping you impose on a set of values for one query.\n\nA schema hierarchy is made of attributes the warehouse already stores. On a star, city, state, and country are columns of one denormalised dimension, and a roll-up from city to state is a group-by on the coarser column. On a snowflake, the same ladder is a chain of tables: the city row holds a state key, and the state row holds a country key. Roll-up joins along that chain and groups by the coarser table. The hierarchy did not change. The number of joins did. That chain is how a hierarchy sits on a snowflake.\n\nA set-grouping hierarchy is not a key chain. You declare which values share a group: these cities are metros, those are not, or these ages form a band. There is no state table behind the list. The groups can cut across the schema hierarchy, so the metro total need not equal any state total. Both kinds of roll-up still have to respect the grain. If only state totals were stored, no grouping of cities is left to compute, because the cities are gone.",
+  "definitions": [
+    {
+      "term": "Roll-up",
+      "body": "Move from a finer level to a coarser level and aggregate the measure. Cities become states. The coarser value is computed from the finer rows; it does not invent a new total."
+    },
+    {
+      "term": "Drill-down",
+      "body": "Move from a coarser level to a finer level. This is possible only when the finer rows are still stored. A drill-down cannot go below the fact grain."
+    },
+    {
+      "term": "Schema hierarchy",
+      "body": "Levels that are attributes or tables in the schema, such as city, then state, then country. On a snowflake each step is a foreign key to the next dimension table."
+    },
+    {
+      "term": "Set-grouping hierarchy",
+      "body": "Levels defined by listing which values belong together, rather than by a stored parent key. The grouping can exist only in the query."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Roll-up by summation",
+      "latex": "S=\\sum_{c\\in G} v_c",
+      "note": "For an additive measure, the group total is the sum of the child values in $G$. The average of the children is not that total."
+    },
+    {
+      "name": "Snowflake path",
+      "latex": "\\text{city}\\rightarrow\\text{state}\\rightarrow\\text{country}",
+      "note": "On a snowflake this is a chain of dimension tables. On a star the same three names are columns of one denormalised dimension."
+    }
+  ],
+  "properties": [
+    "Roll-up is coarser. Drill-down is finer. The two directions are not interchangeable names for a group-by.",
+    "A schema hierarchy city, state, country can sit on a snowflake as city key to state key to country key. The same attributes on one dimension table are the star's copy of that hierarchy.",
+    "A set-grouping does not need a new dimension table. It needs a rule that says which values share a group, and that rule can cut across the schema hierarchy.",
+    "The sum of the children equals the parent for an additive measure such as units sold. The average of the children does not equal the parent total.",
+    "Drill-down stops where the stored rows stop. State totals do not determine the city split, and a daily grain does not determine an hourly split.",
+    "Splitting a hierarchy into tables is what makes the dimension a snowflake. Leaving city, state, and country as columns of one table keeps the hierarchy and keeps the star."
+  ],
+  "examples": [
+    {
+      "title": "City to state to country",
+      "prompt": "City sales are Pune 12, Nagpur 18, Mumbai 7, Jaipur 13, and Jodhpur 10. Pune, Nagpur, and Mumbai are in Maharashtra. Jaipur and Jodhpur are in Rajasthan. Both states are in India. Roll up, and say what a drill-down from India shows.",
+      "steps": [
+        "Maharashtra is $12+18+7=37$. Rajasthan is $13+10=23$.",
+        "India is $37+23=60$, which is also the sum of the five cities.",
+        "A drill-down from India shows the two states, 37 and 23. A further drill-down from Maharashtra shows 12, 18, and 7. That second step exists only because the city rows are still stored."
+      ],
+      "answer": "The state roll-up is Maharashtra 37 and Rajasthan 23. The country total is 60. Drill-down from India shows the two states, not the cities, until you drill one level further."
+    },
+    {
+      "title": "A set-grouping that is not the state hierarchy",
+      "prompt": "Using the same five cities, group metros as Pune, Mumbai, and Jaipur, and group the other cities as Nagpur and Jodhpur. There is no metro column in the schema. What are the two totals, and how does this differ from the snowflake path?",
+      "steps": [
+        "The metro set sums to $12+7+13=32$. The other set sums to $18+10=28$. The two pieces still sum to $32+28=60$.",
+        "These groups are not the states. Maharashtra was 37, not 32. The grouping is a list of values, not a stored parent attribute.",
+        "On a snowflake, Pune would roll up by keys: city row to state row to country row. Nothing in that chain says 'metro'. The set-grouping lives in the query."
+      ],
+      "answer": "Metro sales are 32 and the other cities sum to 28. The partition is not the state roll-up. A snowflake implements city, state, country with foreign keys; this grouping does not."
+    }
+  ],
+  "traps": [
+    "Swapping roll-up and drill-down. Roll-up aggregates toward the coarser level. Drill-down reveals the finer level.",
+    "Drilling into a level that was not stored. State totals do not determine Pune's 12. City rows do.",
+    "Treating a set-grouping as a snowflake. A snowflake level has a table and a key. A set-grouping is a list of which values share a group.",
+    "Seeing city, state, and country on one dimension table and calling the schema a snowflake. Columns in one table are the star form of the hierarchy. The snowflake begins when those levels are split into tables.",
+    "Rolling up by averaging the children. The five city sales average to $60/5=12$, and 12 is not the country total. The country total is the sum, 60."
+  ],
+  "python": "maharashtra = 12 + 18 + 7\nrajasthan = 13 + 10\nassert maharashtra == 37 and rajasthan == 23\nassert maharashtra + rajasthan == 60\nmetro = 12 + 7 + 13\nother = 18 + 10\nassert metro == 32 and other == 28\nassert metro + other == 60\nassert (12 + 18 + 7 + 13 + 10) / 5 != 60\nprint(maharashtra)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Rolling up from city to state does which of the following?",
+      "options": [
+        "Replaces each group of cities by one coarser state total",
+        "Splits one state row into one row per city",
+        "Is possible from a stored country total alone, with no finer rows",
+        "Requires the dimension to be min-max scaled first"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Roll-up moves to the coarser level and aggregates. Option B is drill-down. Option C is impossible: a single country total does not determine the state split. Scaling is unrelated."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "On a snowflake, the hierarchy city, then state, then country is stored as",
+      "options": [
+        "a chain of dimension tables linked by foreign keys",
+        "a second fact table",
+        "a set of city names written only in a query, with no keys",
+        "three numeric measures on each fact row"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The snowflake places each level in its own dimension table and links city to state to country by foreign keys. Option C is a set-grouping, which does not need those tables. The hierarchy is not a measure and not another fact."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "City sales are Pune 12, Nagpur 18, Mumbai 7, Jaipur 13, and Jodhpur 10. Maharashtra contains the first three. Which of the following are true?",
+      "options": [
+        "The Maharashtra roll-up is 37.",
+        "The country total of all five cities is 60.",
+        "The metro set of Pune, Mumbai, and Jaipur sums to 32.",
+        "The average of the five city sales equals the country total."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Maharashtra is $12+18+7=37$. All five cities sum to $37+13+10=60$. The metro set is $12+7+13=32$. The average of the five cities is $60/5=12$, which is not the country total, so D is false."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of hierarchies?",
+      "options": [
+        "Drill-down moves from a coarser level to a finer level.",
+        "A set-grouping can list which values share a group, without a new dimension table.",
+        "If the fact table stores only state totals, those rows still determine each city's sales.",
+        "A schema hierarchy from city to country can sit on a snowflake as a chain of dimension tables."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Drill-down reveals finer rows, a set-grouping is a list rather than a key chain, and a snowflake stores the schema hierarchy as linked dimension tables. C is false: state totals do not determine the city split."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Jaipur has sales 13 and Jodhpur has sales 10. Both are in Rajasthan. Enter the Rajasthan roll-up.",
+      "options": [],
+      "answer": [
+        "23"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **23**. The state total is the sum of the city sales that belong to it: $13+10=23$."
+    }
+  ]
+}

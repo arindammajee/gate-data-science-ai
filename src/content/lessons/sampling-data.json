@@ -1,0 +1,165 @@
+{
+  "slug": "sampling-data",
+  "section": "databases",
+  "title": "Sampling rows",
+  "syllabus": "Sampling",
+  "minutes": 25,
+  "summary": "Simple random samples with and without replacement, stratified samples, and why a convenience sample is biased. This lesson selects rows. It does not build a sampling distribution.",
+  "keywords": [
+    "simple random sample",
+    "stratified sampling",
+    "convenience sample",
+    "data reduction"
+  ],
+  "intuition": "A warehouse table can be larger than the working set you want to mine. Sampling, in this lesson, means choosing which rows to keep. That is data reduction: cluster or classify 20,000 sampled rows instead of 2,000,000, and accept statistical error in exchange for a smaller table. It is not the sampling distribution from the probability section. A sampling distribution is the law of a statistic over repeated draws. Nothing on this page builds that histogram. The object here is a set of rows.\n\nA simple random sample without replacement draws $n$ distinct rows so that every subset of size $n$ is equally likely. A row appears at most once. A simple random sample with replacement draws independently and uniformly, so the same row can appear more than once. Duplicates do not add a new row to a procedure that treats a row as a unit, and if they are kept as copies they overweight that row.\n\nStratified sampling cuts the table into strata, such as city or class label, and draws inside each stratum. Proportional allocation takes $n_h=n N_h/N$ from stratum $h$, so a rare stratum is still present. A convenience sample takes whatever is easy: the first rows of a file, or the people who answered a link. If the file was sorted by the amount you care about, those first rows are systematically the large ones. Matching the intended sample size does not repair the inclusion rule.",
+  "definitions": [
+    {
+      "term": "SRS without replacement",
+      "body": "A sample of $n$ distinct rows from $N$ in which every subset of size $n$ is equally likely. There are $\\binom{N}{n}$ such samples. A given row's inclusion probability is $n/N$."
+    },
+    {
+      "term": "SRS with replacement",
+      "body": "Each of $n$ draws is independent and uniform on the $N$ rows. The same row can be drawn more than once. There are $N^{n}$ ordered outcomes."
+    },
+    {
+      "term": "Stratified sample",
+      "body": "The table is partitioned into strata and a sample is drawn inside each one. Proportional allocation draws $n_h=n N_h/N$ rows from a stratum of size $N_h$."
+    },
+    {
+      "term": "Convenience sample",
+      "body": "Rows chosen because they were easy to reach, not because a probability design gave them a known inclusion chance. If ease is correlated with the column you will average, the sample is biased for that column."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Proportional allocation",
+      "latex": "n_h=n\\frac{N_h}{N}",
+      "note": "The sample fraction in stratum $h$ matches the table fraction $N_h/N$. Equal counts per stratum are a different allocation."
+    },
+    {
+      "name": "Without-replacement inclusion",
+      "latex": "\\frac{n}{N}",
+      "note": "For an SRS without replacement, each row has this inclusion probability. With replacement, the probability that a given row appears at least once in $n$ draws is $1-(1-1/N)^{n}$."
+    }
+  ],
+  "properties": [
+    "This lesson selects rows. It does not describe the sampling distribution of a mean or any other statistic.",
+    "Without replacement, a row appears at most once and every $n$-subset is equally likely. With replacement, repeats are possible.",
+    "Proportional stratified sampling uses $n_h=n N_h/N$. Drawing the same count from a stratum of 50 and a stratum of 5,000 over-represents the small stratum.",
+    "A convenience sample can have the right count and still be biased. Bias comes from the inclusion rule, not from a shortfall in $n$.",
+    "Sampling is data reduction. The working table is smaller, and the price is that estimates and models see only the kept rows.",
+    "An SRS can miss a small stratum entirely. Stratifying on that label forces the sample to contain it. That is a design choice about rows, not a property of a test statistic."
+  ],
+  "examples": [
+    {
+      "title": "Proportional strata",
+      "prompt": "A table has 600 rows: 450 urban and 150 rural. A proportional stratified sample of 60 rows is drawn. How many rows come from each stratum?",
+      "steps": [
+        "The urban allocation is $60\\times 450/600$. Since $450/600=3/4$, that is $60\\times 3/4=45$.",
+        "The rural allocation is $60\\times 150/600=60\\times 1/4=15$.",
+        "The two pieces sum to $45+15=60$. An equal split of 30 and 30 would give rural rows half of the sample even though they are a quarter of the table. That is stratified, but it is not proportional."
+      ],
+      "answer": "45 urban rows and 15 rural rows."
+    },
+    {
+      "title": "A sorted file is not a random sample",
+      "prompt": "Six purchase amounts are 10, 12, 14, 16, 40, and 80. The file is sorted descending and a convenience sample keeps the first two rows. Compare that sample with an SRS without replacement of size 2, and with one inclusion probability under sampling with replacement.",
+      "steps": [
+        "The table mean is $(10+12+14+16+40+80)/6=172/6=86/3$. The convenience sample is 80 and 40, whose mean is 60, well above $86/3$. Those two rows were chosen because the sort put them first.",
+        "An SRS without replacement of size 2 has $\\binom{6}{2}=15$ equally likely pairs, and each row's inclusion probability is $2/6=1/3$. The pair of the two largest amounts is only one of those 15 pairs.",
+        "With replacement, two ordered draws give a specific row a chance $1-(5/6)^{2}=11/36$ of appearing at least once, and the same row can occupy both draws."
+      ],
+      "answer": "The convenience mean is 60, against a table mean of $86/3$. Without replacement there are 15 equally likely pairs and inclusion probability $1/3$. With replacement a given row appears at least once with probability $11/36$, and duplicates are allowed."
+    }
+  ],
+  "traps": [
+    "Importing the sampling distribution from the probability section. That object is the distribution of a statistic over repeated samples. This lesson only decides which rows enter the working table.",
+    "Treating a convenience slice of the right length as an SRS. The six-row file's first two sorted amounts have mean 60, not $86/3$, because the sort decided inclusion.",
+    "Keeping with-replacement duplicates and then feeding them to a miner as two rows. The repeated row is overweighted. Without replacement cannot produce that copy.",
+    "Using equal counts per stratum and calling the design proportional. Proportional allocation is $n N_h/N$. Equal counts over-represent small strata.",
+    "Confusing a cluster sample with a stratified sample. A cluster sample keeps rows from a few chosen groups. A stratified sample draws from every stratum."
+  ],
+  "python": "from math import comb\nassert 60 * 450 // 600 == 45\nassert 60 * 150 // 600 == 15\namounts = [10, 12, 14, 16, 40, 80]\nassert sum(amounts) == 172\nassert (80 + 40) / 2 == 60\nassert comb(6, 2) == 15\nassert comb(8, 3) == 56\nassert abs((1 - (5 / 6) ** 2) - 11 / 36) < 1e-12\nprint(comb(8, 3))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A table has 600 rows, 450 of them urban and 150 rural. A proportional stratified sample of 60 rows contains how many urban rows?",
+      "options": [
+        "45",
+        "30",
+        "15",
+        "60"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 45. Proportional allocation gives $60\\times 450/600=45$ urban rows and $60\\times 150/600=15$ rural rows. Option B is an equal split, which is not proportional. Option C is the rural share."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In a simple random sample without replacement of size $n$ from $N$ rows, the inclusion probability of a given row is",
+      "options": [
+        "$n/N$",
+        "$1/n$",
+        "$1/\\binom{N}{n}$",
+        "$(N-1)/N$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $n/N$. Each row is equally likely to be one of the $n$ chosen rows. For $n=2$ and $N=6$ that probability is $1/3$. Option C is the probability of one particular sample, not the inclusion probability of a row."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true about selecting rows?",
+      "options": [
+        "Sampling without replacement cannot pick the same row twice.",
+        "The first rows of a file sorted by purchase amount are a biased convenience sample for that amount.",
+        "In this lesson, sampling means the sampling distribution of the sample mean.",
+        "Proportional allocation draws $n N_h/N$ rows from a stratum of size $N_h$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Without replacement the rows are distinct. A file sorted by the amount you will average does not give every row an equal chance, so the top of the file is a biased convenience sample. Proportional allocation is the displayed formula. C confuses this page with the probability section: a sampling distribution is the law of a statistic, and this lesson only selects rows."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The six purchase amounts are 10, 12, 14, 16, 40, and 80. Which of the following are true?",
+      "options": [
+        "The mean of all six amounts is $172/6$.",
+        "The convenience sample of the two largest amounts has mean 60.",
+        "That convenience mean equals the mean of all six amounts.",
+        "There are 15 equally likely samples of size 2 drawn without replacement."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The six amounts sum to 172, so the table mean is $172/6$. The two largest, 80 and 40, average to 60. Since $60\\neq 172/6$, C is false. The number of 2-subsets of six rows is $\\binom{6}{2}=15$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "How many distinct simple random samples without replacement of size 3 can be drawn from a table of 8 rows? Enter that integer.",
+      "options": [],
+      "answer": [
+        "56"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **56**. Every 3-subset is one SRS without replacement, and $\\binom{8}{3}=56$."
+    }
+  ]
+}

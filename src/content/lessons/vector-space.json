@@ -1,0 +1,165 @@
+{
+  "slug": "vector-space",
+  "section": "linear-algebra",
+  "title": "Vector spaces",
+  "syllabus": "Vector space",
+  "minutes": 30,
+  "summary": "A real vector space is a set closed under addition and scalar multiplication, with a zero vector and the usual axioms. R^n, polynomials, and matrices are the models.",
+  "keywords": [
+    "vector space",
+    "axioms",
+    "linear combination",
+    "polynomials",
+    "matrices",
+    "zero vector"
+  ],
+  "intuition": "A vector space is the place where linear combinations are legal. The scalars here are real numbers. You can add two members of the set, and you can multiply a member by a real number, and both results have to land back in the set. Addition is associative and commutative, there is a zero vector, and every vector has an additive inverse. Scalar multiplication distributes over vector addition and over addition of scalars, it respects products of scalars, and multiplying by the scalar $1$ does nothing.\n\nTwo consequences get used more often than the full list. The set contains the zero vector, and it is closed under every linear combination: if $u$ and $v$ are in $V$ and $\\alpha,\\beta\\in\\mathbb{R}$, then $\\alpha u+\\beta v$ is in $V$. Closure under addition and under scalar multiplication is the same requirement, written in one line. Anything that fails one of those tests is not a vector space, no matter how geometric it looks.\n\nThree families carry the rest of this syllabus. $\\mathbb{R}^n$ is the space of columns of $n$ real numbers, with entrywise operations. The polynomials with real coefficients form a vector space, and so do the polynomials of degree at most $n$; the polynomials of one exact degree do not, because the zero polynomial is missing and leading terms can cancel. The set of all $m\\times n$ real matrices is a vector space under entrywise addition. The invertible matrices are not: the zero matrix is absent, and a sum of invertible matrices can be singular.",
+  "definitions": [
+    {
+      "term": "Vector space over $\\mathbb{R}$",
+      "body": "A set $V$ with addition and scalar multiplication by real numbers is a vector space when those operations stay in $V$ and satisfy the axioms: addition is associative and commutative; there is a zero vector $0$ with $u+0=u$; every $u$ has an inverse $-u$; $\\alpha(u+v)=\\alpha u+\\alpha v$; $(\\alpha+\\beta)u=\\alpha u+\\beta u$; $(\\alpha\\beta)u=\\alpha(\\beta u)$; and $1\\cdot u=u$."
+    },
+    {
+      "term": "Linear combination",
+      "body": "A linear combination of vectors $v_1,\\ldots,v_k$ is $\\alpha_1 v_1+\\cdots+\\alpha_k v_k$ with real coefficients. A vector space contains $0$ and is closed under linear combinations."
+    },
+    {
+      "term": "$\\mathbb{R}^n$",
+      "body": "The set of ordered $n$-tuples of real numbers, added and scaled coordinate by coordinate. It is the standard $n$-dimensional vector space over $\\mathbb{R}$."
+    },
+    {
+      "term": "Polynomial and matrix spaces",
+      "body": "Polynomials with real coefficients, added and scaled in the usual way, form a vector space. The subset of degree at most $n$ is also a vector space, of dimension $n+1$. The set of all $m\\times n$ real matrices is a vector space of dimension $mn$ under entrywise operations."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Closure under linear combinations",
+      "latex": "\\alpha u+\\beta v\\in V\\quad(\\alpha,\\beta\\in\\mathbb{R},\\ u,v\\in V)",
+      "note": "Together with $0\\in V$, this is the fact used in every later test. It is equivalent to closure under addition and under scalar multiplication."
+    },
+    {
+      "name": "Dimension of the model spaces",
+      "latex": "\\dim\\mathbb{R}^n=n,\\quad \\dim\\{p:\\deg p\\le n\\}=n+1,\\quad \\dim M_{m\\times n}=mn",
+      "note": "A basis of the polynomials of degree at most $n$ is $\\{1,x,x^2,\\ldots,x^n\\}$. A basis of $M_{m\\times n}$ is the matrices with a single entry equal to $1$."
+    }
+  ],
+  "properties": [
+    "Every vector space contains exactly one zero vector, and $0\\cdot u=0$ for every $u$. The zero vector is not optional.",
+    "$\\mathbb{R}^n$, the polynomials of degree at most $n$, and the $m\\times n$ matrices are vector spaces over $\\mathbb{R}$.",
+    "The polynomials of degree exactly $n$ are not a vector space: the sum of $x^n$ and $1-x^n$ has degree $0$, and the zero polynomial is not in the set.",
+    "The invertible $n\\times n$ matrices are not a vector space. The zero matrix is singular, and $I+(-I)=0$ leaves the set.",
+    "A nonempty subset of a vector space that is closed under linear combinations is itself a vector space. That subset test is the subspace lesson."
+  ],
+  "examples": [
+    {
+      "title": "A linear combination in $\\mathbb{R}^3$ and in the $2\\times 2$ matrices",
+      "prompt": "In $\\mathbb{R}^3$ take $u=(1,0,-2)$ and $v=(2,1,4)$. Compute $3u-2v$, and compute the same coefficients on the matrices $A=\\begin{pmatrix}1&0\\\\0&0\\end{pmatrix}$ and $B=\\begin{pmatrix}0&1\\\\0&0\\end{pmatrix}$. Explain why both results stay in their vector spaces, and why the invertible matrices would not.",
+      "steps": [
+        "In $\\mathbb{R}^3$, $3u=(3,0,-6)$ and $2v=(4,2,8)$, so $3u-2v=(3-4,\\ 0-2,\\ -6-8)=(-1,-2,-14)$, which is still a triple of real numbers.",
+        "The same coefficients on matrices give $3A-2B=\\begin{pmatrix}3&0\\\\0&0\\end{pmatrix}-\\begin{pmatrix}0&2\\\\0&0\\end{pmatrix}=\\begin{pmatrix}3&-2\\\\0&0\\end{pmatrix}$, an ordinary $2\\times 2$ matrix.",
+        "Both spaces contain their zero elements, $(0,0,0)$ and the zero matrix, and both are closed under the linear combination just computed. The invertible matrices fail the same test: $I+(-I)$ is the zero matrix, which is not invertible."
+      ],
+      "answer": "$(-1,-2,-14)$ and $\\begin{pmatrix}3&-2\\\\0&0\\end{pmatrix}$. Both live in their vector spaces. Invertible matrices are not closed under addition and do not contain zero."
+    },
+    {
+      "title": "Polynomials of degree at most $2$, and the set that fails",
+      "prompt": "Let $p(x)=1+x$ and $q(x)=x^2$. Compute $3p-2q$, and compute $q+(1-q)$. Which of the two sets — degree at most $2$, or degree exactly $2$ — contains both results and the zero polynomial?",
+      "steps": [
+        "Expand $3p-2q=3(1+x)-2x^2=3+3x-2x^2$. The degree is $2$, so this polynomial is in the set of degree at most $2$.",
+        "The zero polynomial is $0+0x+0x^2$, which has no degree-$2$ term but is included in 'degree at most $2$'. It is the zero vector of that space.",
+        "Now $q+(1-q)=x^2+1-x^2=1$, which has degree $0$. Both $q$ and $1-q$ have degree exactly $2$, and their sum does not. The exact-degree set is not closed, and it does not contain the zero polynomial."
+      ],
+      "answer": "$3p-2q=3+3x-2x^2$ lies in the vector space of polynomials of degree at most $2$. The polynomials of degree exactly $2$ are not a vector space."
+    }
+  ],
+  "traps": [
+    "Treating 'degree exactly $n$' as a vector space. Cancellation of leading terms, and the missing zero polynomial, both break it. 'Degree at most $n$' is the vector space, and its dimension is $n+1$, not $n$.",
+    "Calling the invertible matrices, the orthogonal matrices, or the matrices of determinant $1$ a vector space. None of them contains the zero matrix.",
+    "Forgetting that the scalar $0$ has to be allowed. A ray such as $\\{(x,y):x\\ge 0,\\ y\\ge 0\\}$ is closed under addition and under positive scaling, and it still fails because $(-1)\\cdot(1,0)$ leaves the set.",
+    "Counting the dimension of $\\mathbb{R}^n$ as $n+1$ by analogy with polynomials. The polynomial space of degree at most $n$ has the extra basis element $1$; $\\mathbb{R}^n$ does not."
+  ],
+  "python": "def combo(u, v, a, b):\n    return tuple(a * u[i] + b * v[i] for i in range(len(u)))\n\nu, v = (1, 0, -2), (2, 1, 4)\nassert combo(u, v, 3, -2) == (-1, -2, -14)\n# 3A - 2B for A=E11, B=E12\nA = [[1, 0], [0, 0]]\nB = [[0, 1], [0, 0]]\nC = [[3 * A[i][j] - 2 * B[i][j] for j in range(2)] for i in range(2)]\nassert C == [[3, -2], [0, 0]]\n# dimension of polynomials of degree at most 5\nassert 5 + 1 == 6\nprint(6)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which of the following is a vector space over $\\mathbb{R}$ under the usual addition and scalar multiplication?",
+      "options": [
+        "Polynomials with real coefficients of degree exactly $3$",
+        "Polynomials with real coefficients of degree at most $3$",
+        "Invertible $2\\times 2$ real matrices",
+        "$\\{(x,y)\\in\\mathbb{R}^2:x+y=1\\}$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Polynomials of degree at most $3$ contain the zero polynomial and are closed under linear combinations; a basis is $\\{1,x,x^2,x^3\\}$. Degree exactly $3$ does not contain zero, and $x^3+(1-x^3)=1$ leaves the set. Invertible matrices do not contain the zero matrix. The line $x+y=1$ does not contain $(0,0)$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The dimension of the vector space of all $2\\times 3$ real matrices is",
+      "options": [
+        "$5$",
+        "$6$",
+        "$2$",
+        "$3$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**, $6$. Each of the six entries can be chosen freely, and the matrices with a single $1$ and zeros elsewhere form a basis. The space is not $\\mathbb{R}^2$ and not $\\mathbb{R}^3$; those describe the shape of one matrix, not the dimension of the space of all of them. A $2\\times 2$ symmetric matrix would have dimension $3$, which is option D, a different space."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true for vector spaces over $\\mathbb{R}$?",
+      "options": [
+        "Every vector space contains the zero vector.",
+        "A vector space is closed under linear combinations.",
+        "The set of polynomials of degree exactly $2$ contains the zero polynomial.",
+        "$\\mathbb{R}^n$ is a vector space under coordinate-wise addition and scalar multiplication."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The zero vector is an axiom, and closure under linear combinations is the working form of the addition and scalar axioms. $\\mathbb{R}^n$ is the model space. C is false: the zero polynomial does not have degree $2$, so it is not in that set, and the set is not a vector space."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The set of all $2\\times 2$ real matrices is a vector space over $\\mathbb{R}$.",
+        "The set of all $2\\times 2$ real matrices with determinant $1$ is a vector space over $\\mathbb{R}$.",
+        "The set of polynomials of degree at most $4$ is a vector space over $\\mathbb{R}$.",
+        "The set $\\{(x,y,z)\\in\\mathbb{R}^3:x+2y+3z=0\\}$ is a vector space over $\\mathbb{R}$."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**. All $2\\times 2$ matrices form a $4$-dimensional vector space. Polynomials of degree at most $4$ form a vector space of dimension $5$. The set in D is the kernel of a linear equation, so it contains zero and is closed under linear combinations. B fails: $\\det 0=0$, and $I+(-I)=0$ is not in the set."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The dimension of the vector space of polynomials with real coefficients of degree at most $5$ is an integer $n$. Enter $n$.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**. A basis is $\\{1,x,x^2,x^3,x^4,x^5\\}$, five powers plus the constant polynomial. Degree at most $5$ means the highest power allowed is $x^5$, and the count of basis elements is $5+1=6$."
+    }
+  ]
+}

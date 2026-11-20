@@ -1,0 +1,164 @@
+{
+  "slug": "standard-normal-distribution",
+  "section": "probability",
+  "title": "Standard normal distribution",
+  "syllabus": "Standard normal distribution",
+  "minutes": 25,
+  "summary": "The standard normal distribution is N(0, 1). Its cdf satisfies Φ(0)=1/2 and Φ(-z)=1-Φ(z). Table values are used only when a question supplies them.",
+  "keywords": [
+    "standard normal",
+    "symmetry",
+    "Phi",
+    "cdf",
+    "tails"
+  ],
+  "intuition": "The standard normal distribution is the normal law with mean 0 and variance 1, written $N(0,1)$. It is the distribution of $Z=(X-\\mu)/\\sigma$ after a general normal variable has been standardized. Its density is even: the height at $z$ equals the height at $-z$. The cdf is $\\Phi(z)=P(Z\\le z)$.\n\nSymmetry does almost all of the arithmetic this lesson needs. Because the density is even and the total probability is 1,\n\n$$\n\\Phi(0)=\\frac{1}{2},\\qquad \\Phi(-z)=1-\\Phi(z).\n$$\n\nThe right-tail probability is $P(Z\\ge z)=1-\\Phi(z)$. For a continuous variable the distinction between $\\ge$ and $>$ does not matter. A symmetric interval has probability $P(-z\\le Z\\le z)=2\\Phi(z)-1$. You do not need a memorised table to use these identities. If a problem needs a numerical value of $\\Phi$ at a nonzero point, the problem states that value. Inventing a table entry, or treating the density height $1/\\sqrt{2\\pi}$ as $\\Phi(0)$, answers a different question from the one that was asked.\n\nThe same symmetry is why a two-sided normal probability can be read from one tail. Given $\\Phi(z)$, the lower tail beyond $-z$ equals the upper tail beyond $z$, and both equal $1-\\Phi(z)$.",
+  "definitions": [
+    {
+      "term": "Standard normal variable",
+      "body": "A random variable $Z\\sim N(0,1)$. Its mean is 0 and its variance is 1. It is the standardized form of a general normal variable."
+    },
+    {
+      "term": "Standard cdf",
+      "body": "The function $\\Phi(z)=P(Z\\le z)$. It is continuous and strictly increasing, with limits 0 and 1 at $\\pm\\infty$."
+    },
+    {
+      "term": "Symmetry identity",
+      "body": "For every real $z$, $\\Phi(-z)=1-\\Phi(z)$. In particular $\\Phi(0)=1/2$."
+    },
+    {
+      "term": "Supplied table value",
+      "body": "A numerical value of $\\Phi$ at a nonzero argument is used only when the question or the example states it. It is an input to the symmetry identities, not a number to be recalled from an unstated table."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Symmetry",
+      "latex": "\\Phi(-z)=1-\\Phi(z),\\qquad \\Phi(0)=\\frac{1}{2}",
+      "note": "Follows from an even density and total mass 1."
+    },
+    {
+      "name": "Tails and a symmetric interval",
+      "latex": "P(Z\\ge z)=1-\\Phi(z),\\qquad P(|Z|\\le z)=2\\Phi(z)-1",
+      "note": "Use a stated value of $\\Phi(z)$ when a decimal is required."
+    }
+  ],
+  "properties": [
+    "The standard normal law is $N(0,1)$. Its density is even, and $\\Phi(0)=1/2$.",
+    "Symmetry says $\\Phi(-z)=1-\\Phi(z)$ for every $z$. The two tails beyond $z$ and beyond $-z$ are equal.",
+    "A symmetric probability is $P(|Z|\\le z)=2\\Phi(z)-1$. The outside probability is $2(1-\\Phi(z))$.",
+    "The density at 0 is $1/\\sqrt{2\\pi}$, which is not $\\Phi(0)$. The cdf at 0 is $1/2$.",
+    "This lesson does not ask for an unstated table entry. A decimal value of $\\Phi$ is either $1/2$ at 0, or a value the problem gives."
+  ],
+  "examples": [
+    {
+      "title": "The centre of the cdf",
+      "prompt": "For $Z\\sim N(0,1)$, find $\\Phi(0)$, $P(Z\\ge 0)$, and $P(-a\\le Z\\le a)$ in terms of $\\Phi(a)$.",
+      "steps": [
+        "The mean is 0 and the density is symmetric, so half the mass is on each side of 0. Thus $\\Phi(0)=P(Z\\le 0)=1/2$.",
+        "The upper half is the same probability: $P(Z\\ge 0)=1-\\Phi(0)=1/2$. The single point 0 does not change the value.",
+        "For a positive or negative $a$, the symmetric interval has probability $\\Phi(a)-\\Phi(-a)=\\Phi(a)-(1-\\Phi(a))=2\\Phi(a)-1$."
+      ],
+      "answer": "The value $\\Phi(0)$ is $1/2$, the upper half is $1/2$, and $P(|Z|\\le a)=2\\Phi(a)-1$."
+    },
+    {
+      "title": "A stated table value",
+      "prompt": "A table gives $\\Phi(1.25)=0.8944$. Find $\\Phi(-1.25)$ and $P(|Z|\\le 1.25)$.",
+      "steps": [
+        "The value 0.8944 is given. Symmetry supplies the other side: $\\Phi(-1.25)=1-0.8944=0.1056$.",
+        "The upper tail is the same number: $P(Z\\ge 1.25)=1-\\Phi(1.25)=0.1056$.",
+        "The symmetric probability is $2\\times 0.8944-1=0.7888$. Equivalently, $1-2\\times 0.1056=0.7888$. No further table lookup is required."
+      ],
+      "answer": "From the given value, $\\Phi(-1.25)=0.1056$ and $P(|Z|\\le 1.25)=0.7888$."
+    }
+  ],
+  "traps": [
+    "Replacing $\\Phi(0)$ by the density height $1/\\sqrt{2\\pi}$. The cdf at 0 is $1/2$. The density is a different function.",
+    "Using $\\Phi(-z)=\\Phi(z)$, or $\\Phi(-z)=-\\Phi(z)$. The identity is $\\Phi(-z)=1-\\Phi(z)$. The values $\\Phi(z)$ and $\\Phi(-z)$ sum to 1.",
+    "Inventing a table value that the question did not give. If the stem does not state $\\Phi(z)$, the expected answer is an exact symmetry consequence such as $1/2$ or an expression in a given $\\Phi$.",
+    "Forgetting the factor of 2 in a two-sided probability. Given $\\Phi(z)$, the central probability is $2\\Phi(z)-1$, not $\\Phi(z)-1/2$ left unfinished, and not $1-\\Phi(z)$."
+  ],
+  "python": "assert 10000 - 8944 == 1056\nassert 2 * 8944 - 10000 == 7888\nassert 2 * 7580 - 10000 == 5160\nassert 10000 - 7580 == 2420\nassert 2 * 8413 - 10000 == 6826\nprint(1056, 7888, 6826)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Z is standard normal. The value $\\Phi(0)$ equals",
+      "options": [
+        "$1/2$",
+        "$0$",
+        "$1$",
+        "$1/\\sqrt{2\\pi}$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/2$.\n\nThe standard normal density is symmetric about 0, so $P(Z\\le 0)=1/2$. Option D is the density at 0, not the cdf. Options B and C are the limits of $\\Phi$ at $-\\infty$ and $+\\infty$, not the value at 0."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A table gives $\\Phi(0.7)=0.7580$. The value $\\Phi(-0.7)$ is",
+      "options": [
+        "$0.2420$",
+        "$0.7580$",
+        "$0.5160$",
+        "$-0.7580$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $0.2420$.\n\nSymmetry says $\\Phi(-0.7)=1-\\Phi(0.7)=1-0.7580=0.2420$. Option B repeats the given value and drops the complement. Option C is the central probability $2\\times 0.7580-1=0.5160$, which is $P(|Z|\\le 0.7)$ rather than $\\Phi(-0.7)$. Option D makes the cdf negative, which a probability cannot be."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Z is standard normal, with cdf $\\Phi$. Which of the following are true?",
+      "options": [
+        "For every $z$, $\\Phi(-z)=1-\\Phi(z)$.",
+        "The density of $Z$ is an even function.",
+        "The value $\\Phi(0)$ equals $1/2$.",
+        "For every $z$, $\\Phi(z)+\\Phi(-z)=0$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nSymmetry of the $N(0,1)$ density gives $\\Phi(-z)=1-\\Phi(z)$ and $\\Phi(0)=1/2$. The two cdf values sum to 1, not to 0, so D is false. A negative cdf would not be a probability."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A table gives $\\Phi(1.25)=0.8944$. Which of the following are true?",
+      "options": [
+        "$\\Phi(-1.25)=0.1056$.",
+        "$P(-1.25\\le Z\\le 1.25)=0.7888$.",
+        "$P(Z\\ge 1.25)=0.1056$.",
+        "$P(Z\\le -1.25)=0.8944$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nFrom the given value, $\\Phi(-1.25)=1-0.8944=0.1056$, and the upper tail $P(Z\\ge 1.25)$ equals that same complement. The central probability is $2\\times 0.8944-1=0.7888$. Option D swaps the tails: $P(Z\\le -1.25)$ is 0.1056, not 0.8944."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A table gives $\\Phi(1)=0.8413$. Enter $10000\\,P(|Z|\\le 1)$.",
+      "options": [],
+      "answer": [
+        "6826"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6826**.\n\nThe central probability is $2\\Phi(1)-1=2\\times 0.8413-1=0.6826$. Multiplying by 10000 gives $2\\times 8413-10000=6826$. The calculation uses only the value stated in the stem and the symmetry formula $2\\Phi(1)-1$."
+    }
+  ]
+}

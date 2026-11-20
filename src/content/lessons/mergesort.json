@@ -1,0 +1,164 @@
+{
+  "slug": "mergesort",
+  "section": "programming",
+  "title": "Mergesort",
+  "syllabus": "Mergesort",
+  "minutes": 30,
+  "summary": "Mergesort splits the array, sorts the halves, and merges them. The cost is $\\Theta(n \\log n)$ on every input, the merge is stable when ties take the left half, and the merge buffer is linear extra memory.",
+  "keywords": [
+    "mergesort",
+    "divide and conquer",
+    "stability",
+    "recurrence",
+    "merge"
+  ],
+  "intuition": "Mergesort is divide and conquer. Split the array into two halves, sort each half by the same algorithm, then merge the two sorted runs into one sorted run. A run of length $0$ or $1$ is already sorted, and that is the base case. The split is balanced, so the recursion is about $\\log_2 n$ levels deep.\n\nThe merge of two sorted runs of lengths $p$ and $q$ walks each run once. Every comparison consumes one key, and at least one key is left over when the other run empties, so the merge uses at most $p+q-1$ comparisons. Across one level of the recursion the merges touch $\\Theta(n)$ keys. The recurrence is $T(n)=2T(n/2)+\\Theta(n)$ with $T(1)=\\Theta(1)$. Unrolling it gives $T(n)=\\Theta(n\\log n)$. The same tree of merges runs on a sorted array, a reversed array, and every other array: there is no swapped flag and no lucky pivot. The bound is $\\Theta(n\\log n)$ in the best, average, and worst case.\n\nStability is decided only by the tie. When the two front keys compare equal, copy the one from the left half. Equal keys then keep the order they had in the input, because the left half holds the earlier key, and the recursive sorts have already preserved order inside each half. Copying the right half on a tie would make the sort unstable. The merge writes into an auxiliary buffer of length $n$, so the extra memory is $\\Theta(n)$, on top of an $O(\\log n)$ recursion stack. This is the cost of the linearithmic bound that does not have a quadratic worst case.",
+  "definitions": [
+    {
+      "term": "Run",
+      "body": "A contiguous sorted sequence. Mergesort's recursive calls produce two runs, and the merge combines them into one run."
+    },
+    {
+      "term": "Left-on-tie merge",
+      "body": "While both runs still have keys, compare their fronts. If the left front is less than or equal to the right front, copy the left front. The $\\le$ test is what makes the whole sort stable."
+    },
+    {
+      "term": "Auxiliary buffer",
+      "body": "The array of length $n$ (or two arrays that together hold $n$ keys) into which merged runs are written. It is the $\\Theta(n)$ extra memory of the usual mergesort."
+    },
+    {
+      "term": "Divide and conquer",
+      "body": "Solve two subproblems of half the size, then combine the solutions in $\\Theta(n)$ time. Here the combine step is the merge."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Recurrence",
+      "latex": "T(n)=2T(n/2)+\\Theta(n),\\quad T(1)=\\Theta(1)",
+      "note": "The solution is $T(n)=\\Theta(n\\log n)$ on every input, not only on the average."
+    },
+    {
+      "name": "One merge",
+      "latex": "C_{\\mathrm{merge}}(p,q)\\le p+q-1",
+      "note": "Each comparison takes one key from a run, and the last remaining key is copied with no comparison."
+    }
+  ],
+  "properties": [
+    "The comparison count is $\\Theta(n\\log n)$ for every input of length $n$, including a sorted one.",
+    "The sort is stable when the merge copies the left half on a tie. Copying the right half on a tie makes it unstable.",
+    "Extra memory is $\\Theta(n)$ for the merge buffer. The recursion stack is only $O(\\log n)$ more.",
+    "Unrolling $T(n)=2T(n/2)+cn$ produces $cn\\log_2 n$ plus a linear term from the base cases.",
+    "A merge never looks at keys that are not at the fronts of the two runs. It does not search the runs."
+  ],
+  "examples": [
+    {
+      "title": "Four keys, with a tie in the final merge",
+      "prompt": "Mergesort $(3,a), (1,b), (3,c), (2,d)$. Split in half, and when two fronts are equal copy the left one. Count comparisons and give the final labels.",
+      "steps": [
+        "The first split is $(3,a), (1,b)$ against $(3,c), (2,d)$. Each half splits into singletons.",
+        "Merging $(3,a)$ with $(1,b)$ takes one comparison and yields $(1,b), (3,a)$. Merging $(3,c)$ with $(2,d)$ takes one comparison and yields $(2,d), (3,c)$.",
+        "The final merge compares $1$ with $2$ and takes $1$, compares $3$ with $2$ and takes $2$, then compares $3$ with $3$ and takes the left label $a$ because the test is $\\le$. Label $c$ is copied last. That merge used $3$ comparisons."
+      ],
+      "answer": "The total is $1+1+3=5$ comparisons. The result is $(1,b), (2,d), (3,a), (3,c)$. The two equal keys kept the order $a$ then $c$."
+    },
+    {
+      "title": "Where the n log n comes from",
+      "prompt": "The merge recurrence is $T(n)=2T(n/2)+cn$ for $n$ a power of two, with $T(1)=d$. Show that the solution is linearithmic, and bound a merge of two runs of length $6$ and $9$.",
+      "steps": [
+        "Substitute once: $T(n)=2\\bigl(2T(n/4)+cn/2\\bigr)+cn=4T(n/4)+2cn$. After $\\log_2 n$ steps the pattern is $T(n)=n\\,T(1)+cn\\log_2 n=dn+cn\\log_2 n$.",
+        "The sum $dn+cn\\log_2 n$ is $\\Theta(n\\log n)$: the linear term does not change the linearithmic order. The same expansion applies to a sorted input: the recurrence did not consult the data.",
+        "A merge of runs of length $6$ and $9$ performs at most $6+9-1=14$ comparisons, whatever the keys are. That is one combine step, not the whole sort."
+      ],
+      "answer": "$T(n)=dn+cn\\log_2 n=\\Theta(n\\log n)$ on every input. One merge of a length-$6$ run with a length-$9$ run costs at most $14$ comparisons."
+    }
+  ],
+  "traps": [
+    "Giving mergesort a quadratic worst case. The split is balanced on every input, so the worst case stays $\\Theta(n\\log n)$.",
+    "Breaking ties toward the right half and still calling the sort stable. Stability needs the left half on equals.",
+    "Calling the usual mergesort in place. The merge buffer is $\\Theta(n)$ extra memory; the in-place linearithmic sorts are a different topic.",
+    "Importing bubble sort's linear best case. A sorted array is still split and merged at every level."
+  ],
+  "python": "def mergesort(items):\n    comps = [0]\n\n    def merge(left, right):\n        i = j = 0\n        out = []\n        while i < len(left) and j < len(right):\n            comps[0] += 1\n            if left[i][0] <= right[j][0]:\n                out.append(left[i])\n                i += 1\n            else:\n                out.append(right[j])\n                j += 1\n        out.extend(left[i:])\n        out.extend(right[j:])\n        return out\n\n    def sort(seq):\n        if len(seq) <= 1:\n            return list(seq)\n        mid = len(seq) // 2\n        return merge(sort(seq[:mid]), sort(seq[mid:]))\n\n    result = sort(items)\n    return comps[0], result\n\n\ncount, result = mergesort([(3, \"a\"), (1, \"b\"), (3, \"c\"), (2, \"d\")])\nassert count == 5\nassert [label for _, label in result] == [\"b\", \"d\", \"a\", \"c\"]\nassert 6 + 9 - 1 == 14\nprint(count, \"\".join(label for _, label in result))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The mergesort recurrence is $T(n)=2T(n/2)+\\Theta(n)$ with $T(1)=\\Theta(1)$. Its solution is",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $\\Theta(n\\log n)$.\n\nUnrolling the recurrence over $\\log_2 n$ levels produces a $\\Theta(n)$ merge cost on each level, and $\\log_2 n$ levels give $\\Theta(n\\log n)$. Option B is the worst case of selection sort or of quicksort on a bad pivot, not this recurrence. Option D would be a single merge with no recursion.",
+      "options": [
+        "$\\Theta(n\\log n)$",
+        "$\\Theta(n^2)$",
+        "$\\Theta(\\log n)$",
+        "$\\Theta(n)$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "During a merge, the two front keys are equal and the algorithm copies the key from the left half. For the usual mergesort, that tie rule makes the sort",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, stable.\n\nThe left half contains the earlier of the two equal keys, and copying it first preserves input order. Option B is what happens if the right half wins the tie. Option C is false because the merge writes into a buffer of length $\\Theta(n)$. Option D is false because a sorted input is still $\\Theta(n\\log n)$.",
+      "options": [
+        "stable",
+        "unstable",
+        "in place",
+        "best-case $\\Theta(n)$"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the usual mergesort?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nEvery input pays $\\Theta(n\\log n)$ comparisons, because every input builds the same recursion tree and merges $\\Theta(n)$ keys on each level. The auxiliary buffer has length $\\Theta(n)$. A merge of runs of length $p$ and $q$ stops comparing once either run is empty, so it uses at most $p+q-1$ comparisons. Option C is false: taking the right half on a tie reverses equal keys and the sort is then unstable.",
+      "options": [
+        "Every input of length $n$ costs $\\Theta(n\\log n)$ comparisons.",
+        "The auxiliary merge buffer uses $\\Theta(n)$ extra memory.",
+        "The sort is stable when ties are broken toward the right half.",
+        "A merge of runs of length $p$ and $q$ uses at most $p+q-1$ comparisons."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Mergesort is run on $(3,a), (1,b), (3,c), (2,d)$, copying the left half when the fronts are equal. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe two small merges cost one comparison each and produce $(1,b), (3,a)$ and $(2,d), (3,c)$. The final merge costs three comparisons and, on the equal $3$s, copies label $a$ before label $c$. The result is $(1,b), (2,d), (3,a), (3,c)$, which keeps the original order of the equal keys, and the comparison total is $5$. Option D is false: this merge uses a buffer, not a constant amount of extra memory.",
+      "options": [
+        "The result is $(1,b), (2,d), (3,a), (3,c)$.",
+        "The two keys equal to $3$ keep their original order.",
+        "The sort performs $5$ comparisons.",
+        "The sort uses only a constant amount of extra memory."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A merge is given a sorted run of $6$ keys and a sorted run of $9$ keys. What is the maximum number of comparisons that merge can perform?",
+      "answer": [
+        "14"
+      ],
+      "solution": "The answer is **14**.\n\nEach comparison copies one key into the output, and when one run empties the other run is copied for free. At most one key avoids a comparison, so the maximum is $6+9-1=14$. The bound is tight when the last keys of the two runs are the two largest and they have to be compared.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

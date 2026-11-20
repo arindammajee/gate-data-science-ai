@@ -1,0 +1,167 @@
+{
+  "slug": "adversarial-search",
+  "section": "artificial-intelligence",
+  "title": "Adversarial search",
+  "syllabus": "Search: adversarial",
+  "minutes": 30,
+  "summary": "Minimax backs up the value of a zero-sum perfect-information game. Alpha-beta prunes when alpha is at least beta and does not change that root value.",
+  "keywords": [
+    "minimax",
+    "alpha-beta",
+    "zero-sum",
+    "perfect information",
+    "pruning"
+  ],
+  "intuition": "Adversarial search is a game with two players, a zero-sum payoff, and perfect information. Zero-sum means one player's utility is the negative of the other's, so it is enough to store the maximizer's number. Perfect information means every move is visible: there is no hidden card and no die. The game tree alternates a maximizer, who wants the larger number, and a minimizer, who wants the smaller number. Leaves hold the utility of a finished game.\n\nMinimax backs those leaf numbers up the tree. A maximizer node stores the maximum of its children's values. A minimizer node stores the minimum. The number that arrives at the root is the utility when both play optimally. Computing it by visiting every leaf is correct and often wasteful, because some branches cannot change the root once a good alternative is already in hand.\n\n$$\n\\text{prune when }\\alpha\\ge\\beta\n$$\n\nAlpha is the best value the maximizer can already force on the path from the root. Beta is the best value the minimizer can already force. If a node reaches $\\alpha\\ge\\beta$, the ancestor who would have to accept this line already has a better forced alternative, so the rest of the node is pruned. The prune changes which leaves are read. It does not change the root value when both play optimally. With perfect move ordering the tree that remains is about the square root of the full branching factor in effective size; that estimate is a consequence of pruning, not a different value.\n",
+  "definitions": [
+    {
+      "term": "Zero-sum",
+      "body": "The maximizer's utility and the minimizer's utility add to zero. Backing up one number is enough."
+    },
+    {
+      "term": "Perfect information",
+      "body": "Both players see the whole position before they move. Minimax applies to that case. A hidden chance event is a different tree."
+    },
+    {
+      "term": "Alpha",
+      "body": "The best value the maximizer can already force along the path from the root to the current node. Alpha only rises."
+    },
+    {
+      "term": "Beta",
+      "body": "The best value the minimizer can already force along that path. Beta only falls. The remaining children are pruned when $\\alpha\\ge\\beta$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Minimax backup",
+      "latex": "v(n)=\\max_{c} v(c)\\ \\text{or}\\ \\min_{c} v(c)",
+      "note": "Use the maximum at a maximizer and the minimum at a minimizer. A leaf stores its utility."
+    },
+    {
+      "name": "Prune test",
+      "latex": "\\alpha\\ge\\beta",
+      "note": "$\\alpha$ is the maximizer's current forced value and $\\beta$ is the minimizer's. The root value is unchanged when both play optimally."
+    }
+  ],
+  "properties": [
+    "Alpha is the best the maximizer can already force. Beta is the best the minimizer can already force. Prune when $\\alpha\\ge\\beta$.",
+    "Alpha-beta returns the same root value as minimax when both players play optimally. It does not return a different strategy value.",
+    "The number returned from a pruned internal node is a bound that is strong enough for the ancestor. It need not equal that node's full minimax value.",
+    "Left-to-right order changes which branches are cut. It does not change the backed-up root value.",
+    "With perfect ordering, the effective branching factor is about $\\sqrt{b}$. That is a consequence of the pruning, not the quantity the algorithm is defined to compute."
+  ],
+  "examples": [
+    {
+      "title": "A two-ply tree and one pruned leaf",
+      "prompt": "The root is a maximizer. Its three children are minimizers. Their leaves, left to right, are $(4,6)$, $(1,8)$, and $(5,2)$. Compute the minimax value, then run alpha-beta left to right and name a pruned leaf.",
+      "steps": [
+        "The minimizers return $\\min(4,6)=4$, $\\min(1,8)=1$, and $\\min(5,2)=2$. The root returns $\\max(4,1,2)=4$.",
+        "Alpha-beta reads $4$ then $6$ under the first minimizer, so that child returns $4$ and the root's alpha becomes $4$.",
+        "Under the second minimizer, the first leaf is $1$. Beta falls to $1$. Alpha is already $4$, and $4\\ge 1$, so the leaf $8$ is pruned. That child cannot raise the root above $4$.",
+        "The third minimizer reads $5$, which does not lose to alpha $4$, and then reads $2$ and returns $2$. The root is $\\max(4,1,2)=4$, the same value as full minimax, with the leaf $8$ unread."
+      ],
+      "answer": "The root value is $4$. Alpha-beta examines the leaves $4,6,1,5,2$ and prunes $8$."
+    },
+    {
+      "title": "A three-ply tree",
+      "prompt": "The root is a maximizer. Each child is a minimizer, and each of those has two maximizer children. The leaves are $((3,5),(6,2))$ on the left and $((1,8),(4,7))$ on the right. Find the root and one pruned leaf.",
+      "steps": [
+        "The left minimizer's first maximizer reads $3$ then $5$ and returns $5$. The minimizer's beta becomes $5$.",
+        "The next maximizer reads $6$. Its alpha is now $6$, and $6\\ge 5$, so the leaf $2$ is pruned. The left minimizer's children are worth $5$ and at least $6$, so it returns $5$. The root's alpha becomes $5$.",
+        "The right minimizer reads $1$ and $8$ under its first maximizer (that maximizer returns $8$) and reads $4$ and $7$ under its second (that maximizer returns $7$). The minimizer returns $\\min(8,7)=7$.",
+        "The root takes $\\max(5,7)=7$. Full minimax, including the unread leaf $2$, also returns $7$, because $\\max(6,2)=6$ and $\\min(5,6)=5$ on the left."
+      ],
+      "answer": "The root value is $7$. The pruned leaf is $2$. The leaves $1,8,4,7$ on the right are all examined."
+    }
+  ],
+  "traps": [
+    "Thinking a prune changes the root. On the two-ply tree the root is $4$ with or without reading the leaf $8$.",
+    "Swapping the names: alpha is the maximizer's forced value, beta the minimizer's. The test is $\\alpha\\ge\\beta$, not $\\alpha<\\beta$.",
+    "Reading the value returned at a cutoff as that subtree's minimax value. A minimizer whose children are $5$ and a maximizer of $\\{6,9\\}$ returns $5$ and never reads $9$. The maximizer's own value is $9$, not the $6$ it had when it stopped.",
+    "Assuming both players' optimal root value changes if the opponent later plays badly. The backed-up number is the value under optimal play. A mistake by the opponent can only help the player who does not mistake.",
+    "Treating the square-root branching estimate as the definition of alpha-beta. The definition is the minimax value plus the prune test. The estimate needs perfect ordering and is only a size consequence."
+  ],
+  "python": "def ab(node, alpha, beta, maxi, seen):\n    if isinstance(node, int):\n        seen.append(node)\n        return node\n    if maxi:\n        value = -10**9\n        for child in node:\n            value = max(value, ab(child, alpha, beta, False, seen))\n            alpha = max(alpha, value)\n            if alpha >= beta:\n                break\n        return value\n    value = 10**9\n    for child in node:\n        value = min(value, ab(child, alpha, beta, True, seen))\n        beta = min(beta, value)\n        if alpha >= beta:\n            break\n    return value\n\ndef minimax(node, maxi):\n    if isinstance(node, int):\n        return node\n    vals = [minimax(child, not maxi) for child in node]\n    return max(vals) if maxi else min(vals)\n\ntwo = [[4, 6], [1, 8], [5, 2]]\nseen = []\nroot = ab(two, -10**9, 10**9, True, seen)\nassert root == 4 and minimax(two, True) == 4\nassert seen == [4, 6, 1, 5, 2] and 8 not in seen\nthree = [[[3, 5], [6, 2]], [[1, 8], [4, 7]]]\nseen3 = []\nroot3 = ab(three, -10**9, 10**9, True, seen3)\nassert root3 == 7 and minimax(three, True) == 7\nassert seen3 == [3, 5, 6, 1, 8, 4, 7] and 2 not in seen3\nbound = [5, [6, 9]]\nseen_b = []\nassert ab(bound, -10**9, 10**9, False, seen_b) == 5\nassert 9 not in seen_b and minimax(bound, False) == 5\nquestion = [[9, 12], [3, 14], [8, 10]]\nseen_q = []\nassert ab(question, -10**9, 10**9, True, seen_q) == 9\nassert seen_q == [9, 12, 3, 8] and len(seen_q) == 4\nprint(root, root3, len(seen_q))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The root is a maximizer. Its three minimizer children have leaves $(9,12)$, $(3,14)$, and $(8,10)$, left to right. The minimax value of the root is",
+      "options": [
+        "$8$",
+        "$3$",
+        "$9$",
+        "$12$"
+      ],
+      "answer": [
+        "C"
+      ],
+      "solution": "The answer is **C**, $9$. The minimizers return $\\min(9,12)=9$, $\\min(3,14)=3$, and $\\min(8,10)=8$. The root returns $\\max(9,3,8)=9$. The $12$ is a leaf under the first minimizer, and that minimizer keeps the smaller leaf."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Alpha-beta, left to right, on that same tree examines which leaves?",
+      "options": [
+        "$9,12,3,14,8,10$",
+        "$9,12,3,8$",
+        "$9,3,8$",
+        "$12,14,10$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**, the leaves $9,12,3,8$. The first minimizer must read both $9$ and $12$ to return $9$, and the root's alpha becomes $9$. The next minimizer reads $3$ and stops, because alpha $9$ is already at least beta $3$, so $14$ is pruned. The last minimizer reads $8$ and stops, because $9\\ge 8$, so $10$ is pruned."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Alpha is the best value the maximizer can already force.",
+        "Beta is the best value the minimizer can already force.",
+        "The prune test is $\\alpha<\\beta$.",
+        "On the tree with leaves $(9,12)$, $(3,14)$, $(8,10)$, alpha-beta and minimax agree that the root is $9$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Alpha and beta are the forced values already available to the maximizer and the minimizer. The prune fires when alpha is at least beta, so C has the inequality backwards. Both algorithms return $9$ on that tree; alpha-beta simply never reads $14$ or $10$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A three-ply tree has maximizer root, minimizer children, and maximizer grandchildren. The leaves are $((3,5),(6,2))$ on the left and $((1,8),(4,7))$ on the right. Which of the following are true?",
+      "options": [
+        "The minimax value of the root is $7$.",
+        "Alpha-beta prunes the leaf $2$.",
+        "Alpha-beta prunes the leaf $8$.",
+        "The root value is the same whether or not the pruned leaf is read."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The left side backs up to $5$ and the right side to $\\min(8,7)=7$, so the root is $\\max(5,7)=7$. After the left maximizer has seen $6$ against a beta of $5$, the leaf $2$ is cut. The leaf $8$ is read, because it sits under the right-hand maximizer that is still allowed to look. Cutting $2$ does not move the root: $\\max(6,2)$ is still $6$, and the left minimizer is still $5$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Alpha-beta is run left to right on the maximizer root whose minimizer children have leaves $(9,12)$, $(3,14)$, and $(8,10)$. How many leaves are examined?",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**. The examined leaves are $9$, $12$, $3$, and $8$. The leaf $14$ is pruned once beta falls to $3$ under an alpha of $9$, and the leaf $10$ is pruned once beta falls to $8$ under that same alpha. Six leaves sit in the tree and two of them are not read."
+    }
+  ]
+}

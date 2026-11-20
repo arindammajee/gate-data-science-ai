@@ -1,0 +1,160 @@
+{
+  "slug": "projections",
+  "section": "linear-algebra",
+  "title": "Projections",
+  "syllabus": "Projections",
+  "minutes": 30,
+  "summary": "The orthogonal projection of a vector onto a line is a scalar multiple of the direction. Onto a subspace, the coefficient vector solves the normal equations, and the residual is orthogonal to every column.",
+  "keywords": [
+    "projection",
+    "normal equations",
+    "residual",
+    "least squares",
+    "orthogonal"
+  ],
+  "intuition": "Projecting a vector onto a line is the geometry of a shadow. Given a nonzero direction $u$ and a vector $v$, the projection is the multiple of $u$ that lands closest to $v$. The error $v-\\mathrm{proj}_u v$ has to be perpendicular to $u$, and that one condition fixes the scalar: $\\mathrm{proj}_u v=(u^\\top v/u^\\top u)\\,u$. The denominator is the squared length of $u$, so $u$ does not need to be a unit vector. If it is, the formula collapses to $(u^\\top v)u$.\n\nA subspace with several directions is the same idea with a matrix. Let the columns of $A$ be a basis of the subspace, and let $b$ be the vector being projected. The projection is $A\\hat x$ for the coefficient vector $\\hat x$ that makes the residual $b-A\\hat x$ orthogonal to every column. Orthogonality to the columns is the matrix equation $A^\\top(b-A\\hat x)=0$, which rearranges to the normal equations $A^\\top A\\hat x=A^\\top b$. Full column rank makes $A^\\top A$ invertible, so there is one $\\hat x$. The residual is then orthogonal to the whole column space, and $A\\hat x$ is the closest point of that subspace to $b$.\n\nThe matrix that sends every $b$ to its projection is the projection matrix of the projection-matrix lesson, namely $P=A(A^\\top A)^{-1}A^\\top$ when the columns are independent. That lesson records the algebraic facts $P^2=P=P^\\top$, the eigenvalues $0$ and $1$, and the equality of trace and rank. This lesson stops at the vector you land on and at the residual being orthogonal to the columns. Computing $P$ and multiplying is optional once the normal equations have been solved.",
+  "definitions": [
+    {
+      "term": "Projection onto a line",
+      "body": "For $u\\neq 0$, the orthogonal projection of $v$ onto the span of $u$ is $\\mathrm{proj}_u v=(u^\\top v/u^\\top u)\\,u$. The residual $v-\\mathrm{proj}_u v$ is orthogonal to $u$."
+    },
+    {
+      "term": "Normal equations",
+      "body": "If the columns of $A$ span the target subspace, the coefficient vector $\\hat x$ of the projection of $b$ satisfies $A^\\top A\\hat x=A^\\top b$. The projected vector is $A\\hat x$."
+    },
+    {
+      "term": "Residual",
+      "body": "The residual is $r=b-A\\hat x$. When $\\hat x$ solves the normal equations, $A^\\top r=0$: the residual is orthogonal to every column of $A$, hence to the whole column space."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Geometric projection",
+      "latex": "\\mathrm{proj}_u v=\\frac{u^\\top v}{u^\\top u}u",
+      "note": "Onto a line. The direction $u$ is nonzero and need not be a unit vector."
+    },
+    {
+      "name": "Normal equations",
+      "latex": "A^\\top A\\hat x=A^\\top b",
+      "note": "Onto the column space of $A$. The residual $b-A\\hat x$ is orthogonal to that column space. The matrix form of the same map is in the projection-matrix lesson."
+    }
+  ],
+  "properties": [
+    "On a line, $\\mathrm{proj}_u v=(u^\\top v/u^\\top u)\\,u$. The residual is orthogonal to $u$, and $\\|v\\|^2=\\|\\mathrm{proj}_u v\\|^2+\\|v-\\mathrm{proj}_u v\\|^2$.",
+    "On a subspace with basis the columns of $A$, the coefficients solve $A^\\top A\\hat x=A^\\top b$, and the projection is $A\\hat x$.",
+    "The residual $r=b-A\\hat x$ satisfies $A^\\top r=0$. It is orthogonal to every column, not merely to one of them.",
+    "If $b$ is already in the column space, the residual is $0$ and $A\\hat x=b$. Projection does not move a vector that is already in the subspace.",
+    "The matrix of this map is treated in the projection-matrix lesson. The identities $P^2=P=P^\\top$ belong there; the vector arithmetic belongs here."
+  ],
+  "examples": [
+    {
+      "title": "Projection onto a line in $\\mathbb{R}^2$",
+      "prompt": "Project $v=(3,1)^\\top$ onto the span of $u=(1,2)^\\top$. Compute the residual and check that it is orthogonal to $u$.",
+      "steps": [
+        "The two scalars are $u^\\top v=3+2=5$ and $u^\\top u=1+4=5$. The coefficient is $5/5=1$, so $\\mathrm{proj}_u v=1\\cdot(1,2)^\\top=(1,2)^\\top$.",
+        "The residual is $v-\\mathrm{proj}_u v=(3-1,\\ 1-2)^\\top=(2,-1)^\\top$.",
+        "Its dot product with $u$ is $1\\cdot 2+2\\cdot(-1)=0$. The squared lengths add: $\\|v\\|^2=10$, $\\|\\mathrm{proj}_u v\\|^2=5$, and $\\|r\\|^2=4+1=5$."
+      ],
+      "answer": "The projection is $(1,2)^\\top$ and the residual is $(2,-1)^\\top$, which is orthogonal to $(1,2)^\\top$."
+    },
+    {
+      "title": "Normal equations for a plane in $\\mathbb{R}^3$",
+      "prompt": "Let the columns of $A=\\begin{pmatrix}1&0\\\\0&1\\\\1&1\\end{pmatrix}$ span the subspace, and let $b=(1,1,0)^\\top$. Solve the normal equations and check that the residual is orthogonal to both columns.",
+      "steps": [
+        "First $A^\\top A=\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$ and $A^\\top b=(1,1)^\\top$. The system $2\\hat x_1+\\hat x_2=1$, $\\hat x_1+2\\hat x_2=1$ has solution $\\hat x_1=\\hat x_2=\\tfrac13$.",
+        "The projection is $A\\hat x=\\bigl(\\tfrac13,\\tfrac13,\\tfrac23\\bigr)^\\top$. The residual is $b-A\\hat x=\\bigl(\\tfrac23,\\tfrac23,-\\tfrac23\\bigr)^\\top$.",
+        "Dot the residual with the first column: $\\tfrac23+0-\\tfrac23=0$. Dot it with the second: $0+\\tfrac23-\\tfrac23=0$. So $A^\\top r=0$. The same point is what the projection matrix of the projection-matrix lesson returns as $Pb$; the matrix identities are proved there."
+      ],
+      "answer": "$\\hat x=\\bigl(\\tfrac13,\\tfrac13\\bigr)^\\top$ and the projection is $\\bigl(\\tfrac13,\\tfrac13,\\tfrac23\\bigr)^\\top$. The residual $\\bigl(\\tfrac23,\\tfrac23,-\\tfrac23\\bigr)^\\top$ is orthogonal to both columns."
+    }
+  ],
+  "traps": [
+    "Forgetting the denominator $u^\\top u$. The formula $(u^\\top v)u$ is the projection onto a unit vector only. For $u=(1,2)^\\top$ it would return $(5,10)^\\top$ instead of $(1,2)^\\top$.",
+    "Solving $Ax=b$ when $b$ is not in the column space. The right equation is $A^\\top A\\hat x=A^\\top b$. The residual is supposed to be orthogonal to the columns, not necessarily zero.",
+    "Checking orthogonality of the residual against one column and stopping. $A^\\top r=0$ is one equation per column. Both columns in the plane example have to be checked, or the single product $A^\\top r$ computed.",
+    "Re-deriving $P^2=P=P^\\top$ in place of the residual check. Those matrix facts belong to the projection-matrix lesson. Here the object to compute is $\\mathrm{proj}_u v$ or $A\\hat x$."
+  ],
+  "python": "def dot(u, v):\n    return sum(a * b for a, b in zip(u, v))\n\nu, v = [1, 2], [3, 1]\ncoeff = dot(u, v) / dot(u, u)\nproj = [coeff * t for t in u]\nresid = [v[i] - proj[i] for i in range(2)]\nassert proj == [1, 2]\nassert resid == [2, -1]\nassert dot(resid, u) == 0\nassert dot(proj, proj) + dot(resid, resid) == dot(v, v)\n\nA = [[1, 0], [0, 1], [1, 1]]\n# A^T A = [[2, 1], [1, 2]], A^T b = [1, 1], xhat = [1/3, 1/3]\np = [1 / 3, 1 / 3, 2 / 3]\nr = [1 - 1 / 3, 1 - 1 / 3, 0 - 2 / 3]\ncol1, col2 = [1, 0, 1], [0, 1, 1]\nassert abs(dot(r, col1)) < 1e-12\nassert abs(dot(r, col2)) < 1e-12\nassert abs(sum(p) - 4 / 3) < 1e-12\nprint(1)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The orthogonal projection of a vector $v$ onto the span of a nonzero vector $u$ is",
+      "options": [
+        "$(u^\\top v/u^\\top u)\\,u$",
+        "$(u^\\top u/u^\\top v)\\,u$",
+        "$u+v$",
+        "$(u^\\top v)\\,u$, for every nonzero $u$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The coefficient is the dot product $u^\\top v$ divided by the squared length $u^\\top u$. Option B inverts the fraction. Option D is correct only when $u$ is a unit vector; for $u=(1,2)^\\top$ and $v=(3,1)^\\top$ it gives the wrong vector $(5,10)^\\top$ instead of $(1,2)^\\top$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The columns of $A$ are linearly independent. The coefficient vector of the orthogonal projection of $b$ onto the column space satisfies",
+      "options": [
+        "$A^\\top A\\hat x=A^\\top b$",
+        "$AA^\\top\\hat x=b$",
+        "$\\hat x=b$",
+        "$A\\hat x=0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Orthogonality of the residual to the columns is $A^\\top(b-A\\hat x)=0$, which is the normal equation $A^\\top A\\hat x=A^\\top b$. The unknown $\\hat x$ lives in the coefficient space, whose dimension is the number of columns, so it is not equal to $b$ in general. The residual is zero only when $b$ is already in the column space."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "The residual $r=b-A\\hat x$ comes from a solution of the normal equations. Which of the following are true?",
+      "options": [
+        "$r$ is orthogonal to every column of $A$.",
+        "$A^\\top r=0$.",
+        "$r$ is orthogonal to the column space of $A$.",
+        "$r$ is the zero vector for every $b$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The normal equations are exactly $A^\\top r=0$, which says the residual is orthogonal to every column and therefore to every linear combination of the columns. The residual is zero only when $b$ lies in the column space. A vector outside that subspace has a nonzero residual."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $u=\\begin{pmatrix}1\\\\2\\end{pmatrix}$ and $v=\\begin{pmatrix}3\\\\1\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$\\mathrm{proj}_u v=\\begin{pmatrix}1\\\\2\\end{pmatrix}$.",
+        "The residual $v-\\mathrm{proj}_u v$ equals $\\begin{pmatrix}2\\\\-1\\end{pmatrix}$.",
+        "The residual is orthogonal to $u$.",
+        "$\\mathrm{proj}_u v=v$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Here $u^\\top v=5$ and $u^\\top u=5$, so the projection equals $u$ itself, namely $(1,2)^\\top$. The residual is $(3,1)^\\top-(1,2)^\\top=(2,-1)^\\top$, and $(2)(1)+(-1)(2)=0$. The vector $v$ is not on the line, so the projection is not $v$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $u=\\begin{pmatrix}1\\\\2\\end{pmatrix}$ and $v=\\begin{pmatrix}3\\\\1\\end{pmatrix}$. Enter $\\|\\mathrm{proj}_u v\\|^2$.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**. The projection is $(1,2)^\\top$, and $1^2+2^2=5$. As a check, the residual $(2,-1)^\\top$ has squared length $5$, and $5+5=10=\\|v\\|^2$."
+    }
+  ]
+}

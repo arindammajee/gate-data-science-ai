@@ -1,0 +1,171 @@
+{
+  "slug": "predicate-logic",
+  "section": "artificial-intelligence",
+  "title": "Predicate logic",
+  "syllabus": "Logic, predicate",
+  "minutes": 35,
+  "summary": "Predicates, quantifiers, scope, and the fact that the order of a universal and an existential changes the English sentence. Negation flips the quantifier.",
+  "keywords": [
+    "quantifier",
+    "scope",
+    "free variable",
+    "bound variable",
+    "unification"
+  ],
+  "intuition": "Predicate logic names objects and then says something about them. A term is an object: a constant, a variable, or a function applied to terms. A predicate is a property or a relation. $Room(x)$ and $Opens(y,x)$ are not sentences until the variables are bound or the context says they are free. The quantifiers are $\\forall$ and $\\exists$. The scope of a quantifier is the parenthesized formula written immediately after it. An occurrence inside that scope is bound. An occurrence outside it is free.\n\nNegation swaps the quantifier and moves inward. 'Not everyone passed' is 'someone did not pass', and 'there is no one who passed' is 'everyone did not pass'. The two English sentences are not the same, and the two formulas are not the same. $\\neg\\forall x\\,P(x)$ is $\\exists x\\,\\neg P(x)$. $\\neg\\exists x\\,P(x)$ is $\\forall x\\,\\neg P(x)$.\n\n$$\n\\forall x\\,\\exists y\\,R(x,y)\\not\\equiv \\exists y\\,\\forall x\\,R(x,y)\n$$\n\nOrder is the whole question for a pair like 'every room has a key' and 'one key opens every room'. The first says that the key is allowed to depend on the room. The second says one key works for all of them. The second implies the first. The first does not imply the second, and a two-element relation is enough to see the gap. A single substitution is enough to check a unification: apply it to both atoms and see whether the results are identical.\n",
+  "definitions": [
+    {
+      "term": "Predicate and term",
+      "body": "A term denotes an object. A predicate, applied to the right number of terms, is an atomic formula. $Opens(y,x)$ says the pair $(y,x)$ stands in the relation."
+    },
+    {
+      "term": "Scope",
+      "body": "The scope is the formula in parentheses after the quantifier. In $(\\forall x\\,P(x))\\to Q(x)$ the $x$ in $Q(x)$ is free. In $\\forall x\\,(P(x)\\to Q(x))$ both occurrences are bound."
+    },
+    {
+      "term": "Free and bound",
+      "body": "A bound occurrence sits inside the scope of a quantifier using that variable. A free occurrence does not. A sentence meant for a truth value should have no free variables."
+    },
+    {
+      "term": "Most general unifier",
+      "body": "A substitution that makes two atoms identical, and does so without extra commitments. $P(x,f(a))$ and $P(b,y)$ become the same atom under $\\{x\\mapsto b,\\ y\\mapsto f(a)\\}$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Negated universal",
+      "latex": "\\neg\\forall x\\,P(x)\\equiv\\exists x\\,\\neg P(x)",
+      "note": "Not-all becomes exists-not. It does not become $\\forall x\\,\\neg P(x)$."
+    },
+    {
+      "name": "Negated existential",
+      "latex": "\\neg\\exists x\\,P(x)\\equiv\\forall x\\,\\neg P(x)",
+      "note": "There-is-no becomes for-all-not."
+    },
+    {
+      "name": "Quantifier order",
+      "latex": "\\forall x\\,\\exists y\\,R(x,y)\\not\\equiv\\exists y\\,\\forall x\\,R(x,y)",
+      "note": "The existential-first sentence implies the universal-first sentence. The converse is false."
+    }
+  ],
+  "properties": [
+    "$\\neg\\forall x\\,P(x)\\equiv\\exists x\\,\\neg P(x)$ and $\\neg\\exists x\\,P(x)\\equiv\\forall x\\,\\neg P(x)$. Negation flips the quantifier.",
+    "$\\forall x\\,\\exists y\\,R(x,y)$ does not imply $\\exists y\\,\\forall x\\,R(x,y)$. The witness $y$ in the first sentence may depend on $x$.",
+    "$\\exists y\\,\\forall x\\,R(x,y)$ does imply $\\forall x\\,\\exists y\\,R(x,y)$: reuse the same witness for every $x$.",
+    "The scope is whatever the parentheses enclose. A variable written again outside that scope is a different, free occurrence.",
+    "'All rooms have keys' is a universal of an implication, $\\forall x\\,(Room(x)\\to\\exists y\\,(Key(y)\\wedge Opens(y,x)))$. Using $\\wedge$ in place of $\\to$ says everything in the domain is a room."
+  ],
+  "examples": [
+    {
+      "title": "Two English sentences, two orders",
+      "prompt": "Translate 'Every room has a key that opens it' and 'There is a key that opens every room'. On the domain $\\{1,2\\}$ with $R=\\{(1,2),(2,1)\\}$, show that $\\forall x\\,\\exists y\\,R(x,y)$ can hold while $\\exists y\\,\\forall x\\,R(x,y)$ fails.",
+      "steps": [
+        "The first English sentence lets the key depend on the room: $\\forall x\\,(Room(x)\\to\\exists y\\,(Key(y)\\wedge Opens(y,x)))$.",
+        "The second demands one key up front: $\\exists y\\,(Key(y)\\wedge\\forall x\\,(Room(x)\\to Opens(y,x)))$. The second implies the first. A room-by-room choice of keys does not give the second.",
+        "On $\\{1,2\\}$ with $R=\\{(1,2),(2,1)\\}$, every $x$ has a $y$: $1$ is related to $2$, and $2$ is related to $1$. So $\\forall x\\,\\exists y\\,R(x,y)$ is true.",
+        "No single $y$ works for both $x$. For $y=1$, $R(2,1)$ is missing. For $y=2$, $R(1,2)$ is present but $R(2,2)$ is missing. So $\\exists y\\,\\forall x\\,R(x,y)$ is false."
+      ],
+      "answer": "The order is the difference between a key per room and one key for every room. On this relation the $\\forall\\exists$ sentence is true and the $\\exists\\forall$ sentence is false."
+    },
+    {
+      "title": "A negation, and one substitution",
+      "prompt": "On domain $\\{1,2\\}$ let $P$ hold only of $1$. Compare $\\neg\\forall x\\,P(x)$ with $\\forall x\\,\\neg P(x)$. Then unify $P(x,f(a))$ with $P(b,y)$.",
+      "steps": [
+        "$\\forall x\\,P(x)$ is false, because $2$ is not in $P$, so the negation $\\neg\\forall x\\,P(x)$ is true. Equivalently $\\exists x\\,\\neg P(x)$ holds at $x=2$.",
+        "$\\forall x\\,\\neg P(x)$ is false, because $1$ satisfies $P$. 'Not everyone' is not 'no one'.",
+        "The substitution $\\{x\\mapsto b,\\ y\\mapsto f(a)\\}$ sends $P(x,f(a))$ to $P(b,f(a))$ and sends $P(b,y)$ to $P(b,f(a))$. The two atoms match.",
+        "The substitution $\\{x\\mapsto f(a),\\ y\\mapsto b\\}$ sends the first atom to $P(f(a),f(a))$ and the second to $P(b,b)$. Those are different, so it is not a unifier."
+      ],
+      "answer": "$\\neg\\forall x\\,P(x)$ holds and $\\forall x\\,\\neg P(x)$ does not. The checked unifier is $\\{x\\mapsto b,\\ y\\mapsto f(a)\\}$."
+    }
+  ],
+  "traps": [
+    "Pushing $\\neg$ through $\\forall$ without changing the quantifier. $\\neg\\forall x\\,P(x)$ is $\\exists x\\,\\neg P(x)$, not $\\forall x\\,\\neg P(x)$.",
+    "Swapping the order and keeping the English. 'Every room has a key' is not 'a key opens every room'.",
+    "Writing $\\forall x\\,(Room(x)\\wedge HasKey(x))$ for 'every room has a key'. The conjunction says every object is a room. The implication restricts the claim to rooms.",
+    "Treating the $x$ in $(\\forall x\\,P(x))\\to Q(x)$ as bound. The scope ended at $P(x)$, so the $x$ in $Q(x)$ is free.",
+    "Unifying $x$ with $f(x)$. The equation $x=f(x)$ has no finite term as a solution, so those two terms do not unify."
+  ],
+  "python": "dom = {1, 2}\nR = {(1, 2), (2, 1)}\nassert all(any((x, y) in R for y in dom) for x in dom)\nassert not any(all((x, y) in R for x in dom) for y in dom)\nP = {1}\ndomain = {1, 2}\nassert (not all(x in P for x in domain)) and (not all(x not in P for x in domain))\nLoves = {(1, 1), (1, 2), (2, 2), (2, 3), (3, 3)}\nD = {1, 2, 3}\ncount = sum(1 for x in D if sum((x, y) in Loves for y in D) >= 2)\nassert count == 2\n\ndef apply_pair(args, sub):\n    out = []\n    for arg in args:\n        out.append(sub[arg] if isinstance(arg, str) and arg in sub else arg)\n    return tuple(out)\n\ngood = {\"x\": \"b\", \"y\": (\"f\", \"a\")}\nleft = apply_pair((\"x\", (\"f\", \"a\")), good)\nright = apply_pair((\"b\", \"y\"), good)\nassert left == right == (\"b\", (\"f\", \"a\"))\nbad = {\"x\": (\"f\", \"a\"), \"y\": \"b\"}\nassert apply_pair((\"x\", (\"f\", \"a\")), bad) != apply_pair((\"b\", \"y\"), bad)\nprint(count)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which formula translates 'There is a key that opens every room'?",
+      "options": [
+        "$\\forall x\\,(Room(x)\\to\\exists y\\,(Key(y)\\wedge Opens(y,x)))$",
+        "$\\exists y\\,(Key(y)\\wedge\\forall x\\,(Room(x)\\to Opens(y,x)))$",
+        "$\\forall x\\,\\exists y\\,(Room(x)\\wedge Key(y)\\wedge Opens(y,x))$",
+        "$\\exists y\\,\\forall x\\,(Key(y)\\wedge Room(x)\\wedge Opens(y,x))$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. One key is chosen first, and then that same key has to open every room, so the existential is outside the universal and $Room(x)$ sits in an implication. Option A is the other order: every room may have its own key. Option C forces every object to be a room. Option D says every object is both a key and a room."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which substitution unifies $P(x,f(a))$ and $P(b,y)$?",
+      "options": [
+        "$\\{x\\mapsto f(a),\\ y\\mapsto b\\}$",
+        "$\\{x\\mapsto b,\\ y\\mapsto f(a)\\}$",
+        "$\\{x\\mapsto a,\\ y\\mapsto b\\}$",
+        "$\\{x\\mapsto b,\\ y\\mapsto a\\}$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Applying $\\{x\\mapsto b,\\ y\\mapsto f(a)\\}$ to both atoms produces $P(b,f(a))$. Option A produces $P(f(a),f(a))$ from the first atom and $P(b,b)$ from the second. Option D sends $y$ to $a$ rather than to the term $f(a)$, so the second arguments differ."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Domain $\\{1,2\\}$ and $R=\\{(1,2),(2,1)\\}$. Which of the following are true?",
+      "options": [
+        "$\\forall x\\,\\exists y\\,R(x,y)$ is true in this model.",
+        "$\\exists y\\,\\forall x\\,R(x,y)$ is true in this model.",
+        "The two quantified sentences are not equivalent.",
+        "$\\forall x\\,\\exists y\\,R(x,y)$ implies $\\exists y\\,\\forall x\\,R(x,y)$ in every model."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**. For $x=1$ take $y=2$, and for $x=2$ take $y=1$, so the $\\forall\\exists$ sentence is true. Neither $y=1$ nor $y=2$ is related to both domain elements, because $R(1,1)$ and $R(2,2)$ are absent, so B is false. This model is a countermodel to D, which is why the two sentences are not equivalent."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "$\\neg\\forall x\\,P(x)$ is equivalent to $\\exists x\\,\\neg P(x)$.",
+        "$\\neg\\exists x\\,P(x)$ is equivalent to $\\forall x\\,\\neg P(x)$.",
+        "$\\neg\\forall x\\,P(x)$ is equivalent to $\\forall x\\,\\neg P(x)$.",
+        "In $\\forall x\\,(P(x)\\to Q(x))$ both occurrences of $x$ are bound."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Negation flips $\\forall$ to $\\exists$ and $\\exists$ to $\\forall$, and the predicate is negated. C drops the flip: on domain $\\{1,2\\}$ with $P$ true only of $1$, not-all is true while for-all-not is false. In D the parentheses put both occurrences of $x$ inside the scope of $\\forall x$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Domain $\\{1,2,3\\}$ and $Loves=\\{(1,1),(1,2),(2,2),(2,3),(3,3)\\}$. How many domain elements $x$ are related by $Loves$ to at least two elements $y$?",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. Element $1$ loves $1$ and $2$. Element $2$ loves $2$ and $3$. Element $3$ loves only $3$. Exactly two elements meet the threshold of two related $y$ values. The sentence $\\exists y\\,Loves(x,y)$ would instead be true of all three."
+    }
+  ]
+}

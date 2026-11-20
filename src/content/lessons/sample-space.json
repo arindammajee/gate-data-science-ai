@@ -1,0 +1,158 @@
+{
+  "slug": "sample-space",
+  "section": "probability",
+  "title": "Sample space",
+  "syllabus": "Sample space.",
+  "minutes": 25,
+  "summary": "The sample space is the set of outcomes. It may be finite, countably infinite, or uncountable, and equally likely outcomes are an extra assumption.",
+  "keywords": [
+    "sample space",
+    "outcome",
+    "equally likely",
+    "discrete",
+    "continuous"
+  ],
+  "intuition": "Before a probability is a number, it is a list of what can happen. The sample space $S$ is that list, written as a set. A single element of $S$ is an outcome. An event, in the next lesson, is a subset of this set. If the sample space is wrong, every later fraction is answering a different experiment.\n\nSample spaces come in two sizes that matter here. A discrete sample space is finite or countably infinite, such as the 36 ordered pairs from two dice, or the set $\\{1,2,3,\\ldots\\}$ of tosses until the first head. A continuous sample space is uncountable, typically an interval or a region in the plane. On a continuous space a single point has probability 0. Probabilities come from lengths, areas, or densities, not from counting points.\n\nA finite list does not by itself make the outcomes equally likely. The phrase 'number of favourable outcomes over number of outcomes' is the uniform model, and it is legal only when the model says each outcome has the same probability. A bag with three red chips and one blue chip can be written as $\\{\\text{red},\\text{blue}\\}$, but those two labels are not equally likely. The uniform model belongs on the four chips, not on the two colours.",
+  "definitions": [
+    {
+      "term": "Sample space",
+      "body": "The set $S$ of all outcomes of an experiment. Exactly one outcome occurs when the experiment runs."
+    },
+    {
+      "term": "Outcome",
+      "body": "One element of the sample space. For two distinguishable dice, the outcome $(2,5)$ is different from the outcome $(5,2)$."
+    },
+    {
+      "term": "Discrete sample space",
+      "body": "A sample space that is finite or countably infinite. Its outcomes can be listed in a finite list or in a sequence $s_1,s_2,s_3,\\ldots$."
+    },
+    {
+      "term": "Continuous sample space",
+      "body": "An uncountable sample space, typically an interval or a region of $\\mathbb{R}^k$. A single outcome then has probability 0, and events are described by subsets with positive length or volume."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Uniform model on a finite space",
+      "latex": "P(A)=\\frac{|A|}{|S|}",
+      "note": "Use this only when the model says the outcomes are equally likely. It is not the definition of probability."
+    },
+    {
+      "name": "A point in a continuous model",
+      "latex": "P(\\{x\\})=0",
+      "note": "For a continuous distribution on an interval. The probability of an event comes from a set of outcomes, not from one point."
+    }
+  ],
+  "properties": [
+    "The sample space depends on how the experiment is described. One coin has sample space $\\{H,T\\}$. Two ordered coin tosses have sample space $\\{HH,HT,TH,TT\\}$.",
+    "Equally likely outcomes are a modelling choice. A finite sample space can carry any probabilities that are nonnegative and sum to 1.",
+    "A countably infinite sample space is still discrete. The number of tosses until the first head is such a space.",
+    "In a continuous uniform model on an interval, subintervals of equal length have equal probability, and every singleton has probability 0.",
+    "Changing the labels from distinguishable chips to colours can destroy a uniform model. The probability then sits on the original outcomes and is pushed forward onto the labels."
+  ],
+  "examples": [
+    {
+      "title": "Four chips, or two colours",
+      "prompt": "A bag contains three red chips R1, R2, R3 and one blue chip B. One chip is drawn uniformly. Compare the sample space of chips with the sample space of colours, and find the probability that the drawn chip is red.",
+      "steps": [
+        "The uniform experiment has sample space $S=\\{R1,R2,R3,B\\}$, with four equally likely outcomes. The model says each chip has probability $1/4$.",
+        "The event 'red' is the subset $\\{R1,R2,R3\\}$, so its probability is $3/4$. The event 'blue' has probability $1/4$.",
+        "The two-label set $\\{\\text{red},\\text{blue}\\}$ is a different sample space. Treating those two labels as equally likely would assign probability $1/2$ to red, which contradicts the four-chip model."
+      ],
+      "answer": "Under the uniform draw, $P(\\text{red})=3/4$. Equally likely applies to the four chips, not to the two colour labels."
+    },
+    {
+      "title": "An arrival time on an interval",
+      "prompt": "A bus arrival time, measured in minutes from now, is modelled as uniform on the interval $[0,30]$. Describe the sample space and find the probability that the bus arrives before minute 12. Also find the probability that it arrives at exactly minute 12.",
+      "steps": [
+        "The sample space is the uncountable interval $S=[0,30]$. There is no finite list of equally likely outcomes to count.",
+        "Uniformity means probability is length divided by 30. The event 'before minute 12' is the interval $[0,12)$, of length 12, so the probability is $12/30=2/5$.",
+        "The event 'exactly minute 12' is a single point. A continuous uniform model assigns probability 0 to every singleton, so that probability is 0. It is not $1/30$."
+      ],
+      "answer": "The sample space is $[0,30]$, the probability of arriving before minute 12 is $2/5$, and the probability of arriving at exactly minute 12 is 0."
+    }
+  ],
+  "traps": [
+    "Writing $\\{H,T\\}$ for two coin tosses. That sample space cannot tell HT from TH, and it hides the four-outcome uniform model.",
+    "Dividing favourable labels by the number of labels when the labels are not equally likely. Three red chips and one blue chip are not a two-outcome uniform experiment.",
+    "Assigning a positive probability to a single point of a continuous uniform interval. The point has probability 0; an interval around it does not.",
+    "Treating a countably infinite sample space as continuous. The set $\\{1,2,3,\\ldots\\}$ is discrete, and its points may have positive probability."
+  ],
+  "python": "outcomes = [(a, b) for a in range(1, 7) for b in range(1, 7)]\nassert len(outcomes) == 36\nassert sum(a + b == 8 for a, b in outcomes) == 5\nassert 2 ** 5 == 32\nassert 12 / 30 == 2 / 5\nprint(36, 5, 32)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Two distinguishable dice are rolled, and the outcome is the ordered pair of faces. The sample space contains how many outcomes?",
+      "options": [
+        "$36$",
+        "$12$",
+        "$6$",
+        "$11$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $36$.\n\nEach die has 6 faces and the dice are distinguishable, so the sample space is the set of ordered pairs and has $6\\times 6=36$ outcomes. Option B adds the two faces instead of multiplying. Option D counts the possible sums from 2 to 12, which are events, not the outcomes of the ordered experiment."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A spinner selects a point uniformly from the interval $[0,1]$. Which statement is correct?",
+      "options": [
+        "The probability that the point equals $1/2$ is 0.",
+        "The probability that the point equals $1/2$ is $1/2$.",
+        "The sample space consists of the two numbers 0 and 1.",
+        "Two subintervals of equal length can have different probabilities under this uniform model."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe sample space is the uncountable interval $[0,1]$, and the uniform model gives every singleton probability 0. Option B treats the point as if it owned half the length. Option C replaces the interval by its endpoints. Option D contradicts uniformity: equal lengths receive equal probabilities."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The number of tosses of a fair coin until the first head has the countably infinite sample space $\\{1,2,3,\\ldots\\}$.",
+        "Equally likely outcomes are an extra modelling assumption, not a consequence of the sample space being finite.",
+        "Every sample space is finite.",
+        "In a continuous uniform model on an interval, a single point has probability 0."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA describes a discrete but infinite sample space: the experiment stops at toss $n$ for some positive integer $n$. B is the warning about the uniform formula. D is the singleton rule for a continuous model. C is false because both countably infinite and uncountable sample spaces occur."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Two fair distinguishable dice are rolled, and the 36 ordered outcomes are equally likely. The number of outcomes in which the faces sum to 8 is $N$. Enter $N$.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**.\n\nThe ordered pairs are $(2,6)$, $(3,5)$, $(4,4)$, $(5,3)$, and $(6,2)$. There are 5 of them. The probability of the event is $5/36$, but the question asks for the number of outcomes."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A coin is tossed 5 times and the outcome is the sequence of heads and tails. The number of outcomes in the sample space is $N$. Enter $N$.",
+      "options": [],
+      "answer": [
+        "32"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **32**.\n\nEach toss has 2 results and the tosses are ordered, so $|S|=2^5=32$. This count is the size of the sample space. It does not by itself say the sequences are equally likely; that needs a separate assumption, such as a fair coin tossed independently."
+    }
+  ]
+}

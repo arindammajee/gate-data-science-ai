@@ -1,0 +1,169 @@
+{
+  "slug": "relational-algebra",
+  "section": "databases",
+  "title": "Relational algebra",
+  "syllabus": "Relational algebra",
+  "minutes": 35,
+  "summary": "Selection, projection, product, join, union, difference, intersection, and renaming are the operators. A theta join is a selection on a product. Two expressions can answer one English question while a third, similar-looking expression does not.",
+  "keywords": [
+    "selection",
+    "projection",
+    "join",
+    "cartesian product",
+    "difference"
+  ],
+  "intuition": "Relational algebra is a pipeline. Each operator takes one or two relations and returns a relation, so expressions nest. Selection $\\sigma_\\theta$ keeps the tuples that satisfy $\\theta$. Projection $\\pi$ keeps named columns and, because the result is a set, discards duplicate tuples. The product $R\\times S$ pairs every tuple of $R$ with every tuple of $S$, so its size is $|R|\\cdot|S|$. A theta join is not a new idea on top of those two: $R\\bowtie_{R.A=S.B}S=\\sigma_{R.A=S.B}(R\\times S)$. The join condition is a selection, and the product is where the columns meet.\n\nUnion, difference, and intersection need union-compatible inputs: the same number of attributes, and compatible domains in corresponding positions. Renaming $\\rho$ changes a relation name or an attribute name so that a product or a union has the names the next operator expects. None of these operators looks at SQL nulls; this is the set model.\n\nOrder is part of the meaning. Selection then projection can test a column and then throw it away. Projection then selection cannot test a column that the projection already dropped, so those two pipelines are not the same. When the condition happens to use only columns that survive, the two orders agree, and that special case is not a licence to swap them in general. A second trap wears the right English and the wrong operators. \"Sids who take DB\" is a selection followed by a projection. The difference of all sids with the sids who take something else deletes a student who takes DB and also takes OS.",
+  "definitions": [
+    {
+      "term": "Selection and projection",
+      "body": "$\\sigma_\\theta(R)$ returns the tuples of $R$ that satisfy $\\theta$. $\\pi_{A_1,\\ldots,A_k}(R)$ returns those attributes and removes duplicate tuples. Selection chooses rows. Projection chooses columns."
+    },
+    {
+      "term": "Theta join",
+      "body": "$R\\bowtie_{R.A=S.B}S$ equals $\\sigma_{R.A=S.B}(R\\times S)$. Both join columns survive. A natural join also equates equal names and then drops the duplicate column; that extra projection is not part of the theta-join identity."
+    },
+    {
+      "term": "Union compatibility",
+      "body": "Two relations can be combined with $\\cup$, $-$, or $\\cap$ only when they have the same arity and pairwise compatible domains. A product does not need that agreement; it needs names that the later selection can tell apart."
+    },
+    {
+      "term": "Renaming",
+      "body": "$\\rho_{S(X,Y)}(R)$ returns the same tuples as $R$ under the name $S$ and the new attribute names. It is the operator that makes a self-join or a union of differently labelled columns legal."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Join is a selection on a product",
+      "latex": "R\\bowtie_{R.A=S.B}S=\\sigma_{R.A=S.B}(R\\times S)",
+      "note": "The product has $|R|\\cdot|S|$ tuples before the selection throws pairs away."
+    },
+    {
+      "name": "Product size",
+      "latex": "|R\\times S|=|R|\\cdot|S|",
+      "note": "Selection and join can only make this smaller or leave it alone. They do not invent tuples."
+    },
+    {
+      "name": "When the two orders agree",
+      "latex": "\\sigma_\\theta(\\pi_X(R))=\\pi_X(\\sigma_\\theta(R))",
+      "note": "Only when $\\theta$ mentions attributes in $X$ alone. Otherwise the left side is not defined."
+    }
+  ],
+  "properties": [
+    "Selection is commutative: $\\sigma_\\theta(\\sigma_\\phi(R))=\\sigma_\\phi(\\sigma_\\theta(R))=\\sigma_{\\theta\\wedge\\phi}(R)$.",
+    "Projection then selection is not selection then projection. If the condition uses a dropped attribute, only selection first is defined.",
+    "A theta join is exactly a selection on a product. The product is the operator that creates the pairs.",
+    "$\\cup$, $-$, and $\\cap$ require union-compatible operands. $\\times$ and $\\bowtie$ do not.",
+    "Difference of two projections can delete a value that the English query wanted, when one entity contributes two tuples and only one of them fails the test."
+  ],
+  "examples": [
+    {
+      "title": "Two expressions for sids in DB, and one that is not",
+      "prompt": "$R(\\mathrm{sid},\\mathrm{cid})=\\{(1,\\mathrm{DB}),(1,\\mathrm{OS}),(2,\\mathrm{DB})\\}$ and $S(\\mathrm{cid},\\mathrm{room})=\\{(\\mathrm{DB},101),(\\mathrm{OS},102),(\\mathrm{ML},103)\\}$. Express \"sids enrolled in DB\" in two equivalent ways, and evaluate the difference that drops a sid who also takes another course.",
+      "steps": [
+        "Selection then projection: $\\pi_{\\mathrm{sid}}(\\sigma_{\\mathrm{cid}=\\mathrm{DB}}(R))=\\{1,2\\}$. The product $R\\times S$ has $3\\times 3=9$ tuples. Restricting $S$ to DB first leaves one tuple, and the theta join on cid keeps $(1,\\mathrm{DB},101)$ and $(2,\\mathrm{DB},101)$.",
+        "Projecting that join on sid gives $\\{1,2\\}$ again. So $\\pi_{\\mathrm{sid}}(\\sigma_{\\mathrm{cid}=\\mathrm{DB}}(R))$ and $\\pi_{\\mathrm{sid}}(R\\bowtie_{\\mathrm{cid}}\\sigma_{\\mathrm{cid}=\\mathrm{DB}}(S))$ are equivalent on this query. The unrestricted theta join of $R$ and $S$ has $3$ tuples, because ML matches nobody and both of sid $1$'s courses match.",
+        "The difference $\\pi_{\\mathrm{sid}}(R)-\\pi_{\\mathrm{sid}}(\\sigma_{\\mathrm{cid}\\neq\\mathrm{DB}}(R))$ is $\\{1,2\\}-\\{1\\}=\\{2\\}$. Sid $1$ was removed for also taking OS. That expression is not equivalent to the other two."
+      ],
+      "answer": "Both intended expressions equal $\\{1,2\\}$. The difference equals $\\{2\\}$ and is not the same query. $|R\\times S|=9$ and $|R\\bowtie_{\\mathrm{cid}}S|=3$."
+    },
+    {
+      "title": "The same trap, and a projection that drops the test",
+      "prompt": "Student tuples are $(\\mathrm{Ada},\\mathrm{CS})$, $(\\mathrm{Ada},\\mathrm{EE})$, $(\\mathrm{Bo},\\mathrm{CS})$. Compare the names in CS with the difference of all names and the non-CS names. Then consider $\\sigma_{\\mathrm{dept}=\\mathrm{CS}}(\\pi_{\\mathrm{name}}(\\mathrm{Student}))$.",
+      "steps": [
+        "Selection then projection returns $\\{\\mathrm{Ada},\\mathrm{Bo}\\}$. Ada qualifies because one of her tuples has department CS.",
+        "The non-CS projection is $\\{\\mathrm{Ada}\\}$, from the EE tuple. Subtracting from all names leaves $\\{\\mathrm{Bo}\\}$. Ada was lost because the same name also occurs outside CS. The two results differ.",
+        "After $\\pi_{\\mathrm{name}}$, the attribute dept is gone, so a selection on dept is not defined. Selection then projection is legal here; projection then selection is not. They are not two spellings of one pipeline."
+      ],
+      "answer": "Names in CS are $\\{\\mathrm{Ada},\\mathrm{Bo}\\}$. The difference returns $\\{\\mathrm{Bo}\\}$. Selecting on dept after projecting it away is not an expression."
+    }
+  ],
+  "traps": [
+    "Swapping selection and projection after the selection's column has been dropped. $\\sigma_{\\mathrm{cid}=\\mathrm{DB}}(\\pi_{\\mathrm{sid}}(R))$ does not mean \"sids in DB\"; cid is no longer there.",
+    "Writing $\\pi(R)-\\pi(\\sigma_{\\mathrm{not}\\ \\theta}(R))$ for \"tuples that satisfy $\\theta$\". A value that appears both inside and outside $\\theta$ disappears in the difference.",
+    "Treating the natural join as the theta-join identity with no further projection. $\\sigma_\\theta(R\\times S)$ still contains both copies of the join attribute.",
+    "Forming a union of relations with different numbers of columns. $\\cup$, $-$, and $\\cap$ require union compatibility. Rename or project first."
+  ],
+  "python": "R = {(1, \"DB\"), (1, \"OS\"), (2, \"DB\")}\nS = {(\"DB\", 101), (\"OS\", 102), (\"ML\", 103)}\nassert len(R) * len(S) == 9\ndb = {row for row in S if row[0] == \"DB\"}\njoin = {(sid, cid, room) for sid, cid in R for code, room in db if cid == code}\ndirect = {sid for sid, cid in R if cid == \"DB\"}\nassert direct == {sid for sid, cid, room in join} == {1, 2}\nassert len(join) == 2\ndiff = {sid for sid, cid in R} - {sid for sid, cid in R if cid != \"DB\"}\nassert diff == {2}\nfull_join = {(sid, cid, room) for sid, cid in R for code, room in S if cid == code}\nassert full_join == {(1, \"DB\", 101), (1, \"OS\", 102), (2, \"DB\", 101)}\nassert len(full_join) == 3\nnames = {(\"Ada\", \"CS\"), (\"Ada\", \"EE\"), (\"Bo\", \"CS\")}\nkept = {n for n, d in names if d == \"CS\"}\nbad = {n for n, d in names} - {n for n, d in names if d != \"CS\"}\nassert kept == {\"Ada\", \"Bo\"} and bad == {\"Bo\"}\nprint(len(R) * len(S), len(full_join), sorted(diff))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "$R$ has tuples $(1,\\mathrm{DB})$, $(1,\\mathrm{OS})$, $(2,\\mathrm{DB})$. $S$ has tuples $(\\mathrm{DB},101)$, $(\\mathrm{OS},102)$, $(\\mathrm{ML},103)$. How many tuples are in $R\\times S$?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $9$.\n\nA product pairs every tuple of $R$ with every tuple of $S$, and $3\\times 3=9$. Option B is the size of the theta join on cid, which keeps the three pairs whose course codes agree and drops ML. The product does not apply that test.",
+      "options": [
+        "$9$",
+        "$3$",
+        "$6$",
+        "$1$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "With $R$ as in the previous question, which expression evaluates to $\\{2\\}$ rather than to the set $\\{1,2\\}$ of sids enrolled in DB?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nSid $1$ takes OS as well as DB, so $\\pi_{\\mathrm{sid}}(\\sigma_{\\mathrm{cid}\\neq\\mathrm{DB}}(R))=\\{1\\}$. Subtracting from all sids leaves $\\{2\\}$. Options B, C, and D each keep a tuple precisely when its cid is DB, and all three equal $\\{1,2\\}$. The difference is the expression that is not equivalent.",
+      "options": [
+        "$\\pi_{\\mathrm{sid}}(R)-\\pi_{\\mathrm{sid}}(\\sigma_{\\mathrm{cid}\\neq\\mathrm{DB}}(R))$",
+        "$\\pi_{\\mathrm{sid}}(\\sigma_{\\mathrm{cid}=\\mathrm{DB}}(R))$",
+        "$\\pi_{\\mathrm{sid}}(\\sigma_{R.\\mathrm{cid}=S.\\mathrm{cid}}(R\\times\\sigma_{\\mathrm{cid}=\\mathrm{DB}}(S)))$",
+        "$\\pi_{\\mathrm{sid}}(R\\bowtie_{\\mathrm{cid}}\\sigma_{\\mathrm{cid}=\\mathrm{DB}}(S))$"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe theta-join identity is the definition used in this lesson: select on the product. Selections commute because a tuple is kept exactly when it satisfies both conditions. Union, difference, and intersection are defined on union-compatible relations. Option C is false. Once $B$ has been projected away, $\\sigma_{B=1}$ has no attribute left to test, so it is not the same expression as selecting on $B$ and then projecting $A$.",
+      "options": [
+        "$R\\bowtie_{R.A=S.B}S=\\sigma_{R.A=S.B}(R\\times S)$.",
+        "Selection is commutative: $\\sigma_\\theta(\\sigma_\\phi(R))=\\sigma_\\phi(\\sigma_\\theta(R))$.",
+        "$\\pi_A(\\sigma_{B=1}(R))$ and $\\sigma_{B=1}(\\pi_A(R))$ are the same expression even when $B$ is not one of the projected attributes.",
+        "Union, difference, and intersection require union-compatible operands."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Student contains $(\\mathrm{Ada},\\mathrm{CS})$, $(\\mathrm{Ada},\\mathrm{EE})$, and $(\\mathrm{Bo},\\mathrm{CS})$. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nSelecting CS and projecting the name keeps Ada, who has a CS tuple, and Bo. The difference of all names with the non-CS names removes Ada, because Ada also appears with EE, and leaves Bo. Those two results differ on this instance, so the expressions are not equivalent on every instance. Renaming the relation does not change its tuples; $\\rho$ only changes names.",
+      "options": [
+        "$\\pi_{\\mathrm{name}}(\\sigma_{\\mathrm{dept}=\\mathrm{CS}}(\\mathrm{Student}))=\\{\\mathrm{Ada},\\mathrm{Bo}\\}$.",
+        "$\\pi_{\\mathrm{name}}(\\mathrm{Student})-\\pi_{\\mathrm{name}}(\\sigma_{\\mathrm{dept}\\neq\\mathrm{CS}}(\\mathrm{Student}))=\\{\\mathrm{Bo}\\}$.",
+        "The expressions in A and B are equivalent on every instance.",
+        "Renaming Student to Pupil with $\\rho$ does not change the tuples."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Using the $R$ and $S$ of the product question, how many tuples are in the theta join $R\\bowtie_{\\mathrm{cid}}S$?",
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**.\n\nThe matching pairs are $(1,\\mathrm{DB},101)$, $(1,\\mathrm{OS},102)$, and $(2,\\mathrm{DB},101)$. The ML row of $S$ matches no cid in $R$, so it contributes nothing. The product had $9$ tuples; the join condition keeps $3$.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

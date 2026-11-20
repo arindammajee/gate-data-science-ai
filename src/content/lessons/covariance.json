@@ -1,0 +1,159 @@
+{
+  "slug": "covariance",
+  "section": "probability",
+  "title": "Covariance",
+  "syllabus": "Covariance.",
+  "minutes": 30,
+  "summary": "Covariance is E[XY] minus E[X]E[Y]. It is bilinear, it supplies the cross term in Var(X+Y), and a zero covariance does not imply independence.",
+  "keywords": [
+    "covariance",
+    "bilinear",
+    "variance of a sum",
+    "uncorrelated",
+    "dependence"
+  ],
+  "intuition": "Covariance asks whether $X$ and $Y$ vary together after their means have been removed. The computational form is $\\mathrm{Cov}(X,Y)=E[XY]-E[X]E[Y]$. If the variables are independent and the expectations exist, the product factors and the covariance is 0. The number 0 is not a certificate of independence. It only says that this particular product matched.\n\nThe useful algebraic facts are bilinearity and the variance expansion. Covariance is linear in each argument separately, and $\\mathrm{Cov}(X,X)=\\mathrm{Var}(X)$. Expanding the square of a sum produces $\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2\\mathrm{Cov}(X,Y)$. The cross term is the covariance, not an independence flag. Whenever the covariance happens to be 0, the variances add, whether or not the variables are independent.\n\nThe counterexample is the one to compute rather than memorise as a slogan. Let $X$ be uniform on $\\{-1,0,1\\}$ and let $Y=X^2$. Then $E[X]=0$ and $E[XY]=E[X^3]=0$, so the covariance is 0. The variables are dependent because $Y$ is a function of $X$ and $P(X=0,Y=0)=1/3\\neq 1/9$. The variance formula still applies: $\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)$, and both sides equal $8/9$.",
+  "definitions": [
+    {
+      "term": "Covariance",
+      "body": "For random variables with finite second moments, $\\mathrm{Cov}(X,Y)=E[(X-E[X])(Y-E[Y])]=E[XY]-E[X]E[Y]$. It is symmetric, and $\\mathrm{Cov}(X,X)=\\mathrm{Var}(X)$."
+    },
+    {
+      "term": "Bilinearity",
+      "body": "Covariance is linear in each slot: $\\mathrm{Cov}(aX+bY,Z)=a\\mathrm{Cov}(X,Z)+b\\mathrm{Cov}(Y,Z)$, and likewise in the second argument. Constants have covariance 0 with every variable."
+    },
+    {
+      "term": "Uncorrelated pair",
+      "body": "Random variables are uncorrelated when $\\mathrm{Cov}(X,Y)=0$. Independent variables with finite variances are uncorrelated. The converse is false."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Computational form",
+      "latex": "\\mathrm{Cov}(X,Y)=E[XY]-E[X]E[Y]",
+      "note": "Equal to $E[(X-E[X])(Y-E[Y])]$. Independence is not assumed."
+    },
+    {
+      "name": "Variance of a sum",
+      "latex": "\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2\\mathrm{Cov}(X,Y)",
+      "note": "The general form is $\\mathrm{Var}(aX+bY)=a^2\\mathrm{Var}(X)+b^2\\mathrm{Var}(Y)+2ab\\,\\mathrm{Cov}(X,Y)$."
+    },
+    {
+      "name": "Bilinearity",
+      "latex": "\\mathrm{Cov}(aX+bY,cZ+dW)=ac\\,\\mathrm{Cov}(X,Z)+ad\\,\\mathrm{Cov}(X,W)+bc\\,\\mathrm{Cov}(Y,Z)+bd\\,\\mathrm{Cov}(Y,W)",
+      "note": "In particular $\\mathrm{Cov}(X,c)=0$ and $\\mathrm{Cov}(aX+b,cY+d)=ac\\,\\mathrm{Cov}(X,Y)$."
+    }
+  ],
+  "properties": [
+    "If $X$ and $Y$ are independent and have finite variances, then $\\mathrm{Cov}(X,Y)=0$. Finite variance gives the product moments the identity needs.",
+    "The converse is false. For $X$ uniform on $\\{-1,0,1\\}$ and $Y=X^2$, $\\mathrm{Cov}(X,Y)=0$ and $P(X=0,Y=0)=1/3\\neq 1/9$.",
+    "$\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)$ whenever $\\mathrm{Cov}(X,Y)=0$, including in the dependent example above, where both sides equal $8/9$.",
+    "Covariance is not a correlation. It is not confined to $[-1,1]$. Dividing by $\\sigma_X\\sigma_Y$ produces the correlation.",
+    "$\\mathrm{Cov}(X,X)=\\mathrm{Var}(X)$. A variance is the covariance of a variable with itself, not a second definition."
+  ],
+  "examples": [
+    {
+      "title": "Zero covariance, and the variables are dependent",
+      "prompt": "Let $X$ be uniform on $\\{-1,0,1\\}$, so each value has probability $1/3$, and let $Y=X^2$. Compute $\\mathrm{Cov}(X,Y)$ and $\\mathrm{Var}(X+Y)$, and show that $X$ and $Y$ are dependent.",
+      "steps": [
+        "The mean of $X$ is $(-1+0+1)/3=0$. The mean of $Y$ is $(1+0+1)/3=2/3$. The product $XY=X^3$ has mean $(-1+0+1)/3=0$. Therefore $\\mathrm{Cov}(X,Y)=0-0\\cdot(2/3)=0$.",
+        "Dependence: $P(Y=0)=P(X=0)=1/3$ and $P(X=0,Y=0)=1/3$, while $P(X=0)P(Y=0)=1/9$. The product test fails.",
+        "The variances are $\\mathrm{Var}(X)=E[X^2]=2/3$ and $\\mathrm{Var}(Y)=E[Y^2]-(2/3)^2=2/3-4/9=2/9$. Then $\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2\\mathrm{Cov}(X,Y)=2/3+2/9=8/9$. The sum $X+Y$ equals 0, 0, or 2 on the three outcomes, with mean $2/3$ and second moment $4/3$, so its variance is $4/3-4/9=8/9$."
+      ],
+      "answer": "$\\mathrm{Cov}(X,Y)=0$, the variables are dependent, and $\\mathrm{Var}(X+Y)=8/9=\\mathrm{Var}(X)+\\mathrm{Var}(Y)$."
+    },
+    {
+      "title": "A nonzero covariance in the variance expansion",
+      "prompt": "The three pairs $(X,Y)\\in\\{(0,0),(1,1),(2,1)\\}$ are equally likely. Compute $\\mathrm{Cov}(X,Y)$ and check $\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2\\mathrm{Cov}(X,Y)$.",
+      "steps": [
+        "The means are $E[X]=(0+1+2)/3=1$ and $E[Y]=(0+1+1)/3=2/3$. The mean of the product is $E[XY]=(0+1+2)/3=1$. The covariance is $1-1\\cdot(2/3)=1/3$.",
+        "The second moments give $\\mathrm{Var}(X)=(0+1+4)/3-1^2=2/3$ and $\\mathrm{Var}(Y)=(0+1+1)/3-(2/3)^2=2/9$.",
+        "The sums $X+Y$ are 0, 2, and 3. Their mean is $5/3$ and their second moment is $(0+4+9)/3=13/3$, so $\\mathrm{Var}(X+Y)=13/3-25/9=14/9$. The expansion gives $2/3+2/9+2\\cdot(1/3)=6/9+2/9+6/9=14/9$."
+      ],
+      "answer": "$\\mathrm{Cov}(X,Y)=1/3$ and $\\mathrm{Var}(X+Y)=14/9$, matching $\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2\\mathrm{Cov}(X,Y)$."
+    }
+  ],
+  "traps": [
+    "Inferring independence from a zero covariance. In the uniform example the covariance is 0 and $P(X=0,Y=0)=1/3\\neq 1/9$.",
+    "Dropping the factor 2 in $\\mathrm{Var}(X+Y)$. The three-pair example needs $2\\cdot(1/3)$ to reach $14/9$; using one copy of the covariance gives $10/9$, which is wrong.",
+    "Replacing $E[XY]$ by $E[X]E[Y]$ inside a covariance computation when independence was not given. That replacement is exactly the claim $\\mathrm{Cov}=0$.",
+    "Treating covariance as a correlation and insisting that it lie in $[-1,1]$. The pair with covariance $1/3$ has not been divided by $\\sigma_X\\sigma_Y$."
+  ],
+  "python": "from fractions import Fraction\nxs = [-1, 0, 1]\nys = [x * x for x in xs]\nassert sum(xs) == 0\nassert sum(x * y for x, y in zip(xs, ys)) == 0\ncov = 0  # E[XY]-E[X]E[Y]\nvarx = Fraction(2, 3)\nvary = Fraction(2, 3) - Fraction(4, 9)\nassert vary == Fraction(2, 9)\nassert varx + vary + 2 * cov == Fraction(8, 9)\npairs = [(0, 0), (1, 1), (2, 1)]\nex = sum(Fraction(x) for x, _ in pairs) / 3\ney = sum(Fraction(y) for _, y in pairs) / 3\nexy = sum(Fraction(x) * y for x, y in pairs) / 3\nassert exy - ex * ey == Fraction(1, 3)\nassert Fraction(1, 3) != Fraction(1, 9)\nprint(0, float(Fraction(8, 9)), float(Fraction(1, 3)))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Let $X$ be uniform on $\\{-1,0,1\\}$ and let $Y=X^2$. Then $\\mathrm{Cov}(X,Y)$ equals",
+      "options": [
+        "$0$",
+        "$2/3$",
+        "$2/9$",
+        "$1/9$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $0$.\n\n$E[X]=0$ and $E[XY]=E[X^3]=0$, so $\\mathrm{Cov}(X,Y)=0-0\\cdot E[Y]=0$. Option B is $\\mathrm{Var}(X)$. Option C is $\\mathrm{Var}(Y)$. Option D is the product $P(X=0)P(Y=0)$, which is not the covariance; it is the number that shows the variables are dependent, because the joint probability is $1/3$ rather than $1/9$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The pairs $(X,Y)\\in\\{(0,0),(1,1),(2,1)\\}$ are equally likely. Then $\\mathrm{Cov}(X,Y)$ equals",
+      "options": [
+        "$1/3$",
+        "$0$",
+        "$1$",
+        "$2/3$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/3$.\n\n$E[X]=1$, $E[Y]=2/3$, and $E[XY]=1$, so $\\mathrm{Cov}(X,Y)=1-(1)(2/3)=1/3$. Option C is $E[XY]$ before the product of the means is subtracted. Option D is $E[Y]$, not a covariance. The variables are dependent, and the covariance is not zero."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "$\\mathrm{Cov}(X,Y)=E[XY]-E[X]E[Y]$ whenever the second moments are finite.",
+        "If $X$ and $Y$ are independent and have finite variances, then $\\mathrm{Cov}(X,Y)=0$.",
+        "If $\\mathrm{Cov}(X,Y)=0$, then $X$ and $Y$ are independent.",
+        "$\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2\\mathrm{Cov}(X,Y)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA is the computational formula. B is the one direction that holds: independence with finite variances kills the covariance. D is the expansion of $E[(X+Y)^2]-(E[X+Y])^2$, and the cross term is twice the covariance. C is false for $X$ uniform on $\\{-1,0,1\\}$ and $Y=X^2$, where the covariance is 0 and $P(X=0,Y=0)=1/3\\neq 1/9$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Let $X$ be uniform on $\\{-1,0,1\\}$ and let $Y=X^2$. Enter the integer $3\\,\\mathrm{Cov}(X,Y)$.",
+      "options": [],
+      "answer": [
+        "0"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **0**.\n\n$E[X]=(-1+0+1)/3=0$ and $E[X^3]=0$, so $\\mathrm{Cov}(X,Y)=E[X^3]-E[X]E[X^2]=0$. Three times that covariance is 0. The variables are still dependent, because $P(X=0,Y=0)=1/3$ and $P(X=0)P(Y=0)=1/9$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $X$ be uniform on $\\{-1,0,1\\}$ and let $Y=X^2$. Let $v=\\mathrm{Var}(X+Y)$. Enter $9v$.",
+      "options": [],
+      "answer": [
+        "8"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **8**.\n\n$\\mathrm{Var}(X)=2/3$ and $\\mathrm{Var}(Y)=2/9$, and the covariance is 0, so $v=2/3+2/9+0=8/9$. Therefore $9v=8$. Directly, $X+Y$ equals 0, 0, and 2 on the three outcomes, with mean $2/3$ and second moment $4/3$, and $4/3-4/9=8/9$."
+    }
+  ]
+}

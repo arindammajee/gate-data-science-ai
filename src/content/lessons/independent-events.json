@@ -1,0 +1,159 @@
+{
+  "slug": "independent-events",
+  "section": "probability",
+  "title": "Independent events",
+  "syllabus": "Independent events.",
+  "minutes": 30,
+  "summary": "Two events are independent when the probability of both equals the product of the probabilities. Pairwise independence does not give the triple product.",
+  "keywords": [
+    "independence",
+    "pairwise",
+    "mutual independence",
+    "product rule",
+    "dependent"
+  ],
+  "intuition": "Independence is a statement about a product. Events $A$ and $B$ are independent when $P(A\\cap B)=P(A)P(B)$. Knowing that $B$ occurred does not change the probability of $A$: if $P(B)>0$, the product rule is exactly $P(A\\mid B)=P(A)$. The definition does not mention disjointness. Disjointness is $P(A\\cap B)=0$, which is a different equation.\n\nFor three events, pairwise independence is the three equations for the pairs. Mutual independence asks for those three equations and one more, $P(A\\cap B\\cap C)=P(A)P(B)P(C)$. The extra equation is not free. There is a four-outcome sample space, written out below, in which every pair multiplies correctly and the triple does not. Pairwise independence does not imply mutual independence.\n\nThe product extends to complements. If $A$ and $B$ are independent, then so are $A$ and $B^c$, because $P(A\\cap B^c)=P(A)-P(A)P(B)=P(A)P(B^c)$. For a mutually independent family the same idea gives the probability that none of the events occur: multiply the complementary probabilities. That step is illegal if you only checked the pairs.",
+  "definitions": [
+    {
+      "term": "Independent events",
+      "body": "Events $A$ and $B$ are independent when $P(A\\cap B)=P(A)P(B)$. If $P(B)>0$, this is equivalent to $P(A\\mid B)=P(A)$."
+    },
+    {
+      "term": "Pairwise independence",
+      "body": "A family of events is pairwise independent when every pair of distinct events is independent. For three events, that is three product equations and no claim about the triple intersection."
+    },
+    {
+      "term": "Mutual independence",
+      "body": "Events $A$, $B$, and $C$ are mutually independent when they are pairwise independent and also $P(A\\cap B\\cap C)=P(A)P(B)P(C)$. For a larger family, every finite subcollection must multiply."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Two-event product",
+      "latex": "P(A\\cap B)=P(A)P(B)",
+      "note": "This is the definition of independence. It is not the same statement as $P(A\\cap B)=0$."
+    },
+    {
+      "name": "Triple product",
+      "latex": "P(A\\cap B\\cap C)=P(A)P(B)P(C)",
+      "note": "Required for mutual independence, in addition to the three pairwise products."
+    },
+    {
+      "name": "Complement stays independent",
+      "latex": "P(A\\cap B^c)=P(A)P(B^c)",
+      "note": "True whenever $A$ and $B$ are independent. The proof is $P(A)-P(A\\cap B)=P(A)(1-P(B))$."
+    }
+  ],
+  "properties": [
+    "If $P(A)>0$ and $P(B)>0$, then $A$ and $B$ cannot be both independent and mutually exclusive. The product $P(A)P(B)$ would be positive, while mutual exclusion forces the intersection probability to be 0.",
+    "Pairwise independence of three events does not imply $P(A\\cap B\\cap C)=P(A)P(B)P(C)$.",
+    "The certain event $S$ is independent of every event, because $P(A\\cap S)=P(A)=P(A)P(S)$.",
+    "If $A$, $B$, and $C$ are mutually independent, then $P(A^c\\cap B^c\\cap C^c)=P(A^c)P(B^c)P(C^c)$.",
+    "Independence is a property of the probability measure, not of the shapes of the sets. Disjoint sets are dependent whenever both have positive probability."
+  ],
+  "examples": [
+    {
+      "title": "Two dice, two events on different dice",
+      "prompt": "Two fair dice are rolled, and the 36 ordered outcomes are equally likely. Let $A$ be the event that the first die is even, and let $B$ be the event that the second die shows 1 or 2. Are $A$ and $B$ independent?",
+      "steps": [
+        "The first die is even on 3 of 6 faces, and the second die is free, so $P(A)=18/36=1/2$. The second die shows 1 or 2 on 2 of 6 faces, so $P(B)=12/36=1/3$.",
+        "The intersection needs the first die even and the second die in $\\{1,2\\}$: $3\\times 2=6$ outcomes, so $P(A\\cap B)=6/36=1/6$.",
+        "The product is $P(A)P(B)=(1/2)(1/3)=1/6$, which equals the intersection probability. The events are independent."
+      ],
+      "answer": "Yes. $P(A\\cap B)=1/6=P(A)P(B)$."
+    },
+    {
+      "title": "Four outcomes: pairwise, but not mutual",
+      "prompt": "The sample space is $\\{a,b,c,d\\}$, with each outcome of probability $1/4$. Let $A=\\{a,b\\}$, $B=\\{a,c\\}$, and $C=\\{a,d\\}$. Check pairwise independence and mutual independence.",
+      "steps": [
+        "Each of $A$, $B$, and $C$ contains two outcomes, so $P(A)=P(B)=P(C)=1/2$.",
+        "Each pairwise intersection is the singleton $\\{a\\}$, with probability $1/4$. The product of any two probabilities is $(1/2)(1/2)=1/4$. All three pairs are independent.",
+        "The triple intersection is also $\\{a\\}$, so $P(A\\cap B\\cap C)=1/4$. The product of the three probabilities is $(1/2)^3=1/8$. Because $1/4\\neq 1/8$, the three events are not mutually independent."
+      ],
+      "answer": "The events are pairwise independent, and they are not mutually independent, because $P(A\\cap B\\cap C)=1/4$ while $P(A)P(B)P(C)=1/8$."
+    }
+  ],
+  "traps": [
+    "Reading $P(A\\cap B)=0$ as independence. That equation is mutual exclusion. Positive mutually exclusive events are dependent.",
+    "Checking only the three pairs and then multiplying three probabilities. Pairwise independence does not give $P(A\\cap B\\cap C)=P(A)P(B)P(C)$, as the four-outcome example shows.",
+    "Replacing the definition by $P(A\\mid B)=P(B)$. Independence says $P(A\\mid B)=P(A)$ when $P(B)>0$, not $P(A\\mid B)=P(B)$.",
+    "Cancelling a zero-probability event. If $P(B)=0$, the conditional probability $P(A\\mid B)$ is undefined, so the conditional form of the test cannot be used."
+  ],
+  "python": "from fractions import Fraction\nassert Fraction(1, 2) * Fraction(1, 3) == Fraction(6, 36)\nassert Fraction(1, 4) == Fraction(1, 2) * Fraction(1, 2)\nassert Fraction(1, 4) != Fraction(1, 8)\nnone = Fraction(1, 3) * Fraction(1, 4) * Fraction(3, 5)\nassert 1 - none == Fraction(19, 20)\nunion = Fraction(1, 5) + Fraction(2, 5) - Fraction(2, 25)\nassert union == Fraction(13, 25)\nprint(float(Fraction(19, 20)), float(union))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Events $A$ and $B$ are independent, with $P(A)=2/5$ and $P(B)=1/4$. Then $P(A\\cap B)$ equals",
+      "options": [
+        "$1/10$",
+        "$13/20$",
+        "$0$",
+        "$2/5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/10$.\n\nIndependence gives the product $(2/5)(1/4)=2/20=1/10$. Option B is the union $2/5+1/4-1/10=13/20$, which is a different event. Option C would be the intersection only if the events were mutually exclusive."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Events $A$ and $B$ are independent, with $P(A)=2/5$ and $P(B)=1/2$. Then $P(A\\cup B)$ equals",
+      "options": [
+        "$7/10$",
+        "$9/10$",
+        "$1/5$",
+        "$1/2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $7/10$.\n\nThe intersection is $(2/5)(1/2)=1/5$. Inclusion-exclusion then gives $2/5+1/2-1/5=4/10+5/10-2/10=7/10$. Option B adds the two probabilities and does not subtract the intersection."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A sample space has four equally likely outcomes $\\{a,b,c,d\\}$. Let $A=\\{a,b\\}$, $B=\\{a,c\\}$, and $C=\\{a,d\\}$. Which of the following are true?",
+      "options": [
+        "$P(A\\cap B)=P(A)P(B)$.",
+        "$P(A\\cap C)=P(A)P(C)$.",
+        "$P(B\\cap C)=P(B)P(C)$.",
+        "$P(A\\cap B\\cap C)=P(A)P(B)P(C)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nEach single event has probability $1/2$, and each pairwise intersection is $\\{a\\}$ with probability $1/4=(1/2)(1/2)$. The triple intersection is also $\\{a\\}$, so its probability is $1/4$, while $(1/2)^3=1/8$. D is false, and the family is pairwise independent without being mutually independent."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Events $A$, $B$, and $C$ are mutually independent, with $P(A)=2/3$, $P(B)=3/4$, and $P(C)=2/5$. Let $p$ be the probability that at least one of the three events occurs. Enter $20p$.",
+      "options": [],
+      "answer": [
+        "19"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **19**.\n\nMutual independence passes to the complements, so the probability that none occur is $(1/3)(1/4)(3/5)=1/20$. Therefore $p=1-1/20=19/20$, and $20p=19$. Multiplying only the pairwise pieces would not justify this step."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Events $A$ and $B$ are independent, with $P(A)=1/5$ and $P(B)=2/5$. Let $p=P(A\\cup B)$. Enter $25p$.",
+      "options": [],
+      "answer": [
+        "13"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **13**.\n\n$P(A\\cap B)=(1/5)(2/5)=2/25$. Then $P(A\\cup B)=1/5+2/5-2/25=15/25-2/25=13/25$, so $25p=13$."
+    }
+  ]
+}

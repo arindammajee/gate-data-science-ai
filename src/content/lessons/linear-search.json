@@ -1,0 +1,169 @@
+{
+  "slug": "linear-search",
+  "section": "programming",
+  "title": "Linear search",
+  "syllabus": "Linear search",
+  "minutes": 20,
+  "summary": "Linear search checks elements in order on an unsorted or a sorted sequence. The worst case is n comparisons, the best case is 1, and the result is an index or -1.",
+  "keywords": [
+    "linear search",
+    "comparison",
+    "unsorted",
+    "index",
+    "worst case"
+  ],
+  "intuition": "Linear search is the search you can run with no preparation. Start at the beginning, compare the target with each element, and stop at the first match. If the walk falls off the end, the target is absent. The algorithm does not need the array to be sorted, and it still works if the array happens to be sorted. Order is not a hypothesis. It is also not a speed-up unless you add an early exit that the basic algorithm does not have.\n\nThe cost is the number of comparisons. The best case on a nonempty array is one comparison, when the target sits at index $0$. The worst case is $n$ comparisons, when the target is in the last position or is absent and every element has to be rejected. Both bounds are tight. Average cost on an unsuccessful search is also $n$, because absence is only known at the end.\n\nThe return value in this lesson is the $0$-based index of the first match, or $-1$ if the target does not occur. If the value occurs twice, the earlier index is the one that comes back. The same walk works on a linked list, following `next` instead of adding one to an index. Linear search does not need random access. That is the point of contrast with binary search, which does.\n\n$$\\text{worst case }n\\text{ comparisons},\\qquad \\text{best case }1.$$",
+  "definitions": [
+    {
+      "term": "Linear search",
+      "body": "Scan the sequence from index $0$ upward. On the first element equal to the target, return that index. If the scan ends with no match, return $-1$."
+    },
+    {
+      "term": "Comparison count",
+      "body": "Each examined element costs one comparison. A hit at index $i$ costs $i+1$ comparisons. An absent target costs $n$ comparisons on an array of length $n$."
+    },
+    {
+      "term": "Best and worst case",
+      "body": "On a nonempty array the best case is $1$ comparison, the target at index $0$. The worst case is $n$ comparisons, the target at index $n-1$ or not present. The bounds hold whether or not the array is sorted."
+    },
+    {
+      "term": "First match",
+      "body": "If the target occurs more than once, linear search returns the smallest index. It does not continue to the last copy unless the algorithm is rewritten to do so."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Worst and best",
+      "latex": "O(n)\\ \\text{worst},\\quad O(1)\\ \\text{best}",
+      "note": "Worst case is $n$ comparisons. Best case is $1$ comparison, at index $0$."
+    },
+    {
+      "name": "Hit at index i",
+      "latex": "\\text{comparisons}=i+1",
+      "note": "Indexing starts at $0$. Finding the last element of an $n$-element array costs $n$ comparisons."
+    },
+    {
+      "name": "Absent target",
+      "latex": "\\text{return }-1\\text{ after }n\\text{ comparisons}",
+      "note": "Absence is known only after every element has been rejected."
+    }
+  ],
+  "properties": [
+    "Linear search is correct on an unsorted array and on a sorted array. Sorting does not make the basic scan faster, and it is not required for correctness.",
+    "The worst case is $n$ comparisons. The best case is $1$ comparison. Both occur: the last slot or an absent key for the worst, index $0$ for the best.",
+    "The return value is a $0$-based index, or $-1$ when the target is absent. The first match wins when the value is duplicated.",
+    "The algorithm needs only sequential access. It runs on a linked list by following `next`. Binary search does not have that freedom, because it jumps to the middle.",
+    "An early exit on a sorted array, stopping once `a[i]` exceeds the target, is an optimisation. The worst case is still $n$ when the target is larger than every element or equal to the last one."
+  ],
+  "examples": [
+    {
+      "title": "A hit that is not at the front",
+      "prompt": "Run linear search for $7$ on $a=[4, 1, 7, 1, 9]$. Report the index and the number of comparisons.",
+      "steps": [
+        "Index $0$ holds $4$, which is not $7$. That is comparison $1$.",
+        "Index $1$ holds $1$, which is not $7$. That is comparison $2$.",
+        "Index $2$ holds $7$, which matches. That is comparison $3$. The search returns index $2$ and does not look at the later $1$ or the $9$."
+      ],
+      "answer": "The search returns index $2$ after $3$ comparisons."
+    },
+    {
+      "title": "Best case, a duplicate, and an absence",
+      "prompt": "On the same array, search for $4$, for $1$, and for $5$.",
+      "steps": [
+        "The value $4$ sits at index $0$. The first comparison matches, so the search returns $0$ after $1$ comparison. That is the best case.",
+        "The value $1$ occurs at index $1$ and again at index $3$. The scan matches at index $1$ and returns $1$. It does not continue to the later copy.",
+        "The value $5$ matches nothing. The scan compares $4$, $1$, $7$, $1$, and $9$, five comparisons, and returns $-1$."
+      ],
+      "answer": "Search for $4$ returns $0$ in $1$ comparison. Search for $1$ returns $1$. Search for $5$ returns $-1$ after $5$ comparisons."
+    }
+  ],
+  "traps": [
+    "Returning the last match on a duplicate. The scan stops at the first equal element. On `[9, 2, 5, 2, 8]`, search for $2$ returns index $1$, not index $3$.",
+    "Quoting $O(\\log n)$ because the array happens to be sorted. The basic linear scan does not use the order. Logarithmic search is binary search, and it needs random access as well as sorted order.",
+    "Returning `None` or the value itself instead of the index. This lesson returns the index, and it returns $-1$ when the target is absent. Confusing $-1$ with index $0$ loses the absent case, because index $0$ is a successful hit.",
+    "Counting a hit at index $i$ as $i$ comparisons. Index $2$ is the third element. Finding it costs $i+1=3$ comparisons."
+  ],
+  "python": "def linear_search(items, target):\n    comparisons = 0\n    for index, value in enumerate(items):\n        comparisons += 1\n        if value == target:\n            return index, comparisons\n    return -1, comparisons\n\nsample = [4, 1, 7, 1, 9]\nassert linear_search(sample, 7) == (2, 3)\nassert linear_search(sample, 4) == (0, 1)\nassert linear_search(sample, 1) == (1, 2)\nassert linear_search(sample, 5) == (-1, 5)\nassert linear_search([8, 3, 5, 3, 9, 2], 6) == (-1, 6)\ndup = [9, 2, 5, 2, 8]\nassert linear_search(dup, 2)[0] == 1\nassert linear_search(dup, 4)[0] == -1\nassert linear_search(dup, 9) == (0, 1)\nprint(linear_search(sample, 7), linear_search([8, 3, 5, 3, 9, 2], 6)[1])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "On an array of $n$ elements, the worst-case number of comparisons in linear search is",
+      "options": [
+        "$n$",
+        "$\\log n$",
+        "$1$",
+        "$n^{2}$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $n$.\n\nThe target may sit in the last position, or it may be absent. Either way every element is compared once, which is $n$ comparisons. One comparison is the best case, at index $0$. A logarithm is the binary-search bound, and a quadratic bound would be a nested scan that this algorithm does not do."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The best case of linear search on a nonempty array is",
+      "options": [
+        "$1$ comparison, when the target is at index $0$",
+        "$n$ comparisons, when the target is at index $0$",
+        "$0$ comparisons, because the front element is free",
+        "$\\log n$ comparisons, when the array is sorted"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe scan starts at index $0$ and compares that element with the target. If they are equal it returns immediately, after one comparison. The front element is not free: the comparison still happens. A sorted array does not change this algorithm into binary search, so the best case is not logarithmic."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Linear search is correct on an unsorted array.",
+        "Linear search is correct on a sorted array.",
+        "Linear search needs random access, so it cannot run on a linked list.",
+        "In this lesson an absent target returns $-1$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe scan never assumes order, so an unsorted array is the ordinary case and a sorted array is still correct. The absent-target convention here is the sentinel index $-1$.\n\nA linked list supports the same scan by following `next`. Random access is the requirement that belongs to binary search, not to linear search."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let `a = [9, 2, 5, 2, 8]`. Which of the following are true of linear search on `a`?",
+      "options": [
+        "Search for $2$ returns index $1$.",
+        "Search for $2$ returns index $3$.",
+        "Search for $4$ returns $-1$.",
+        "Search for $9$ uses $1$ comparison."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nThe value $2$ occurs at indexes $1$ and $3$. The scan matches the earlier one and returns $1$. The value $4$ does not occur, so the result is $-1$ after five comparisons. The value $9$ is at index $0$, so the first comparison succeeds.\n\nIndex $3$ would be the answer of a scan that kept going to the last match. This algorithm stops at the first match."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many comparisons does linear search use to decide that $6$ is absent from `[8, 3, 5, 3, 9, 2]`? Enter that integer.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**.\n\nThe array has six elements, and $6$ equals none of them. The scan compares $8$, $3$, $5$, $3$, $9$, and $2$, then returns $-1$. Absence is not known after a proper prefix, because a later slot could still hold $6$. The comparison count is the length, $6$."
+    }
+  ]
+}

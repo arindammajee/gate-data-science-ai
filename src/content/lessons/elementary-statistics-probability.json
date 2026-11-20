@@ -1,0 +1,163 @@
+{
+  "slug": "elementary-statistics-probability",
+  "section": "aptitude",
+  "title": "Elementary statistics and probability",
+  "syllabus": "Mean, median, mode, range, and probability for equally likely outcomes",
+  "minutes": 25,
+  "summary": "Find the mean, median, mode, and range of a short list, using the even and odd median conventions, and compute a probability as favourable over total only when the outcomes are equally likely.",
+  "keywords": [
+    "mean",
+    "median",
+    "mode",
+    "range",
+    "equally likely"
+  ],
+  "intuition": "The statistics in the aptitude block are the four numbers you can compute from a short list with nothing but sorting and arithmetic. The mean is the ordinary average: add the values and divide by how many there are. The range is the largest minus the smallest. The mode is the value that appears most often. If nothing is repeated, the list has no mode; do not declare every value a mode.\n\nThe median depends on whether the count is odd or even, and it is always computed after the list is sorted. If the count is odd, the median is the middle value, at position $(n+1)/2$. If the count is even, there are two central positions, $n/2$ and $n/2+1$, and the median is their average. A mean and a median can come out equal on a particular list. That is a coincidence about those numbers, not a rule. On 6, 2, 9, 2, 11 the mean and the median are both 6, while the mode is 2.\n\nA probability in this lesson is a count of favourable outcomes divided by the count of all outcomes, and only when the question says the outcomes are equally likely. A jar of counters, one draw, each counter as likely as the others, is that situation. This is not an inference lesson. There is no t-test, no estimate of a variance, and no claim about a population beyond the equally likely count in front of you.",
+  "definitions": [
+    {
+      "term": "Mean",
+      "body": "The sum of the listed values divided by the count of those values. For a list of $n$ numbers it is $(\\sum x_i)/n$."
+    },
+    {
+      "term": "Median",
+      "body": "After sorting: the middle value when $n$ is odd, and the average of the two central values when $n$ is even."
+    },
+    {
+      "term": "Mode and range",
+      "body": "The mode is the most frequent value. If every value occurs once, there is no mode. The range is the maximum minus the minimum."
+    },
+    {
+      "term": "Equally likely probability",
+      "body": "When every outcome in a finite set is equally likely, the probability of an event is the number of favourable outcomes divided by the total number of outcomes."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Mean",
+      "latex": "\\text{mean}=\\frac{x_1+\\cdots+x_n}{n}",
+      "note": "Divide by the length of the list. This lesson does not use a variance."
+    },
+    {
+      "name": "Equally likely probability",
+      "latex": "P=\\frac{\\text{favourable}}{\\text{total}}",
+      "note": "Use this only when the outcomes are equally likely. Say that hypothesis when you use it."
+    }
+  ],
+  "properties": [
+    "Sort before you pick a median. The middle of an unsorted list is not the median.",
+    "For an odd count, one central value is the median. For five sorted values the median is the third.",
+    "For an even count, average the two central values. For four sorted values those are the second and the third.",
+    "The range uses only the maximum and the minimum. Repeated values do not change it.",
+    "Favourable over total is the probability here only because each counter is equally likely. Without that hypothesis the ratio of counts is not yet a probability.",
+    "On the list 6, 2, 9, 2, 11 the mean equals the median, and the mode is different. Equality of mean and median is not an identity."
+  ],
+  "examples": [
+    {
+      "title": "Odd count: mean, median, mode, and range",
+      "prompt": "For the list 6, 2, 9, 2, 11, find the mean, the median, the mode, and the range.",
+      "steps": [
+        "The sum is $6+2+9+2+11=30$, and there are 5 values, so the mean is $30/5=6$.",
+        "Sorted, the list is 2, 2, 6, 9, 11. The count is odd, so the median is the third value, 6. The value 2 appears twice and every other value once, so the mode is 2.",
+        "The range is $11-2=9$. The mean and the median both equal 6 on this particular list. The mode, 2, shows that the common value 6 is not 'the' summary of the list."
+      ],
+      "answer": "The mean is 6, the median is 6, the mode is 2, and the range is 9."
+    },
+    {
+      "title": "Even count, then an equally likely draw",
+      "prompt": "For 3, 5, 5, 11, find the median. Then a jar holds 4 red, 3 blue, and 5 green counters. One counter is drawn, and each counter is equally likely. Find the probability of red, and find $12$ times the probability of red or blue.",
+      "steps": [
+        "Sorted, 3, 5, 5, 11 has four values. The two central values are both 5, so the median is $(5+5)/2=5$. The mean is $24/4=6$, which is not the median.",
+        "The jar has $4+3+5=12$ equally likely counters. The probability of red is $4/12=1/3$.",
+        "Red or blue is $4+3=7$ counters, so the probability is $7/12$. Multiplying by 12 returns the numerator 7."
+      ],
+      "answer": "The median of 3, 5, 5, 11 is 5. For the jar, $P(\\text{red})=1/3$ and $12\\,P(\\text{red or blue})=7$."
+    }
+  ],
+  "traps": [
+    "Taking the middle of 6, 2, 9, 2, 11 before sorting. The unsorted middle entry is 9, and the median is 6.",
+    "For an even count, picking one of the two central values and skipping the average. The convention used here averages them.",
+    "Calling 6 the mode of 6, 2, 9, 2, 11 because it is the mean. The mode is the most frequent value, which is 2.",
+    "Dividing favourable by total when the outcomes are not equally likely. The formula in this lesson carries that hypothesis, and it is not a t-test."
+  ],
+  "python": "odd = [6, 2, 9, 2, 11]\nassert sum(odd) / len(odd) == 6\nordered = sorted(odd)\nassert ordered == [2, 2, 6, 9, 11]\nassert ordered[len(ordered) // 2] == 6\nassert max(odd) - min(odd) == 9\nassert ordered.count(2) == 2\neven = sorted([3, 5, 5, 11])\nassert sum(even) / len(even) == 6\nmid = len(even) // 2\nmedian = (even[mid - 1] + even[mid]) / 2\nassert median == 5\nred, blue, green = 4, 3, 5\ntotal = red + blue + green\nassert total == 12\nassert red / total == 1 / 3\nassert 12 * (red + blue) / total == 7\nprint(6)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The mean of the list 6, 2, 9, 2, 11 is",
+      "options": [
+        "6",
+        "2",
+        "11",
+        "5"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 6. The sum is $6+2+9+2+11=30$ and the count is 5, so the mean is $30/5=6$. Option B is the mode, not the mean. Option C is the largest value."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The list 3, 5, 5, 11 has an even count. Using the average of the two central values after sorting, the median is",
+      "options": [
+        "5",
+        "6",
+        "5.5",
+        "8"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 5. The sorted list is 3, 5, 5, 11. The two central values are the second and the third, both 5, and their average is 5. Option B is the mean, $24/4=6$, which is not the median of this list."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For the list 6, 2, 9, 2, 11, and for the median convention used in this lesson, which of the following are true?",
+      "options": [
+        "After sorting, the middle position of 6, 2, 9, 2, 11 holds 6.",
+        "The range of 6, 2, 9, 2, 11 is 9.",
+        "For an even count, the median is the average of the two central values after sorting.",
+        "Favourable divided by total is the probability even when the outcomes are not equally likely."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Sorted, the list is 2, 2, 6, 9, 11, so the middle position holds 6. The range is $11-2=9$. An even count uses the average of the two central sorted values. Option D drops the equally-likely hypothesis: favourable divided by total is the probability in this lesson only when the outcomes are equally likely."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A jar has 4 red, 3 blue, and 5 green counters. One counter is drawn, and each counter is equally likely. Enter $12$ times the probability that the counter is red or blue.",
+      "options": [],
+      "answer": [
+        "7"
+      ],
+      "solution": "The answer is **7**. There are $4+3+5=12$ equally likely outcomes, and $4+3=7$ of them are red or blue, so the probability is $7/12$. Multiplying by 12 returns 7. The equally-likely hypothesis is what allows the count to be the probability.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The mode of the list 6, 2, 9, 2, 11 is",
+      "options": [
+        "2",
+        "6",
+        "9",
+        "11"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 2. The value 2 appears twice and every other value appears once, so the mode is 2. Option B is the mean and, on this list, also the median. Frequency, not size, decides the mode."
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "slug": "reading-comprehension",
+  "section": "aptitude",
+  "title": "Reading comprehension",
+  "syllabus": "Reading comprehension: main idea, detail, inference, and unsupported truth",
+  "minutes": 30,
+  "summary": "Read a short original paragraph for its main idea, a detail it states, an inference it supports, and a statement that is true in the world but not supported by the text.",
+  "keywords": [
+    "main idea",
+    "stated detail",
+    "inference",
+    "unsupported",
+    "paragraph"
+  ],
+  "intuition": "A reading question asks what the paragraph supports, not what you happen to know. Four kinds of choice come up, and only the wording tells them apart. The main idea is the point the whole paragraph is organised to make. A stated detail is a fact you can point to in one sentence. An inference is a conclusion the sentences force even though they never use the exact words of the option. A statement can be true in the world and still be the wrong choice, because the paragraph never gives you that fact.\n\nThe paragraph this lesson uses is about a campus materials store and spools of wire. The store labels each spool with the week it arrived, weighs five spools from that week, and writes the average on a bin card. Spools more than two grams under the average are kept for short student leads. Spools more than two grams over the average are sent back. The clerk does not test conductivity; the teaching labs test electrical behaviour later. Last winter the spools sent back were mostly from one supplier. The cards record the weight band, not the way the wire was drawn.\n\nFrom that paragraph you may say that a spool left on the shelf is not more than two grams away from the five-spool average. You may not say that the wire is copper, and you may not treat 'a kilogram is one thousand grams' as a supported claim. That conversion is true, and it is not in the paragraph. The skill is knowing which of those sentences the text will stand behind.",
+  "definitions": [
+    {
+      "term": "Main idea",
+      "body": "The claim the paragraph is built to make. A true detail that covers only one sentence is not yet the main idea."
+    },
+    {
+      "term": "Stated detail",
+      "body": "A fact you can point to in the wording. 'The clerk weighs five spools' is stated. You do not have to infer the number five."
+    },
+    {
+      "term": "Supported inference",
+      "body": "A conclusion that follows from the stated sentences even if no one sentence uses the option's wording. You should be able to name the sentences that force it."
+    },
+    {
+      "term": "True but unsupported",
+      "body": "A statement that is correct outside the paragraph and is not given, contradicted, or used by the paragraph. Truth in the world is not support."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Supported inference",
+      "latex": "\\text{stated sentences}\\Rightarrow\\text{the claim}",
+      "note": "If you cannot name the sentences, you do not yet have support."
+    },
+    {
+      "name": "Outside truth",
+      "latex": "\\text{true in the world}\\neq\\text{supported by the paragraph}",
+      "note": "A kilogram contains one thousand grams. That fact is not a reading of the spool paragraph."
+    }
+  ],
+  "properties": [
+    "The main idea of the spool paragraph is a weekly weight screen against a five-spool average, with conductivity left to the teaching labs.",
+    "A stated detail has a sentence. Five spools, two grams, short student leads, and 'the clerk does not test conductivity' are stated.",
+    "A spool that stays on the shelf is inside the band: not more than two grams under the average and not more than two grams over it. That conclusion uses three sentences together.",
+    "'One kilogram is one thousand grams' is true and is not supported by the paragraph. It is the model of a true-but-unsupported choice.",
+    "A choice that contradicts the paragraph, such as 'the clerk tests conductivity', is neither the main idea nor a supported inference.",
+    "Last winter's supplier fact is about the spools that were sent back. It does not say the wire was badly drawn."
+  ],
+  "examples": [
+    {
+      "title": "The spool paragraph, and its main idea",
+      "prompt": "The materials store at North Campus labels every spool of wire with the week it arrived. On Monday morning a clerk weighs five spools from that week and writes the average on the bin card. A spool more than two grams under the average is retagged and kept for short student leads. A spool more than two grams over the average is sent back to the supplier. Spools inside that band stay on the shelf. The clerk does not test conductivity. The store checks weight only, and the teaching labs test electrical behaviour later. Last winter the bin cards showed that the spools sent back were mostly from one supplier. The cards record the weight band and nothing about how the wire was drawn. What is the main idea?",
+      "steps": [
+        "The sentences are organised around one procedure: five spools set a weekly average, and each spool is kept, set aside for short leads, or sent back according to a two-gram band.",
+        "Two later sentences limit the claim. The clerk does not test conductivity, and the cards do not say how the wire was drawn.",
+        "The main idea is the weight screen and that limit. 'The store measures conductivity' contradicts the paragraph. 'One supplier draws wire badly' is not stated."
+      ],
+      "answer": "Each week the store compares spool weights with a five-spool average, keeps large shortfalls for short leads, sends large excesses back, and does not test conductivity."
+    },
+    {
+      "title": "Detail, inference, and a truth the text does not use",
+      "prompt": "A reading room stamps the return date on each book and shelves it by that date. Books returned on the same date share one shelf. The room does not note the borrower's course. Sort these four remarks: the main idea, a stated detail, a supported inference, and a truth that is not in the text.",
+      "steps": [
+        "The main idea is that returns are shelved by the date they come back.",
+        "The stated detail is that books returned on the same date share one shelf. The sentence says so.",
+        "A supported inference is that the shelf is not organised by the borrower's course: the room does not record the course, and it shelves by date. 'Paper is often made from wood pulp' may be true and is not supported here."
+      ],
+      "answer": "Main idea: shelving by return date. Detail: one shelf for one date. Inference: not organised by course. Unsupported truth: paper is often made from wood pulp."
+    }
+  ],
+  "traps": [
+    "Picking a stated detail and calling it the main idea because it is true and easy to find.",
+    "Treating a true outside fact, such as the gram-kilogram conversion, as if the paragraph had said it.",
+    "Inferring past the text. The paragraph does not say the wire is copper, and it does not say an over-weight spool failed a conductivity test.",
+    "Reversing a rule without the sentences that would allow it. 'Sent back' is tied to 'more than two grams over', not to a conductivity result."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Read the paragraph.\n\nThe materials store at North Campus labels every spool of wire with the week it arrived. On Monday morning a clerk weighs five spools from that week and writes the average on the bin card. A spool more than two grams under the average is retagged and kept for short student leads. A spool more than two grams over the average is sent back to the supplier. Spools inside that band stay on the shelf. The clerk does not test conductivity. The store checks weight only, and the teaching labs test electrical behaviour later. Last winter the bin cards showed that the spools sent back were mostly from one supplier. The cards record the weight band and nothing about how the wire was drawn.\n\nWhich statement is the main idea?",
+      "options": [
+        "Each week the store compares weights with a five-spool average, keeps large shortfalls for short leads, sends large excesses back, and does not test conductivity.",
+        "The store's purpose is to rank suppliers by conductivity.",
+        "Every spool more than two grams over the average is poorly manufactured.",
+        "The teaching labs write the Monday bin card."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The paragraph is organised around the weekly weight comparison with a five-spool average, the two-gram decisions, and the refusal to test conductivity. Option B contradicts the sentence that the clerk does not test conductivity. Option C is not claimed; the cards do not judge how the wire was drawn. Option D gives the Monday job to the teaching labs, which the paragraph does not do."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "According to the paragraph below, how many spools does the clerk weigh on Monday morning?\n\nThe materials store at North Campus labels every spool of wire with the week it arrived. On Monday morning a clerk weighs five spools from that week and writes the average on the bin card. A spool more than two grams under the average is retagged and kept for short student leads. A spool more than two grams over the average is sent back to the supplier. Spools inside that band stay on the shelf. The clerk does not test conductivity. The store checks weight only, and the teaching labs test electrical behaviour later. Last winter the bin cards showed that the spools sent back were mostly from one supplier. The cards record the weight band and nothing about how the wire was drawn.",
+      "options": [
+        "Five",
+        "Two",
+        "Seven",
+        "Ten"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, five. This is a stated detail: the paragraph says a clerk weighs five spools from that week. Two is the gram band, not the count of spools. Seven and ten do not appear."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true according to the paragraph?\n\nThe materials store at North Campus labels every spool of wire with the week it arrived. On Monday morning a clerk weighs five spools from that week and writes the average on the bin card. A spool more than two grams under the average is retagged and kept for short student leads. A spool more than two grams over the average is sent back to the supplier. Spools inside that band stay on the shelf. The clerk does not test conductivity. The store checks weight only, and the teaching labs test electrical behaviour later. Last winter the bin cards showed that the spools sent back were mostly from one supplier. The cards record the weight band and nothing about how the wire was drawn.",
+      "options": [
+        "The clerk does not test conductivity.",
+        "Last winter, the spools sent back were mostly from one supplier.",
+        "The paragraph states the electrical conductivity of copper.",
+        "A spool more than two grams under the average is kept for short student leads."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The paragraph states that the clerk does not test conductivity, that the spools sent back last winter were mostly from one supplier, and that a spool more than two grams under the average is kept for short student leads. It never states the conductivity of copper, so C is not a reading of the paragraph."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which conclusion does the paragraph support, even though no single sentence uses these exact words?\n\nThe materials store at North Campus labels every spool of wire with the week it arrived. On Monday morning a clerk weighs five spools from that week and writes the average on the bin card. A spool more than two grams under the average is retagged and kept for short student leads. A spool more than two grams over the average is sent back to the supplier. Spools inside that band stay on the shelf. The clerk does not test conductivity. The store checks weight only, and the teaching labs test electrical behaviour later. Last winter the bin cards showed that the spools sent back were mostly from one supplier. The cards record the weight band and nothing about how the wire was drawn.",
+      "options": [
+        "A spool that stays on the shelf is not more than two grams away from that week's five-spool average.",
+        "The wire is copper.",
+        "Over-weight spools fail a conductivity test run by the clerk.",
+        "One kilogram is one thousand grams."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Spools more than two grams under the average are taken for short leads, spools more than two grams over it are sent back, and spools inside that band stay on the shelf. A spool that stays is therefore not more than two grams away from the five-spool average. The paragraph never says the wire is copper. It says the clerk does not test conductivity. The kilogram conversion is true in the world and is not in the paragraph."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many of the following four claims are supported by the paragraph? (1) The clerk weighs five spools. (2) The store checks weight only. (3) The clerk tests conductivity. (4) One kilogram equals one thousand grams.\n\nThe materials store at North Campus labels every spool of wire with the week it arrived. On Monday morning a clerk weighs five spools from that week and writes the average on the bin card. A spool more than two grams under the average is retagged and kept for short student leads. A spool more than two grams over the average is sent back to the supplier. Spools inside that band stay on the shelf. The clerk does not test conductivity. The store checks weight only, and the teaching labs test electrical behaviour later. Last winter the bin cards showed that the spools sent back were mostly from one supplier. The cards record the weight band and nothing about how the wire was drawn.\n\nEnter the count of supported claims.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "solution": "The answer is **2**. Claims 1 and 2 are stated: five spools are weighed, and the store checks weight only. Claim 3 contradicts the sentence that the clerk does not test conductivity. Claim 4 is true in the world and is not supported by the paragraph, which never mentions a kilogram. Supported claims are not the same set as true claims.",
+      "tolerance": 0
+    }
+  ]
+}

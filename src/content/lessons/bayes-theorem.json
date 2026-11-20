@@ -1,0 +1,179 @@
+{
+  "slug": "bayes-theorem",
+  "section": "probability",
+  "title": "Bayes' theorem",
+  "syllabus": "Bayes Theorem",
+  "minutes": 35,
+  "summary": "Turn a conditional probability around: posterior equals likelihood times prior, divided by the marginal probability of the evidence.",
+  "keywords": [
+    "bayes",
+    "posterior",
+    "prior",
+    "likelihood",
+    "base rate",
+    "odds"
+  ],
+  "intuition": "A test result, a defect flag, or a word in an email is evidence. What you wanted was the probability of the hypothesis after seeing that evidence. What the sensor datasheet gives you is usually the other conditional: how often the sensor fires when the hypothesis is true, and how often it fires when the hypothesis is false.\n\nBayes' theorem is the conversion. Multiply how common the hypothesis was before the evidence (the prior) by how well it predicted the evidence (the likelihood). Do that for every hypothesis that could have produced the evidence, and divide by the total so the posteriors still add to one. The denominator is the law of total probability. It is the step people skip when they quote a 90% detection rate and forget that the condition is rare.\n\nThe odds form says the same thing with less arithmetic. Posterior odds equal prior odds times the likelihood ratio. A likelihood ratio of 1 leaves the prior alone. A likelihood ratio of 5, on prior odds of 1 to 4, moves you to 5 to 4 — still not a sure thing, because you started a long way from even.",
+  "definitions": [
+    {
+      "term": "Prior",
+      "body": "The probability of a hypothesis before the evidence in this update is used. Write it $P(H)$. It already includes whatever you learned earlier."
+    },
+    {
+      "term": "Likelihood",
+      "body": "The probability of the evidence given the hypothesis, $P(E\\mid H)$. It is not the probability of the hypothesis, and it does not have to sum to 1 across hypotheses."
+    },
+    {
+      "term": "Marginal likelihood",
+      "body": "The probability of the evidence under every hypothesis, $P(E)=\\sum_i P(E\\mid H_i)P(H_i)$, when the $H_i$ partition the sample space."
+    },
+    {
+      "term": "Posterior",
+      "body": "The probability of the hypothesis after the evidence, $P(H\\mid E)$. This is the number the question is usually asking for."
+    },
+    {
+      "term": "Likelihood ratio",
+      "body": "For a hypothesis and its complement, $P(E\\mid H)/P(E\\mid H^c)$. In the odds form it is the factor that updates the prior odds."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Two hypotheses",
+      "latex": "P(H\\mid E)=\\frac{P(E\\mid H)P(H)}{P(E\\mid H)P(H)+P(E\\mid H^c)P(H^c)}",
+      "note": "The complement term is required. $P(E\\mid H^c)$ is not $1-P(E\\mid H)$."
+    },
+    {
+      "name": "Partition",
+      "latex": "P(H_i\\mid E)=\\frac{P(E\\mid H_i)P(H_i)}{\\sum_j P(E\\mid H_j)P(H_j)}",
+      "note": "The $H_j$ are exhaustive and pairwise disjoint, and $P(E)>0$."
+    },
+    {
+      "name": "Odds form",
+      "latex": "\\frac{P(H\\mid E)}{P(H^c\\mid E)}=\\frac{P(E\\mid H)}{P(E\\mid H^c)}\\cdot\\frac{P(H)}{P(H^c)}",
+      "note": "Posterior odds = likelihood ratio × prior odds. Convert odds $a:b$ back by $a/(a+b)$."
+    },
+    {
+      "name": "Sequential update",
+      "latex": "P(H\\mid E_1,E_2)\\propto P(E_2\\mid H,E_1)\\,P(E_1\\mid H)\\,P(H)",
+      "note": "If the evidence is conditionally independent given $H$, the second likelihood does not depend on $E_1$."
+    }
+  ],
+  "properties": [
+    "The posteriors of a partition sum to 1. If your three machine probabilities add to 0.98, a term was dropped.",
+    "A prior of 0 stays 0. No finite likelihood resurrects a hypothesis you ruled out.",
+    "If $P(E\\mid H)=P(E\\mid H^c)$, the evidence does not move the probability: the posterior equals the prior.",
+    "Multiplying every likelihood by the same positive constant does not change the posterior, because the constant cancels in the normalisation.",
+    "The MAP hypothesis is the one with the largest posterior. It need not be the one with the largest likelihood if the priors differ."
+  ],
+  "examples": [
+    {
+      "title": "A rare condition and a noisy screen",
+      "prompt": "A condition has prevalence $P(D)=0.02$. A screen is positive for 90% of people who have the condition and for 5% of people who do not. A person tests positive. Find $P(D\\mid +)$.",
+      "steps": [
+        "Name the false-positive rate separately: $P(+\\mid D^c)=0.05$, which is not $1-0.90$.",
+        "Marginal probability of a positive screen: $P(+)=0.90\\times 0.02+0.05\\times 0.98=0.018+0.049=0.067$.",
+        "Only the first of those two products is the joint event 'has the condition and tests positive'. Divide: $P(D\\mid +)=0.018/0.067=18/67$."
+      ],
+      "answer": "$18/67\\approx 0.269$. A 90% true-positive rate produced a posterior under 0.27, because the condition is rare and the screen also fires on healthy people."
+    },
+    {
+      "title": "Three machines, one defective part",
+      "prompt": "Machines 1, 2, and 3 make 20%, 30%, and 50% of the parts. Their defect rates are 1%, 2%, and 4%. A part is defective. Which machine is the most probable source, and what is that posterior?",
+      "steps": [
+        "Joint probabilities of (machine and defect): $0.2\\times 0.01=0.002$, $0.3\\times 0.02=0.006$, $0.5\\times 0.04=0.020$.",
+        "Marginal defect probability: $0.002+0.006+0.020=0.028$.",
+        "Posteriors: $0.002/0.028=1/14$, $0.006/0.028=3/14$, $0.020/0.028=5/7$. They sum to 1."
+      ],
+      "answer": "Machine 3, with posterior $5/7$. It had both the largest prior and the largest defect rate, so the ordering is not a surprise — the number is."
+    }
+  ],
+  "traps": [
+    "Swapping the condition: $P(H\\mid E)$ is not $P(E\\mid H)$. A detection rate is a likelihood.",
+    "Using $1-P(E\\mid H)$ as the false-positive rate. The two condition on different events.",
+    "Forgetting a hypothesis in the denominator. Every way the evidence can arise has to be in $P(E)$.",
+    "Treating a large likelihood as a large posterior. If the prior is small, the posterior can stay small. That is the base-rate trap in the screening example.",
+    "Updating twice with the same evidence. Sequential Bayes applies when a new, conditionally independent observation arrives."
+  ],
+  "python": "# Three-machine posterior check. Priors and defect rates as in the lesson.\npriors = [0.2, 0.3, 0.5]\ndefect = [0.01, 0.02, 0.04]\njoint = [p * d for p, d in zip(priors, defect)]\nmarginal = sum(joint)\nposterior = [j / marginal for j in joint]\nassert abs(sum(posterior) - 1) < 1e-12\nassert abs(posterior[2] - 5 / 7) < 1e-12\nprint([round(p, 6) for p in posterior])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "An account is fraudulent with probability $0.25$. A rule flags a fraudulent account with probability $0.8$ and an honest account with probability $0.1$. An account is flagged. The probability it is fraudulent is",
+      "options": [
+        "$8/11$",
+        "$4/5$",
+        "$2/11$",
+        "$1/4$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $8/11$.\n\n$P(\\text{flag})=0.8\\times 0.25+0.1\\times 0.75=0.2+0.075=0.275$. The joint probability of fraud and a flag is $0.2$. So $P(\\text{fraud}\\mid \\text{flag})=0.2/0.275=20/27.5=8/11$. Option B is the true-positive rate, which was given. Option D is the prior."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A disease has prevalence $0.1$. Each of two tests is positive with probability $0.9$ if the disease is present and with probability $0.2$ if it is absent. Given the disease status, the tests are independent. Both tests are positive. The posterior probability of the disease is",
+      "options": [
+        "$9/13$",
+        "$81/100$",
+        "$27/50$",
+        "$9/10$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $9/13$.\n\nConditional independence gives $P(+,+\\mid D)=0.9\\times 0.9=0.81$ and $P(+,+\\mid D^c)=0.2\\times 0.2=0.04$. The unnormalised posteriors are $0.81\\times 0.1=0.081$ and $0.04\\times 0.9=0.036$. The posterior is $0.081/(0.081+0.036)=0.081/0.117=81/117=9/13$. Option B multiplies the two true-positive rates and stops. Option D is a single test's true-positive rate."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Let $H$ be a hypothesis with $0<P(H)<1$, and let $E$ be evidence with $P(E)>0$. Which of the following are true?",
+      "options": [
+        "If $P(E\\mid H)=P(E\\mid H^c)$, then $P(H\\mid E)=P(H)$.",
+        "$P(H\\mid E)+P(H^c\\mid E)=1$.",
+        "A likelihood $P(E\\mid H)>1/2$ always yields $P(H\\mid E)>P(H)$.",
+        "$P(E\\mid H)+P(E\\mid H^c)=1$."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**.\n\nIf the two likelihoods are equal, the likelihood ratio is 1, so the odds do not move and the posterior equals the prior. $H$ and $H^c$ still partition the space after conditioning on $E$, so their posteriors sum to 1.\n\nC is false. Take $P(H)=0.8$, $P(E\\mid H)=0.9$, and $P(E\\mid H^c)=0.95$. Then $P(H\\mid E)=0.72/0.91<0.8$ even though the likelihood is $0.9$. D is false because the two likelihoods condition on different events; each can be anything in $[0,1]$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Hypotheses $H_1,H_2,H_3$ have priors $1/2$, $1/3$, and $1/6$. The likelihoods of evidence $E$ are $P(E\\mid H_1)=1/2$, $P(E\\mid H_2)=1/3$, and $P(E\\mid H_3)=1/6$. Which of the following are true?",
+      "options": [
+        "$P(E)=7/18$.",
+        "$P(H_1\\mid E)=9/14$.",
+        "After observing $E$, $H_3$ is still the least probable of the three hypotheses.",
+        "$P(H_2\\mid E)=P(H_2)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\n$P(E)=(1/2)(1/2)+(1/3)(1/3)+(1/6)(1/6)=1/4+1/9+1/36=9/36+4/36+1/36=14/36=7/18$.\n\n$P(H_1\\mid E)=(1/4)/(7/18)=9/14$. $P(H_2\\mid E)=(1/9)/(7/18)=2/7$. $P(H_3\\mid E)=(1/36)/(7/18)=1/14$. These are $9/14$, $4/14$, and $1/14$, so $H_3$ remains the smallest. The prior of $H_2$ is $1/3$, and $2/7\\neq 1/3$, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Prior odds of spam to genuine mail are $1:4$. A token appears in half of spam and in one tenth of genuine mail. Using only this likelihood ratio, the posterior probability of spam is $p$. Enter $9p$.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**.\n\nThe likelihood ratio is $(1/2)/(1/10)=5$. Prior odds are $1/4$. Posterior odds are $5\\times 1/4=5/4$, that is $5:4$. Then $p=5/(5+4)=5/9$, so $9p=5$."
+    }
+  ]
+}

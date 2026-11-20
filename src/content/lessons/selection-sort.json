@@ -1,0 +1,163 @@
+{
+  "slug": "selection-sort",
+  "section": "programming",
+  "title": "Selection sort",
+  "syllabus": "Selection sort",
+  "minutes": 25,
+  "summary": "Selection sort scans the unsorted suffix for the minimum and swaps it into place. The comparison count is always quadratic, and the swap can reorder equal keys.",
+  "keywords": [
+    "selection sort",
+    "stability",
+    "comparisons",
+    "in place",
+    "triangle number"
+  ],
+  "intuition": "Selection sort fills the array from the left. On pass $i$ it scans every index from $i$ through the end, remembers where the minimum sits, and swaps that minimum into index $i$. The scan does not look at whether the suffix is already ordered. A sorted array, a reversed array, and a random array of the same length all pay the same triangle number of comparisons, $n(n-1)/2$, which is $\\Theta(n^2)$.\n\nThe exchange is long-range, and that is what makes the sort unstable. The key that was sitting at index $i$ is dropped into the hole the minimum came from. If that displaced key equals a key that lay between the two indexes, those two equal keys have changed order. Later passes have no duty to put them back. Using a strict $<$ when the minimum is chosen does not repair this: the damage is the swap, not the comparison.\n\nThe algorithm is in place. Extra storage is a handful of indexes, not a second copy of the array. Each pass places one key, so there are at most $n-1$ exchanges of two distinct positions. It is not an online sort: the key written at index $0$ is the minimum of the whole array, which is known only after every key has been seen.",
+  "definitions": [
+    {
+      "term": "Pass",
+      "body": "Pass $i$ (with $i$ starting at $0$) scans indexes $i, i+1, \\ldots, n-1$, selects a minimum, and swaps it with the key at index $i$. After the pass, index $i$ holds a smallest key of the original suffix and is never moved again."
+    },
+    {
+      "term": "Comparison count",
+      "body": "A comparison is one test between two keys while the minimum is being located. Pass $i$ performs $n-1-i$ comparisons. The total is exactly $n(n-1)/2$ on every input of length $n$."
+    },
+    {
+      "term": "Stable sort",
+      "body": "A sort is stable when two keys that compare equal finish in the same order they started. Selection sort is not stable: swapping the minimum into place can carry an equal key backward past another equal key."
+    },
+    {
+      "term": "In place",
+      "body": "The input array is rewritten using only a constant amount of extra memory. Selection sort needs the array plus a few integer variables. It does not allocate an $\\Theta(n)$ buffer."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Comparisons, every input",
+      "latex": "C(n)=\\frac{n(n-1)}{2}=\\Theta(n^2)",
+      "note": "Best, average, and worst case are the same expression. There is no $\\Theta(n)$ escape on a sorted array."
+    },
+    {
+      "name": "Exchanges",
+      "latex": "S(n)\\le n-1",
+      "note": "At most one exchange per pass. A pass whose minimum is already in position does not exchange two distinct keys."
+    }
+  ],
+  "properties": [
+    "The comparison count depends only on $n$. Data order does not change it.",
+    "The sort is in place and uses $\\Theta(1)$ extra memory.",
+    "It is not stable. The counterexample is a swap that drops an equal key into a hole behind another equal key.",
+    "After pass $i$, the prefix of length $i+1$ is the $i+1$ smallest keys, sorted.",
+    "The first output key is the global minimum, so the algorithm is not online."
+  ],
+  "examples": [
+    {
+      "title": "Five keys, and the equal pair changes order",
+      "prompt": "Run selection sort on $(4,a), (3,b), (4,c), (2,d), (1,e)$. Choose the minimum with a strict $<$, so the leftmost minimum wins a tie. Count comparisons, and record the final order of the two keys equal to $4$.",
+      "steps": [
+        "Pass $0$ scans four pairs and finds $(1,e)$ at the last index. Swapping it with $(4,a)$ produces $(1,e), (3,b), (4,c), (2,d), (4,a)$. The later $4$ has moved in front of the earlier $4$.",
+        "Pass $1$ scans three pairs. The minimum of the suffix is $(2,d)$, swapped with $(3,b)$, producing $(1,e), (2,d), (4,c), (3,b), (4,a)$.",
+        "Pass $2$ scans two pairs and swaps $(3,b)$ into place, producing $(1,e), (2,d), (3,b), (4,c), (4,a)$. Pass $3$ scans the last pair; both keys equal $4$ and the left one is already the chosen minimum, so the labels stay $c$ then $a$."
+      ],
+      "answer": "The sort uses $4+3+2+1=10$ comparisons and finishes as $1, 2, 3, 4, 4$ with labels $e, d, b, c, a$. The two equal keys finish $c$ then $a$, the reverse of their input order, so this run is not stable."
+    },
+    {
+      "title": "The same five keys, already sorted",
+      "prompt": "The keys above are now presented already sorted, as $1, 2, 3, 4, 4$. How many comparisons does selection sort perform, and how does that compare with $n(n-1)/2$?",
+      "steps": [
+        "Pass $0$ still inspects the other four keys before it can know that the first key is the minimum. That is $4$ comparisons, even though no exchange is required.",
+        "The later passes inspect $3$, then $2$, then $1$ pairs. Nothing in the algorithm skips a suffix because it looks sorted.",
+        "The total is $4+3+2+1=10$, and $n(n-1)/2=5\\times 4/2=10$. The sorted input did not reduce the comparison count."
+      ],
+      "answer": "$10$ comparisons, exactly the same triangle number as the unsorted trace. Best case and worst case are both $\\Theta(n^2)$."
+    }
+  ],
+  "traps": [
+    "Importing bubble sort's best case. A swapped flag does not belong to selection sort, and a sorted array still costs $n(n-1)/2$ comparisons.",
+    "Calling the sort stable because the minimum test uses $<$ rather than $\\le$. Stability fails when the displaced key is swapped backward over an equal key.",
+    "Counting a data movement as the cost. The syllabus comparison bound is the scans, not the $n-1$ exchanges. Fewer writes do not mean fewer comparisons.",
+    "Treating selection sort as online. The key placed first is the minimum of every key, including keys that have not yet been read in a stream."
+  ],
+  "python": "items = [(4, \"a\"), (3, \"b\"), (4, \"c\"), (2, \"d\"), (1, \"e\")]\ncomps = 0\nfor i in range(len(items) - 1):\n    m = i\n    for j in range(i + 1, len(items)):\n        comps += 1\n        if items[j][0] < items[m][0]:\n            m = j\n    items[i], items[m] = items[m], items[i]\nassert comps == 5 * 4 // 2 == 10\nassert [value for value, _ in items] == [1, 2, 3, 4, 4]\nassert [label for value, label in items if value == 4] == [\"c\", \"a\"]\nprint(comps, \"\".join(label for _, label in items))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Selection sort runs on an array of $6$ numbers that is already sorted. Every test used to locate the minimum counts as a comparison. How many comparisons are performed?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $15$.\n\nThe count is $n(n-1)/2$ on every input. For $n=6$ that is $6\\times 5/2=15$. A sorted array does not stop the suffix scans. Option B is the $n-1$ figure from one early-exit pass of bubble sort. Option D adds an extra row of the triangle.",
+      "options": [
+        "$15$",
+        "$5$",
+        "$6$",
+        "$21$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Selection sort is run on $(4,a), (3,b), (4,c), (2,d), (1,e)$, and ties in the minimum scan keep the leftmost index. The two keys equal to $4$ finish in which label order?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $c$ then $a$.\n\nThe first pass swaps $(1,e)$ with $(4,a)$, which drops label $a$ behind label $c$. The later passes never swap those two equal keys with each other, so the final equal pair is $c$ then $a$. That reversed pair is the witness that the sort is not stable. Option B is the input order.",
+      "options": [
+        "$c$ then $a$",
+        "$a$ then $c$",
+        "the second $4$ is discarded",
+        "either order, because equal keys are not ordered"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the usual in-place selection sort?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nEvery input of length $n$ costs $n(n-1)/2$ comparisons, and that quantity is $\\Theta(n^2)$ even when the array starts sorted. The extra memory is a constant number of indexes. On five elements the formula gives $5\\times 4/2=10$. Option C is false: swapping the minimum into place is the step that can reorder equal keys, so the usual algorithm is not stable.",
+      "options": [
+        "It performs $\\Theta(n^2)$ comparisons on a sorted array of length $n$.",
+        "Extra memory beyond the input array is a constant number of index variables.",
+        "It is stable, because the minimum is chosen with a strict less-than test.",
+        "On an array of five elements the comparison count is $10$."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nEach of the $n-1$ passes exchanges the chosen minimum with the key at the pass index, so there are at most $n-1$ exchanges. That swap is exactly the move that can place a later equal key in front of an earlier one. Option B describes bubble sort with a flag, or insertion sort, not selection sort. Option D describes the auxiliary buffer of mergesort.",
+      "options": [
+        "The algorithm makes at most $n-1$ exchanges.",
+        "A sorted input brings the comparison count down to $\\Theta(n)$.",
+        "Swapping a later minimum into an earlier index can reorder two equal keys.",
+        "The algorithm needs an auxiliary array of length $\\Theta(n)$."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Selection sort is run on an array of $12$ distinct integers. How many comparisons does it perform?",
+      "answer": [
+        "66"
+      ],
+      "solution": "The answer is **66**.\n\nThe comparison count is $n(n-1)/2$ for every array of length $n$. Substituting $n=12$ gives $12\\times 11/2=66$. Distinct keys do not change the number of tests the scans perform.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

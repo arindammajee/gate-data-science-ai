@@ -1,0 +1,166 @@
+{
+  "slug": "single-linkage",
+  "section": "machine-learning",
+  "title": "Single linkage",
+  "syllabus": "Single-linkage",
+  "minutes": 30,
+  "summary": "Single linkage sets the distance between two clusters equal to the smallest pairwise distance. Close bridges merge groups whose far points are widely separated, which is chaining. With distinct distances the merges follow Kruskal's minimum spanning tree. The first pair on the worked line is the closest pair.",
+  "keywords": [
+    "single linkage",
+    "minimum distance",
+    "chaining",
+    "minimum spanning tree",
+    "dendrogram"
+  ],
+  "intuition": "Once a cluster holds more than one point, \"the distance to that cluster\" is ambiguous. Single linkage resolves it by the optimistic rule: the distance from cluster $A$ to cluster $B$ is the smallest distance between a point of $A$ and a point of $B$. One close pair is enough to pull the two clusters together, no matter how far their other points sit.\n\nThat optimism is chaining. A bridge of points spaced a short step apart will merge two dense groups even when the groups' extremes are far apart. On the line $0,1,3,7,12$, single linkage never looks at the direct gap of $12$ between the ends. It merges $0$ with $1$ at height $1$, picks up $3$ at height $2$, picks up $7$ at height $4$, and finally picks up $12$ at height $5$. The last merge height is $5$, not $12$. The chain of short steps has already connected the ends.\n\nThe same heights are the edge lengths Kruskal's algorithm would add while building a minimum spanning tree of the complete graph on these points, provided all pairwise distances are distinct so that no tie has to be broken. Single linkage and the minimum spanning tree are the same nested structure. The rule is not the maximum pairwise distance. That maximum is multiple linkage, the next lesson, and on these same points it refuses the chain.",
+  "definitions": [
+    {
+      "term": "Single-linkage distance",
+      "body": "$d(A,B)=\\min_{a\\in A,\\, b\\in B} d(a,b)$. One closest pair sets the distance. Pairs that are far apart do not raise it."
+    },
+    {
+      "term": "Chaining",
+      "body": "A bridge of close points merges clusters that are otherwise far apart. On $0,1,3,7,12$ the ends are $12$ apart, but they join at height $5$ because each intermediate step is short."
+    },
+    {
+      "term": "First merge",
+      "body": "The first merge joins a closest pair of points, here the points at $0$ and $1$, at distance $1$. Every later distance is a minimum over a set that may contain more than one pair."
+    },
+    {
+      "term": "Minimum-spanning-tree link",
+      "body": "With all pairwise distances distinct, Kruskal's algorithm adds edges in the same order as the single-linkage merges, and the merge heights are those edge lengths."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Single linkage",
+      "latex": "d_{\\min}(A,B)=\\min_{a\\in A,\\, b\\in B} d(a,b)",
+      "note": "The syllabus name for the maximum, $\\max_{a,b} d(a,b)$, is multiple linkage, not this rule."
+    },
+    {
+      "name": "Merge height along a bridge",
+      "latex": "h(A,B)=\\min_{a\\in A,\\, b\\in B} d(a,b)",
+      "note": "Chaining: $h$ can be far smaller than the distance between the extreme points of $A\\cup B$. On the worked points the final height is $5$ while the extremes are $12$ apart."
+    }
+  ],
+  "properties": [
+    "The distance between clusters is a minimum of pairwise distances. It is not a maximum, not a distance between means, and not a count of points.",
+    "The first merge on $0,1,3,7,12$ joins $0$ and $1$ at height $1$. The pairwise distances $1,2,3,4,5,6,7,9,11,12$ are all distinct, so the pair is unique.",
+    "The full single-linkage sequence is: $\\{0,1\\}$ at height $1$, then $3$ joins at height $2$, then $7$ joins at height $4$, then $12$ joins at height $5$.",
+    "Chaining: the points at $0$ and $12$ become one cluster at height $5$, even though $|0-12|=12$. The bridge $1,3,7$ supplied shorter steps.",
+    "With distinct pairwise distances, the merges are Kruskal's algorithm on the complete graph. The four merge heights $1,2,4,5$ are the lengths of the four MST edges that connect five points.",
+    "A single close pair is enough to merge two clusters. One noisy bridge point can therefore attach groups the user thinks of as separate."
+  ],
+  "examples": [
+    {
+      "title": "Five points, the whole merge sequence",
+      "prompt": "Points $A,B,C,D,E$ lie at $0,1,3,7,12$ on the line, with absolute distance. Run single-linkage agglomerative clustering and name the pair that merges first.",
+      "steps": [
+        "The closest pair is $A,B$ at distance $1$. Every other gap is at least $|B-C|=2$. The first merge is $\\{A,B\\}$ at height $1$.",
+        "Distances from $\\{A,B\\}$ are $\\min(3,2)=2$ to $C$, $\\min(7,6)=6$ to $D$, and $\\min(12,11)=11$ to $E$. Also $|C-D|=4$, $|C-E|=9$, and $|D-E|=5$. The minimum is $2$, so $C$ joins $\\{A,B\\}$ at height $2$.",
+        "Distances from $\\{A,B,C\\}$ are $\\min(7,6,4)=4$ to $D$ and $\\min(12,11,9)=9$ to $E$, against $|D-E|=5$. So $D$ joins at height $4$. The last distance is $\\min(12,11,9,5)=5$, and $E$ joins at height $5$."
+      ],
+      "answer": "The first pair is $A$ with $B$, at height $1$. The later heights are $2$ ($C$), $4$ ($D$), and $5$ ($E$)."
+    },
+    {
+      "title": "The chain is shorter than the direct gap",
+      "prompt": "On the same points, compare the single-linkage height at which $A$ and $E$ become one cluster with the direct distance $|A-E|$.",
+      "steps": [
+        "From the merge sequence, $E$ joins $\\{A,B,C,D\\}$ at height $5$. That is the height of the path connecting $A$ to $E$ in the dendrogram.",
+        "The direct distance is $|0-12|=12$. The merge does not use $12$. It uses $\\min(|D-E|,|C-E|,|B-E|,|A-E|)=\\min(5,9,11,12)=5$.",
+        "The intermediate points are a bridge: steps of $1$, $2$, $4$, and $5$ connect the ends. This is chaining. The minimum spanning tree uses those same four lengths and never needs the long chord of length $12$."
+      ],
+      "answer": "$A$ and $E$ merge at height $5$, not at their direct distance $12$."
+    }
+  ],
+  "traps": [
+    "Using the maximum pairwise distance. That is multiple linkage, meaning complete linkage. Single linkage on $\\{A,B,C\\}$ and $D$ is $\\min(7,6,4)=4$, not $\\max(7,6,4)=7$.",
+    "Reporting the final merge height as $|A-E|=12$. Chaining joins the ends at height $5$. The direct gap never becomes the merge height once a closer bridge point exists.",
+    "Merging $D$ with $E$ at the third step. That is what complete linkage does on these points. Single linkage attaches $D$ to $\\{A,B,C\\}$ at height $4$, while $|D-E|=5$ is still larger.",
+    "Breaking the MST correspondence by sorting edges incorrectly when distances tie. Here they do not tie: the ten pairwise distances are $1,2,3,4,5,6,7,9,11,12$, all distinct, and Kruskal's order matches the merges.",
+    "Measuring cluster distance by the distance between means. The mean of $\\{A,B\\}$ is $0.5$, and $|0.5-3|=2.5$, but the single-linkage distance to $C$ is $\\min(3,2)=2$, not $2.5$."
+  ],
+  "python": "points = [0, 1, 3, 7, 12]\n\ndef single_heights(points):\n    clusters = [frozenset([i]) for i in range(len(points))]\n    heights = []\n    while len(clusters) > 1:\n        best = None\n        for i in range(len(clusters)):\n            for j in range(i + 1, len(clusters)):\n                d = min(abs(points[a] - points[b]) for a in clusters[i] for b in clusters[j])\n                if best is None or d < best[0]:\n                    best = (d, i, j)\n        d, i, j = best\n        heights.append(d)\n        merged = clusters[i] | clusters[j]\n        clusters = [clusters[k] for k in range(len(clusters)) if k != i and k != j]\n        clusters.append(merged)\n    return heights\n\nheights = single_heights(points)\nassert heights == [1, 2, 4, 5]\nassert abs(points[0] - points[4]) == 12\nprint(heights[0])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Single linkage on the points $0,1,3,7,12$ merges which pair first?",
+      "options": [
+        "The points at $0$ and $1$",
+        "The points at $1$ and $3$",
+        "The points at $7$ and $12$",
+        "The points at $0$ and $12$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe pairwise distances start at $|0-1|=1$. The next smallest gap on the line is $|1-3|=2$. The first merge is the unique closest pair, the points at $0$ and $1$. The ends, at distance $12$, are the last points to feel the chain, not the first pair."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Under single linkage, the distance between two clusters is",
+      "options": [
+        "the minimum pairwise distance between a point of each cluster",
+        "the maximum pairwise distance between a point of each cluster",
+        "the distance between the two cluster means",
+        "the number of points in the two clusters"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nSingle linkage is $d(A,B)=\\min_{a\\in A,b\\in B} d(a,b)$. The maximum is multiple linkage. A distance between means is a different method, and the sizes of the clusters do not define the linkage distance."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of single linkage on $0,1,3,7,12$?",
+      "options": [
+        "A bridge of close points can merge clusters whose extreme points are far apart.",
+        "With all pairwise distances distinct, the merges follow Kruskal's algorithm for a minimum spanning tree.",
+        "The points at the two ends become one cluster at a height smaller than the direct distance $12$.",
+        "The distance between clusters is the maximum pairwise distance."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe ends at $0$ and $12$ join by the bridge $1,3,7$, at height $5$, which is chaining. The ten pairwise distances are distinct, so Kruskal adds the same edges in the same order. D is the complete-linkage rule, which this lesson does not use."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the single-linkage merge order on $0,1,3,7,12$?",
+      "options": [
+        "The second merge attaches the point at $3$ to the pair $\\{0,1\\}$.",
+        "The third merge attaches the point at $7$ to $\\{0,1,3\\}$, before it attaches the point at $12$.",
+        "The fourth merge is the one that finally includes the point at $12$.",
+        "The third merge joins the points at $7$ and $12$ to each other, leaving $\\{0,1,3\\}$ aside."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nAfter $\\{0,1\\}$ forms, the single-linkage distance to $3$ is $2$, which beats $|7-12|=5$. After $3$ has joined, the distance to $7$ is $4$, which still beats $5$, so $7$ joins the growing chain. Only then does $12$ join. D describes the third merge of complete linkage on these points, not single linkage."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Points lie at $0,1,3,7,12$. Single linkage attaches $7$ to the cluster $\\{0,1,3\\}$ at height $h$. Enter $h$.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**.\n\nThe pairwise distances from $7$ to $0$, $1$, and $3$ are $7$, $6$, and $4$. Single linkage takes the minimum, which is $4$. The competing distance $|7-12|=5$ is larger, so the merge that happens is the one at height $4$."
+    }
+  ]
+}

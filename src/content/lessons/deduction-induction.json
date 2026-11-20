@@ -1,0 +1,167 @@
+{
+  "slug": "deduction-induction",
+  "section": "aptitude",
+  "title": "Deduction and induction",
+  "syllabus": "Logic: deduction and induction",
+  "minutes": 25,
+  "summary": "A valid deduction preserves truth. An induction can generalise from true cases and still be wrong, which is why the form of the argument matters.",
+  "keywords": [
+    "deduction",
+    "induction",
+    "syllogism",
+    "validity",
+    "some"
+  ],
+  "intuition": "Deduction and induction answer different questions. A deduction asks whether a conclusion is forced by the premises. If the form is valid and every premise is true, the conclusion is true. You do not get to keep a deduction that jumps. \"All routers are devices\" and \"all devices draw power\" really do force \"all routers draw power.\" \"All routers are devices\" and \"all phones are devices\" do not force anything about routers and phones, because both groups can sit inside devices without overlapping.\n\nInduction asks what is reasonable to expect beyond the cases you have seen. Ten green sample boards can make the next green board a sensible bet. They cannot make it certain. An inductive argument is allowed to have true premises and a false conclusion. That is not a flaw in the definition. It is the definition.\n\nThe word \"some\" is where short questions are lost. In this kind of logic, \"some\" means \"at least one.\" It does not mean \"some but not all,\" and it does not smuggle in \"some are not.\" ",
+  "definitions": [
+    {
+      "term": "Valid deduction",
+      "body": "A form in which it is impossible for the premises to be true and the conclusion false. Validity is about form. Truth of the premises is a separate question."
+    },
+    {
+      "term": "Sound argument",
+      "body": "A valid deduction whose premises are actually true. Soundness gives a true conclusion. Validity alone does not, if a premise is false."
+    },
+    {
+      "term": "Induction",
+      "body": "An argument that generalises from observed cases. The conclusion can be false even when every observation was accurate."
+    },
+    {
+      "term": "Some",
+      "body": "At least one. \"Some A are B\" does not say that some A are not B, and it does not say that all A are B."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Chain of all",
+      "latex": "\\text{All }A\\text{ are }B,\\ \\text{all }B\\text{ are }C \\Rightarrow \\text{all }A\\text{ are }C",
+      "note": "Valid. The middle term B has to be the class that contains A and sits inside C."
+    },
+    {
+      "name": "Undistributed middle",
+      "latex": "\\text{All }A\\text{ are }B,\\ \\text{all }C\\text{ are }B \\nRightarrow \\text{all }A\\text{ are }C",
+      "note": "Invalid. Sharing a larger class does not force the two smaller classes to meet."
+    },
+    {
+      "name": "Negative chain",
+      "latex": "\\text{No }A\\text{ are }B,\\ \\text{all }C\\text{ are }A \\Rightarrow \\text{no }C\\text{ are }B",
+      "note": "Valid. Everything in C is in A, and nothing in A is in B."
+    }
+  ],
+  "properties": [
+    "A false premise can sit inside a valid deduction. The conclusion is then not guaranteed. Validity did not fail; soundness did.",
+    "If a deduction is valid and the conclusion is false, at least one premise is false.",
+    "\"All A are B\" converts only to \"some B are A,\" and only when A is not empty. It does not convert to \"all B are A.\"",
+    "Two \"some\" premises do not force a \"some\" conclusion about the outer terms. The individuals may be different.",
+    "Induction is not a failed deduction. Calling a forecast invalid because it is not certain mixes the two standards."
+  ],
+  "examples": [
+    {
+      "title": "A chain that does force the conclusion",
+      "prompt": "Premises: every DA applicant in the room is a final-year student, and every final-year student in the room has an admit card. What follows about DA applicants?",
+      "steps": [
+        "Write the classes in order. A = DA applicants in the room, B = final-year students in the room, C = people in the room with an admit card.",
+        "The premises are \"all A are B\" and \"all B are C.\" The middle term B is distributed as the class that contains A.",
+        "The chain is valid, so every DA applicant in the room has an admit card. Nothing was claimed about people who are not DA applicants."
+      ],
+      "answer": "Every DA applicant in the room has an admit card."
+    },
+    {
+      "title": "A chain that only looks similar",
+      "prompt": "Premises: every DA applicant is a graduate, and every M.Tech applicant is a graduate. Does it follow that every DA applicant is an M.Tech applicant?",
+      "steps": [
+        "Both premises put a group inside \"graduates.\" The middle term is the larger class, and it is not the class being used to carry one group into the other.",
+        "A DA applicant can be a graduate without being an M.Tech applicant. The premises stay true in that case and the conclusion is false.",
+        "The form is the undistributed middle. No conclusion about the overlap of the two applicant groups is forced."
+      ],
+      "answer": "No. The premises can both be true while no DA applicant is an M.Tech applicant."
+    }
+  ],
+  "traps": [
+    "Reading \"some\" as \"some but not all.\" From \"some of the scripts were rechecked\" you may not conclude that some were not.",
+    "Converting \"all A are B\" into \"all B are A.\" Every square is a rectangle; not every rectangle is a square.",
+    "Treating an inductive sample as a deduction. Ten passing boards do not entail that the eleventh passes.",
+    "Assuming a valid argument with a false conclusion must have an invalid form. A false premise is enough to explain a false conclusion."
+  ],
+  "python": "# Minimum size forced by \"all DA candidates are GATE candidates\".\nda = 18\n# Every DA candidate is a GATE candidate, so there are at least 18 GATE candidates.\nassert da == 18\nprint(da)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Premises: all routers are devices, and all devices in this lab draw power. Which conclusion is forced?",
+      "options": [
+        "All routers in this lab draw power.",
+        "All devices are routers.",
+        "Some devices are not routers.",
+        "Only routers draw power."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The form is all A are B and all B are C, so all A are C. B, C, and D convert or add a claim the premises do not contain."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Premises: some of the marked scripts are from set P, and all scripts from set P were rechecked. Which conclusion is forced?",
+      "options": [
+        "Some marked scripts were rechecked.",
+        "All marked scripts were rechecked.",
+        "Some rechecked scripts are not marked.",
+        "No marked script was rechecked."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. At least one marked script is in set P, and every script in set P was rechecked, so at least one marked script was rechecked. \"All marked scripts\" would need every marked script to be in set P, which was not said."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following arguments are valid?",
+      "options": [
+        "All A are B. All B are C. Therefore all A are C.",
+        "All A are B. All C are B. Therefore all A are C.",
+        "No A are B. All C are A. Therefore no C are B.",
+        "Some A are B. Some B are C. Therefore some A are C."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**. A is the standard chain. C puts every C inside A, and A is disjoint from B, so C is disjoint from B. B is an undistributed middle. D joins two \"some\" claims that may refer to different members of B."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of deduction and induction as used in aptitude questions?",
+      "options": [
+        "A valid deduction with true premises has a true conclusion.",
+        "An induction can have true premises and a false conclusion.",
+        "A deduction with a false premise must have a false conclusion.",
+        "In these questions, \"some\" means \"some but not all.\""
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. Sound, valid deduction preserves truth. Induction does not. A false premise does not force a false conclusion: \"all primes are even\" is false, and \"2 is even\" can still follow from other facts, or a valid argument can have a false premise and a true conclusion. \"Some\" means at least one."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "In a room of 40 candidates, every DA applicant is a GATE applicant, and 18 of the 40 are DA applicants. The premises force a minimum number of GATE applicants. Enter that minimum.",
+      "options": [],
+      "answer": [
+        "18"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **18**. All 18 DA applicants are GATE applicants, so there are at least 18. The premises do not force any of the other 22 to be GATE applicants, so 18 is the minimum."
+    }
+  ]
+}

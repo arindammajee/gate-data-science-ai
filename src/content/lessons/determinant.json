@@ -1,0 +1,160 @@
+{
+  "slug": "determinant",
+  "section": "linear-algebra",
+  "title": "Determinants",
+  "syllabus": "Determinant",
+  "minutes": 30,
+  "summary": "The determinant is the alternating multilinear function of the rows with det(I)=1. It multiplies over products, ignores transpose, changes sign when two rows are swapped, and vanishes exactly when the matrix is singular, which is exactly when 0 is an eigenvalue.",
+  "keywords": [
+    "determinant",
+    "multilinear",
+    "singular",
+    "eigenvalue",
+    "row swap"
+  ],
+  "intuition": "The determinant is the function of a square matrix that measures signed volume. On the identity it equals $1$. It is linear in each row when the other rows are held fixed, and it changes sign when two rows are swapped. Those two sentences — multilinear and alternating — together with the value on $I$, determine the determinant completely. The same description works with columns instead of rows, which is why $\\det(A^\\top)=\\det(A)$.\n\nMultiplicativity is the structural fact used most often: $\\det(AB)=\\det(A)\\det(B)$ for square matrices of the same size. Invertible matrices are exactly the ones with nonzero determinant, because $\\det(A)\\det(A^{-1})=\\det(I)=1$. A product of many matrices therefore has determinant equal to the product of the determinants, and a single singular factor makes the whole product singular.\n\nSingularity has two other names that examinations treat as the same statement. The matrix is singular, the determinant is zero, and $0$ is an eigenvalue. Each implies the others: $\\det(A-\\lambda I)$ at $\\lambda=0$ is $\\det A$, so the characteristic equation holds at $0$ exactly when the determinant vanishes, and that is exactly when the columns are dependent. The determinant is not linear as a function of the whole matrix. Row-by-row linearity does not give $\\det(A+B)=\\det(A)+\\det(B)$.",
+  "definitions": [
+    {
+      "term": "Determinant",
+      "body": "The determinant is the unique alternating multilinear function of the rows of a square matrix that takes the value $1$ on the identity. Alternating means that swapping two rows changes the sign. Multilinear means linear in each row separately."
+    },
+    {
+      "term": "Singular",
+      "body": "A square matrix is singular when it is not invertible. For a square matrix this is equivalent to $\\det A=0$, to the columns being linearly dependent, and to $0$ being an eigenvalue."
+    },
+    {
+      "term": "Effect of a row operation",
+      "body": "Swapping two rows multiplies the determinant by $-1$. Adding a multiple of one row to a different row does not change the determinant. Multiplying a row by the scalar $c$ multiplies the determinant by $c$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Product, transpose, eigenvalues",
+      "latex": "\\det(AB)=\\det(A)\\det(B),\\quad \\det(A^\\top)=\\det(A),\\quad \\det(A)=\\prod_i\\lambda_i",
+      "note": "The product of eigenvalues counts algebraic multiplicity over $\\mathbb{C}$. $A$ and $B$ are square and the same size."
+    },
+    {
+      "name": "Zero determinant",
+      "latex": "\\det(A)=0\\iff A\\text{ is singular}\\iff 0\\text{ is an eigenvalue}",
+      "note": "All three are statements about a square matrix. A non-square matrix has no determinant and no eigenvalues in this sense."
+    }
+  ],
+  "properties": [
+    "The determinant is multilinear and alternating as a function of the rows, and also as a function of the columns. In particular $\\det(A^\\top)=\\det(A)$.",
+    "$\\det(AB)=\\det(A)\\det(B)$. Hence $\\det(A^{-1})=1/\\det(A)$ when $A$ is invertible, and $\\det(A^k)=(\\det A)^k$.",
+    "Swapping two rows changes the sign of the determinant. A matrix with two equal rows has determinant $0$.",
+    "$\\det A=0$ if and only if $A$ is singular, if and only if $0$ is an eigenvalue of $A$.",
+    "For an $n\\times n$ matrix, $\\det(cA)=c^n\\det(A)$. The exponent is $n$, not $1$."
+  ],
+  "examples": [
+    {
+      "title": "A product, a transpose, and a row swap",
+      "prompt": "Let $A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$ and $B=\\begin{pmatrix}2&0\\\\1&3\\end{pmatrix}$. Compute $\\det A$, $\\det B$, $\\det(AB)$, and the determinant after swapping the two rows of $A$.",
+      "steps": [
+        "$\\det A=1\\cdot 4-2\\cdot 3=-2$ and $\\det B=2\\cdot 3-0\\cdot 1=6$. The product of these numbers is $-12$.",
+        "The product matrix is $AB=\\begin{pmatrix}4&6\\\\10&12\\end{pmatrix}$, and $\\det(AB)=4\\cdot 12-6\\cdot 10=48-60=-12$, matching $\\det(A)\\det(B)$. Also $\\det(A^\\top)=\\det\\begin{pmatrix}1&3\\\\2&4\\end{pmatrix}=4-6=-2=\\det A$.",
+        "Swap the rows of $A$ to get $\\begin{pmatrix}3&4\\\\1&2\\end{pmatrix}$. Its determinant is $3\\cdot 2-4\\cdot 1=2$, which is $-\\det A$."
+      ],
+      "answer": "$\\det A=-2$, $\\det B=6$, $\\det(AB)=-12$, and swapping the rows of $A$ changes the determinant from $-2$ to $2$."
+    },
+    {
+      "title": "A $3\\times 3$ determinant and the eigenvalue $0$",
+      "prompt": "Compute $\\det C$ for $C=\\begin{pmatrix}2&1&0\\\\1&2&1\\\\0&1&2\\end{pmatrix}$. Then let $S$ be the matrix obtained by replacing the third row of $C$ with the first row, and relate $\\det S$ to eigenvalues.",
+      "steps": [
+        "Expand along the first row: $\\det C=2\\bigl(2\\cdot 2-1\\cdot 1\\bigr)-1\\bigl(1\\cdot 2-1\\cdot 0\\bigr)+0=2(4-1)-(2)=6-2=4$.",
+        "The value $4$ is also the product of the eigenvalues of $C$. None of them is $0$, so $C$ is invertible.",
+        "The new matrix is $S=\\begin{pmatrix}2&1&0\\\\1&2&1\\\\2&1&0\\end{pmatrix}$. Its first and third rows agree, so the alternating property gives $\\det S=0$. Thus $S$ is singular, and $0$ is an eigenvalue of $S$."
+      ],
+      "answer": "$\\det C=4$, so $C$ is invertible and $0$ is not an eigenvalue. The matrix $S$ with two equal rows has determinant $0$ and has $0$ as an eigenvalue."
+    }
+  ],
+  "traps": [
+    "Writing $\\det(A+B)=\\det A+\\det B$. Row-by-row linearity is not linearity in the matrix. For $A=I$ and $B=I$ in size $2\\times 2$, $\\det(A+B)=\\det(2I)=4$ while $\\det A+\\det B=2$.",
+    "Writing $\\det(cA)=c\\det A$ for an $n\\times n$ matrix. The correct factor is $c^n$. Scaling one row by $c$ multiplies the determinant by $c$; scaling every row does it $n$ times.",
+    "Forgetting the sign of a row swap. The matrix $\\begin{pmatrix}3&4\\\\1&2\\end{pmatrix}$ has determinant $2$, not $-2$, because it is $A$ above with the rows exchanged and $\\det A=-2$.",
+    "Treating $\\det A=0$ as a statement about the trace. A zero trace means the eigenvalues sum to zero. A zero determinant means one of them is zero."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\ndef det2(M):\n    return M[0][0] * M[1][1] - M[0][1] * M[1][0]\n\ndef det3(A):\n    a, b, c = A\n    return (\n        a[0] * (b[1] * c[2] - b[2] * c[1])\n        - a[1] * (b[0] * c[2] - b[2] * c[0])\n        + a[2] * (b[0] * c[1] - b[1] * c[0])\n    )\n\nA = [[1, 2], [3, 4]]\nB = [[2, 0], [1, 3]]\nassert det2(A) == -2\nassert det2(B) == 6\nassert det2(mul(A, B)) == -12\nswapped = [A[1], A[0]]\nassert det2(swapped) == 2\nC = [[2, 1, 0], [1, 2, 1], [0, 1, 2]]\nassert det3(C) == 4\nprint(4)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Swapping two rows of a square matrix",
+      "options": [
+        "does not change the determinant",
+        "multiplies the determinant by $-1$",
+        "multiplies the determinant by $2$",
+        "forces the determinant to be zero"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. The determinant is alternating: one transposition of rows multiplies it by $-1$. It becomes zero if the swap produces two equal rows, but a swap of two different rows does not by itself force a zero determinant. Adding a multiple of one row to another, which is not a swap, is the operation that leaves the determinant unchanged."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "For a square matrix $A$, $\\det A=0$ if and only if",
+      "options": [
+        "$A$ is symmetric",
+        "$0$ is an eigenvalue of $A$",
+        "$\\mathrm{tr}(A)=0$",
+        "$A$ is orthogonal"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. The characteristic polynomial evaluated at $0$ is $\\det A$, so $\\det A=0$ exactly when $0$ is an eigenvalue, exactly when $A$ is singular. A symmetric matrix can have nonzero determinant, a zero trace does not force a zero eigenvalue, and an orthogonal matrix has determinant $\\pm 1$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "$\\det(AB)=\\det(A)\\det(B)$ for square matrices of the same size.",
+        "$\\det(A^\\top)=\\det(A)$.",
+        "$\\det(A+B)=\\det(A)+\\det(B)$ for all square $A$ and $B$ of the same size.",
+        "The determinant is multilinear and alternating as a function of the rows."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The determinant multiplies over products, is unchanged by transpose, and is defined by being multilinear and alternating on the rows with value $1$ on $I$. It is not additive: $\\det(I+I)=\\det(2I)=4$ for $2\\times 2$ identity, while $\\det I+\\det I=2$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$ and $B=\\begin{pmatrix}2&0\\\\1&3\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$\\det A=-2$.",
+        "$\\det B=6$.",
+        "$\\det(AB)=-12$.",
+        "$\\det(A^\\top)=2$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Compute $\\det A=4-6=-2$ and $\\det B=6-0=6$. Then $\\det(AB)$ equals the product $(-2)(6)=-12$, and the explicit product $AB=\\begin{pmatrix}4&6\\\\10&12\\end{pmatrix}$ has determinant $48-60=-12$. The transpose has the same determinant as $A$, so $\\det(A^\\top)=-2$, not $2$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Enter $\\det\\begin{pmatrix}2&1&0\\\\1&2&1\\\\0&1&2\\end{pmatrix}$.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**. Expand along the first row: $2(4-1)-1(2-0)+0=2\\cdot 3-2=4$. The same expansion is $2\\cdot\\det\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}-1\\cdot\\det\\begin{pmatrix}1&1\\\\0&2\\end{pmatrix}$."
+    }
+  ]
+}

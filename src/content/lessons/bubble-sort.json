@@ -1,0 +1,164 @@
+{
+  "slug": "bubble-sort",
+  "section": "programming",
+  "title": "Bubble sort",
+  "syllabus": "Bubble sort",
+  "minutes": 25,
+  "summary": "Bubble sort repairs the array by adjacent swaps. With a swapped flag the best case is linear, the worst and average cases stay quadratic, and skipping swaps of equal keys keeps the sort stable.",
+  "keywords": [
+    "bubble sort",
+    "adjacent swap",
+    "swapped flag",
+    "stability",
+    "inversions"
+  ],
+  "intuition": "Bubble sort only swaps neighbours. A pass walks the array and exchanges a pair when the left key is strictly greater than the right key. Each such swap removes exactly one inversion, a pair that is out of order. Large keys drift toward the right end, one position at a time.\n\nIf every pass runs to the scheduled end, the cost is the full triangle $n(n-1)/2$ even on a sorted array. A swapped flag changes the best case. The flag starts clear on each pass and is raised by any swap. A pass that finishes with the flag still clear has found no inversion, so the array is sorted and the algorithm stops. On an already sorted array that happens on the first pass, after $n-1$ comparisons and no swaps, which is $\\Theta(n)$. A reversed array still swaps on every comparison until the triangle is exhausted, so the worst case stays $\\Theta(n^2)$. Over random permutations the expected number of inversions is $\\Theta(n^2)$, and the average case is $\\Theta(n^2)$ as well.\n\nStability is the rule used on equals. If the test is strict $>$ and equal neighbours are left untouched, two equal keys never cross, so the sort is stable. If the test swaps on $\\ge$, equal keys can cross and the sort is not stable. The rest of the algorithm is in place: the swaps rewrite the input array, and the flag is one extra Boolean.",
+  "definitions": [
+    {
+      "term": "Adjacent swap",
+      "body": "An exchange of indexes $j$ and $j+1$. Bubble sort never exchanges keys that are farther apart. One adjacent swap of an out-of-order pair reduces the inversion count by exactly $1$."
+    },
+    {
+      "term": "Swapped flag",
+      "body": "A Boolean reset at the start of a pass and set when any swap happens. If it is still false at the end of the pass, every adjacent pair is in order, the whole array is sorted, and later passes are skipped."
+    },
+    {
+      "term": "Stable bubble sort",
+      "body": "The version that swaps only when the left key is strictly greater. Equal keys are not swapped, so their original order survives. The $\\ge$ variant is a different, unstable algorithm."
+    },
+    {
+      "term": "Inversion",
+      "body": "A pair of positions $i<j$ whose keys are out of order, $a_i>a_j$. The number of swaps bubble sort performs equals the number of inversions."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Worst-case comparisons",
+      "latex": "C_{\\mathrm{worst}}(n)=\\frac{n(n-1)}{2}=\\Theta(n^2)",
+      "note": "Achieved on a reversed array. The average over permutations is also $\\Theta(n^2)$."
+    },
+    {
+      "name": "Best case with a flag",
+      "latex": "C_{\\mathrm{best}}(n)=n-1=\\Theta(n)",
+      "note": "One pass over a sorted array, no swap, then the flag stops the algorithm. Without the flag this input costs the full triangle."
+    }
+  ],
+  "properties": [
+    "Every swap is adjacent, and the number of swaps equals the inversion count.",
+    "Worst case and average case are both $\\Theta(n^2)$. Best case is $\\Theta(n)$ only when a swapped flag stops the algorithm.",
+    "The sort is stable when equal keys are not swapped, and in place either way.",
+    "After a full pass that bubbles the maximum to the right, the last unsorted index is in its final position and the next pass can be one comparison shorter.",
+    "A sorted array without a flag still performs $n(n-1)/2$ comparisons. The flag is the entire source of the linear best case."
+  ],
+  "examples": [
+    {
+      "title": "A five-key pass with a repeated 2",
+      "prompt": "Bubble-sort $(5,a), (1,b), (4,c), (2,d), (2,e)$ with a swapped flag. Swap only when the left key is strictly greater. Report comparisons, swaps, and the final order of the two $2$s.",
+      "steps": [
+        "Pass $1$ compares $4$ adjacent pairs and swaps all four times, because $5$ travels past $1$, $4$, $2$, and $2$. The array becomes $(1,b), (4,c), (2,d), (2,e), (5,a)$.",
+        "Pass $2$ compares $3$ pairs. It swaps $4$ past both $2$s and stops at $5$, which is already at the end. The array becomes $(1,b), (2,d), (2,e), (4,c), (5,a)$, with $2$ swaps.",
+        "Pass $3$ compares $2$ pairs: 1 is not greater than 2, and 2 is not greater than 2. The flag stays false, so the algorithm stops. The equal keys were not exchanged."
+      ],
+      "answer": "Comparisons are $4+3+2=9$ and swaps are $4+2+0=6$. The keys finish $1, 2, 2, 4, 5$ with the two $2$s still in the order $d$ then $e$, so this strict-greater run is stable."
+    },
+    {
+      "title": "Sorted versus reversed, n = 5",
+      "prompt": "Using the same flagged algorithm, compare a sorted array $1, 2, 3, 4, 5$ with a reversed array $5, 4, 3, 2, 1$.",
+      "steps": [
+        "On the sorted array the first pass performs $n-1=4$ comparisons, swaps nothing, and the clear flag ends the sort. That is the $\\Theta(n)$ best case.",
+        "On the reversed array every adjacent pair is an inversion. The passes perform $4+3+2+1=10$ comparisons and $10$ swaps. Then $n(n-1)/2=5\\times 4/2=10$.",
+        "If the flag is removed, the sorted array also runs all four passes and pays those same $10$ comparisons. The linear best case is the flag, not the adjacent-swap idea by itself."
+      ],
+      "answer": "Sorted input: $4$ comparisons and $0$ swaps. Reversed input: $10$ comparisons and $10$ swaps. Worst and best differ by the flag; both are in place, and the strict-greater rule keeps either run stable."
+    }
+  ],
+  "traps": [
+    "Quoting $\\Theta(n)$ as the best case of an implementation that has no swapped flag. That implementation is $\\Theta(n^2)$ on a sorted array.",
+    "Swapping when the comparison is $\\ge$. Equal keys then cross, and the sort is not the stable bubble sort.",
+    "Equating bubble sort with selection sort. Selection sort's comparison count does not improve on sorted input; bubble sort's does, and only because of the flag.",
+    "Counting each pass as $\\Theta(n^2)$ by itself. One pass is $\\Theta(n)$. The quadratic bound is the sum of the passes."
+  ],
+  "python": "items = [(5, \"a\"), (1, \"b\"), (4, \"c\"), (2, \"d\"), (2, \"e\")]\ncomps = swaps = 0\nfor i in range(len(items) - 1):\n    swapped = False\n    for j in range(len(items) - 1 - i):\n        comps += 1\n        if items[j][0] > items[j + 1][0]:\n            items[j], items[j + 1] = items[j + 1], items[j]\n            swaps += 1\n            swapped = True\n    if not swapped:\n        break\nassert [value for value, _ in items] == [1, 2, 2, 4, 5]\nassert [label for value, label in items if value == 2] == [\"d\", \"e\"]\nassert comps == 9 and swaps == 6\nsample = [8, 3, 6, 1, 4]\ninversions = sum(sample[i] > sample[j] for i in range(5) for j in range(i + 1, 5))\nassert inversions == 7\nprint(comps, swaps, inversions)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Bubble sort with a swapped flag runs on a sorted array of $8$ elements. How many comparisons does it perform?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $7$.\n\nA sorted array raises no swap on the first pass, so the flag stops the algorithm after $n-1=7$ comparisons. Option B is the worst-case triangle $8\\times 7/2=28$, which is what the same array would cost with the flag deleted. Option D would be a sort that does not look at the array at all.",
+      "options": [
+        "$7$",
+        "$28$",
+        "$8$",
+        "$0$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Bubble sort with a swapped flag is applied to $(2,a), (1,b), (2,c)$, and a swap happens only when the left key is strictly greater. The two keys equal to $2$ finish as",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $a$ then $c$.\n\nThe first pass swaps $(2,a)$ with $(1,b)$ and then compares the two $2$s. Because the two keys are equal, they are not swapped. The second pass finds the array sorted and stops. The equal keys keep the order $a$ then $c$. Option C states the stability fact backwards: this strict-greater rule is the stable one.",
+      "options": [
+        "$a$ then $c$",
+        "$c$ then $a$",
+        "$c$ then $a$, because bubble sort is not stable",
+        "one of the two equal keys is deleted"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of bubble sort?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nWith a swapped flag, a sorted array is recognised on the first pass and the algorithm returns. The worst-case comparison count is the triangle number, which is $\\Theta(n^2)$, and the average case is $\\Theta(n^2)$ as well. Swaps rewrite the input array, so the sort is in place. Option C is false: swapping equal keys destroys stability. The stable rule is to leave equal neighbours where they are.",
+      "options": [
+        "With a swapped flag, a sorted array is finished after one pass.",
+        "The worst-case number of comparisons is $\\Theta(n^2)$.",
+        "The sort is stable when equal neighbours are swapped.",
+        "The sort rewrites the input array in place."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Flagged bubble sort, swapping only on a strict greater-than, runs on $[3, 1, 4, 2]$. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe inverting pairs are $(3,1)$, $(3,2)$, and $(4,2)$, so the swap count is $3$. The passes compare $3$, then $2$, then $1$ pairs: after the swaps the third pass sees a sorted prefix pair and the flag stops the loop, for $6$ comparisons. The array finishes $[1, 2, 3, 4]$. Option D is false because the first pass does swap, so the flag forces another pass.",
+      "options": [
+        "It performs $3$ swaps.",
+        "It performs $6$ comparisons.",
+        "The final array is $[1, 2, 3, 4]$.",
+        "It returns at the end of the first pass."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Flagged bubble sort runs on $[8, 3, 6, 1, 4]$, swapping only when the left key is strictly greater. How many swaps does it perform?",
+      "answer": [
+        "7"
+      ],
+      "solution": "The answer is **7**.\n\nEach swap removes one inversion, and the flag does not skip a swap that an inversion still requires. The inverting pairs are $(8,3)$, $(8,6)$, $(8,1)$, $(8,4)$, $(3,1)$, $(6,1)$, and $(6,4)$. There are $7$ of them, so the algorithm performs $7$ swaps.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

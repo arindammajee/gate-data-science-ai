@@ -1,0 +1,160 @@
+{
+  "slug": "rank",
+  "section": "linear-algebra",
+  "title": "Rank",
+  "syllabus": "Rank",
+  "minutes": 25,
+  "summary": "The rank of a matrix is the dimension of its column space, which equals the dimension of its row space and the number of pivots. Rank never rises under multiplication, and rank(A^T) equals rank(A).",
+  "keywords": [
+    "rank",
+    "column space",
+    "row space",
+    "pivots",
+    "rank of a product"
+  ],
+  "intuition": "Rank is the amount of genuine information in a matrix, measured as a dimension. The column space is the span of the columns, a subspace of the codomain. The row space is the span of the rows. These two subspaces live in different ambient spaces when the matrix is not square, and they still have the same dimension. That common dimension is the rank. Row reduction counts it: the rank is the number of pivots in a row echelon form.\n\nMultiplication cannot create new independent directions. The column space of $AB$ is the set of vectors $A$ applied to the column space of $B$, so it is no larger than the column space of $A$ and no larger than the number of independent columns $B$ can supply. In symbols, $\\mathrm{rank}(AB)\\le\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)$. Equality is common and not guaranteed. Two rank-$1$ matrices can multiply to the zero matrix, which has rank $0$.\n\nTranspose does not change the number. $\\mathrm{rank}(A^\\top)=\\mathrm{rank}(A)$, because the row space of $A$ is the column space of $A^\\top$. Full column rank means the rank equals the number of columns, which is linear independence of the columns. Full row rank means the rank equals the number of rows. For a square matrix those two agree, and they agree with invertibility.",
+  "definitions": [
+    {
+      "term": "Rank",
+      "body": "The rank of $A$ is the dimension of the column space of $A$. It equals the dimension of the row space, and it equals the number of pivots in any row echelon form of $A$."
+    },
+    {
+      "term": "Full rank",
+      "body": "An $m\\times n$ matrix has full column rank when $\\mathrm{rank}(A)=n$ and full row rank when $\\mathrm{rank}(A)=m$. A square matrix has full rank when the rank equals its size, which is the invertible case."
+    },
+    {
+      "term": "Rank of a product",
+      "body": "For any compatible product, $\\mathrm{rank}(AB)\\le\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)$. The inequality can be strict."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Three counts of the rank",
+      "latex": "\\mathrm{rank}(A)=\\dim\\mathrm{col}(A)=\\dim\\mathrm{row}(A)=\\text{number of pivots}",
+      "note": "Row operations change the row space as a set and preserve its dimension. They preserve the linear dependence relations among the columns."
+    },
+    {
+      "name": "Product and transpose",
+      "latex": "\\mathrm{rank}(AB)\\le\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B),\\quad \\mathrm{rank}(A^\\top)=\\mathrm{rank}(A)",
+      "note": "The product bound is an inequality. Transpose does not change the rank."
+    }
+  ],
+  "properties": [
+    "$\\mathrm{rank}(A)$ equals the dimension of the column space, the dimension of the row space, and the number of pivots.",
+    "$\\mathrm{rank}(A^\\top)=\\mathrm{rank}(A)$.",
+    "$\\mathrm{rank}(AB)\\le\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)$ whenever the product is defined. Equality can fail.",
+    "For an $m\\times n$ matrix, $0\\le\\mathrm{rank}(A)\\le\\min(m,n)$.",
+    "$\\mathrm{rank}(A+B)\\le\\mathrm{rank}(A)+\\mathrm{rank}(B)$. Rank can drop under addition as well as under multiplication."
+  ],
+  "examples": [
+    {
+      "title": "Pivots, column space, and the transpose",
+      "prompt": "Find $\\mathrm{rank}(A)$ for $A=\\begin{pmatrix}1&2&3\\\\2&4&6\\\\3&6&9\\end{pmatrix}$, and check $\\mathrm{rank}(A^\\top)$.",
+      "steps": [
+        "Row $2$ is $2$ times row $1$, and row $3$ is $3$ times row $1$. After those two subtractions every remaining entry in rows $2$ and $3$ is $0$. One nonzero row remains, so there is one pivot.",
+        "Every column is a multiple of $(1,2,3)^\\top$: the columns are $1$, $2$, and $3$ times that vector. The column space has dimension $1$.",
+        "The transpose has rows $(1,2,3)$, $(2,4,6)$, and $(3,6,9)$, the old columns. The same dependence shows $\\mathrm{rank}(A^\\top)=1=\\mathrm{rank}(A)$."
+      ],
+      "answer": "There is one pivot, and $\\mathrm{rank}(A)=\\mathrm{rank}(A^\\top)=1$."
+    },
+    {
+      "title": "A product whose rank is strictly smaller",
+      "prompt": "Let $A=\\begin{pmatrix}1&0\\\\0&0\\end{pmatrix}$ and $B=\\begin{pmatrix}0&0\\\\0&1\\end{pmatrix}$. Compute $\\mathrm{rank}(A)$, $\\mathrm{rank}(B)$, and $\\mathrm{rank}(AB)$.",
+      "steps": [
+        "$A$ has one nonzero column, so $\\mathrm{rank}(A)=1$. The matrix $B$ has one nonzero column, so $\\mathrm{rank}(B)=1$.",
+        "The product is $AB=\\begin{pmatrix}1&0\\\\0&0\\end{pmatrix}\\begin{pmatrix}0&0\\\\0&1\\end{pmatrix}=\\begin{pmatrix}0&0\\\\0&0\\end{pmatrix}$.",
+        "The zero matrix has rank $0$. Then $\\mathrm{rank}(AB)=0$, which is strictly less than $\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)=1$. The bound is an inequality: equality does not always hold."
+      ],
+      "answer": "Both factors have rank $1$ and $AB=0$ has rank $0$, so $\\mathrm{rank}(AB)<\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)$."
+    }
+  ],
+  "traps": [
+    "Replacing $\\mathrm{rank}(AB)\\le\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)$ by an equality, or by the product of the ranks. The matrices $\\begin{pmatrix}1&0\\\\0&0\\end{pmatrix}$ and $\\begin{pmatrix}0&0\\\\0&1\\end{pmatrix}$ multiply to $0$.",
+    "Counting nonzero rows before elimination. The matrix $\\begin{pmatrix}1&2&3\\\\2&4&6\\\\3&6&9\\end{pmatrix}$ has three nonzero rows and rank $1$.",
+    "Thinking $\\mathrm{rank}(A^\\top)$ can differ from $\\mathrm{rank}(A)$ when $A$ is rectangular. The row space and the column space have the same dimension even when they sit in spaces of different size.",
+    "Confusing rank with nullity. Rank counts pivots. Nullity counts free variables. They add to the number of columns, and they are not equal in general."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\nA = [[1, 0], [0, 0]]\nB = [[0, 0], [0, 1]]\nassert mul(A, B) == [[0, 0], [0, 0]]\n# three rows, one independent\nM = [[1, 2, 3], [2, 4, 6], [3, 6, 9]]\nassert all(M[1][j] == 2 * M[0][j] for j in range(3))\nassert all(M[2][j] == 3 * M[0][j] for j in range(3))\nprint(1)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The rank of a matrix $A$ is equal to",
+      "options": [
+        "the dimension of the column space of $A$",
+        "the number of rows, for every matrix",
+        "the number of columns, for every matrix",
+        "the nullity of $A$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Rank is defined as the dimension of the column space, and it equals the dimension of the row space and the number of pivots. It equals the number of rows only for full row rank, and the number of columns only for full column rank. Nullity is the complementary count, $n-\\mathrm{rank}(A)$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "For every real matrix $A$, $\\mathrm{rank}(A^\\top)$ equals",
+      "options": [
+        "$\\mathrm{rank}(A)$",
+        "the nullity of $A$",
+        "the number of rows of $A$ minus $\\mathrm{rank}(A)$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Transposition swaps the row space and the column space, which have the same dimension, so the rank is unchanged. The nullity is $n-\\mathrm{rank}(A)$ and is a different number whenever the matrix is not square of rank $n/2$ in a coincidental way. There is no reason for the rank of the transpose to be zero."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "$\\mathrm{rank}(A)$ equals the number of pivots in a row echelon form of $A$.",
+        "$\\mathrm{rank}(AB)\\le\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)$.",
+        "The dimension of the column space equals the dimension of the row space.",
+        "$\\mathrm{rank}(AB)=\\mathrm{rank}(A)\\mathrm{rank}(B)$ for every compatible $A$ and $B$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Pivots, column dimension, and row dimension are three names for the rank, and a product cannot outrank either factor. The product of the two ranks is not a formula for $\\mathrm{rank}(AB)$: two rank-$1$ matrices can have product rank $0$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&0\\\\0&0\\end{pmatrix}$ and $B=\\begin{pmatrix}0&0\\\\0&1\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$\\mathrm{rank}(A)=1$.",
+        "$\\mathrm{rank}(B)=1$.",
+        "$\\mathrm{rank}(AB)=0$.",
+        "$\\mathrm{rank}(AB)=\\min(\\mathrm{rank}\\,A,\\mathrm{rank}\\,B)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Each factor has a single nonzero column. Their product is the zero matrix, because the only nonzero column of $A$ is killed by the zero first row of $B$, so the product has rank $0$. The minimum of the factor ranks is $1$, not $0$, so equality fails. The theorem only claims $\\le$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Enter $\\mathrm{rank}\\begin{pmatrix}1&2&3\\\\2&4&6\\\\3&6&9\\end{pmatrix}$.",
+      "options": [],
+      "answer": [
+        "1"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **1**. Row $2$ equals $2$ times row $1$ and row $3$ equals $3$ times row $1$, so elimination leaves a single nonzero row and a single pivot. Every column is a multiple of $(1,2,3)^\\top$, which confirms that the column space has dimension $1$."
+    }
+  ]
+}

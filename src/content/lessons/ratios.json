@@ -1,0 +1,162 @@
+{
+  "slug": "ratios",
+  "section": "aptitude",
+  "title": "Ratios",
+  "syllabus": "Ratios, combined ratios, and proportions",
+  "minutes": 25,
+  "summary": "Read a ratio as a quotient, combine two ratios by scaling the shared term, divide a quantity in a given ratio, and cross-multiply a proportion.",
+  "keywords": [
+    "ratio",
+    "combined ratio",
+    "proportion",
+    "cross-multiply",
+    "sharing a quantity"
+  ],
+  "intuition": "A ratio $a:b$ is the fraction $a/b$. It does not say how large $a$ and $b$ are, only how they compare. Multiplying both parts by the same positive number does not change the ratio: $2:3$ is the same comparison as $8:12$. That freedom is exactly what lets you combine two ratios.\n\nIf you know $a:b$ and $b:c$, you may write $a:b:c$ only after the shared term is the same number in both statements. When $a:b=2:3$ and $b:c=4:5$, the two pictures of $b$ are 3 and 4. Scale the first ratio by 4 and the second by 3 so that $b$ is 12 in both. Then $a:b:c=8:12:15$. Skipping that scale and writing $2:3:5$ uses two different units for $b$.\n\nDividing a quantity in a ratio turns the parts into amounts. Add the parts, divide the quantity by that sum, and multiply. A proportion is an equality of two ratios. Cross-multiplication is the clearing step: $a/b=c/d$ means $ad=bc$, provided none of the denominators is zero.",
+  "definitions": [
+    {
+      "term": "Ratio",
+      "body": "$a:b$ means $a/b$. The two parts may be scaled by a common positive factor without changing the ratio."
+    },
+    {
+      "term": "Combined ratio",
+      "body": "The single statement $a:b:c$ obtained from $a:b$ and $b:c$ after the shared term has been scaled to the same value."
+    },
+    {
+      "term": "Division in a ratio",
+      "body": "Sharing a quantity so that the shares are in the given ratio. Each share is the quantity times that part, divided by the sum of the parts."
+    },
+    {
+      "term": "Proportion",
+      "body": "An equality of two ratios, $a/b=c/d$. Cross-multiplication rewrites it as $ad=bc$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Ratio",
+      "latex": "a:b=\\frac{a}{b}",
+      "note": "And $\\frac{a}{b}=\\frac{c}{d}$ implies $ad=bc$, when $b$ and $d$ are not zero."
+    },
+    {
+      "name": "Share of a quantity",
+      "latex": "\\text{share of }a=\\text{quantity}\\times\\frac{a}{a+b+c}",
+      "note": "The denominator is the sum of every part in the combined ratio, not the number of parts."
+    }
+  ],
+  "properties": [
+    "$a:b=ka:kb$ for any positive $k$. Scaling is how the shared term is matched.",
+    "Do not combine $a:b$ and $b:c$ until the two values of $b$ are equal.",
+    "The parts of $8:12:15$ add to 35. Any quantity divided in that ratio is split into 35 equal elementary shares.",
+    "Cross-multiplication swaps the diagonals. It does not add the fractions.",
+    "The largest share belongs to the largest part. Compare the parts after scaling, not before."
+  ],
+  "examples": [
+    {
+      "title": "Scale the shared term, then combine",
+      "prompt": "Given $a:b=2:3$ and $b:c=4:5$, find $a:b:c$.",
+      "steps": [
+        "The shared term $b$ is 3 in the first ratio and 4 in the second. Those are not the same unit yet.",
+        "The least common multiple of 3 and 4 is 12. Multiply $2:3$ by 4 to get $8:12$. Multiply $4:5$ by 3 to get $12:15$.",
+        "Both statements now use $b=12$, so $a:b:c=8:12:15$. In particular $a:c=8:15$, not $2:5$."
+      ],
+      "answer": "$a:b:c=8:12:15$."
+    },
+    {
+      "title": "Divide 700 in the combined ratio",
+      "prompt": "Divide 700 in the ratio $8:12:15$.",
+      "steps": [
+        "The parts add to $8+12+15=35$.",
+        "One elementary share is $700/35=20$.",
+        "The three shares are $8\\times 20=160$, $12\\times 20=240$, and $15\\times 20=300$. They add back to $160+240+300=700$."
+      ],
+      "answer": "The shares are 160, 240, and 300. The largest share is 300."
+    }
+  ],
+  "traps": [
+    "Writing $2:3$ and $4:5$ as $2:3:5$ without scaling $b$. The two middle numbers are not the same $b$.",
+    "Dividing 700 by 3, the count of symbols, instead of by 35, the sum of the parts.",
+    "Cross-multiplying $3/5=x/40$ as $3\\cdot 5=40x$. The diagonals are $3\\times 40$ and $5\\times x$.",
+    "Comparing unscaled parts from different ratios and calling the larger-looking number the larger share."
+  ],
+  "python": "# a:b = 2:3 scaled by 4, b:c = 4:5 scaled by 3\na, b, c = 2 * 4, 3 * 4, 5 * 3\nassert (a, b, c) == (8, 12, 15)\nassert a + b + c == 35\ntotal = 700\nunit = total // (a + b + c)\nshares = (unit * a, unit * b, unit * c)\nassert unit == 20\nassert shares == (160, 240, 300)\nassert sum(shares) == 700\n# 3/5 = x/40\nx = 3 * 40 // 5\nassert x == 24 and 3 * 40 == 5 * x\nprint(300)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "If $a:b=2:3$ and $b:c=4:5$, then $a:b:c$ equals",
+      "options": [
+        "$8:12:15$",
+        "$2:3:5$",
+        "$8:12:20$",
+        "$2:4:5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $8:12:15$. Scale $2:3$ by 4 and $4:5$ by 3 so the shared term is 12 in both. Option B never matches $b$. Option D multiplies the first ratio's $b$ into the wrong place."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A quantity of 700 is divided in the ratio $8:12:15$. The largest share is",
+      "options": [
+        "300",
+        "240",
+        "160",
+        "350"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 300. The parts add to 35, so one part is $700/35=20$. The largest part is 15, and $15\\times 20=300$. Option B is the middle share, $12\\times 20=240$. Option C is the smallest share."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Take $a:b=2:3$, $b:c=4:5$, and the shares 160, 240, and 300 of a total of 700. Which of the following are true?",
+      "options": [
+        "$a:b$ means $a/b$.",
+        "If $a/b=c/d$, with $b$ and $d$ nonzero, then $ad=bc$.",
+        "If $a:b=2:3$ and $b:c=4:5$, then $a:c=2:5$.",
+        "The shares 160, 240, and 300 add to 700."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. By definition $a:b$ means $a/b$. If $a/b=c/d$ with nonzero denominators, the cross products are equal. The three shares add as $160+240+300=700$. Option C forgets the scaling: after matching $b$, $a:c=8:15$, not $2:5$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "If $3/5=x/40$, the value of $x$ is an integer. Enter $x$.",
+      "options": [],
+      "answer": [
+        "24"
+      ],
+      "solution": "The answer is **24**. Cross-multiplying gives $5x=3\\times 40=120$, so $x=120/5=24$. Check: $3/5=0.6$ and $24/40=0.6$.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A quantity is divided in the ratio $2:3$. The smaller share is 18. The whole quantity is",
+      "options": [
+        "45",
+        "30",
+        "36",
+        "27"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 45. The smaller share is 2 parts out of $2+3=5$, so one part is $18/2=9$ and the whole is $9\\times 5=45$. Option C, 36, is $18\\times 2$ and never uses the sum of the parts."
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "slug": "data-types",
+  "section": "databases",
+  "title": "Attribute types",
+  "syllabus": "Data types",
+  "minutes": 25,
+  "summary": "Nominal, binary, ordinal, interval, and ratio attributes, and which of equality, order, difference, and ratio are meaningful on each scale.",
+  "keywords": [
+    "nominal",
+    "ordinal",
+    "interval",
+    "ratio",
+    "binary attribute"
+  ],
+  "intuition": "The data-mining type of a column is the set of operations that mean something, not the declaration in a CREATE TABLE. SQL types such as INT, VARCHAR, and DATE say how a value is stored and compared by the engine. They do not say whether a difference or a ratio is a real statement about the world. An employee identifier stored as INT is still a name: identifier 200 is not twice identifier 100, and it is not \"greater\" for any analysis that should survive relabeling.\n\nNominal attributes are names. Equality is the operation, and the mode is a fair summary. Binary attributes are nominal attributes with two states. Ordinal attributes add an order, so ranks and the median make sense, but the gap between code 1 and code 2 is not an amount. Interval attributes have equal units, so a difference is an amount, but the zero is a convention: 20 degrees Celsius is not twice 10 degrees Celsius. Ratio attributes have a true zero. Length, mass, Kelvin temperature, and a count all support equality, order, difference, and ratio.\n\nThe later algorithms inherit this. A mean of letter grades is an arithmetic accident. A ratio of two calendar years is the same kind of accident. A ratio of two weights is a sentence you can defend. Keeping the scale and the SQL type apart is the whole point of the classification.",
+  "definitions": [
+    {
+      "term": "Nominal",
+      "body": "A naming scale. Values can be tested for equality, and the mode is a meaningful summary. There is no order. Blood group, a postal code, and a numeric employee identifier are nominal."
+    },
+    {
+      "term": "Binary",
+      "body": "A nominal attribute with exactly two states, such as pass/fail. In a symmetric binary attribute both states count the same. In an asymmetric one, such as a positive medical finding against a negative one, agreement on the marked state carries the information."
+    },
+    {
+      "term": "Ordinal",
+      "body": "An ordered scale. Equality and order are meaningful, so ranks and the median are fair. The numerical gap between two codes is not an amount: small, medium, and large are ordered, and large minus medium is not a length."
+    },
+    {
+      "term": "Interval",
+      "body": "An ordered scale with equal units but an arbitrary zero. Differences are meaningful. Ratios are not. Temperature in degrees Celsius is the standard case: a gap of 10 degrees is real, and 'twice as hot' is not."
+    },
+    {
+      "term": "Ratio",
+      "body": "An interval scale with a true zero. Equality, order, difference, and ratio are all meaningful. Mass in kilograms, length in metres, temperature in kelvin, and a count of semesters are ratio attributes."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Difference, interval or ratio",
+      "latex": "x_1-x_2",
+      "note": "Meaningful for interval and ratio attributes. Not meaningful for nominal or ordinal codes, even when the codes are stored as integers."
+    },
+    {
+      "name": "Ratio of two values",
+      "latex": "\\frac{x_1}{x_2}",
+      "note": "Meaningful when the zero is a true zero. It is meaningful for 20 kg against 10 kg. It is not meaningful for 20 degrees Celsius against 10 degrees Celsius."
+    }
+  ],
+  "properties": [
+    "Nominal supports equality. Ordinal adds order. Interval adds difference. Ratio adds ratio. Each scale inherits the operations of the scales above it in that list and adds one.",
+    "Binary is a two-state nominal attribute, not a tiny ratio scale. Coding yes as 1 and no as 0 does not make 1 'twice' 0.",
+    "A true zero is the difference between interval and ratio. Zero kilograms is no mass. Zero degrees Celsius is a mark on a thermometer, not the absence of temperature.",
+    "The median needs an order, so it fits ordinal, interval, and ratio data. It does not fit a nominal column. The mean needs differences that are amounts, so it fits interval and ratio data, not letter grades.",
+    "A SQL numeric type does not decide the scale. INT can store a nominal identifier, an ordinal code, an interval year, or a ratio count. The scale comes from what the number means."
+  ],
+  "examples": [
+    {
+      "title": "Six columns, six scales",
+      "prompt": "Classify: blood group; T-shirt size small, medium, large; temperature in degrees Celsius; temperature in kelvin; pass/fail; annual salary in rupees.",
+      "steps": [
+        "Blood group is a name with no order, so it is nominal. Pass/fail has two states, so it is binary, a special case of nominal.",
+        "T-shirt size is ordered, and the gap between small and medium is not a length, so it is ordinal.",
+        "Celsius has equal degree steps and an arbitrary zero, so it is interval. Kelvin has the same steps and a true zero, so it is ratio. Salary has a true zero and a meaningful 'twice as much', so it is ratio."
+      ],
+      "answer": "Nominal: blood group. Binary: pass/fail. Ordinal: T-shirt size. Interval: degrees Celsius. Ratio: kelvin and salary."
+    },
+    {
+      "title": "Which summaries survive",
+      "prompt": "A five-day ordinal rank column holds 1, 2, 2, 3, 5. A Celsius column holds 10, 20, 30. A mass column holds 10 kg, 20 kg, 30 kg. Which of a median, a difference, and a ratio can you defend for each?",
+      "steps": [
+        "The ranks sort as 1, 2, 2, 3, 5, so the median is the third value, 2. The ratio $5/1=5$ is not a statement about the underlying judgement, and the code gap $5-1=4$ is not an amount of that judgement.",
+        "On the Celsius readings the differences $20-10$ and $30-20$ are both 10 degrees, and those gaps are comparable. The ratio $30/10=3$ does not mean one morning was three times as hot.",
+        "On the masses the same ratio is meaningful: 30 kg is three times 10 kg, and the differences of 10 kg are amounts of mass. The true zero is what makes the ratio legal."
+      ],
+      "answer": "Ranks: median 2, and neither the code difference nor the ratio is meaningful. Celsius: differences of 10 degrees are meaningful and the ratio 3 is not. Mass: the difference 10 kg and the ratio 3 are both meaningful."
+    }
+  ],
+  "traps": [
+    "Reading the SQL type as the mining scale. An INT employee id is nominal. A VARCHAR size code small/medium/large is ordinal. Storage type and scale answer different questions.",
+    "Treating Celsius as ratio because the column is numeric. The zero is arbitrary, so 'twice as hot' is not meaningful. Kelvin, where zero means no thermal energy, is the ratio temperature.",
+    "Averaging ordinal codes and reporting the average as a location on the scale. Order justifies a median. It does not justify a mean of the codes.",
+    "Calling a binary column a ratio attribute because it was coded 0 and 1. Two states give equality, and an asymmetric reading of the marked state. They do not give a true zero and a ratio.",
+    "Deciding that a calendar year supports ratios because subtraction works. A difference of ten years is an interval fact. Year 2000 is not twice year 1000. Elapsed duration, with a true zero length, is the ratio quantity."
+  ],
+  "python": "ranks = [1, 2, 2, 3, 5]\nassert sorted(ranks)[len(ranks) // 2] == 2\n# Six attributes: blood, kg, Celsius, semester count, letter grade, metres.\n# Ratio scales among them: kilograms, semester count, metres.\nratio_flags = [False, True, False, True, False, True]\nassert sum(ratio_flags) == 3\ncelsius_ratio_meaningful = False\nmass_ratio = 30 / 10\nassert mass_ratio == 3 and celsius_ratio_meaningful is False\nprint(sum(ratio_flags))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A column stores temperature in degrees Celsius. Which operations are meaningful?",
+      "options": [
+        "Equality, order, and difference, but not ratio",
+        "Equality only",
+        "Equality and ratio, but not difference",
+        "Equality, order, difference, and ratio"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Celsius is an interval scale: equal steps make a difference meaningful, and the arbitrary zero makes a ratio meaningless. Equality and order come with the interval scale. Option D is the ratio list, which would fit kelvin or a mass, not Celsius."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "An employee identifier is stored as an integer. For data-mining operations, the attribute is",
+      "options": [
+        "nominal",
+        "ratio, because the column is numeric",
+        "interval, because later employees receive larger identifiers",
+        "ordinal, because a larger identifier marks a senior employee"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The identifier is a name. Equality is the operation that matters, and relabeling the integers would not change the people. Being stored as INT does not create a true zero or an order the analysis should use. Options B, C, and D all read a storage type as a scale."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true about attribute scales?",
+      "options": [
+        "A ratio attribute has a true zero, so 'twice as much' is meaningful.",
+        "An ordinal attribute supports ranking and a median, not a meaningful difference of its codes.",
+        "A binary attribute is a numeric ratio scale whose zero is the false state.",
+        "An interval attribute supports ratios because subtraction is allowed."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. Ratio scales have a true zero, and ordinal scales stop at order. A binary attribute is a two-state nominal attribute, so C is false. An interval scale supports differences and not ratios: the zero is conventional, so D is false."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Mass in kilograms is a ratio attribute.",
+        "Temperature in degrees Celsius is an interval attribute.",
+        "A calendar year supports meaningful ratios because the values are numeric.",
+        "Pass/fail is a binary attribute, that is, a nominal attribute with two states."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Mass has a true zero. Celsius has equal units and an arbitrary zero, so differences work and ratios do not. A calendar year is interval: a span of years is meaningful, and 'twice the year number' is not, so C is false. Pass/fail has two unordered states and is binary."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "How many of these six attributes are ratio-scaled: blood group, weight in kilograms, temperature in degrees Celsius, number of semesters completed, letter grade, length in metres? Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**. Weight, the semester count, and length have true zeros, so ratios are meaningful. Blood group is nominal, Celsius is interval, and a letter grade is ordinal. The count of ratio attributes is 3."
+    }
+  ]
+}

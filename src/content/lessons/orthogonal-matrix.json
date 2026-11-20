@@ -1,0 +1,160 @@
+{
+  "slug": "orthogonal-matrix",
+  "section": "linear-algebra",
+  "title": "Orthogonal matrices",
+  "syllabus": "Orthogonal matrix",
+  "minutes": 25,
+  "summary": "A real orthogonal matrix satisfies Q^T Q=I. Its columns are orthonormal, its inverse is its transpose, it preserves norms and dot products, and its determinant is 1 or -1.",
+  "keywords": [
+    "orthogonal matrix",
+    "orthonormal columns",
+    "rotation",
+    "reflection",
+    "determinant"
+  ],
+  "intuition": "An orthogonal matrix is a square real matrix that preserves the geometry of $\\mathbb{R}^n$. The defining equation is $Q^\\top Q=I$. Reading it column by column, the columns are orthonormal: each has length $1$, and distinct columns have dot product $0$. The same equation says that $Q^\\top$ is a left inverse, and for square matrices a left inverse is the two-sided inverse, so $Q^{-1}=Q^\\top$ and also $QQ^\\top=I$. The rows are orthonormal for the same reason.\n\nPreservation is one line of algebra. For any vectors $x$ and $y$, $(Qx)\\cdot(Qy)=x^\\top Q^\\top Q y=x^\\top y$. Taking $x=y$ gives $\\|Qx\\|=\\|x\\|$. Rotations and reflections are the pictures: a rotation has determinant $1$, a reflection has determinant $-1$. There is no other possibility. From $Q^\\top Q=I$ one gets $\\det(Q)^2=\\det(I)=1$, so $\\det Q=\\pm 1$.\n\nAn orthogonal matrix is not a projection. A projection satisfies $P^2=P$, while $Q^\\top Q=I$ says that $Q$ is invertible. The only matrix that does both is $I$, because an orthogonal projection that is also orthogonal as a matrix has eigenvalues $0$ or $1$ and also eigenvalues of absolute value $1$, forcing every eigenvalue to be $1$. Orthogonal columns that are not unit length do not define an orthogonal matrix either: $Q^\\top Q$ would be diagonal, but not the identity.",
+  "definitions": [
+    {
+      "term": "Orthogonal matrix",
+      "body": "A square real matrix $Q$ is orthogonal when $Q^\\top Q=I$. Then $Q^{-1}=Q^\\top$, the columns are orthonormal, and the rows are orthonormal."
+    },
+    {
+      "term": "Orthonormal columns",
+      "body": "Columns $q_1,\\ldots,q_n$ are orthonormal when $q_i^\\top q_j$ is $1$ if $i=j$ and $0$ otherwise. Orthogonal columns of the wrong length are not enough."
+    },
+    {
+      "term": "Determinant $\\pm 1$",
+      "body": "Every real orthogonal matrix has $\\det Q=\\pm 1$. Determinant $1$ is a rotation in the plane; determinant $-1$ reverses orientation, as a reflection does."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Orthogonal",
+      "latex": "Q^\\top Q=I",
+      "note": "Columns are orthonormal, $Q^{-1}=Q^\\top$, $|\\det Q|=1$, and $\\|Qx\\|=\\|x\\|$."
+    },
+    {
+      "name": "Preserved dot product",
+      "latex": "(Qx)^\\top(Qy)=x^\\top y",
+      "note": "Set $y=x$ to get $\\|Qx\\|=\\|x\\|$. Lengths and angles both survive."
+    }
+  ],
+  "properties": [
+    "$Q^\\top Q=I$, so the columns are orthonormal and $Q^{-1}=Q^\\top$. The rows are orthonormal because $QQ^\\top=I$ as well.",
+    "$\\|Qx\\|=\\|x\\|$ and $(Qx)\\cdot(Qy)=x\\cdot y$ for every pair of real vectors.",
+    "$\\det Q=\\pm 1$. The square of the determinant is $\\det(Q^\\top Q)=\\det I=1$.",
+    "A product of orthogonal matrices is orthogonal, and the inverse of an orthogonal matrix is orthogonal.",
+    "An orthogonal matrix is not a projection matrix, except for $I$. A projection satisfies $P^2=P$; an orthogonal matrix satisfies $Q^\\top Q=I$."
+  ],
+  "examples": [
+    {
+      "title": "A quarter turn",
+      "prompt": "Let $Q=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$. Check $Q^\\top Q=I$, compute $\\det Q$ and $Q^{-1}$, and apply $Q$ to $(3,4)^\\top$.",
+      "steps": [
+        "$Q^\\top=\\begin{pmatrix}0&1\\\\-1&0\\end{pmatrix}$, and $Q^\\top Q=\\begin{pmatrix}0&1\\\\-1&0\\end{pmatrix}\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}=\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}$. So $Q^{-1}=Q^\\top$.",
+        "The determinant is $(0)(0)-(-1)(1)=1$, which is one of the two legal values $\\pm 1$.",
+        "$Q\\begin{pmatrix}3\\\\4\\end{pmatrix}=\\begin{pmatrix}-4\\\\3\\end{pmatrix}$. Both vectors have squared length $9+16=25$, so the Euclidean norm is preserved. Also $Q^2=-I\\neq Q$, so this orthogonal matrix is not a projection."
+      ],
+      "answer": "$Q$ is orthogonal with $\\det Q=1$ and $Q^{-1}=Q^\\top$. It sends $(3,4)$ to $(-4,3)$, both of norm $5$."
+    },
+    {
+      "title": "A reflection, and a matrix that only looks orthogonal",
+      "prompt": "Let $R=\\begin{pmatrix}1&0\\\\0&-1\\end{pmatrix}$ and $B=\\begin{pmatrix}2&0\\\\0&1\\end{pmatrix}$. Which one is orthogonal? Compute $R^2$ and $B^\\top B$.",
+      "steps": [
+        "$R^\\top=R$ and $R^\\top R=I$, so $R$ is orthogonal. Its determinant is $-1$.",
+        "$R^2=I$, which is not $R$. An orthogonal projection would have satisfied $P^2=P$. This reflection is orthogonal and it is not a projection.",
+        "The columns of $B$ are orthogonal, but $B^\\top B=\\begin{pmatrix}4&0\\\\0&1\\end{pmatrix}\\neq I$ and $\\det B=2$, which is not $\\pm 1$. Orthogonal columns of the wrong length do not make an orthogonal matrix."
+      ],
+      "answer": "$R$ is orthogonal, $\\det R=-1$, and $R^2=I\\neq R$. The diagonal matrix $B$ is not orthogonal."
+    }
+  ],
+  "traps": [
+    "Calling a matrix orthogonal because its columns are perpendicular. They also have to be unit vectors. $\\begin{pmatrix}2&0\\\\0&1\\end{pmatrix}$ has perpendicular columns and $Q^\\top Q\\neq I$.",
+    "Confusing an orthogonal matrix with an orthogonal projection. The projection equation is $P^2=P=P^\\top$. The orthogonal-matrix equation is $Q^\\top Q=I$. Only $I$ satisfies both.",
+    "Thinking the determinant of an orthogonal matrix can be any number of absolute value $1$ in a loose sense, or that it must be $+1$. Both signs occur: a rotation has $+1$ and a reflection has $-1$.",
+    "Using $Q^{-1}=Q$ instead of $Q^{-1}=Q^\\top$. Those agree only when $Q$ is symmetric, as a reflection through a coordinate axis is, and a quarter turn is not."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\ndef T(A):\n    return [list(row) for row in zip(*A)]\n\nQ = [[0, -1], [1, 0]]\nI = [[1, 0], [0, 1]]\nassert mul(T(Q), Q) == I\ndet = Q[0][0] * Q[1][1] - Q[0][1] * Q[1][0]\nassert det == 1\nQx = [Q[0][0] * 3 + Q[0][1] * 4, Q[1][0] * 3 + Q[1][1] * 4]\nassert Qx == [-4, 3]\nassert Qx[0] ** 2 + Qx[1] ** 2 == 25\nR = [[1, 0], [0, -1]]\nassert mul(R, R) == I\nassert R[0][0] * R[1][1] - R[0][1] * R[1][0] == -1\nprint(25)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A real square matrix $Q$ is orthogonal when",
+      "options": [
+        "$Q^\\top Q=I$",
+        "$Q^2=Q$",
+        "$Q^\\top=Q$",
+        "the columns are perpendicular, with no condition on their lengths"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The equation $Q^\\top Q=I$ forces the columns to be orthonormal and forces $Q^{-1}=Q^\\top$. Option B is idempotence, the projection and idempotent-matrix condition. Symmetry is not required: a quarter turn is orthogonal and not symmetric. Perpendicular columns of the wrong length fail $Q^\\top Q=I$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The determinant of a real orthogonal matrix is",
+      "options": [
+        "$0$",
+        "$1$ only",
+        "$\\pm 1$",
+        "any positive real number"
+      ],
+      "answer": [
+        "C"
+      ],
+      "solution": "The answer is **C**. From $Q^\\top Q=I$, take determinants: $\\det(Q)^2=1$, so $\\det Q=\\pm 1$. Both signs occur. The quarter turn $\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$ has determinant $1$, and the reflection $\\begin{pmatrix}1&0\\\\0&-1\\end{pmatrix}$ has determinant $-1$. An orthogonal matrix is invertible, so the determinant is not $0$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Let $Q=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$Q^\\top Q=I$.",
+        "$Q^{-1}=Q^\\top$.",
+        "$\\det Q=1$.",
+        "$Q^2=Q$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Direct multiplication gives $Q^\\top Q=I$, so the inverse equals the transpose, and $\\det Q=(0)(0)-(-1)(1)=1$. But $Q^2=\\begin{pmatrix}-1&0\\\\0&-1\\end{pmatrix}=-I$, which is not $Q$. This orthogonal matrix is not a projection."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "An orthogonal matrix preserves the Euclidean norm.",
+        "An orthogonal matrix preserves the dot product.",
+        "Every orthogonal projection matrix is an orthogonal matrix.",
+        "The columns of an orthogonal matrix are orthonormal."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The identity $(Qx)^\\top(Qy)=x^\\top Q^\\top Q y=x^\\top y$ preserves dot products, and the case $y=x$ preserves norms. The columns are orthonormal by $Q^\\top Q=I$. C is false: a projection of rank less than the ambient dimension has determinant $0$, while an orthogonal matrix has determinant $\\pm 1$. Only $I$ is both."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $Q=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$ and $x=\\begin{pmatrix}3\\\\4\\end{pmatrix}$. Enter $\\|Qx\\|^2$.",
+      "options": [],
+      "answer": [
+        "25"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **25**. First $Qx=(-4,3)^\\top$, and $(-4)^2+3^2=16+9=25$. The same number is $\\|x\\|^2=9+16$, which is the general fact that an orthogonal matrix preserves Euclidean length. The square of the length is the integer the question asks for."
+    }
+  ]
+}

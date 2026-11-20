@@ -1,0 +1,169 @@
+{
+  "slug": "linked-lists",
+  "section": "programming",
+  "title": "Linked lists",
+  "syllabus": "Linked lists",
+  "minutes": 30,
+  "summary": "A singly linked list is a chain of nodes. Inserting at the head is O(1), search is O(n), there is no random access, and reversal rewires four nodes in one pass.",
+  "keywords": [
+    "linked list",
+    "node",
+    "head insert",
+    "reversal",
+    "doubly linked"
+  ],
+  "intuition": "A singly linked list is a chain of nodes. Each node holds a value and a reference to the next node, or to nothing if it is the last. The list itself is the reference to the first node, called the head. There is no array underneath, so there is no way to jump to the item at index $i$ in constant time. Reaching it means following `next` exactly $i$ times.\n\nInserting at the head does not walk the chain. Build a node whose `next` is the old head, then move the head reference to the new node. That is $O(1)$. Searching for a value, or inserting at the tail without a stored tail pointer, walks nodes until the value or the end appears, which is $O(n)$ in the worst case. Random access, the operation binary search needs, is not available.\n\nA doubly linked list gives each node a `prev` reference as well. If you already hold the node, unlinking it is $O(1)$, because both neighbours can be found immediately. Finding the node from the head is still $O(n)$. Reversal of a singly linked list needs three references — previous, current, and next — and one pass. On a four-node chain the head value changes from the first node to the last.\n\n$$\\text{head insert }O(1),\\qquad \\text{search }O(n).$$",
+  "definitions": [
+    {
+      "term": "Singly linked node",
+      "body": "A node stores a value and a reference `next` to another node or to `None`. The list is the reference to the head. The last node has `next is None`."
+    },
+    {
+      "term": "Head insertion",
+      "body": "Create a node whose `next` is the current head, then return that node as the new head. No existing node is visited. The cost is $O(1)$ regardless of the length."
+    },
+    {
+      "term": "Search and random access",
+      "body": "Search walks from the head until the value matches or the chain ends. Worst-case cost is $O(n)$. The element at index $i$ also costs $\\Theta(i)$ to reach. There is no $O(1)$ indexing."
+    },
+    {
+      "term": "Doubly linked list",
+      "body": "Each node stores `prev` and `next`. Given the node, splicing it out of the chain is $O(1)$. Given only the head and an index, finding that node is still $O(n)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Head insert and search",
+      "latex": "\\text{insert at head }O(1),\\quad \\text{search }O(n)",
+      "note": "No random access. The $i$-th node is $i$ steps from the head."
+    },
+    {
+      "name": "Reversal recurrence",
+      "latex": "\\text{next}=\\text{cur.next},\\ \\text{cur.next}=\\text{prev},\\ \\text{prev}=\\text{cur},\\ \\text{cur}=\\text{next}",
+      "note": "One pass, three references, $O(n)$ time and $O(1)$ extra memory besides the input chain."
+    },
+    {
+      "name": "Index cost",
+      "latex": "T(i)=\\Theta(i)",
+      "note": "Walking to index $i$ examines $i+1$ nodes if the node exists. Binary search is not available."
+    }
+  ],
+  "properties": [
+    "Head insertion is $O(1)$. It does not depend on the length of the chain. Tail insertion is $O(1)$ only when a tail reference is maintained; otherwise the walk to the last node is $O(n)$.",
+    "Search is $O(n)$ in the worst case, including the case where the value is absent and the walk reaches `None`. The lesson's search returns the $0$-based index, or $-1$ if the value is absent.",
+    "There is no random access. A loop that asks for index $0$, then index $1$, then index $2$ from the head each time costs $1+2+3$ steps, not three jumps.",
+    "Reversing $1\\to 2\\to 3\\to 4$ produces $4\\to 3\\to 2\\to 1$. Afterwards the node $2$ points at $1$, and the node $1$ points at `None`.",
+    "A doubly linked node can be deleted in $O(1)$ once it is in hand, because `prev` and `next` are both stored. The search that finds the node is still linear from the head."
+  ],
+  "examples": [
+    {
+      "title": "Build by head insertion, then search",
+      "prompt": "Start from an empty list. Head-insert $4$, then $3$, then $2$, then $1$. Search for $3$ and for $9$.",
+      "steps": [
+        "Head-insert $4$ into empty: the chain is $4$. Head-insert $3$: the chain is $3\\to 4$. Head-insert $2$: the chain is $2\\to 3\\to 4$. Head-insert $1$: the chain is $1\\to 2\\to 3\\to 4$.",
+        "Each insertion created one node and retargeted the head. None of them walked the existing chain, so each was $O(1)$.",
+        "Search for $3$ compares index $0$ (value $1$), index $1$ (value $2$), and index $2$ (value $3$). It returns $2$. Search for $9$ walks all four nodes, finds nothing, and returns $-1$."
+      ],
+      "answer": "The list is $1\\to 2\\to 3\\to 4$. Search for $3$ returns index $2$. Search for $9$ returns $-1$."
+    },
+    {
+      "title": "Reverse a four-node list",
+      "prompt": "Reverse the singly linked list $1\\to 2\\to 3\\to 4$ with the three-reference loop.",
+      "steps": [
+        "Start with `prev = None` and `cur` at $1$. Save `next = 2`, point $1$ at `None`, then advance: `prev` becomes $1$ and `cur` becomes $2$.",
+        "Save `next = 3`, point $2$ at $1$, and advance. The rewired prefix is $2\\to 1$. Then save `next = 4`, point $3$ at $2$, and advance. The prefix is $3\\to 2\\to 1$.",
+        "Save `next = None`, point $4$ at $3$, and advance `cur` to `None`. The loop stops. `prev` is the node $4$, and the chain is $4\\to 3\\to 2\\to 1$.",
+        "The node that held $1$ now has `next is None`. The node that held $2$ now points at $1$. Four nodes were visited once, so the pass is $O(n)$ with a constant amount of extra storage."
+      ],
+      "answer": "The reversed list is $4\\to 3\\to 2\\to 1$. The new head value is $4$."
+    }
+  ],
+  "traps": [
+    "Indexing a linked list as if it were an array. `node[i]` is not an operation. Reaching index $i$ follows `next` $i$ times and is $O(i)$, not $O(1)$.",
+    "Losing the rest of the chain while reversing. The next node has to be saved before `cur.next` is overwritten. Overwriting first makes the tail unreachable.",
+    "Claiming head insertion is $O(n)$. The new node points at the old head and the head reference moves. No walk is required. The $O(n)$ operation is search, or a tail insert with no tail pointer.",
+    "Forgetting that a doubly linked list still cannot jump to an index. The extra `prev` pointer speeds up unlinking a node you already hold. It does not create random access."
+  ],
+  "python": "class Node:\n    def __init__(self, value, nxt=None):\n        self.value = value\n        self.nxt = nxt\n\ndef push(head, value):\n    return Node(value, head)\n\ndef to_list(head):\n    out = []\n    while head is not None:\n        out.append(head.value)\n        head = head.nxt\n    return out\n\ndef search(head, target):\n    index = 0\n    while head is not None:\n        if head.value == target:\n            return index\n        head = head.nxt\n        index += 1\n    return -1\n\ndef reverse(head):\n    prev = None\n    while head is not None:\n        nxt = head.nxt\n        head.nxt = prev\n        prev = head\n        head = nxt\n    return prev\n\nhead = None\nfor value in (4, 3, 2, 1):\n    head = push(head, value)\nassert to_list(head) == [1, 2, 3, 4]\nassert search(head, 3) == 2 and search(head, 9) == -1\nassert to_list(reverse(head)) == [4, 3, 2, 1]\nbuilt = None\nfor value in (8, 5, 8, 2):\n    built = push(built, value)\nassert to_list(built) == [2, 8, 5, 8] and search(built, 5) == 2\nprint(search(built, 5), to_list(built))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Inserting a node at the head of a singly linked list takes",
+      "options": [
+        "$O(1)$ time",
+        "$O(n)$ time",
+        "$O(\\log n)$ time",
+        "$O(n\\log n)$ time"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $O(1)$ time.\n\nThe new node's `next` reference is the old head, and the head reference then moves to the new node. No other node is visited, so the cost does not grow with the length. Search is the operation that is linear. Logarithmic time would require random access, which a linked list does not have."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "In a singly linked list of $n$ nodes, the worst-case cost of search is",
+      "options": [
+        "$O(n)$",
+        "$O(1)$",
+        "$O(\\log n)$",
+        "$O(n^{2})$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $O(n)$.\n\nSearch starts at the head and follows `next` until it finds the value or falls off the end. An absent value inspects every node, which is $n$ comparisons. There is no index that would let the search jump to the middle, so the bound is not logarithmic. A single head insert is the constant-time operation, not search."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A singly linked list offers $O(1)$ access to the element at a given index.",
+        "A singly linked list can be reversed in one pass with a constant number of extra references.",
+        "A doubly linked node stores a reference to the previous node as well as to the next node.",
+        "Head insertion must scan the whole list before the new node can be attached."
+      ],
+      "answer": [
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **B and C**.\n\nReversal keeps `prev`, `cur`, and `next`, rewires one node per iteration, and finishes in one walk. A doubly linked node stores both directions, so a node already in hand can be unlinked without searching for its predecessor.\n\nIndex access follows `next` once per step and is not $O(1)$. Head insertion points the new node at the old head and moves the head reference. It does not scan the chain."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The list $6\\to 5\\to 4\\to 3$ is reversed by the standard one-pass algorithm. Which of the following are true?",
+      "options": [
+        "After reversal the head value is $3$.",
+        "After reversal the node with value $5$ points at the node with value $6$.",
+        "After reversal the node with value $6$ points at the node with value $5$.",
+        "Before reversal, the $0$-based index of $3$ is $3$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nReversal turns the chain into $3\\to 4\\to 5\\to 6$, so the new head is $3$. Each node's `next` now points toward what used to be the previous node: $5$ points at $6$, and $6$ points at `None`. Before the reversal, the nodes in order are $6$ at index $0$, $5$ at index $1$, $4$ at index $2$, and $3$ at index $3$.\n\nOption C describes the original direction. After reversal that link has been turned around."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Head-insert $8$, then $5$, then $8$, then $2$ into an empty singly linked list. Enter the $0$-based index of the first node whose value is $5$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**.\n\nHead insertion puts the new value at the front. After $8$ the list is $8$. After $5$ it is $5\\to 8$. After the second $8$ it is $8\\to 5\\to 8$. After $2$ it is $2\\to 8\\to 5\\to 8$. The first $5$ sits at index $2$. The later $8$ is at index $3$, and the head value is $2$, not $8$."
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "slug": "variable-elimination",
+  "section": "artificial-intelligence",
+  "title": "Variable elimination",
+  "syllabus": "Exact inference",
+  "minutes": 30,
+  "summary": "Exact inference on a Bayesian network: multiply the factors that contain a hidden variable, sum that variable out, and put the new factor back. The order changes the intermediate size, not the marginal.",
+  "keywords": [
+    "variable elimination",
+    "factor",
+    "marginal",
+    "elimination order",
+    "exact inference"
+  ],
+  "intuition": "Variable elimination answers a query by arithmetic on the network's factors. It does not draw a sample. A factor is a table, indexed by the variables it mentions: a prior $P(X)$ is a factor of one variable, and a conditional $P(Y\\mid X)$ is a factor of two. The joint is the product of the factors. A marginal is what remains after every hidden variable has been summed out.\n\nTo eliminate a variable $x$, multiply together the factors that contain $x$, and only those factors. Sum that product over the values of $x$. The sum is a new factor on whatever variables are left. Replace the factors you multiplied with that new factor, and continue. Evidence is handled by keeping only the rows that match the observed value, then normalising at the end if the query is a conditional.\n\n$$\n\\sum_x\\prod_{f\\ni x} f\n$$\n\nThe order of elimination changes how large the intermediate tables get. Eliminating a variable that sits in several big factors builds a big product; eliminating it after those factors have already been reduced builds a smaller one. Both orders, carried out completely, return the same marginal. If two orders disagree, a factor was left out of a product or a value of $x$ was dropped from the sum. Sampling is a different lesson: a sample is one random draw, and this sum uses every value.\n",
+  "definitions": [
+    {
+      "term": "Factor",
+      "body": "A table indexed by a set of variables. The network contributes one factor $P(X_i\\mid\\mathrm{Pa}_i)$ per node."
+    },
+    {
+      "term": "Eliminating a variable",
+      "body": "Multiply every factor that contains $x$, sum over $x$, and replace those factors by the sum. Factors that do not contain $x$ stay as they are."
+    },
+    {
+      "term": "Marginal",
+      "body": "The distribution of the query variables after every other variable has been summed out. For a conditional query, restrict the evidence rows and normalise."
+    },
+    {
+      "term": "Elimination order",
+      "body": "The sequence in which hidden variables are summed. It changes the size of intermediate factors. It does not change the marginal."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Eliminate $x$",
+      "latex": "\\sum_x\\prod_{f\\ni x} f",
+      "note": "The product runs over the factors that contain $x$. The sum is the factor that replaces them."
+    },
+    {
+      "name": "Same marginal, two orders",
+      "latex": "\\sum_z\\sum_y\\sum_x \\prod_i f_i \\;=\\; \\sum_z\\sum_x\\sum_y \\prod_i f_i",
+      "note": "Finite sums of nonnegative terms may be reordered. The intermediate tables are not the same size."
+    }
+  ],
+  "properties": [
+    "To eliminate $x$, multiply the factors that contain $x$ and sum $x$ out. The new factor replaces those factors.",
+    "Factors that do not mention $x$ are not part of that product. They wait for a later variable.",
+    "Elimination order changes the number of entries in the intermediate factors. It does not change the marginal.",
+    "The result is exact. Every value of the eliminated variable is added. Nothing is drawn at random.",
+    "A conditional probability is a ratio of exact marginals, or the same elimination with the evidence rows kept and the result normalised. The ratio uses the elimination output; it is not a weight on a sample."
+  ],
+  "examples": [
+    {
+      "title": "Eliminate $X$, then $Y$",
+      "prompt": "The chain is $X\\to Y\\to Z$ with $P(X=1)=1/2$, $P(Y=1\\mid X=1)=4/5$, $P(Y=1\\mid X=0)=1/5$, $P(Z=1\\mid Y=1)=3/4$, and $P(Z=1\\mid Y=0)=1/4$. Eliminate $X$ and then $Y$ to get $P(Z=1)$.",
+      "steps": [
+        "The factors containing $X$ are $P(X)$ and $P(Y\\mid X)$. Their product summed over $X$ is $\\psi(Y)=\\sum_X P(X)P(Y\\mid X)$.",
+        "$\\psi(Y=1)=(1/2)(4/5)+(1/2)(1/5)=2/5+1/10=1/2$. $\\psi(Y=0)=(1/2)(1/5)+(1/2)(4/5)=1/10+2/5=1/2$. The new factor has two entries and replaces both factors that mentioned $X$.",
+        "The remaining factors are $\\psi(Y)$ and $P(Z\\mid Y)$. Both contain $Y$. Sum them: $P(Z=1)=(1/2)(3/4)+(1/2)(1/4)=3/8+1/8=1/2$.",
+        "$P(Z\\mid Y)$ was not multiplied in during the elimination of $X$, because that factor does not contain $X$. It enters when $Y$ is eliminated."
+      ],
+      "answer": "$P(Z=1)=1/2$. The intermediate factor $\\psi(Y)$ has $2$ entries, one per value of $Y$."
+    },
+    {
+      "title": "The other order, and a conditional",
+      "prompt": "Eliminate $Y$ before $X$ on the same chain. Then compute $P(X=1\\mid Z=1)$ from the joint marginal and $P(Z=1)$.",
+      "steps": [
+        "The factors containing $Y$ are $P(Y\\mid X)$ and $P(Z\\mid Y)$. Their product summed over $Y$ is a factor $\\tau(X,Z)$ with $2\\times 2=4$ entries.",
+        "$\\tau(1,1)=(4/5)(3/4)+(1/5)(1/4)=3/5+1/20=13/20$. $\\tau(0,1)=(1/5)(3/4)+(4/5)(1/4)=3/20+1/5=7/20$.",
+        "Multiply by $P(X)$ and sum $X$: $P(Z=1)=(1/2)(13/20)+(1/2)(7/20)=13/40+7/40=1/2$. The marginal matches the other order. The intermediate table had $4$ entries instead of $2$.",
+        "The joint marginal is $P(X=1,Z=1)=P(X=1)\\tau(1,1)=(1/2)(13/20)=13/40$. Divide by $P(Z=1)=1/2$ to get $P(X=1\\mid Z=1)=13/20$."
+      ],
+      "answer": "Both orders give $P(Z=1)=1/2$. The joint marginal $P(X=1,Z=1)$ is $13/40$, so the conditional is $13/20$."
+    }
+  ],
+  "traps": [
+    "Calling the sum over $x$ a sample. A sample is one random value. Elimination adds every value of $x$, and the marginal is exact.",
+    "Multiplying a factor that does not contain $x$ into the product for $x$. That factor is not in $\\prod_{f\\ni x} f$.",
+    "Dropping a value of $x$ from the sum. Both $x=0$ and $x=1$ contribute to $\\psi(Y)$ and to $\\tau(X,Z)$.",
+    "Expecting the two elimination orders to return different marginals because their intermediate tables have different sizes. The sizes differ, $2$ against $4$, and $P(Z=1)$ is $1/2$ either way.",
+    "Reporting $13/40$ as $P(X=1\\mid Z=1)$. That fraction is the joint. The conditional divides by $P(Z=1)=1/2$ and is $13/20$."
+  ],
+  "python": "from fractions import Fraction\n\ndef px(x):\n    return Fraction(1, 2)\n\ndef py(y, x):\n    return {(1, 1): Fraction(4, 5), (0, 1): Fraction(1, 5), (1, 0): Fraction(1, 5), (0, 0): Fraction(4, 5)}[(y, x)]\n\ndef pz(z, y):\n    return {(1, 1): Fraction(3, 4), (0, 1): Fraction(1, 4), (1, 0): Fraction(1, 4), (0, 0): Fraction(3, 4)}[(z, y)]\n\npsi = {y: sum(px(x) * py(y, x) for x in (0, 1)) for y in (0, 1)}\nassert psi[0] == psi[1] == Fraction(1, 2)\nmarg = {z: sum(psi[y] * pz(z, y) for y in (0, 1)) for z in (0, 1)}\nassert marg[1] == Fraction(1, 2)\ntau = {(x, z): sum(py(y, x) * pz(z, y) for y in (0, 1)) for x in (0, 1) for z in (0, 1)}\nassert tau[(1, 1)] == Fraction(13, 20) and tau[(0, 1)] == Fraction(7, 20)\nassert len(tau) == 4 and len(psi) == 2\nmarg2 = {z: sum(px(x) * tau[(x, z)] for x in (0, 1)) for z in (0, 1)}\nassert marg2[1] == Fraction(1, 2)\njoint = px(1) * tau[(1, 1)]\nassert joint == Fraction(13, 40)\npost = joint / marg[1]\nassert post == Fraction(13, 20)\nassert post.numerator + post.denominator == 33\nprint(marg[1], post)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "On the lesson chain, after eliminating $X$ and then $Y$, $P(Z=1)$ equals",
+      "options": [
+        "$1/2$",
+        "$13/40$",
+        "$13/20$",
+        "$4/5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/2$. After $X$ is gone, $\\psi(Y=1)=\\psi(Y=0)=1/2$, and $(1/2)(3/4)+(1/2)(1/4)=1/2$. Option B is the joint $P(X=1,Z=1)$. Option C is the conditional $P(X=1\\mid Z=1)$. Option D is the conditional probability $P(Y=1\\mid X=1)$, which is an input, not the marginal of $Z$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "While eliminating $X$ from the chain factors $P(X)$, $P(Y\\mid X)$, and $P(Z\\mid Y)$, which product is formed?",
+      "options": [
+        "$P(X)\\,P(Y\\mid X)$, then sum over $X$",
+        "$P(X)\\,P(Z\\mid Y)$, then sum over $X$",
+        "$P(Y\\mid X)\\,P(Z\\mid Y)$, then sum over $X$",
+        "All three factors, then sum over $Z$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Elimination of $X$ multiplies the factors that contain $X$, which are $P(X)$ and $P(Y\\mid X)$, and sums $X$ out. $P(Z\\mid Y)$ mentions $Y$ and $Z$ only, so it waits. Option C is the product used later if $Y$ is eliminated first, and that sum is over $Y$, not over $X$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true for the lesson chain?",
+      "options": [
+        "Eliminating $X$ then $Y$ gives $P(Z=1)=1/2$.",
+        "Eliminating $Y$ first builds an intermediate factor on $(X,Z)$ with $4$ entries.",
+        "Eliminating $X$ first builds an intermediate factor on $Y$ with $2$ entries.",
+        "The two orders return different values of $P(Z=1)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Both orders were summed in full and both gave $1/2$, so D is false. The intermediate after eliminating $X$ is a distribution of the binary variable $Y$, two numbers. The intermediate after eliminating $Y$ first still depends on $X$ and on $Z$, four numbers. The order changed the table size and not the marginal."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Variable elimination is exact inference.",
+        "Summing a variable out is the same operation as drawing one sample of that variable.",
+        "The new factor replaces the factors that contained the eliminated variable.",
+        "On this chain, $P(X=1\\mid Z=1)=13/20$."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**. Every value of the hidden variable is added, so the arithmetic is exact, and the summed table takes the place of the factors that mentioned that variable. A single random draw is sampling, which this algorithm does not do, so B is false. The conditional is $(13/40)/(1/2)=13/20$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "On the lesson chain, $P(X=1\\mid Z=1)=a/b$ in lowest terms. Enter $a+b$.",
+      "options": [],
+      "answer": [
+        "33"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **33**. Elimination gives $P(X=1,Z=1)=13/40$ and $P(Z=1)=1/2$, so the conditional is $(13/40)/(1/2)=13/20$. The fraction $13/20$ is already in lowest terms because $13$ is prime and does not divide $20$. Then $a+b=13+20=33$."
+    }
+  ]
+}

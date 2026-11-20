@@ -1,0 +1,171 @@
+{
+  "slug": "naive-bayes",
+  "section": "machine-learning",
+  "title": "Naive Bayes",
+  "syllabus": "Naive Bayes",
+  "minutes": 35,
+  "summary": "Naive Bayes scores a class by its prior times a product of per-feature conditionals. The product is an assumption, usually false, and add-one smoothing stops a zero count from wiping the class out.",
+  "keywords": [
+    "naive Bayes",
+    "conditional independence",
+    "Laplace smoothing",
+    "Bernoulli",
+    "Gaussian naive Bayes"
+  ],
+  "intuition": "Naive Bayes turns a class prediction into a product. By Bayes' rule, $P(y\\mid x)$ is proportional to $P(y)$ times $P(x\\mid y)$. The naive step replaces the joint conditional with a product over features: $P(x\\mid y)=\\prod_j P(x_j\\mid y)$. That conditional independence, given the class, is the assumption. It is usually false. Words such as 'free' and 'prize' are not independent inside spam. The classifier multiplies anyway. The score can still rank classes. It is not a claim that the features really factor.\n\nA zero in the product is fatal. If a binary feature never equals 1 in class H, then an unsmoothed estimate of $P(X_1=1\\mid H)$ is 0, and every test row with $X_1=1$ gives H the score 0, no matter what the other features and the prior say. Laplace add-one smoothing adds one to each count and adds the number of feature values to the denominator. For a binary feature that denominator is $n_y+2$. A zero count becomes a small positive probability, and the product survives.\n\nThe factor $P(x_j\\mid y)$ is what distinguishes the named variants. Bernoulli naive Bayes uses binary features and estimates the probability of the value 1 given the class. Gaussian naive Bayes uses a continuous feature and a class-conditional Gaussian density, with a mean and a variance estimated inside the class. Same product, different factor. The worked arithmetic below is the Bernoulli case, with add-one smoothing, on two binary features.",
+  "definitions": [
+    {
+      "term": "Naive Bayes score",
+      "body": "$P(y\\mid x)\\propto P(y)\\prod_j P(x_j\\mid y)$. The class with the larger product of prior and feature conditionals wins. The marginal $P(x)$ is the same for every class and does not change the ranking."
+    },
+    {
+      "term": "Conditional independence assumption",
+      "body": "Given the class, the features are treated as independent, which is why the joint conditional becomes a product. The assumption is part of the model and is usually false for real features."
+    },
+    {
+      "term": "Add-one smoothing",
+      "body": "For a binary feature, estimate $(c+1)/(n_y+2)$, where $c$ is the count of the observed value in class $y$ and $n_y$ is the number of training rows of that class. A zero count no longer zeros the product."
+    },
+    {
+      "term": "Bernoulli and Gaussian naive Bayes",
+      "body": "Bernoulli naive Bayes models each feature as binary, with one probability of the value 1 given the class. Gaussian naive Bayes models each continuous feature as Gaussian given the class, with its own mean and variance. The product structure is the same."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Class posterior",
+      "latex": "P(y\\mid x)\\propto P(y)\\prod_j P(x_j\\mid y)",
+      "note": "The product is the conditional-independence assumption. Compare numerators across classes."
+    },
+    {
+      "name": "Binary add-one",
+      "latex": "\\hat P(x_j=v\\mid y)=\\frac{c_{y,j,v}+1}{n_y+2}",
+      "note": "$c_{y,j,v}$ counts training rows of class $y$ whose feature $j$ equals $v\\in\\{0,1\\}$. The two values of one feature sum to 1 after smoothing."
+    },
+    {
+      "name": "Gaussian factor",
+      "latex": "\\frac{1}{\\sqrt{2\\pi\\sigma^2}}\\exp\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)",
+      "note": "The univariate class-conditional density used by Gaussian naive Bayes. Bernoulli naive Bayes uses a probability in $\\{0,1\\}$ instead of this density."
+    }
+  ],
+  "properties": [
+    "The predicted class maximises $P(y)\\prod_j P(x_j\\mid y)$. Dividing by $P(x)$ normalises the posteriors and does not change the winner.",
+    "Conditional independence given the class is assumed and is usually false. The product is still the model.",
+    "Without smoothing, one unseen feature value zeros that class's score. Add-one smoothing is there so a zero count does not zero the product.",
+    "For a binary feature the smoothed probabilities of 0 and of 1 sum to 1, because the counts of 0 and of 1 sum to $n_y$ and each receives one extra count.",
+    "Bernoulli naive Bayes and Gaussian naive Bayes share the product. They do not share the factor: a binary probability versus a Gaussian density.",
+    "The prior can change the class. With equal priors the row $(0,0)$ below is class H. With $P(S)=9/10$ the same smoothed likelihoods predict S."
+  ],
+  "examples": [
+    {
+      "title": "Add-one on two binary features",
+      "prompt": "Class S has the three rows $(1,1)$, $(1,1)$, $(1,0)$. Class H has $(0,0)$, $(0,1)$, $(0,0)$. Priors are equal. Use binary add-one smoothing and classify $(1,1)$ and $(0,0)$.",
+      "steps": [
+        "Smoothed probabilities: $P(X_1=1\\mid S)=4/5$, $P(X_2=1\\mid S)=3/5$, $P(X_1=0\\mid S)=1/5$, $P(X_2=0\\mid S)=2/5$. For H: $P(X_1=1\\mid H)=1/5$, $P(X_1=0\\mid H)=4/5$, $P(X_2=1\\mid H)=2/5$, $P(X_2=0\\mid H)=3/5$.",
+        "For $(1,1)$ the S score is $(1/2)(4/5)(3/5)=6/25$ and the H score is $(1/2)(1/5)(2/5)=1/25$. The posterior of S is $(6/25)/(7/25)=6/7$, so the class is S. Without smoothing, $P(X_1=1\\mid H)=0$ and the H score would be 0.",
+        "For $(0,0)$ the S score is $(1/2)(1/5)(2/5)=1/25$ and the H score is $(1/2)(4/5)(3/5)=6/25$. The posterior of H is $6/7$, so the class is H."
+      ],
+      "answer": "The row $(1,1)$ is class S with posterior $6/7$. The row $(0,0)$ is class H with posterior $6/7$."
+    },
+    {
+      "title": "The same likelihoods, a different prior",
+      "prompt": "Keep the smoothed conditionals from the three-and-three table, but set $P(S)=9/10$ and $P(H)=1/10$. Classify $(0,0)$ again.",
+      "steps": [
+        "The feature part for S on $(0,0)$ is still $(1/5)(2/5)=2/25$. Times the prior, the score is $(9/10)(2/25)=9/125$.",
+        "The feature part for H is $(4/5)(3/5)=12/25$. Times the prior, the score is $(1/10)(12/25)=6/125$.",
+        "$9/125>6/125$, so the predicted class is S. The equal-prior prediction was H. Dropping the prior, or pretending both priors are $1/2$ when they are not, is a different classifier."
+      ],
+      "answer": "With $P(S)=9/10$, the row $(0,0)$ is classified as S. The scores are $9/125$ and $6/125$."
+    }
+  ],
+  "traps": [
+    "Leaving a zero count unsmoothed. H never shows $X_1=1$ in the training rows, so the unsmoothed score of H on $(1,1)$ is 0. Add-one replaces that 0 by $1/5$.",
+    "Treating the product as a discovered fact. Conditional independence given the class is the modelling assumption, and features in a real class usually violate it.",
+    "Using a Gaussian density for a binary feature and calling the model Bernoulli, or the reverse. Bernoulli uses $P(X_j=1\\mid y)$. Gaussian naive Bayes uses the normal density, one mean and one variance per class per feature.",
+    "Forgetting an unequal prior. On $(0,0)$ the equal-prior winner is H and the prior $9/10$ on S flips the winner to S. The prior is inside the product.",
+    "Adding the feature probabilities instead of multiplying them. The model is a product. The scores $6/25$ and $1/25$ are products of the prior and two conditionals."
+  ],
+  "python": "from fractions import Fraction\n\ndef smooth(count, n=3):\n    return Fraction(count + 1, n + 2)\n\n# S: X1 ones = 3, X2 ones = 2. H: X1 ones = 0, X2 ones = 1.\ndef score(x1, x2, ones1, ones2, prior):\n    p1 = smooth(ones1) if x1 == 1 else smooth(3 - ones1)\n    p2 = smooth(ones2) if x2 == 1 else smooth(3 - ones2)\n    return prior * p1 * p2\n\ns = score(1, 1, 3, 2, Fraction(1, 2))\nh = score(1, 1, 0, 1, Fraction(1, 2))\nassert s == Fraction(6, 25) and h == Fraction(1, 25)\nassert s / (s + h) == Fraction(6, 7) and s > h\ns0 = score(0, 0, 3, 2, Fraction(1, 2))\nh0 = score(0, 0, 0, 1, Fraction(1, 2))\nassert h0 / (s0 + h0) == Fraction(6, 7) and h0 > s0\nflip_s = score(0, 0, 3, 2, Fraction(9, 10))\nflip_h = score(0, 0, 0, 1, Fraction(1, 10))\nassert flip_s == Fraction(9, 125) and flip_h == Fraction(6, 125)\nassert flip_s > flip_h\nprint(7 * s / (s + h))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "With equal priors and binary add-one smoothing on the three-and-three table, the test row $(1,1)$ is classified as",
+      "options": [
+        "S, with posterior $6/7$",
+        "H, with posterior $6/7$",
+        "S, with posterior $1/2$, because the priors are equal",
+        "H, because $X_1=1$ never occurs in H and the smoothed probability is still 0"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The smoothed scores are $6/25$ for S and $1/25$ for H, so the posterior of S is $6/7$. Equal priors do not force an equal posterior once the likelihoods differ. The smoothed value $P(X_1=1\\mid H)$ is $1/5$, not 0."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "With the same equal priors and the same smoothing, the test row $(0,0)$ is classified as",
+      "options": [
+        "H, with posterior $6/7$",
+        "S, with posterior $6/7$",
+        "H, with posterior $1/2$",
+        "S, because both features are 0"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The scores are $1/25$ for S and $6/25$ for H. The posterior of H is $(6/25)/(7/25)=6/7$. Both features being 0 favours H on these counts. It does not favour S."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of this naive Bayes model?",
+      "options": [
+        "The model assumes the features are conditionally independent given the class.",
+        "That independence assumption is part of the model and is often false for real features.",
+        "Add-one smoothing is used so a zero count does not force the class score to 0.",
+        "Without smoothing, both class scores on the row $(1,1)$ are 0."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The product is the conditional-independence assumption, the assumption is usually false, and add-one keeps a zero count from wiping out the product. D is false: unsmoothed S has $P(X_1=1\\mid S)=1$ and $P(X_2=1\\mid S)=2/3$, so its score is not 0. Only H is zeroed, by $P(X_1=1\\mid H)=0$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "With the same smoothed likelihoods and priors $P(S)=9/10$, $P(H)=1/10$, which of the following are true?",
+      "options": [
+        "The score of S on $(0,0)$ is $9/125$.",
+        "The score of H on $(0,0)$ is $6/125$.",
+        "The predicted class for $(0,0)$ flips from H to S.",
+        "The prior does not enter the product, so the prediction cannot change."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. $(9/10)(1/5)(2/5)=9/125$ and $(1/10)(4/5)(3/5)=6/125$. Because $9/125>6/125$, the winner changes from H to S. The prior is a factor in the score, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "With equal priors and add-one smoothing, the posterior probability of S given $(1,1)$ is $6/7$. Enter $7$ times that posterior.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**. The posterior is $6/7$, and $7\\times 6/7=6$. The numerator is the integer requested, not the posterior itself."
+    }
+  ]
+}

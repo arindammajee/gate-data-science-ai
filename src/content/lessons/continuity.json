@@ -1,0 +1,179 @@
+{
+  "slug": "continuity",
+  "section": "calculus",
+  "title": "Continuity",
+  "syllabus": "Continuity",
+  "minutes": 30,
+  "summary": "A function is continuous at a point when the limit equals the value. On a closed interval that forces the intermediate-value and extreme-value theorems.",
+  "keywords": [
+    "continuity",
+    "intermediate value theorem",
+    "extreme value theorem",
+    "removable discontinuity",
+    "jump discontinuity"
+  ],
+  "intuition": "Continuity is the sentence $\\lim_{x\\to a}f(x)=f(a)$. The limit has to exist, $f(a)$ has to be defined, and those two numbers have to be the same. A hole, a wrong value, a jump, or a vertical asymptote each breaks a different part of that sentence.\n\nThe intermediate value theorem turns continuity on a closed interval into a guarantee about hitting heights. If $f$ is continuous on $[a,b]$ and $k$ lies between $f(a)$ and $f(b)$, some point of $(a,b)$ is sent to $k$. The theorem does not say the point is unique. A jump can skip a height entirely, which is why the continuity hypothesis is doing the work.\n\nOn a closed bounded interval, continuity is even stronger. The extreme value theorem says $f$ is bounded and attains both a maximum and a minimum. The open interval $(0,1)$ with $f(x)=x$ shows why the endpoints matter: the values get arbitrarily close to $1$ and never reach it. Finding those attained extrema is the optimization lesson; this lesson only records that they exist.\n\nDiscontinuities that the syllabus asks you to name are removable, jump, and infinite. A removable discontinuity has a finite limit that is not the function value, or the function is missing at that point. A jump has finite one-sided limits that disagree. An infinite discontinuity has a vertical blow-up, so the limit is not a real number.",
+  "definitions": [
+    {
+      "term": "Continuous at a point",
+      "body": "$f$ is continuous at $a$ when $f(a)$ is defined, $\\lim_{x\\to a}f(x)$ exists as a real number, and the two are equal. Continuity on an interval means continuity at every point of that interval, with one-sided limits at an included endpoint."
+    },
+    {
+      "term": "Removable discontinuity",
+      "body": "The limit $\\lim_{x\\to a}f(x)$ exists and is finite, but $f(a)$ is undefined or $f(a)$ is not that limit. Defining or redefining $f(a)$ to be the limit removes the discontinuity."
+    },
+    {
+      "term": "Jump discontinuity",
+      "body": "Both one-sided limits exist and are finite, and they are not equal. The jump size is the absolute difference of those two limits. No single value of $f(a)$ can match both sides."
+    },
+    {
+      "term": "Infinite discontinuity",
+      "body": "At least one one-sided limit is $+\\infty$ or $-\\infty$, as with $1/x$ at $0$. The limit is not a real number, so the continuity equality cannot hold. This is not a jump, because a jump requires finite one-sided limits."
+    },
+    {
+      "term": "Intermediate and extreme value theorems",
+      "body": "Intermediate value theorem: a function continuous on $[a,b]$ attains every value between $f(a)$ and $f(b)$. Extreme value theorem: a function continuous on $[a,b]$ is bounded and attains its maximum and its minimum somewhere in $[a,b]$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Continuity criterion",
+      "latex": "\\lim_{x\\to a}f(x)=f(a)",
+      "note": "All three ingredients are required: $f(a)$ defined, the limit existing, and equality."
+    },
+    {
+      "name": "Intermediate value theorem",
+      "latex": "f(a)<k<f(b)\\Rightarrow \\exists\\, c\\in(a,b)\\ \\text{with}\\ f(c)=k",
+      "note": "Hypothesis: $f$ is continuous on the closed interval $[a,b]$. The point $c$ need not be unique. The same statement holds if $f(b)<k<f(a)$."
+    },
+    {
+      "name": "Extreme value theorem",
+      "latex": "\\exists\\, c,d\\in[a,b]\\ \\text{with}\\ f(c)=\\max_{[a,b]}f,\\ f(d)=\\min_{[a,b]}f",
+      "note": "Hypothesis: $f$ is continuous on the closed bounded interval $[a,b]$. The theorem says the max and min are attained. It does not locate them."
+    },
+    {
+      "name": "Removable repair",
+      "latex": "\\text{if }\\lim_{x\\to a}f(x)=L\\in\\mathbb{R},\\ \\text{set }f(a)=L",
+      "note": "This produces a function continuous at $a$. It is available only when the two-sided limit exists and is finite."
+    }
+  ],
+  "properties": [
+    "Polynomials, $e^{x}$, $\\sin$, and $\\cos$ are continuous at every real point. $\\ln$ is continuous on $(0,\\infty)$. A rational function is continuous at every point where the denominator is not zero.",
+    "A sum, product, and quotient of continuous functions is continuous where the expression is defined. A composition of continuous functions is continuous on the set where the composition is defined.",
+    "The intermediate value theorem implies that a continuous function on $[a,b]$ with $f(a)$ and $f(b)$ of opposite signs has a root in $(a,b)$. It does not count the roots.",
+    "Continuity on a closed interval implies boundedness and attainment of both a maximum and a minimum. Continuity on an open interval does not: $f(x)=1/x$ on $(0,1)$ is continuous and unbounded.",
+    "Equal one-sided limits are not enough for continuity unless they also equal $f(a)$. That gap is exactly a removable discontinuity when the common limit is finite."
+  ],
+  "examples": [
+    {
+      "title": "A removable hole with the wrong value",
+      "prompt": "Define $f(x)=(x^{2}-9)/(x-3)$ for $x\\neq 3$ and $f(3)=9$. Classify the discontinuity at $3$, and repair it.",
+      "steps": [
+        "For $x\\neq 3$, factor $x^{2}-9=(x-3)(x+3)$ and cancel the common factor, getting $f(x)=x+3$. Cancellation is legal only away from $3$.",
+        "The two-sided limit is $\\lim_{x\\to 3}(x+3)=6$. Both one-sided limits equal $6$, so the discontinuity is not a jump and not infinite.",
+        "The function value is $f(3)=9$, and $9\\neq 6$. The limit exists, but it does not equal the value, so $f$ is not continuous at $3$.",
+        "Defining $f(3)=6$ makes the value match the limit. The repaired function is $x+3$ at every point, which is continuous on $\\mathbb{R}$."
+      ],
+      "answer": "The discontinuity at $3$ is removable. The continuous repair is $f(3)=6$, not the given value $9$."
+    },
+    {
+      "title": "A jump that skips a value, and an attained maximum",
+      "prompt": "Let $g(x)=-1$ for $x<0$ and $g(x)=1$ for $x\\geq 0$. Let $p(x)=x^{2}$ on $[-2,3]$. Show that $g$ skips the value $0$, and find the max and min of $p$.",
+      "steps": [
+        "The left-hand limit of $g$ at $0$ is $-1$ and the right-hand limit is $1$. Both are finite and they differ, so $g$ has a jump discontinuity at $0$. No choice of $g(0)$ matches both sides.",
+        "On $[-1,1]$, every value of $g$ is either $-1$ or $1$. The number $0$ lies between $g(-1)=-1$ and $g(1)=1$, but it is never attained. The intermediate value theorem does not apply, because $g$ is not continuous on $[-1,1]$.",
+        "$p(x)=x^{2}$ is a polynomial, so it is continuous on the closed interval $[-2,3]$. The extreme value theorem says the maximum and the minimum are attained.",
+        "The critical point of $p$ inside $(-2,3)$ is where $p'(x)=2x=0$, so $x=0$, and $p(0)=0$. The endpoint values are $p(-2)=4$ and $p(3)=9$. The attained minimum is $0$ and the attained maximum is $9$."
+      ],
+      "answer": "$g$ jumps at $0$ and never takes the value $0$. On $[-2,3]$, $p$ attains minimum $0$ at $x=0$ and maximum $9$ at $x=3$."
+    }
+  ],
+  "traps": [
+    "Calling $f$ continuous because the two-sided limit exists. Continuity also demands that the limit equal $f(a)$. A wrong filled-in value is still a discontinuity, and it is removable.",
+    "Using the intermediate value theorem on a jump. Opposite signs of $g(-1)$ and $g(1)$ do not produce a root when $g$ skips every height strictly between $-1$ and $1$.",
+    "Expecting a maximum on an open interval. The identity function on $(0,1)$ is continuous, and it has no maximum in the interval.",
+    "Labelling $1/x$ at $0$ a jump. The one-sided limits are infinite, so the discontinuity is infinite. A jump requires both one-sided limits to be finite."
+  ],
+  "python": "def gap(x):\n    return (x * x - 9) / (x - 3)\n\nassert abs(gap(3.0001) - 6) < 1e-3\nassert abs(gap(2.9999) - 6) < 1e-3\n\ndef repaired_limit(x):\n    return (x * x - 4) / (x - 2)\n\nassert abs(repaired_limit(2.0001) - 4) < 1e-3\n\ndef cubic(t):\n    return t ** 3 + t - 1\n\nassert cubic(0) < 0 < cubic(1)\nassert cubic(0.5) < 0\nassert max((-2) ** 2, 3 ** 2, 0 ** 2) == 9\nassert min((-2) ** 2, 3 ** 2, 0 ** 2) == 0\nprint(6, 4, 9, 0)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Define $f(x)=(x^{2}-9)/(x-3)$ for $x\\neq 3$ and set $f(3)=9$. The discontinuity of $f$ at $x=3$ is",
+      "options": [
+        "removable",
+        "a jump",
+        "infinite",
+        "not a discontinuity, because $f(3)$ is defined"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, removable.\n\nFor $x\\neq 3$, $f(x)=x+3$, so both one-sided limits equal $6$. The limit exists and is finite, which rules out a jump and an infinite discontinuity. The stored value $f(3)=9$ is not $6$, so $f$ is discontinuous, and resetting $f(3)$ to $6$ removes the break. Defining a value does not create continuity unless the value equals the limit."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Let $f(x)=x^{3}+x-1$ on the closed interval $[0,1]$. Which statement is true?",
+      "options": [
+        "There is at least one $c$ in $(0,1)$ with $f(c)=0$.",
+        "$f$ has no root in $(0,1)$ because $f(0)$ and $f(1)$ are both nonzero.",
+        "The intermediate value theorem still applies on $[0,1]$ if $f$ is redefined to jump at $1/2$.",
+        "$f(1/2)<0$ proves that $f$ has no root in $(0,1)$."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\n$f$ is a polynomial, so it is continuous on $[0,1]$. The endpoint values are $f(0)=-1$ and $f(1)=1+1-1=1$. Since $0$ lies between $-1$ and $1$, the intermediate value theorem supplies a root in $(0,1)$.\n\nNonzero endpoint values are the reason the theorem applies, not a reason there is no root. A jump at $1/2$ would remove the continuity hypothesis. And $f(1/2)=(1/8)+(1/2)-1=-3/8<0$, while $f(1)=1$, so the sign change on $[1/2,1]$ still produces a root."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A function continuous on a closed bounded interval is bounded and attains its maximum and its minimum.",
+        "A function continuous on an open interval always attains its maximum.",
+        "A jump discontinuity has finite, unequal one-sided limits.",
+        "If $\\lim_{x\\to a}f(x)=f(a)$, then $f$ is differentiable at $a$."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nA is the extreme value theorem. C is the definition of a jump used in this lesson: both one-sided limits exist, both are finite, and they differ.\n\nB fails for $f(x)=x$ on $(0,1)$, which has no maximum. D confuses continuity with differentiability. The equality $\\lim f=f(a)$ is continuity. The absolute-value function satisfies it at $0$ and is not differentiable there."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Define $f(x)=x+1$ for $x<2$, $f(2)=5$, and $f(x)=x+2$ for $x>2$. Which of the following are true?",
+      "options": [
+        "The left-hand limit of $f$ at $2$ is $3$.",
+        "Setting $f(2)=3$ removes the discontinuity at $2$.",
+        "$f$ has a jump discontinuity at $2$.",
+        "$f$ is continuous at every point of the interval $[0,1]$."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nFrom the left, $f(x)=x+1\\to 3$. From the right, $f(x)=x+2\\to 4$. The one-sided limits are finite and unequal, so the discontinuity is a jump. The stored value $5$ matches neither side.\n\nSetting $f(2)=3$ matches the left-hand limit only. The right-hand limit is still $4$, so the two-sided limit still does not exist and the discontinuity remains. On $[0,1]$ the formula is the polynomial $x+1$, whose only candidate problem in the definition sits at $2$, outside this interval."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "For $x\\neq 2$, let $f(x)=(x^{2}-4)/(x-2)$. Enter the integer $k$ such that defining $f(2)=k$ makes $f$ continuous at $2$.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**.\n\nFactor $x^{2}-4=(x-2)(x+2)$. For $x\\neq 2$ the quotient simplifies to $x+2$. Therefore $\\lim_{x\\to 2}f(x)=2+2=4$. Continuity requires $f(2)$ to equal that limit, so $k=4$."
+    }
+  ]
+}

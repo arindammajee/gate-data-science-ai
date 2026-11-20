@@ -1,0 +1,162 @@
+{
+  "slug": "percentages",
+  "section": "aptitude",
+  "title": "Percentages",
+  "syllabus": "Percentage change, successive changes, and the by/to distinction",
+  "minutes": 25,
+  "summary": "Compute a percent change from the old value, multiply factors for successive changes, and keep 'increase by' distinct from 'increase to'.",
+  "keywords": [
+    "percent change",
+    "successive percentage",
+    "increase by",
+    "increase to",
+    "multiplying factors"
+  ],
+  "intuition": "A percent change compares the difference with the starting value, not with the finishing one. If a count goes from 80 to 100, the difference is 20 and the base is 80, so the increase is 25 percent. Dividing 20 by 100 instead gives 20 percent and answers a different question: 20 is 20 percent of the new value, which is not how \"percent increase\" is defined.\n\nSuccessive changes do not add. Each percent is a factor on whatever value is current at that step. A change of $p$ percent multiplies by $1+p/100$. A 20 percent increase is a factor $1.2$, and a 20 percent decrease is a factor $0.8$. Applied in that order, the combined factor is $1.2\\times 0.8=0.96$. The result is 4 percent below the start. It is not a return to the start, and it is not a zero percent change. The two 20s do not cancel, because the second 20 percent is taken of the already increased value.\n\nThe same language point as in a chart question still applies. \"Increase by 25 percent\" tells you the factor. \"Increase to 100\" tells you the new value. When 80 increases by 25 percent it increases to 100, and both sentences are about that one change only because the arithmetic happens to land there.",
+  "definitions": [
+    {
+      "term": "Percent change",
+      "body": "$(\\text{new}-\\text{old})/\\text{old}\\times 100$. A positive result is an increase. A negative result is a decrease. The base is the old value."
+    },
+    {
+      "term": "Change factor",
+      "body": "An increase of $p$ percent multiplies by $1+p/100$. A decrease of $p$ percent multiplies by $1-p/100$."
+    },
+    {
+      "term": "Successive changes",
+      "body": "Two or more percent changes applied one after another. The combined factor is the product of the separate factors, not the sum of the percents."
+    },
+    {
+      "term": "Increase by and increase to",
+      "body": "'By' names the change being applied. 'To' names the value after the change."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Percentage change",
+      "latex": "\\frac{\\text{new}-\\text{old}}{\\text{old}}\\times 100\\%",
+      "note": "'Increase by' adds the change. 'Increase to' names the new value."
+    },
+    {
+      "name": "Successive factors",
+      "latex": "\\left(1+\\frac{p}{100}\\right)\\left(1+\\frac{q}{100}\\right)",
+      "note": "Use a negative percent for a decrease. The product $1.2\\times 0.8$ equals $0.96$, not $1$."
+    }
+  ],
+  "properties": [
+    "The base of a percent change is the old value. Using the new value as the base is a different ratio.",
+    "Percent changes in succession multiply. They do not add. Ten percent then ten percent is a factor $1.21$, a 21 percent increase, not a 20 percent increase.",
+    "A 20 percent increase followed by a 20 percent decrease leaves 96 percent of the start.",
+    "The order of a $+20$ percent and a $-20$ percent does not matter, because $1.2\\times 0.8=0.8\\times 1.2$. The result is still $0.96$, not $1$.",
+    "'Increase to 100' can be true when the percent increase is 25, if the old value was 80. The 'to' sentence does not state the percent."
+  ],
+  "examples": [
+    {
+      "title": "Twenty percent up and twenty percent down",
+      "prompt": "A stock of 250 bottles increases by 20 percent and then decreases by 20 percent. What is the final stock, and what is the net percent change?",
+      "steps": [
+        "The first factor is $1.2$, so $250\\times 1.2=300$.",
+        "The second factor is $0.8$, so $300\\times 0.8=240$. Equivalently, the combined factor is $1.2\\times 0.8=0.96$, and $250\\times 0.96=240$.",
+        "The net change is $(240-250)/250\\times 100=-4$ percent. The stock is 4 percent below the start, not back at 250."
+      ],
+      "answer": "The final stock is 240. The net change is a 4 percent decrease, because the combined factor is $0.96$."
+    },
+    {
+      "title": "The base is the old value",
+      "prompt": "A price goes from 80 to 100. What is the percent increase? State the same change with 'by' and with 'to'.",
+      "steps": [
+        "The difference is $100-80=20$.",
+        "The base is the old price, 80. The percent increase is $20/80\\times 100=25$.",
+        "The price increased by 25 percent, and it increased to 100. Dividing 20 by 100 would be the wrong base."
+      ],
+      "answer": "The percent increase is 25. The price increased by 25 percent and increased to 100."
+    }
+  ],
+  "traps": [
+    "Cancelling a 20 percent increase against a 20 percent decrease and returning to the original value. The product is $0.96$.",
+    "Adding successive 10 percent increases to get 20 percent. The factor is $1.1\\times 1.1=1.21$.",
+    "Using the new value as the base: $(100-80)/100=20$ percent is not the percent increase from 80 to 100.",
+    "Reading 'increase to 100' as 'increase by 100', or reading 'increase by 20' as a new value of 20."
+  ],
+  "python": "assert 12 * 8 == 96  # 1.2 * 0.8 = 0.96\nfinal = 250 * 12 // 10 * 8 // 10\nassert final == 240\nassert (240 - 250) * 100 // 250 == -4\nassert (100 - 80) * 100 // 80 == 25\nassert 80 * 125 // 100 == 100\nassert 11 * 11 == 121  # 1.1 * 1.1 = 1.21\nassert 200 * 11 * 11 // 100 == 242\nassert 500 * 12 // 10 * 8 // 10 == 480\nprint(240)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A stock of 250 increases by 20 percent and then decreases by 20 percent. The final stock is",
+      "options": [
+        "240",
+        "250",
+        "200",
+        "300"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 240. The factors are $1.2$ and $0.8$, and $1.2\\times 0.8=0.96$. Then $250\\times 0.96=240$. Option B treats the two changes as cancelling. Option D is only the value after the increase."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A value rises from 80 to 100. The percent increase is",
+      "options": [
+        "25 percent",
+        "20 percent",
+        "80 percent",
+        "100 percent"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 25 percent. The change is 20 and the base is the old value 80, so $20/80\\times 100=25$. Option B divides 20 by the new value 100. The value increased to 100, but that sentence is not a percent."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A value of 80 increases by 25 percent, and so reaches 100. Separately, consider successive percent changes. Which of the following are true?",
+      "options": [
+        "A 10 percent increase followed by a 10 percent increase multiplies by 1.21.",
+        "A 20 percent increase followed by a 20 percent decrease returns a quantity to its start.",
+        "Increasing 80 by 25 percent gives 100.",
+        "'Increase to 100' names the new value 100."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**. Two increases of 10 percent multiply as $1.1\\times 1.1=1.21$. An increase of 25 percent on 80 is $80\\times 1.25=100$. 'Increase to 100' names that new value. Option B is false: 20 percent up followed by 20 percent down multiplies by $0.96$ and does not restore the start."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A price of 500 increases by 20 percent and then decreases by 20 percent. Enter the final price.",
+      "options": [],
+      "answer": [
+        "480"
+      ],
+      "solution": "The answer is **480**. The combined factor is $1.2\\times 0.8=0.96$, and $500\\times 0.96=480$. The same two percents on a different starting price do not land on the start, and they do not land on 500 here.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "After a 10 percent increase and then another 10 percent increase, a count of 200 becomes",
+      "options": [
+        "242",
+        "240",
+        "220",
+        "230"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 242. Each step multiplies by $1.1$, and $1.1\\times 1.1=1.21$. Then $200\\times 1.21=242$. Option C adds the percents first and does $200\\times 1.20=240$, which is the successive-addition trap."
+    }
+  ]
+}

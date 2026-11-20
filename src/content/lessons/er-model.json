@@ -1,0 +1,164 @@
+{
+  "slug": "er-model",
+  "section": "databases",
+  "title": "The entity-relationship model",
+  "syllabus": "ER model",
+  "minutes": 30,
+  "summary": "Entities, weak entities, attributes, and relationships are drawn first and then mapped to relations. Multivalued attributes and M-N relationships become relations; a weak entity's key includes the owner's key.",
+  "keywords": [
+    "entity",
+    "weak entity",
+    "cardinality",
+    "participation",
+    "multivalued attribute"
+  ],
+  "intuition": "An ER diagram names the things the database stores and the facts that connect them, before any table exists. A strong entity stands on its own and has a key attribute. A weak entity does not: a dependent, a room in a hotel, or a loan on a library card is identified only together with its owner. The partial key of the weak entity, often a name or a number that is unique only inside one owner, is not a key of the whole diagram.\n\nAttributes are not all the same shape. A simple attribute is a single value. A composite attribute, such as a name made of a given name and a family name, breaks into those components and does not become a table. A multivalued attribute, such as the set of skills of one employee, cannot sit in one atomic cell; the mapping gives it a relation of its own. A derived attribute, such as age computed from a date of birth, is calculated when it is needed and is not stored as a relation. The key attribute is the one that identifies an entity.\n\nA relationship has a cardinality and a participation. Cardinality is how many: one-to-one, one-to-many, or many-to-many. Participation is whether every entity has to take part. Total participation means every entity of that type appears in the relationship; partial participation means some may be absent. The mapping follows the picture. A many-to-many relationship becomes a relation whose attributes are the two keys plus any attribute of the relationship. A one-to-many relationship becomes a foreign key on the many side, not a new relation. A weak entity becomes a relation whose primary key is the owner's key together with the partial key.",
+  "definitions": [
+    {
+      "term": "Strong and weak entities",
+      "body": "A strong entity has a key of its own. A weak entity is identified by its partial key plus the key of the owner entity, through an identifying relationship. In the mapping, that combined key is the primary key of the weak entity's relation."
+    },
+    {
+      "term": "Attribute kinds",
+      "body": "Simple: one atomic value. Composite: a group of simple components, stored as those components. Multivalued: a set of values for one entity, mapped to its own relation. Derived: computed from stored attributes, not given a relation. Key: identifies the entity."
+    },
+    {
+      "term": "Cardinality",
+      "body": "The number of relationship instances an entity may enter. Write $1$-$1$, $1$-$N$, or $M$-$N$. An employee in one department is $N$ on the employee side and $1$ on the department side."
+    },
+    {
+      "term": "Total and partial participation",
+      "body": "Total participation: every entity of that set appears in at least one instance of the relationship. Partial participation: some entities appear in none. On the $N$ side of a $1$-$N$ relationship, total participation becomes a foreign key that may not be null."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Weak-entity primary key",
+      "latex": "\\mathrm{PK}(\\mathrm{weak})=\\mathrm{PK}(\\mathrm{owner})\\cup\\{\\mathrm{partial\\ key}\\}",
+      "note": "The identifying relationship is not mapped to a separate relation. The owner key is also a foreign key."
+    },
+    {
+      "name": "What becomes a relation",
+      "latex": "\\mathrm{multivalued\\ attribute},\\ \\mathrm{weak\\ entity},\\ M\\text{-}N\\ \\mathrm{relationship}",
+      "note": "A composite attribute contributes columns, not a relation. A $1$-$N$ relationship contributes a foreign key on the $N$ side."
+    }
+  ],
+  "properties": [
+    "A multivalued attribute becomes a relation. Its primary key is the entity key plus the attribute.",
+    "A weak entity's primary key includes the owner key. The partial key alone does not identify a row in the whole database.",
+    "An $M$-$N$ relationship becomes a relation. A $1$-$N$ relationship does not; the key of the $1$ side is a foreign key on the $N$ side.",
+    "A composite attribute is replaced by its simple components. A derived attribute is not stored as its own relation.",
+    "Total participation of the $N$ side means the foreign key is not null. Partial participation of the $1$ side means a parent row may have no children."
+  ],
+  "examples": [
+    {
+      "title": "Six relations from one diagram",
+      "prompt": "Department and Project are strong. Employee is strong, with composite name (first, last), derived age, and multivalued Skill. Dependent is a weak entity of Employee, partial key dep_name. Works_for is $1$-$N$ from Department to Employee, total on the employee side. Works_on is $M$-$N$ between Employee and Project and has attribute hours. Map the diagram.",
+      "steps": [
+        "Department(dept_id, name) and Project(proj_id, title) are the two strong entities that have no multivalued attribute. Employee stores emp_id, first, last, and dept_id. Age is derived and is not a column. The composite name contributed two columns, not a relation.",
+        "Skill cannot stay inside Employee. EmpSkill(emp_id, skill) is its own relation, with both columns in the primary key. Dependent(emp_id, dep_name, ...) takes the owner key into its primary key.",
+        "Works_for is $1$-$N$, so it is the foreign key dept_id already sitting on Employee, and total participation makes that foreign key not null. Works_on is $M$-$N$, so WorksOn(emp_id, proj_id, hours) is a new relation."
+      ],
+      "answer": "The mapping produces $6$ relations: Department, Employee, EmpSkill, Dependent, Project, and WorksOn. The weak-entity key is $(\\mathrm{emp\\_id}, \\mathrm{dep\\_name})$."
+    },
+    {
+      "title": "Who must participate",
+      "prompt": "Every employee works for exactly one department. A department may have no employees. A dependent cannot exist without an employee. Read the participation and the cardinality off those sentences.",
+      "steps": [
+        "Exactly one department per employee is cardinality $1$ on the department side and $N$ on the employee side, and it is total participation for Employee.",
+        "A department with nobody in it is allowed, so Department's participation in Works_for is partial. The mapping therefore does not demand that every department key appear in Employee.",
+        "A dependent with no employee would have no owner key to complete $(\\mathrm{emp\\_id}, \\mathrm{dep\\_name})$. Dependent's participation in the identifying relationship is total."
+      ],
+      "answer": "Employee and Dependent participate totally. Department participates partially. The Works_for cardinality is one department to many employees."
+    }
+  ],
+  "traps": [
+    "Using the partial key of a weak entity as its whole primary key. The owner key is part of that primary key.",
+    "Making a new relation for a $1$-$N$ relationship, or storing an $M$-$N$ relationship as a single foreign key. The new relation is the $M$-$N case, and the multivalued attribute.",
+    "Giving a composite attribute, or a derived attribute such as age, a relation of its own. Composite attributes become columns. Derived attributes are computed.",
+    "Reading a double line as cardinality. Totality says whether every entity participates. Cardinality says how many."
+  ],
+  "python": "relations = {\n    \"Department\": (\"dept_id\",),\n    \"Employee\": (\"emp_id\", \"first\", \"last\", \"dept_id\"),\n    \"EmpSkill\": (\"emp_id\", \"skill\"),\n    \"Dependent\": (\"emp_id\", \"dep_name\"),\n    \"Project\": (\"proj_id\",),\n    \"WorksOn\": (\"emp_id\", \"proj_id\", \"hours\"),\n}\nassert len(relations) == 6\nassert relations[\"Dependent\"] == (\"emp_id\", \"dep_name\")\nassert \"skill\" in relations[\"EmpSkill\"] and \"age\" not in relations[\"Employee\"]\n# Library, Member, Book; Phone and Email; weak Loan; M-N CheckedOut; 1-N adds none.\nassert 3 + 2 + 1 + 1 == 7\nprint(len(relations), 7)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Dependent is a weak entity with partial key dep_name, owned by Employee whose key is emp_id. The primary key of the Dependent relation is",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $(\\mathrm{emp\\_id}, \\mathrm{dep\\_name})$.\n\nA weak entity is identified by the owner key together with the partial key. The partial key alone repeats across employees, and the owner key alone does not distinguish one dependent of the same employee from another. The employee's name is not part of this key.",
+      "options": [
+        "$(\\mathrm{emp\\_id}, \\mathrm{dep\\_name})$",
+        "$(\\mathrm{dep\\_name})$",
+        "$(\\mathrm{emp\\_id})$",
+        "$(\\mathrm{emp\\_id}, \\mathrm{dep\\_name}, \\mathrm{employee\\ name})$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Employee and Project are related by Works_on, which is many-to-many and has attribute hours. In the relational mapping, Works_on",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nAn $M$-$N$ relationship is mapped to a relation whose columns are the two participating keys and the relationship's own attributes, here hours. A foreign key on only one side is the mapping of a $1$-$N$ relationship. The hours attribute has a place to live only because the relationship became a relation.",
+      "options": [
+        "becomes a relation containing both keys and hours",
+        "becomes a foreign key on Employee only",
+        "becomes a foreign key on Project only",
+        "is dropped, because a relationship attribute cannot be stored"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the standard ER-to-relation mapping?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA multivalued attribute is a set of values, so it becomes a relation keyed by the entity key plus one value. A composite attribute is stored as its simple pieces and does not add a relation. A weak entity's primary key includes the owner key. Option D is false: age computed from a date of birth is derived, and a derived attribute is not given a relation.",
+      "options": [
+        "A multivalued attribute becomes a separate relation.",
+        "A composite attribute is replaced by its simple components and does not add a relation.",
+        "A weak entity's primary key includes the owner key.",
+        "A derived attribute such as age must be stored as its own relation."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Every employee has exactly one department, and a department may have no employees. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nEvery employee appears in Works_for, so Employee's participation is total. Some departments appear in no instance, so Department's participation is partial. One department corresponds to many employees. Option D describes the $M$-$N$ mapping. This relationship is $1$-$N$, so it is a foreign key on Employee and not a new relation.",
+      "options": [
+        "The participation of Employee is total.",
+        "The participation of Department is partial.",
+        "The cardinality is one department to many employees.",
+        "The $1$-$N$ relationship becomes a new relation, as an $M$-$N$ relationship does."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Library, Member, and Book are strong entities. Member has two multivalued attributes, Phone and Email. Loan is a weak entity owned by Member. CheckedOut is an $M$-$N$ relationship between Member and Book. ShelvedIn is a $1$-$N$ relationship from Book to Library and is stored as a foreign key. Each multivalued attribute becomes its own relation, and the weak entity becomes one relation. How many relations does the mapping produce?",
+      "answer": [
+        "7"
+      ],
+      "solution": "The answer is **7**.\n\nThe three strong entities contribute $3$ relations. Phone and Email contribute $2$ more. Loan contributes $1$, with Member's key inside its primary key. CheckedOut contributes $1$. ShelvedIn contributes a foreign key and no relation. The total is $3+2+1+1=7$.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

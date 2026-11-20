@@ -1,0 +1,166 @@
+{
+  "slug": "multiple-linear-regression",
+  "section": "machine-learning",
+  "title": "Multiple linear regression",
+  "syllabus": "Multiple linear regression",
+  "minutes": 35,
+  "summary": "With a column of ones and full column rank, ordinary least squares solves the normal equations. Multicollinearity makes $X^{\\top}X$ singular or ill-conditioned, and Gauss-Markov needs its hypotheses.",
+  "keywords": [
+    "normal equations",
+    "OLS",
+    "multicollinearity",
+    "Gauss-Markov",
+    "full rank"
+  ],
+  "intuition": "Multiple linear regression is the same least-squares idea with more than one predictor. Stack a column of ones, if you want an intercept, next to the predictor columns, and call that matrix $X$. The coefficient vector $\\beta$ then includes the intercept. The model is $y=X\\beta+\\varepsilon$. Ordinary least squares minimises $\\|y-X\\beta\\|^2$.\n\nWhen $X$ has full column rank, $X^{\\top}X$ is invertible and the minimiser is $\\hat\\beta=(X^{\\top}X)^{-1}X^{\\top}y$. The same vector is the solution of the normal equations $X^{\\top}X\\beta=X^{\\top}y$. The column of ones is what puts the intercept into that matrix. It is not added afterwards, and a fit that omits it is a different model, one whose residuals need not sum to 0.\n\nExact collinearity means one column is a linear combination of the others. Then $X^{\\top}X$ is singular, the inverse formula does not apply, and more than one $\\beta$ produces the same fitted values. Near collinearity makes $X^{\\top}X$ ill-conditioned: a small change in $y$ can move $\\hat\\beta$ by a large amount. Gauss-Markov is one sentence and it keeps its hypotheses: under linearity, exogeneity, homoscedastic uncorrelated errors, and full column rank, OLS is BLUE, the best linear unbiased estimator. This lesson does not claim that OLS is unbiased when those hypotheses are dropped.",
+  "definitions": [
+    {
+      "term": "Design matrix",
+      "body": "The matrix $X$ whose rows are the observations. An intercept is a column of ones inside $X$. A model without that column is a no-intercept model."
+    },
+    {
+      "term": "Normal equations",
+      "body": "The linear system $X^{\\top}X\\beta=X^{\\top}y$. Any least-squares coefficient vector satisfies it. Full column rank makes the solution unique."
+    },
+    {
+      "term": "Full column rank",
+      "body": "The columns of $X$ are linearly independent. Then $X^{\\top}X$ is invertible and $\\hat\\beta=(X^{\\top}X)^{-1}X^{\\top}y$ is the unique least-squares solution."
+    },
+    {
+      "term": "Multicollinearity",
+      "body": "Exact or near linear dependence among the columns of $X$. Exact dependence makes $X^{\\top}X$ singular. Near dependence makes it ill-conditioned, so small changes in $y$ can produce large changes in $\\hat\\beta$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "OLS coefficient",
+      "latex": "\\hat\\beta=(X^{\\top}X)^{-1}X^{\\top}y",
+      "note": "Used when $X$ has full column rank. Include a column of ones in $X$ when the model has an intercept."
+    },
+    {
+      "name": "Normal equations",
+      "latex": "X^{\\top}X\\beta=X^{\\top}y",
+      "note": "Equivalent to the closed form when $X^{\\top}X$ is invertible. They remain necessary when it is not, but the solution is then not unique."
+    }
+  ],
+  "properties": [
+    "The intercept enters as a column of ones in $X$. With that column present, the residuals are orthogonal to it, so they sum to 0.",
+    "Full column rank is the hypothesis that lets you invert $X^{\\top}X$. Without it the closed form is not available.",
+    "If one column is an exact copy of another, or an exact linear combination, then $X^{\\top}X$ is singular. Adding a multiple of the dependence to $\\beta$ does not change $X\\beta$.",
+    "Near dependence does not always make the inverse fail. It makes $X^{\\top}X$ ill-conditioned, so the coefficients are unstable.",
+    "Under linearity, exogeneity, homoscedastic uncorrelated errors, and full column rank, OLS is BLUE. Dropping one of those hypotheses drops this lesson's claim. In particular, the lesson does not call OLS unbiased unless the hypotheses of that sentence are in force.",
+    "The four-row worked design below is full rank, with $\\hat\\beta=(3/4,\\ 5/2,\\ 3/2)$ and RSS $=1/4$. The three-row design whose third column is twice the second is not full rank."
+  ],
+  "examples": [
+    {
+      "title": "Three coefficients from four rows",
+      "prompt": "Fit $\\beta_0+\\beta_1 x_1+\\beta_2 x_2$ to the rows $(x_1,x_2,y)$: $(0,0,1)$, $(1,0,3)$, $(0,1,2)$, $(1,1,5)$. The design matrix includes a column of ones.",
+      "steps": [
+        "The columns of $X^{\\top}X$ are the inner products of $(1,1,1,1)$, $(0,1,0,1)$, and $(0,0,1,1)$. The matrix is $\\begin{pmatrix}4&2&2\\\\2&2&1\\\\2&1&2\\end{pmatrix}$, and $X^{\\top}y=(11,8,7)$.",
+        "Row two of the system minus row three gives $\\beta_1-\\beta_2=1$. Substituting $\\beta_1=\\beta_2+1$ into $2\\beta_0+2\\beta_1+\\beta_2=8$ gives $2\\beta_0+3\\beta_2=6$. The first equation then gives $4\\beta_0+4\\beta_2=9$. Solving yields $\\beta_2=3/2$, $\\beta_1=5/2$, and $\\beta_0=3/4$.",
+        "The fitted values are $3/4$, $13/4$, $9/4$, and $19/4$. The residuals are $1/4$, $-1/4$, $-1/4$, and $1/4$. They sum to 0, and RSS $=4\\cdot(1/16)=1/4$."
+      ],
+      "answer": "$\\hat\\beta_0=3/4$, $\\hat\\beta_1=5/2$, $\\hat\\beta_2=3/2$. The residuals sum to 0 and RSS $=1/4$."
+    },
+    {
+      "title": "A third column that copies the second",
+      "prompt": "Now take three rows with design $(1,x_1,x_2)$ equal to $(1,1,2)$, $(1,2,4)$, and $(1,3,6)$. Can you apply the inverse formula?",
+      "steps": [
+        "The third column of $X$ is twice the second column, on every row. The columns are linearly dependent, so $X$ does not have full column rank.",
+        "$X^{\\top}X=\\begin{pmatrix}3&6&12\\\\6&14&28\\\\12&28&56\\end{pmatrix}$. Its third column is twice its second column, so the determinant is 0 and the inverse does not exist.",
+        "If some $\\beta$ is a least-squares solution, so is $\\beta+t(0,1,-1/2)$ for any $t$, because $X$ times $(0,1,-1/2)$ is the zero vector. The fitted values do not pick out a unique coefficient vector."
+      ],
+      "answer": "The inverse formula does not apply. $X^{\\top}X$ is singular, and the least-squares coefficient vector is not unique."
+    }
+  ],
+  "traps": [
+    "Writing the inverse formula when a column is a copy of another. In the three-row design the third column is twice the second, the determinant is 0, and there is no inverse.",
+    "Forgetting the column of ones and still quoting an intercept. The closed form returns coefficients only for the columns you put in $X$. Omitting the ones fits a no-intercept model.",
+    "Calling OLS unbiased with no hypotheses. The BLUE sentence needs linearity, exogeneity, homoscedastic uncorrelated errors, and full column rank. This lesson does not claim unbiasedness without them.",
+    "Treating an ill-conditioned $X^{\\top}X$ as a small numerical inconvenience that leaves $\\hat\\beta$ stable. Near dependence lets a small change in $y$ produce a large change in the coefficients.",
+    "Expecting a unique $\\beta$ after you have noticed two columns are dependent. Adding $t$ to $\\beta_1$ and $-t/2$ to $\\beta_2$ in the singular example does not change the fitted vector."
+  ],
+  "python": "def matvec(a, v):\n    return [sum(row[j] * v[j] for j in range(3)) for row in a]\n\nxtx = [[4, 2, 2], [2, 2, 1], [2, 1, 2]]\nxty = [11, 8, 7]\nbeta = [3 / 4, 5 / 2, 3 / 2]\ngot = matvec(xtx, beta)\nassert all(abs(got[i] - xty[i]) < 1e-12 for i in range(3))\nx = [[1, 0, 0], [1, 1, 0], [1, 0, 1], [1, 1, 1]]\ny = [1, 3, 2, 5]\nresid = [y[i] - sum(x[i][j] * beta[j] for j in range(3)) for i in range(4)]\nassert abs(sum(resid)) < 1e-12\nassert abs(sum(r * r for r in resid) - 0.25) < 1e-12\nsingular = [[3, 6, 12], [6, 14, 28], [12, 28, 56]]\nassert all(abs(singular[i][2] - 2 * singular[i][1]) < 1e-12 for i in range(3))\nassert abs(4 * beta[0] - 3) < 1e-12\nprint(beta[1])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In the four-row fit, with $\\beta_0$ the intercept and $\\beta_1$ the coefficient of $x_1$, the value of $\\hat\\beta_1$ is",
+      "options": [
+        "$5/2$",
+        "$3/4$",
+        "$3/2$",
+        "$1/4$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $5/2$. Solving the normal equations gives $\\hat\\beta_0=3/4$, $\\hat\\beta_1=5/2$, and $\\hat\\beta_2=3/2$. Option B is the intercept. Option C is the coefficient of $x_2$. Option D is RSS."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The normal equations for ordinary least squares are",
+      "options": [
+        "$X^{\\top}X\\beta=X^{\\top}y$",
+        "$XX^{\\top}\\beta=y$",
+        "$\\beta=X^{\\top}y$, with no product $X^{\\top}X$",
+        "$X^{\\top}X+\\lambda I=X^{\\top}y$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Least squares sets the residual orthogonal to the columns of $X$, which is the system $X^{\\top}X\\beta=X^{\\top}y$. Option B uses the wrong product. Option D mixes in a ridge penalty and is not the ordinary normal equation."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For the four-row design with a column of ones, which of the following are true?",
+      "options": [
+        "$\\hat\\beta_0=3/4$, $\\hat\\beta_1=5/2$, and $\\hat\\beta_2=3/2$.",
+        "The residuals sum to 0.",
+        "RSS $=1/4$.",
+        "$X^{\\top}X$ is singular for this design."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The coefficients satisfy the normal equations, the four residuals $1/4,-1/4,-1/4,1/4$ sum to 0, and RSS is $4/16=1/4$. The design was inverted, so $X^{\\top}X$ is not singular and D is false. The singular matrix is the other example."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The closed form $(X^{\\top}X)^{-1}X^{\\top}y$ needs $X$ to have full column rank.",
+        "Under linearity, exogeneity, homoscedastic uncorrelated errors, and full column rank, OLS is BLUE.",
+        "If one column of $X$ is an exact linear combination of the others, then $X^{\\top}X$ is singular.",
+        "OLS is unbiased for every design, with no conditions on the errors."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Full rank is what makes the inverse exist, the BLUE statement is exactly the Gauss-Markov sentence with those four hypotheses, and exact dependence makes the Gram matrix singular. D drops the hypotheses. This lesson does not claim unbiasedness without them."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "In the four-row fit, $\\hat\\beta_1=5/2$. Enter $2\\hat\\beta_1$, which is an integer.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**. In the four-row fit the coefficient of $x_1$ is $\\hat\\beta_1=5/2$, so $2\\hat\\beta_1=5$."
+    }
+  ]
+}

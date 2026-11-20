@@ -1,0 +1,160 @@
+{
+  "slug": "nullity",
+  "section": "linear-algebra",
+  "title": "Nullity",
+  "syllabus": "Nullity",
+  "minutes": 25,
+  "summary": "The nullity of an m by n matrix is the dimension of its null space. Rank-nullity says that rank plus nullity equals n, the number of columns. It does not equal m minus the rank.",
+  "keywords": [
+    "nullity",
+    "null space",
+    "rank-nullity",
+    "free variables",
+    "kernel"
+  ],
+  "intuition": "The null space of an $m\\times n$ matrix $A$ is the set of solutions of $Ax=0$. It is a subspace of $\\mathbb{R}^n$, the domain, not of $\\mathbb{R}^m$. Its dimension is the nullity. Every free variable in a row echelon form contributes one dimension, and a basis vector is what you get by setting one free variable to $1$ and the others to $0$, then solving for the pivot variables.\n\nRank-nullity is the bookkeeping identity that ties this dimension to the rank. The rank counts pivot variables. The nullity counts free variables. Every one of the $n$ columns is either a pivot column or a free column, so\n$$\n\\mathrm{rank}(A)+\\mathrm{nullity}(A)=n.\n$$\nThe $m$ on the left of the shape $m\\times n$ does not appear. Replacing $n$ by $m$ is the standard error, and it is invisible precisely when the matrix is square. A $2\\times 3$ matrix of rank $1$ has nullity $3-1=2$, while $m-\\mathrm{rank}=2-1=1$ is a different number. A $3\\times 2$ matrix of rank $2$ has nullity $0$, while $m-\\mathrm{rank}=1$.\n\nThe nullity is zero exactly when the columns are linearly independent, which is full column rank. For a square matrix that is the invertible case: only the trivial solution of $Ax=0$. A positive nullity is a nontrivial dependence among the columns, and it is also the dimension of the solution set of a consistent system $Ax=b$ once one particular solution has been found.",
+  "definitions": [
+    {
+      "term": "Null space",
+      "body": "The null space of an $m\\times n$ matrix $A$ is $\\{x\\in\\mathbb{R}^n:Ax=0\\}$. It is a subspace of the domain $\\mathbb{R}^n$."
+    },
+    {
+      "term": "Nullity",
+      "body": "The nullity of $A$ is the dimension of the null space. It equals the number of free variables in a row echelon form."
+    },
+    {
+      "term": "Rank-nullity",
+      "body": "For an $m\\times n$ matrix, $\\mathrm{rank}(A)+\\mathrm{nullity}(A)=n$. The right-hand side is the number of columns. It is not $m$, and the nullity is not $m-\\mathrm{rank}(A)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Rank-nullity",
+      "latex": "\\mathrm{rank}(A)+\\mathrm{nullity}(A)=n",
+      "note": "$A$ is $m\\times n$. Nullity is the dimension of $\\{x:Ax=0\\}$. The identity uses the number of columns."
+    },
+    {
+      "name": "Free variables",
+      "latex": "\\mathrm{nullity}(A)=n-\\mathrm{rank}(A)",
+      "note": "This is the same identity, solved for the nullity. Do not replace $n$ by the number of rows."
+    }
+  ],
+  "properties": [
+    "The nullity is the dimension of $\\{x:Ax=0\\}$. For an $m\\times n$ matrix that subspace sits in $\\mathbb{R}^n$.",
+    "Rank-nullity: $\\mathrm{rank}(A)+\\mathrm{nullity}(A)=n$, the number of columns.",
+    "The nullity is not $m-\\mathrm{rank}(A)$. That expression uses the wrong side of the shape.",
+    "Nullity zero means the columns are linearly independent. For a square matrix it means $A$ is invertible.",
+    "If $Ax=b$ is consistent, the solution set is a translate of the null space and has the same dimension as the nullity."
+  ],
+  "examples": [
+    {
+      "title": "A $2\\times 3$ matrix, where $m-\\mathrm{rank}$ is the wrong count",
+      "prompt": "Let $A=\\begin{pmatrix}1&2&3\\\\2&4&6\\end{pmatrix}$. Find the rank, a basis of the null space, and the nullity. Compare with $m-\\mathrm{rank}(A)$.",
+      "steps": [
+        "Row $2$ is twice row $1$, so there is a single pivot and $\\mathrm{rank}(A)=1$. Rank-nullity gives $\\mathrm{nullity}(A)=3-1=2$. The wrong expression $m-\\mathrm{rank}(A)=2-1=1$ is not this number.",
+        "The equation $x+2y+3z=0$ has free variables $y$ and $z$. Set $(y,z)=(1,0)$ to get $x=-2$, and set $(y,z)=(0,1)$ to get $x=-3$.",
+        "Check both vectors: $A(-2,1,0)^\\top=(0,0)^\\top$ and $A(-3,0,1)^\\top=(0,0)^\\top$. They are independent, so they are a basis. The nullity is $2$, matching $n-\\mathrm{rank}(A)$."
+      ],
+      "answer": "The rank is $1$ and the nullity is $2$, with basis $(-2,1,0)^\\top$ and $(-3,0,1)^\\top$. Here $m-\\mathrm{rank}(A)=1$, which is not the nullity."
+    },
+    {
+      "title": "A tall matrix with trivial null space",
+      "prompt": "Let $A=\\begin{pmatrix}1&0\\\\0&1\\\\1&1\\end{pmatrix}$. Compute the nullity from rank-nullity, and show directly that $Ax=0$ has only the zero solution.",
+      "steps": [
+        "The two columns are $(1,0,1)$ and $(0,1,1)$. If $x_1(1,0,1)+x_2(0,1,1)=0$, the first coordinate gives $x_1=0$ and the second gives $x_2=0$. The columns are independent, so $\\mathrm{rank}(A)=2$.",
+        "There are $n=2$ columns, so $\\mathrm{nullity}(A)=2-2=0$. The null space is $\\{0\\}$.",
+        "The tempting wrong formula $m-\\mathrm{rank}(A)=3-2=1$ predicts a line of solutions that the direct check just ruled out. Rank-nullity uses $n$, not $m$."
+      ],
+      "answer": "The nullity is $0$. The only solution of $Ax=0$ is $x=0$, even though $m-\\mathrm{rank}(A)=1$."
+    }
+  ],
+  "traps": [
+    "Using $\\mathrm{nullity}(A)=m-\\mathrm{rank}(A)$. For a $2\\times 3$ matrix of rank $1$ the nullity is $2$, not $1$. For a $3\\times 2$ matrix of rank $2$ the nullity is $0$, not $1$.",
+    "Placing the null space in $\\mathbb{R}^m$. The equation $Ax=0$ constrains an $n$-vector. The null space is a subspace of the domain.",
+    "Reporting the number of pivot variables as the nullity. Pivots are the rank. Free variables are the nullity. They add to $n$.",
+    "For a consistent system $Ax=b$, calling the nullity the number of solutions. It is the dimension of the solution set. Over $\\mathbb{R}$, a positive nullity means infinitely many solutions, not that many solutions."
+  ],
+  "python": "def mulv(A, x):\n    return [sum(A[i][j] * x[j] for j in range(len(x))) for i in range(len(A))]\n\nA = [[1, 2, 3], [2, 4, 6]]\nassert mulv(A, [-2, 1, 0]) == [0, 0]\nassert mulv(A, [-3, 0, 1]) == [0, 0]\nrank, n, m = 1, 3, 2\nassert rank + (n - rank) == n\nassert n - rank == 2\nassert m - rank == 1  # the wrong count\nB = [[1, 0], [0, 1], [1, 1]]\nassert mulv(B, [0, 0]) == [0, 0, 0]\nassert 2 - 2 == 0  # nullity\nassert 3 - 2 == 1  # m - rank, not the nullity\nprint(2)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For an $m\\times n$ matrix $A$, $\\mathrm{rank}(A)+\\mathrm{nullity}(A)$ equals",
+      "options": [
+        "$m$",
+        "$n$",
+        "$m+n$",
+        "$\\min(m,n)$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Rank-nullity uses the number of columns: pivot columns plus free columns equals $n$. The number of rows $m$ is the dimension of the codomain and does not appear in the identity. The quantity $\\min(m,n)$ is only an upper bound on the rank."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The nullity of a matrix $A$ is",
+      "options": [
+        "the dimension of $\\{x:Ax=0\\}$",
+        "the number of nonzero rows of $A$",
+        "$m-\\mathrm{rank}(A)$ for an $m\\times n$ matrix",
+        "the trace of $A$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Nullity is defined as the dimension of the null space. Nonzero rows, before or after elimination, are not the definition, and the trace is unrelated. The expression $m-\\mathrm{rank}(A)$ uses the number of rows; the correct subtraction is $n-\\mathrm{rank}(A)$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "For an $m\\times n$ matrix, $\\mathrm{rank}(A)+\\mathrm{nullity}(A)=n$.",
+        "The nullity is the dimension of the null space.",
+        "A $2\\times 3$ matrix of rank $1$ has nullity $2$.",
+        "For every $m\\times n$ matrix, the nullity equals $m-\\mathrm{rank}(A)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Rank plus nullity equals the number of columns, and the nullity is the dimension of $\\{x:Ax=0\\}$. A $2\\times 3$ matrix of rank $1$ therefore has nullity $3-1=2$. Option D replaces $n$ by $m$. The same matrix has $m-\\mathrm{rank}(A)=1$, which is not the nullity."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&2&3\\\\2&4&6\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$\\mathrm{rank}(A)=1$.",
+        "$\\mathrm{nullity}(A)=2$.",
+        "$\\mathrm{nullity}(A)=1$.",
+        "$A\\begin{pmatrix}-2\\\\1\\\\0\\end{pmatrix}=0$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The second row is twice the first, so the rank is $1$ and the nullity is $3-1=2$. The vector $(-2,1,0)^\\top$ satisfies $1\\cdot(-2)+2\\cdot 1+3\\cdot 0=0$, and the second row is the same equation doubled. Option C is $m-\\mathrm{rank}(A)$, the wrong count."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&2&3\\\\2&4&6\\end{pmatrix}$. Enter the nullity of $A$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. The matrix is $2\\times 3$ of rank $1$, because the rows are scalar multiples and not both zero. Rank-nullity gives $\\mathrm{nullity}(A)=3-1=2$. A basis is $(-2,1,0)^\\top$ and $(-3,0,1)^\\top$."
+    }
+  ]
+}

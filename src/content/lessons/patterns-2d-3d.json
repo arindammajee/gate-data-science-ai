@@ -1,0 +1,160 @@
+{
+  "slug": "patterns-2d-3d",
+  "section": "aptitude",
+  "title": "Patterns in two and three dimensions",
+  "syllabus": "Patterns in 2 and 3 dimensions",
+  "minutes": 25,
+  "summary": "A two-dimensional pattern here is a list whose differences you can check. A three-dimensional one is a cube's faces, edges, and opposite pairs, stated in the question rather than assumed from a picture.",
+  "keywords": [
+    "pattern",
+    "cube",
+    "opposite faces",
+    "sequence",
+    "edges"
+  ],
+  "intuition": "Two-dimensional patterns in this block are motifs or counts that grow by a rule you can verify. The counts 2, 5, 10, 17, 26 are one more than the squares: 1+1, 4+1, 9+1, 16+1, 25+1. The next count is 36+1 = 37. The first differences 3, 5, 7, 9 grow by 2, which is the same rule seen from the gaps. Either description is acceptable when both name 37 and keep naming the same later terms.\n\nThree-dimensional questions need a fact about the solid, not a guess at a hidden drawing. A cube has 6 faces, 12 edges, and 8 vertices. Opposite faces do not share an edge. If a question says that 1 is opposite 6, 2 is opposite 5, and 3 is opposite 4, then those three sentences are the whole die. You do not import a different convention from a board game. If 1 is on top, the bottom is 6, because that pair was given as opposite.\n\nA net of a cube is six squares. Two squares that sit opposite each other on the made cube are not adjacent in a way that would make them share an edge after folding. When a net is described rather than drawn, the description has to say which squares share an edge. ",
+  "definitions": [
+    {
+      "term": "Square-plus-one pattern",
+      "body": "The list $n^2+1$ for n = 1, 2, 3, ... which begins 2, 5, 10, 17, 26, 37."
+    },
+    {
+      "term": "Opposite faces",
+      "body": "Two faces of a cube that do not share an edge. A cube has three such pairs."
+    },
+    {
+      "term": "Edge count",
+      "body": "A cube has 12 edges. Each of the 6 faces has 4 edges, and each edge is shared by 2 faces, so the count is 6×4/2 = 12."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Counts one more than a square",
+      "latex": "a_n=n^2+1",
+      "note": "First differences are the odd numbers 3, 5, 7, 9, ... starting from a_1=2."
+    },
+    {
+      "name": "Edges of a cube",
+      "latex": "\\frac{6\\times 4}{2}=12",
+      "note": "Divide by 2 because each edge belongs to two faces. Vertices: 8. Faces: 6."
+    }
+  ],
+  "properties": [
+    "A pattern rule has to fit every given term. The next term is then computed from the rule, not chosen because it looks familiar.",
+    "Opposite faces are a pair given by the question or deduced from a net whose shared edges are stated. They are not whatever a standard die does unless the question says so.",
+    "If face A is opposite face B, then A is not adjacent to B. A face is adjacent to the other four.",
+    "The three opposite pairs on a cube partition the six faces.",
+    "Counting edges by 6×4 and forgetting to divide by 2 produces 24, which double-counts every edge."
+  ],
+  "examples": [
+    {
+      "title": "One more than the squares",
+      "prompt": "Find the next term of 2, 5, 10, 17, 26.",
+      "steps": [
+        "Compare with the squares 1, 4, 9, 16, 25. Each given term is the square plus 1.",
+        "The next square is 36, so the next term is 37.",
+        "The gaps 3, 5, 7, 9 increase by 2, so the next gap is 11 and 26+11 = 37. Both descriptions agree."
+      ],
+      "answer": "37."
+    },
+    {
+      "title": "Opposite faces that the question states",
+      "prompt": "On a cube, 1 is opposite 6, 2 is opposite 5, and 3 is opposite 4. Face 1 is on top and face 2 is in front. What is on the bottom, and what is opposite the front?",
+      "steps": [
+        "The bottom is the face opposite the top. The question says 1 is opposite 6, so the bottom is 6.",
+        "The face opposite the front is the back. The question says 2 is opposite 5, so the back is 5.",
+        "Faces 3 and 4 are the remaining pair, the left and the right, in some order. The question does not say which is which, and it does not need to: it did not ask for the side."
+      ],
+      "answer": "The bottom is 6 and the back is 5."
+    }
+  ],
+  "traps": [
+    "Adding the last gap again. From 26, the next gap is 11, not 9. The term 35 uses a gap that the list has already outgrown.",
+    "Counting 24 edges. Each edge was counted on two faces.",
+    "Assuming a gaming die's opposites when the question listed different ones. Use the pairs in the stem.",
+    "Treating adjacent faces as opposite. Opposite faces do not share an edge."
+  ],
+  "python": "seq = [n * n + 1 for n in range(1, 7)]\nassert seq == [2, 5, 10, 17, 26, 37]\nassert (6 * 4) // 2 == 12\nprint(seq[-1])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The next term of 2, 5, 10, 17, 26 is",
+      "options": [
+        "35",
+        "36",
+        "37",
+        "50"
+      ],
+      "answer": [
+        "C"
+      ],
+      "solution": "The answer is **C**, 37. The terms are $n^2+1$: 1+1, 4+1, 9+1, 16+1, 25+1, and the next is 36+1 = 37. The gaps are 3, 5, 7, 9, so the next gap is 11, and 26+11 = 37. The choice 35 repeats the last gap."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A cube has 1 opposite 6, 2 opposite 5, and 3 opposite 4. Face 1 is on top and face 3 is on the right. The bottom face and the left face are",
+      "options": [
+        "6 and 4",
+        "6 and 3",
+        "5 and 4",
+        "1 and 4"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The bottom is opposite the top, so it is 6. The left is opposite the right, and 3 is opposite 4, so the left is 4. Face 5 is opposite the front only if 2 is in front, which this stem does not say."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of a cube?",
+      "options": [
+        "It has 6 faces.",
+        "It has 12 edges.",
+        "It has 8 vertices.",
+        "It has 4 pairs of opposite faces."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Six faces, twelve edges, and eight vertices. Opposite faces come in 3 pairs, not 4, because 6 faces make 3 pairs."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The pattern 2, 5, 10, 17, 26 is given. Which of the following are true?",
+      "options": [
+        "Each term is one more than a square.",
+        "The next term is 37.",
+        "The first differences are constant.",
+        "The first differences are 3, 5, 7, 9."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The terms are $1^2+1$ through $5^2+1$, and the next is $6^2+1=37$. The differences 3, 5, 7, 9 increase by 2, so they are not constant."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Enter the number of edges of a cube.",
+      "options": [],
+      "answer": [
+        "12"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **12**. Six faces have four edges each, and each edge is shared by two faces, so the count is $6\\times 4/2=12$."
+    }
+  ]
+}

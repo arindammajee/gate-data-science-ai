@@ -1,0 +1,169 @@
+{
+  "slug": "exponential-distribution",
+  "section": "probability",
+  "title": "Exponential distribution",
+  "syllabus": "Exponential distribution",
+  "minutes": 30,
+  "summary": "With the rate parameterization, an exponential density is λ e to the minus λx on the positive reals. The mean is 1/λ, the variance is 1/λ squared, and the distribution is memoryless.",
+  "keywords": [
+    "exponential",
+    "rate",
+    "memoryless",
+    "survival",
+    "mean"
+  ],
+  "intuition": "This site parameterizes the exponential distribution by its rate λ, a positive number. The density is $f(x)=\\lambda e^{-\\lambda x}$ for $x\\ge 0$, and it is 0 for $x<0$. The support is the nonnegative reals. The distribution describes a waiting time: the probability of a long wait decays exponentially at rate λ. A larger rate means a shorter typical wait, not a longer one.\n\nThe mean is $1/\\lambda$. The variance is $1/\\lambda^2$. The cdf is $F(x)=1-e^{-\\lambda x}$ for $x\\ge 0$, and the survival function is $P(X>x)=e^{-\\lambda x}$. Those four facts travel together. If a solution reports the mean as the rate, it has used the wrong convention. The rate sits in the exponent and in front of the exponential. The mean is the reciprocal.\n\n$$\n\\mathbb{E}[X]=\\frac{1}{\\lambda},\\qquad \\mathrm{Var}(X)=\\frac{1}{\\lambda^2}.\n$$\n\nThe distribution is memoryless. Given that the wait has already lasted s, the additional wait still has the original exponential distribution: $P(X>s+t\\mid X>s)=P(X>t)$. The clock does not get tired. Among continuous distributions on $[0,\\infty)$ with a density, this memoryless property characterises the exponential law. A scale parameterization $\\theta=1/\\lambda$ exists in other books, where the mean is $\\theta$. That convention is a trap on this site if you mix it with the rate formulas. Keep the rate, and keep the mean equal to $1/\\lambda$.",
+  "definitions": [
+    {
+      "term": "Rate parameterization",
+      "body": "The primary parameterization here is the rate $\\lambda>0$. The density is $\\lambda e^{-\\lambda x}$ for $x\\ge 0$ and 0 for $x<0$."
+    },
+    {
+      "term": "Survival function",
+      "body": "For $x\\ge 0$, $P(X>x)=e^{-\\lambda x}$. The cdf is one minus the survival function, $F(x)=1-e^{-\\lambda x}$."
+    },
+    {
+      "term": "Memoryless property",
+      "body": "For $s>0$ and $t>0$, $P(X>s+t\\mid X>s)=P(X>t)$. The remaining wait does not depend on the wait so far."
+    },
+    {
+      "term": "Scale convention, as a trap",
+      "body": "Some books use a scale $\\theta=1/\\lambda$ and write the density as $(1/\\theta)e^{-x/\\theta}$. In that convention the mean is $\\theta$. It is not the parameterization used as primary here."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Density",
+      "latex": "f(x)=\\lambda e^{-\\lambda x},\\qquad x\\ge 0",
+      "note": "And $f(x)=0$ for $x<0$. The rate $\\lambda$ is positive."
+    },
+    {
+      "name": "Mean and variance",
+      "latex": "\\mathbb{E}[X]=\\frac{1}{\\lambda},\\qquad \\mathrm{Var}(X)=\\frac{1}{\\lambda^2}",
+      "note": "The mean is the reciprocal of the rate. The variance is the square of the mean."
+    },
+    {
+      "name": "CDF, survival, memorylessness",
+      "latex": "F(x)=1-e^{-\\lambda x},\\quad P(X>s+t\\mid X>s)=e^{-\\lambda t}",
+      "note": "For $x\\ge 0$, and for $s,t>0$. The conditional survival equals the unconditional survival of a fresh copy."
+    }
+  ],
+  "properties": [
+    "Under the rate parameterization, $f(x)=\\lambda e^{-\\lambda x}$ for $x\\ge 0$, the mean is $1/\\lambda$, and the variance is $1/\\lambda^2$.",
+    "The cdf is $1-e^{-\\lambda x}$ and the survival function is $e^{-\\lambda x}$, for $x\\ge 0$.",
+    "The law is memoryless: $P(X>s+t\\mid X>s)=P(X>t)=e^{-\\lambda t}$.",
+    "A larger rate makes the mean smaller. The mean is not the rate.",
+    "The scale $\\theta=1/\\lambda$ is the other convention. In that convention the mean equals $\\theta$. Mixing the two conventions is a standard error. This lesson's formulas are the rate formulas."
+  ],
+  "examples": [
+    {
+      "title": "Rate 2",
+      "prompt": "Let $X$ be exponential with rate $\\lambda=2$. Find the mean, the variance, and $P(X>3\\mid X>1)$.",
+      "steps": [
+        "The mean is $1/\\lambda=1/2$. The variance is $1/\\lambda^2=1/4$. The density is $2e^{-2x}$ for $x\\ge 0$.",
+        "The survival function is $P(X>x)=e^{-2x}$. In particular $P(X>1)=e^{-2}$ and $P(X>3)=e^{-6}$.",
+        "Memorylessness says the extra wait after time 1 is a fresh exponential: $P(X>3\\mid X>1)=P(X>2)=e^{-4}$. The quotient of survivals agrees: $e^{-6}/e^{-2}=e^{-4}$."
+      ],
+      "answer": "The mean is $1/2$, the variance is $1/4$, and $P(X>3\\mid X>1)=e^{-4}$."
+    },
+    {
+      "title": "Rate 1/5",
+      "prompt": "Let $X$ be exponential with rate $\\lambda=1/5$. Find the mean, the variance, and the survival $P(X>5)$.",
+      "steps": [
+        "The rate is $1/5$, so the mean is $1/\\lambda=5$. It is not $1/5$.",
+        "The variance is $1/\\lambda^2=25$. Equivalently, the variance equals the square of the mean.",
+        "The survival at 5 is $e^{-\\lambda \\cdot 5}=e^{-(1/5)\\cdot 5}=e^{-1}$. The cdf at 5 is $1-e^{-1}$."
+      ],
+      "answer": "The mean is $5$, the variance is $25$, and $P(X>5)=e^{-1}$."
+    }
+  ],
+  "traps": [
+    "Reading the rate $\\lambda$ as the mean. With this parameterization the mean is $1/\\lambda$ and the variance is $1/\\lambda^2$. A rate of 4 has mean $1/4$, not 4.",
+    "Switching silently to the scale $\\theta=1/\\lambda$. In the scale convention the density is $(1/\\theta)e^{-x/\\theta}$ and the mean is $\\theta$. Using rate formulas on a scale parameter, or the reverse, moves the mean to the wrong place.",
+    "Forgetting memorylessness and computing $P(X>s+t\\mid X>s)$ as $P(X>s+t)$ or as $1-e^{-\\lambda(s+t)}$. The conditional probability equals $e^{-\\lambda t}$, the survival of the remaining time only.",
+    "Putting the exponential density on the whole real line. For $x<0$ the density is 0. The integral of $\\lambda e^{-\\lambda x}$ over all real $x$ is not 1."
+  ],
+  "python": "import math\nfrom fractions import Fraction\nrate = 2\nmean = 1 / rate\nvar = 1 / rate ** 2\nassert mean == 0.5 and var == 0.25\nratio = math.exp(-rate * 3) / math.exp(-rate * 1)\nassert abs(ratio - math.exp(-rate * 2)) < 1e-12\nassert Fraction(1, 5) ** (-1) == 5\nassert Fraction(1, 5) ** (-2) == 25\nprint(mean, var, ratio)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "X is exponential with rate $\\lambda=4$. The mean of X is",
+      "options": [
+        "$1/4$",
+        "$4$",
+        "$16$",
+        "$1/16$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/4$.\n\nIn the rate parameterization the mean is $1/\\lambda=1/4$. Option B is the rate itself, which is not the mean. Option D is the variance $1/\\lambda^2=1/16$. Option C is the square of the rate. The scale $\\theta=1/\\lambda$ would equal the mean, and that scale is $1/4$ as well, which agrees with option A only because the question asked for the mean."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "X is exponential with rate $\\lambda=2$. The conditional probability $P(X>5\\mid X>2)$ equals",
+      "options": [
+        "$e^{-6}$",
+        "$e^{-10}$",
+        "$e^{-4}$",
+        "$1-e^{-6}$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $e^{-6}$.\n\nMemorylessness gives $P(X>5\\mid X>2)=P(X>3)=e^{-2\\cdot 3}=e^{-6}$. The survival quotient is $e^{-10}/e^{-4}=e^{-6}$, the same value. Option B is the unconditional survival $P(X>5)=e^{-10}$, which forgets to condition. Option C is $P(X>2)$. Option D is a cdf value, not the conditional survival."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "X is exponential with rate $\\lambda>0$, in the rate parameterization. Which of the following are true?",
+      "options": [
+        "The mean is $1/\\lambda$.",
+        "The variance is $1/\\lambda^2$.",
+        "The distribution is memoryless.",
+        "The mean equals the rate $\\lambda$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe rate parameterization has mean $1/\\lambda$, variance $1/\\lambda^2$, and the memoryless property $P(X>s+t\\mid X>s)=P(X>t)$. Option D swaps the mean with the rate. A rate of 4 has mean $1/4$, not 4."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "X is exponential with rate $\\lambda>0$. Which of the following are true?",
+      "options": [
+        "For $x\\ge 0$, the cdf is $1-e^{-\\lambda x}$.",
+        "For $x\\ge 0$, the survival function is $e^{-\\lambda x}$.",
+        "The scale $\\theta=1/\\lambda$ is a different convention, in which the mean equals $\\theta$ rather than the rate.",
+        "The function $\\lambda e^{-\\lambda x}$ is a density on the whole real line."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe cdf and the survival function are $1-e^{-\\lambda x}$ and $e^{-\\lambda x}$ on $[0,\\infty)$. The scale $\\theta=1/\\lambda$ is the other parameterization, and under that convention the mean is $\\theta$. This site's working formulas stay with the rate. Option D is false because the density is 0 for negative $x$. Extending $\\lambda e^{-\\lambda x}$ over the whole line does not give a probability density."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "X is exponential with rate $\\lambda>0$, and $\\mathrm{Var}(X)=1/9$. Enter $\\lambda$.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\nThe variance is $1/\\lambda^2=1/9$, so $\\lambda^2=9$. The rate is positive, hence $\\lambda=3$. The mean is then $1/3$, not 3. Setting the variance equal to $\\lambda$, or equal to $\\lambda^2$, produces a different and incorrect rate."
+    }
+  ]
+}

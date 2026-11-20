@@ -1,0 +1,158 @@
+{
+  "slug": "conditional-expectation",
+  "section": "probability",
+  "title": "Conditional expectation",
+  "syllabus": "Conditional expectation.",
+  "minutes": 30,
+  "summary": "E[X given Y=y] is a number computed from one slice. E[X given Y] is the random variable that carries those numbers, and its expectation is E[X].",
+  "keywords": [
+    "conditional expectation",
+    "tower property",
+    "random variable",
+    "slice"
+  ],
+  "intuition": "Ordinary expectation averages $X$ over the whole sample space. Conditional expectation averages $X$ inside one slice. If you are told that $Y=y$, you recompute the mean of $X$ with the conditional probabilities $P(X=x\\mid Y=y)$. The result $E[X\\mid Y=y]$ is a number. It depends on which value $y$ you were told, and it is not in general equal to $E[X]$.\n\nThe object $E[X\\mid Y]$ is what you get by refusing to plug in a particular $y$. It is a random variable: on the event $\\{Y=y\\}$ it takes the numerical value $E[X\\mid Y=y]$. It is constant on each level set of $Y$, and it is a function of $Y$. Averaging that random variable, with the distribution of $Y$, returns the original mean. That identity is the tower property, $E[E[X\\mid Y]]=E[X]$.\n\nThe tower property does not need independence. Independence is the special case in which every slice has the same mean, so $E[X\\mid Y]$ is the constant $E[X]$ and the tower property becomes a tautology. When the slices have different means, $E[X\\mid Y]$ really does move, and the tower property is the reason a weighted average of those slice means still equals $E[X]$.",
+  "definitions": [
+    {
+      "term": "Conditional expectation given a value",
+      "body": "For a discrete random variable, $E[X\\mid Y=y]=\\sum_x x\\,P(X=x\\mid Y=y)$, provided $P(Y=y)>0$ and the sum converges absolutely. It is a number."
+    },
+    {
+      "term": "Conditional expectation as a random variable",
+      "body": "$E[X\\mid Y]$ is the random variable that equals $E[X\\mid Y=y]$ on the event $\\{Y=y\\}$. It is a function of $Y$, not a second copy of $X$."
+    },
+    {
+      "term": "Tower property",
+      "body": "The identity $E[E[X\\mid Y]]=E[X]$, for $X$ with finite expectation. Averaging the slice means against the distribution of $Y$ recovers the unconditional mean."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Slice mean",
+      "latex": "E[X\\mid Y=y]=\\sum_x x\\,P(X=x\\mid Y=y)",
+      "note": "A number, defined when $P(Y=y)>0$. Replace the sum by an integral against the conditional density when $X$ is continuous given $Y=y$."
+    },
+    {
+      "name": "Tower property",
+      "latex": "E[X]=E[E[X\\mid Y]]",
+      "note": "The outer expectation is over $Y$. Independence is not required."
+    },
+    {
+      "name": "Pulling out a function of Y",
+      "latex": "E[g(Y)\\,X\\mid Y]=g(Y)\\,E[X\\mid Y]",
+      "note": "A factor that is determined by the conditioning variable factors out of the conditional expectation."
+    }
+  ],
+  "properties": [
+    "Linearity holds inside the condition: $E[aX+bZ\\mid Y]=aE[X\\mid Y]+bE[Z\\mid Y]$ when the expectations exist.",
+    "If $X$ and $Y$ are independent and $E|X|$ is finite, then $E[X\\mid Y]=E[X]$ almost surely. Every slice has the same mean.",
+    "The tower property does not say $E[X\\mid Y]=E[X]$. It says that the expectation of the left-hand side equals the right-hand side.",
+    "$E[E[X\\mid Y]\\mid Y]=E[X\\mid Y]$. Conditioning twice on the same information does nothing further.",
+    "If $X$ is itself a function of $Y$, then $E[X\\mid Y]=X$ almost surely. The slice is a single value."
+  ],
+  "examples": [
+    {
+      "title": "Defects on a light day and a heavy day",
+      "prompt": "A day is light with probability $1/4$ and heavy with probability $3/4$. Given a light day, the defect count $X$ is 0 or 2 with probabilities $3/4$ and $1/4$. Given a heavy day, $X$ is 1 or 3 with equal probabilities $1/2$. Find $E[X\\mid \\text{light}]$, $E[X\\mid \\text{heavy}]$, and $E[X]$.",
+      "steps": [
+        "The light slice has mean $E[X\\mid \\text{light}]=0\\cdot(3/4)+2\\cdot(1/4)=1/2$.",
+        "The heavy slice has mean $E[X\\mid \\text{heavy}]=1\\cdot(1/2)+3\\cdot(1/2)=2$.",
+        "The tower property weights the slice means by the type of day: $E[X]=(1/2)(1/4)+2\\cdot(3/4)=1/8+12/8=13/8$. The same value comes from the four joint atoms $3/16$, $1/16$, $6/16$, and $6/16$ on the values 0, 2, 1, and 3."
+      ],
+      "answer": "The slice means are $1/2$ and $2$, and $E[X]=13/8$. The random variable $E[X\\mid \\text{day type}]$ equals $1/2$ on a light day and $2$ on a heavy day."
+    },
+    {
+      "title": "A four-atom joint with integer slice means",
+      "prompt": "The pairs $(X,Y)$ equal to $(0,0)$, $(4,0)$, $(2,1)$, and $(8,1)$ are equally likely. Find $E[X\\mid Y=0]$, $E[X\\mid Y=1]$, and check the tower property.",
+      "steps": [
+        "Each pair has probability $1/4$, so $P(Y=0)=1/2$ and $P(Y=1)=1/2$. Given $Y=0$, $X$ is 0 or 4 with equal conditional probability, and $E[X\\mid Y=0]=(0+4)/2=2$.",
+        "Given $Y=1$, $X$ is 2 or 8 with equal conditional probability, and $E[X\\mid Y=1]=(2+8)/2=5$.",
+        "The unconditional mean is $E[X]=(0+4+2+8)/4=7/2$. The tower average is $2\\cdot(1/2)+5\\cdot(1/2)=7/2$. The two routes agree, and $E[X\\mid Y]$ is not constant."
+      ],
+      "answer": "$E[X\\mid Y=0]=2$, $E[X\\mid Y=1]=5$, and $E[E[X\\mid Y]]=E[X]=7/2$."
+    }
+  ],
+  "traps": [
+    "Treating $E[X\\mid Y]$ as a number. It is a random variable. The number is $E[X\\mid Y=y]$, after a value of $Y$ has been supplied.",
+    "Replacing the tower property by $E[X\\mid Y]=E[X]$. That equality holds under independence, not in the defect example, where the slice means are $1/2$ and $2$.",
+    "Weighting the slice means by equal probabilities when $Y$ is not uniform. The heavy day has probability $3/4$, and using $1/2$ instead of $3/4$ misses $13/8$.",
+    " Claiming that the tower property requires independence. The identity is general; independence is the case where the inner random variable is constant."
+  ],
+  "python": "from fractions import Fraction\ne_light = 2 * Fraction(1, 4)\ne_heavy = 1 * Fraction(1, 2) + 3 * Fraction(1, 2)\nassert e_light == Fraction(1, 2) and e_heavy == 2\nex = e_light * Fraction(1, 4) + e_heavy * Fraction(3, 4)\natoms = {\n    0: Fraction(3, 16),\n    2: Fraction(1, 16),\n    1: Fraction(6, 16),\n    3: Fraction(6, 16),\n}\nassert sum(atoms.values()) == 1\nassert sum(x * p for x, p in atoms.items()) == ex == Fraction(13, 8)\nassert (0 + 4 + 2 + 8) / 4 == 3.5\nassert (2 + 5) / 2 == 3.5\nprint(float(ex), 2, 5)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The pairs $(X,Y)\\in\\{(0,0),(4,0),(2,1),(8,1)\\}$ are equally likely. Then $E[X\\mid Y=0]$ equals",
+      "options": [
+        "$2$",
+        "$7/2$",
+        "$5$",
+        "$4$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nGiven $Y=0$, the remaining outcomes are $(0,0)$ and $(4,0)$, each with conditional probability $1/2$. The slice mean is $(0+4)/2=2$. Option B is the unconditional mean $7/2$. Option C is the other slice mean, $E[X\\mid Y=1]=5$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which identity is the tower property, assuming $E|X|$ is finite?",
+      "options": [
+        "$E[E[X\\mid Y]]=E[X]$.",
+        "$E[X\\mid Y]=E[X]$ for every joint distribution.",
+        "$E[X\\mid Y=y]=y$.",
+        "$E[E[X\\mid Y]]=E[Y]$."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe tower property says that the expectation of the random variable $E[X\\mid Y]$ equals $E[X]$. Option B is true under independence and false for the defect example, whose slice means are $1/2$ and $2$. Option D replaces the target mean by the mean of the wrong variable."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true when the expectations exist?",
+      "options": [
+        "$E[X\\mid Y=y]$ is a number whenever $P(Y=y)>0$.",
+        "$E[X\\mid Y]$ is a random variable.",
+        "The tower property $E[E[X\\mid Y]]=E[X]$ requires $X$ and $Y$ to be independent.",
+        "Averaging the numbers $E[X\\mid Y=y]$ against the distribution of $Y$ produces $E[X]$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA is the slice mean, a weighted sum of the $x$ values. B is the random variable that stores those slice means. D is the tower property written in words. C is false: the defect calculation gives $13/8$ from slice means $1/2$ and $2$ with weights $1/4$ and $3/4$, with no independence anywhere in the joint."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "A day is light with probability $1/4$ and heavy with probability $3/4$. Given a light day, $X$ is 0 or 2 with probabilities $3/4$ and $1/4$. Given a heavy day, $X$ is 1 or 3 with equal probability. Let $m=E[X]$. Enter $8m$.",
+      "options": [],
+      "answer": [
+        "13"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **13**.\n\nThe slice means are $E[X\\mid \\text{light}]=1/2$ and $E[X\\mid \\text{heavy}]=2$. The tower property gives $m=(1/2)(1/4)+2(3/4)=1/8+3/2=13/8$, so $8m=13$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The pairs $(X,Y)\\in\\{(0,0),(4,0),(2,1),(8,1)\\}$ are equally likely. Enter the integer $E[X\\mid Y=1]$.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**.\n\nGiven $Y=1$, $X$ is 2 or 8 with equal conditional probability $1/2$. The slice mean is $(2+8)/2=5$. The other slice has mean 2, and the tower average of 2 and 5 is the unconditional mean $7/2$."
+    }
+  ]
+}

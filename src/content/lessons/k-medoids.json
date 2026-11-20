@@ -1,0 +1,166 @@
+{
+  "slug": "k-medoids",
+  "section": "machine-learning",
+  "title": "k-medoids",
+  "syllabus": "k-medoid",
+  "minutes": 30,
+  "summary": "A medoid is a data point that minimises total dissimilarity inside its cluster, so the centre stays on the data. PAM builds an initial set of medoids and swaps one when the total cost falls. The cost need not be squared Euclidean, and outliers move the centre less than they move a mean.",
+  "keywords": [
+    "k-medoids",
+    "medoid",
+    "PAM",
+    "dissimilarity",
+    "outlier"
+  ],
+  "intuition": "$k$-means places its centre at an average, and an average can fall in empty space between the observations. $k$-medoids refuses that. The centre of a cluster has to be one of the points in the data. Among those candidates, the medoid is the point whose total dissimilarity to the others in the cluster is smallest. Dissimilarity is whatever function the user brought: absolute distance on the line, a shortest-path distance, or squared Euclidean distance. Squared Euclidean is allowed and is not required.\n\nOn the line with absolute distance, the medoid of a cluster is a median of that cluster. For the five numbers $1,5,6,7,100$ the median is $6$, and the total absolute cost is $101$. The mean of the same numbers is $23.8$, which is not a data point and is not the medoid. The outlier at $100$ moves the mean from the tight group around $6$ all the way to $23.8$. It does not become the medoid, because the total absolute distance to $100$ is $381$, the worst candidate in the set. The centre stays on a data point, and a far outlier does not drag it off the clump.\n\nPAM, the standard swap heuristic, has two outlines. The build phase picks $k$ initial medoids. The swap phase tries replacing one medoid by a non-medoid and keeps the swap only when the total cost falls. It does not enumerate every subset of size $k$. On $\\{0,1,10,11\\}$ the medoids $\\{0,1\\}$ cost $19$, and swapping $1$ for $10$ drops the cost to $2$. Each proposed swap looks at assignments, so the method is typically more expensive than a Lloyd update. The payoff is a centre that is robust to the outlier and a criterion that still makes sense when the only available information is a dissimilarity.",
+  "definitions": [
+    {
+      "term": "Medoid",
+      "body": "A data point that minimises the total dissimilarity to the other points of its cluster. The centre is an observation. It is not the mean, unless the mean happens to equal one of the points and that point wins the cost."
+    },
+    {
+      "term": "Total dissimilarity",
+      "body": "The cost of a candidate centre $m$ on a cluster $C$ is $\\sum_{x\\in C} d(x,m)$. Absolute distance and squared Euclidean distance are two different choices of $d$. The algorithm does not require $d$ to be squared Euclidean."
+    },
+    {
+      "term": "PAM swap",
+      "body": "Partitioning around medoids, in outline: build $k$ medoids, then replace a medoid by a non-medoid when the total cost falls. A swap that does not lower the cost is rejected. The search is a heuristic, not an enumeration of every $k$-subset."
+    },
+    {
+      "term": "Robustness relative to a mean",
+      "body": "An outlier enters a mean with the same weight as every other point and can pull the centre off the data. The same outlier is a poor medoid, because its total dissimilarity is large, so it is not selected."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Medoid cost",
+      "latex": "m_C\\in\\arg\\min_{m\\in C}\\sum_{x\\in C} d(x,m)",
+      "note": "The minimiser is required to be a point of $C$. For absolute distance on the line, $m_C$ is a median."
+    },
+    {
+      "name": "PAM acceptance",
+      "latex": "\\text{accept the swap if }\\sum_i d(x_i,m'_{c(i)})<\\sum_i d(x_i,m_{c(i)})",
+      "note": "Build, then swap when the cost falls. The search is more expensive than replacing a cluster by its mean."
+    }
+  ],
+  "properties": [
+    "The centre is a data point. On $\\{1,5,6,7,100\\}$ the absolute-distance medoid is $6$, while the mean $23.8$ is not even a candidate.",
+    "The dissimilarity need not be squared Euclidean. Absolute distance is a legal cost, and so is any other dissimilarity the user can evaluate between points.",
+    "An outlier pulls a mean and usually does not become the medoid. The cost of using $100$ as the centre of $\\{1,5,6,7,100\\}$ is $381$, against $101$ for the point $6$.",
+    "PAM keeps a swap only when the total cost strictly falls. The outline is build, then swap. It does not try every combination of $k$ points.",
+    "Evaluating swaps is typically more expensive than a Lloyd mean update, which is a single average per cluster.",
+    "If $d$ is absolute distance on the line, any median of the cluster is a medoid. An even count can tie. This lesson's five-point cluster has a unique medoid."
+  ],
+  "examples": [
+    {
+      "title": "The medoid is not the mean",
+      "prompt": "Cluster $\\{1,5,6,7,100\\}$ with absolute distance. Find the medoid, its total cost, and the mean.",
+      "steps": [
+        "The mean is $(1+5+6+7+100)/5=119/5=23.8$, which is not one of the five points, so it is not a legal centre.",
+        "Total absolute cost of the candidate $6$: $|1-6|+|5-6|+|6-6|+|7-6|+|100-6|=5+1+0+1+94=101$.",
+        "The neighbours cost more: $5$ costs $102$, $7$ costs $102$, $1$ costs $114$, and $100$ costs $381$. The unique medoid is $6$, at cost $101$."
+      ],
+      "answer": "The medoid is $6$ with total absolute cost $101$. The mean is $23.8$ and is not the medoid."
+    },
+    {
+      "title": "One PAM swap",
+      "prompt": "Points $0,1,10,11$ and $k=2$, with absolute distance. Start with medoids $0$ and $1$. Consider the swap that replaces $1$ by $10$.",
+      "steps": [
+        "With medoids $0$ and $1$, the point $0$ costs $0$, the point $1$ costs $0$, the point $10$ is closer to $1$ at distance $9$ than to $0$ at distance $10$, and the point $11$ is closer to $1$ at distance $10$. The total is $0+0+9+10=19$.",
+        "With medoids $0$ and $10$, the point $1$ is closer to $0$ at distance $1$, and the point $11$ is closer to $10$ at distance $1$. The total is $0+1+0+1=2$.",
+        "The cost falls from $19$ to $2$, so PAM accepts the swap. A swap that had raised the cost, or left it unchanged, would have been rejected."
+      ],
+      "answer": "The swap is accepted. The cost falls from $19$ to $2$."
+    }
+  ],
+  "traps": [
+    "Replacing the medoid by the mean. On $\\{1,5,6,7,100\\}$ that produces $23.8$, which is not a data point. The medoid is $6$.",
+    "Insisting on squared Euclidean distance. Absolute distance is a legal dissimilarity, and the five-point costs $101$, $102$, $102$, $114$, and $381$ are absolute costs. Squared distance would rank the candidates differently and is not required.",
+    "Treating PAM as an exhaustive search over every subset of size $k$. The outline is a build followed by swaps that are kept only when the cost falls. A swap from $\\{0,1\\}$ to $\\{0,10\\}$ is one accepted step, not a proof that every pair was listed.",
+    "Keeping a swap that does not lower the cost. The acceptance test is strict decrease, from $19$ to $2$ in the example. An equal cost is not an acceptance under the rule stated here.",
+    "Saying an outlier is deleted. The point $100$ stays in the cluster and still contributes $94$ to the cost of the medoid $6$. What it does not do is become the centre, and it does not pull the centre to $23.8$."
+  ],
+  "python": "pts = [1, 5, 6, 7, 100]\n\ndef abs_cost(centre):\n    return sum(abs(p - centre) for p in pts)\n\ncosts = {p: abs_cost(p) for p in pts}\nassert costs[6] == 101\nassert min(costs, key=costs.get) == 6\nassert abs(sum(pts) / len(pts) - 23.8) < 1e-12\n# PAM: medoids {0, 1} cost 19; swapping in 10 drops the cost to 2.\npoints = [0, 1, 10, 11]\n\ndef pam_cost(medoids):\n    return sum(min(abs(p - m) for m in medoids) for p in points)\n\nassert pam_cost([0, 1]) == 19\nassert pam_cost([0, 10]) == 2\nprint(costs[6])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For the cluster $\\{1,5,6,7,100\\}$ with absolute distance, the medoid is",
+      "options": [
+        "$6$",
+        "$23.8$",
+        "$100$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $6$.\n\nThe absolute costs are $114$ at $1$, $102$ at $5$, $101$ at $6$, $102$ at $7$, and $381$ at $100$. The minimum is $6$. The value $23.8$ is the mean $(119)/5$, and it is not a data point, so it is not a candidate medoid."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "In the PAM outline, a proposed swap of a medoid with a non-medoid is kept when",
+      "options": [
+        "the total dissimilarity falls",
+        "the mean of the cluster moves closer to an outlier",
+        "the number of clusters increases",
+        "the cost rises, provided the new centre is a data point"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nPAM accepts a swap only when the total cost falls. The centre is always a data point, before and after, so that fact is not the acceptance test. The swap does not change $k$, and it does not optimise a mean."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of $k$-medoids?",
+      "options": [
+        "The centre of a cluster is one of the data points.",
+        "The dissimilarity need not be squared Euclidean distance.",
+        "A far outlier is a poor medoid, so it does not pull the centre the way it pulls a mean.",
+        "A PAM swap search is typically cheaper than one Lloyd mean update."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nBy definition the medoid is an observation, and $d$ is an arbitrary dissimilarity; absolute distance is enough to compute the five-point example. The outlier $100$ costs $381$ and is not chosen, while the mean $23.8$ has already been pulled. D is false: trying swaps is more expensive than averaging a cluster."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Points $0,1,10,11$ use absolute distance and $k=2$. Which of the following are true?",
+      "options": [
+        "Medoids $0$ and $1$ have total cost $19$.",
+        "Replacing $1$ by $10$ drops the cost to $2$, so the swap is accepted.",
+        "A swap that leaves the cost unchanged is rejected by the strict-decrease rule.",
+        "The mean $5.5$ of the four points is the medoid after the swap."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nWith medoids $0$ and $1$, the points $10$ and $11$ contribute $9$ and $10$. With medoids $0$ and $10$, the points $1$ and $11$ contribute $1$ each, and the total is $2$, so the swap is kept. An unchanged cost does not satisfy a strict decrease. The mean $5.5$ is not a data point and cannot be a medoid."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Using absolute distance, enter the total cost of the medoid of the cluster $\\{1,5,6,7,100\\}$.",
+      "options": [],
+      "answer": [
+        "101"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **101**.\n\nThe medoid is $6$. The absolute deviations are $5$, $1$, $0$, $1$, and $94$, and $5+1+0+1+94=101$."
+    }
+  ]
+}

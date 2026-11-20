@@ -1,0 +1,159 @@
+{
+  "slug": "standard-deviation",
+  "section": "probability",
+  "title": "Standard deviation",
+  "syllabus": "Standard deviation.",
+  "minutes": 25,
+  "summary": "The standard deviation is the square root of the variance. The population version divides by n, the sample version divides by n-1, and neither one is a linear function of the data.",
+  "keywords": [
+    "standard deviation",
+    "sample variance",
+    "population variance",
+    "divisor",
+    "scale"
+  ],
+  "intuition": "Variance squares the deviations from the mean, and the standard deviation takes the square root again so the answer is back in the units of the data. A variance of 4 squared units is a standard deviation of 2 of the original units. Because of that square root, scaling the data by $c$ scales the standard deviation by $|c|$, not by $c^2$ and not by $c$ when $c$ is negative. Adding a constant does nothing: deviations from the mean ignore a shift.\n\nThe square inside the definition is also why the standard deviation is not linear. The standard deviation of a sum is not the sum of the standard deviations, and the standard deviation of $cX$ is $|c|$ times the standard deviation of $X$. Variance, the square, scales by $c^2$. Quoting a variance when a standard deviation was asked for, or the other way around, is a factor of a square root, not a rounding error.\n\nWhich divisor you use has to be named. For a census of all $n$ members of a finite population, or when the $n$ numbers are the whole distribution you are describing, the population variance divides the sum of squared deviations by $n$. For the usual unbiased sample variance computed from $n$ observations, the divisor is $n-1$. The sample standard deviation $s$ is the square root of that $n-1$ version. This lesson works a sample of four numbers both ways and says which divisor is in use.",
+  "definitions": [
+    {
+      "term": "Population standard deviation",
+      "body": "If $x_1,\\ldots,x_n$ are the whole population and $\\mu$ is their mean, then $\\sigma=\\sqrt{\\frac{1}{n}\\sum_{i=1}^n (x_i-\\mu)^2}$. The population variance $\\sigma^2$ uses the divisor $n$."
+    },
+    {
+      "term": "Sample standard deviation",
+      "body": "For a sample of size $n\\ge 2$ with sample mean $\\bar x$, the sample variance is $s^2=\\frac{1}{n-1}\\sum_{i=1}^n (x_i-\\bar x)^2$, and the sample standard deviation is $s=\\sqrt{s^2}$. The divisor is $n-1$."
+    },
+    {
+      "term": "Scaling rule",
+      "body": "For a constant $c$, the standard deviation of the values $c x_i+b$ is $|c|$ times the standard deviation of the $x_i$, with the same choice of divisor. The shift $b$ cancels in the deviations."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Population version",
+      "latex": "\\sigma=\\sqrt{\\frac{1}{n}\\sum_{i=1}^n (x_i-\\mu)^2}",
+      "note": "Divisor $n$. The symbol $\\sigma^2$ is the population variance, and $\\sigma$ is its square root."
+    },
+    {
+      "name": "Sample version",
+      "latex": "s=\\sqrt{\\frac{1}{n-1}\\sum_{i=1}^n (x_i-\\bar x)^2}",
+      "note": "Divisor $n-1$. This is the sample standard deviation that matches the sample variance on the cheat sheet."
+    },
+    {
+      "name": "Scale, not a square",
+      "latex": "s(cx+b)=|c|\\,s(x)",
+      "note": "The variance is multiplied by $c^2$. The standard deviation is multiplied by the absolute value $|c|$, so a negative scale does not produce a negative standard deviation."
+    }
+  ],
+  "properties": [
+    "The population variance divides by $n$. The sample variance divides by $n-1$. The standard deviation in each case is the square root of that variance.",
+    "A standard deviation is nonnegative. It is zero exactly when every observation equals the mean.",
+    "Adding the same constant to every observation leaves both the sample and the population standard deviation unchanged.",
+    "Multiplying every observation by $c$ multiplies the standard deviation by $|c|$ and the variance by $c^2$. In particular $s(-2x)=2s(x)$, not $-2s(x)$.",
+    "The standard deviation of a sum is not the sum of the standard deviations. The square of a sum has a cross term, so standard deviations do not add."
+  ],
+  "examples": [
+    {
+      "title": "Four numbers, both divisors",
+      "prompt": "For the sample 1, 1, 1, 5, compute the sample standard deviation, with divisor $n-1$, and the population standard deviation, with divisor $n$.",
+      "steps": [
+        "The size is $n=4$ and the mean is $(1+1+1+5)/4=2$. The deviations are $-1,-1,-1,3$, and the squared deviations are $1,1,1,9$. Their sum is 12.",
+        "The sample variance divides by $n-1=3$: $s^2=12/3=4$. The sample standard deviation is $s=\\sqrt{4}=2$.",
+        "The population variance divides by $n=4$: $\\sigma^2=12/4=3$. The population standard deviation is $\\sigma=\\sqrt{3}$, which is not 2 and not 3."
+      ],
+      "answer": "The sample standard deviation is 2. The population variance is 3, and the population standard deviation is $\\sqrt{3}$."
+    },
+    {
+      "title": "A scale factor, and a shift that does nothing",
+      "prompt": "Start from 1, 1, 1, 5, whose sample standard deviation is 2. Find the sample standard deviation of 3, 3, 3, 15 and of 11, 11, 11, 15.",
+      "steps": [
+        "The values 3, 3, 3, 15 are the original sample multiplied by 3. Their mean is 6. The deviations are $-3,-3,-3,9$, and the sum of squares is $9+9+9+81=108$.",
+        "The sample variance is $108/3=36$, so the sample standard deviation is $\\sqrt{36}=6$. That is $3\\times 2$, the absolute scale factor times the original sample standard deviation, not $3^2\\times 2$.",
+        "The values 11, 11, 11, 15 are the original sample plus 10. The deviations from the new mean 12 are still $-1,-1,-1,3$, the sum of squares is still 12, and the sample standard deviation is still 2."
+      ],
+      "answer": "The tripled sample has sample standard deviation 6. The shifted sample has sample standard deviation 2."
+    }
+  ],
+  "traps": [
+    "Dividing by $n$ when the question asks for the sample standard deviation. For 1, 1, 1, 5 the sample version is 2 and the population variance is 3; they are not interchangeable.",
+    "Stopping at the variance. The sum of squared deviations is 12, the sample variance is 4, and the sample standard deviation is the square root, 2.",
+    "Scaling the standard deviation by $c^2$. Tripling the data triples the sample standard deviation from 2 to 6. The variance is what grows by a factor of 9, from 4 to 36.",
+    "Adding standard deviations of different variables as if they were means. A standard deviation is a square root of a square, and squares of sums have a cross term."
+  ],
+  "python": "import math\ndata = [1, 1, 1, 5]\nn = len(data)\nmean = sum(data) / n\nss = sum((x - mean) ** 2 for x in data)\nassert mean == 2 and ss == 12\nassert ss / (n - 1) == 4 and math.sqrt(ss / (n - 1)) == 2\nassert ss / n == 3\nscaled = [3 * x for x in data]\nsm = sum(scaled) / n\nsss = sum((x - sm) ** 2 for x in scaled)\nassert math.sqrt(sss / (n - 1)) == 6\nfresh = [0, 0, 0, 6]\nfm = sum(fresh) / 4\nfss = sum((x - fm) ** 2 for x in fresh)\nassert fss == 27 and math.sqrt(fss / 3) == 3\nprint(2, 3, 6, 3)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For the sample 1, 1, 1, 5, the sample standard deviation with divisor $n-1$ is",
+      "options": [
+        "$2$",
+        "$\\sqrt{3}$",
+        "$4$",
+        "$3$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nThe mean is 2 and the sum of squared deviations is $1+1+1+9=12$. The sample variance divides by $n-1=3$, giving $12/3=4$, and the sample standard deviation is $\\sqrt{4}=2$. Option C is the sample variance. Option D is the population variance $12/4=3$, and option B is its square root."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "For the four numbers 1, 1, 1, 5, treated as a whole population, the population variance with divisor $n$ is",
+      "options": [
+        "$3$",
+        "$4$",
+        "$2$",
+        "$\\sqrt{3}$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3$.\n\nThe mean is 2 and the sum of squared deviations is 12. The population variance divides by $n=4$, so $\\sigma^2=12/4=3$. Option B uses the sample divisor $n-1$. Option D is the population standard deviation, the square root of the variance the question asked for. Option C is the sample standard deviation."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The sample variance uses the divisor $n-1$.",
+        "The population variance uses the divisor $n$.",
+        "If every observation is multiplied by a constant $c$, the standard deviation is multiplied by $|c|$.",
+        "The standard deviation of a sum equals the sum of the standard deviations for every pair of samples."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA and B are the two divisors: $n-1$ for the sample variance $s^2$, and $n$ for the population variance. C is the scaling rule, and the absolute value matters because a standard deviation is a square root and cannot become negative. D is false. The sample 1, 1, 1, 5 has sample standard deviation 2. The negated sample $-1,-1,-1,-5$ also has sample standard deviation 2, but their sum is 0, 0, 0, 0, whose standard deviation is 0, not $2+2$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Enter the sample standard deviation of the four numbers 1, 1, 1, 5, using the divisor $n-1$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**.\n\nThe mean is $(1+1+1+5)/4=2$. The squared deviations sum to $1+1+1+9=12$. Divide by $n-1=3$ to get the sample variance 4, then take the square root to get the sample standard deviation 2. Dividing by $n=4$ instead would give the population variance 3."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Enter the sample standard deviation of the four numbers 0, 0, 0, 6, using the divisor $n-1$.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\nThe mean is $6/4=3/2$. The squared deviations are $(3/2)^2$ three times and $(9/2)^2$ once, and $3\\cdot(9/4)+81/4=108/4=27$. The sample variance is $27/(4-1)=9$, so the sample standard deviation is $\\sqrt{9}=3$."
+    }
+  ]
+}

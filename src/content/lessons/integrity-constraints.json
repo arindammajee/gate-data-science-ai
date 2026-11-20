@@ -1,0 +1,164 @@
+{
+  "slug": "integrity-constraints",
+  "section": "databases",
+  "title": "Integrity constraints",
+  "syllabus": "Integrity constraints",
+  "minutes": 30,
+  "summary": "Domain, key, referential, and check constraints say which writes are legal. ON DELETE CASCADE removes the referencing child rows when the parent goes; ON DELETE RESTRICT refuses the parent delete.",
+  "keywords": [
+    "primary key",
+    "foreign key",
+    "referential integrity",
+    "ON DELETE CASCADE",
+    "check"
+  ],
+  "intuition": "An integrity constraint is a rule every instance has to satisfy, checked when a row is inserted, updated, or deleted. A domain constraint keeps each value inside the attribute's domain: an integer column rejects a string, and a domain of positive integers rejects a negative age. A check constraint is a predicate on the row being written, such as $0\\le \\mathrm{hours}\\le 24$. It does not go and look in another table.\n\nEntity integrity is the primary-key rule. The primary key is unique, and none of its attributes is null. Inserting a second row with an existing key, or inserting a null into the key, violates it. A referential constraint is the foreign-key rule. A non-null foreign key must equal the candidate key of some row in the referenced table. Inserting an employee whose department id matches no department violates it. Inserting a new department does not, because nothing is required to point at a parent before the parent exists.\n\nDeletes are the case that needs a direction. If a child row points at a parent, deleting the parent would leave a foreign key that matches nothing. ON DELETE RESTRICT refuses that parent delete: the statement fails, and both the parent and the children stay. ON DELETE CASCADE does the opposite of \"delete the parent because a child disappeared.\" When the parent row is deleted, the database deletes the child rows that reference it. The children go because the parent went. Deleting a child, who is referenced by nobody, does not delete the parent. ON DELETE SET NULL is a third action, usable only when the foreign key may be null: the children stay and the foreign key is set to null.",
+  "definitions": [
+    {
+      "term": "Domain constraint",
+      "body": "Every value of an attribute belongs to the declared domain. A type failure, or a value outside an enumerated domain, violates it on insert or update. It is checked on the value itself."
+    },
+    {
+      "term": "Entity integrity",
+      "body": "The primary key is unique and not null. A duplicate key or a null key on insert or update violates it. This is the key constraint of the primary key."
+    },
+    {
+      "term": "Referential integrity",
+      "body": "Every non-null foreign-key value equals the referenced candidate key of an existing row. Inserting a dangling key violates it. Deleting a referenced parent violates it unless a delete action removes or rewrites the children."
+    },
+    {
+      "term": "ON DELETE CASCADE and RESTRICT",
+      "body": "CASCADE: deleting a parent deletes the child rows that reference it. RESTRICT: if any child references the parent, the parent delete is rejected and no row is removed. Neither action deletes a parent because a child was deleted."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Foreign key after a parent delete",
+      "latex": "\\mathrm{CASCADE:\\ delete\\ children},\\quad \\mathrm{RESTRICT:\\ reject\\ the\\ delete}",
+      "note": "The trigger is the deletion of the referenced parent. Child rows are the referencing rows."
+    },
+    {
+      "name": "Entity integrity",
+      "latex": "\\mathrm{PK\\ is\\ unique\\ and\\ } \\mathrm{PK}\\neq \\mathrm{NULL}",
+      "note": "Both halves are required. A unique column that allows null is not a primary key."
+    }
+  ],
+  "properties": [
+    "A domain violation is a bad value. A check violation is a row that fails a predicate. Neither one consults another table.",
+    "Entity integrity rejects a duplicate primary key and a null primary key. Referential integrity rejects a non-null foreign key that matches no parent.",
+    "ON DELETE CASCADE deletes referencing child rows when the parent row is deleted. It does not delete the parent when a child row is deleted.",
+    "ON DELETE RESTRICT rejects the parent delete while any child still references that parent. The children are not deleted to make the statement succeed.",
+    "Deleting a child that nothing else references does not violate referential integrity. Deleting a parent that is still referenced does, unless CASCADE, SET NULL, or another declared action handles the children."
+  ],
+  "examples": [
+    {
+      "title": "Three inserts, three different constraints",
+      "prompt": "Dept ids are $1$ and $2$. Emp(id, dept_id) currently holds $(10,1)$, $(11,1)$, and $(12,2)$. The primary key is id. dept_id references Dept and may not be null. A separate check says $0\\le \\mathrm{hours}\\le 24$ on a timesheet row. Classify the writes.",
+      "steps": [
+        "Inserting Emp $(13, 9)$ uses a fresh primary key and a dept_id that is not in Dept. The primary key is fine. Referential integrity fails.",
+        "Inserting Emp $(10, 2)$ reuses the primary key $10$. Entity integrity fails, even though department $2$ exists. Inserting Emp $(\\mathrm{NULL}, 1)$ also fails entity integrity, because a primary key may not be null.",
+        "Inserting a timesheet row with hours $30$ for employee $10$ passes the key and the foreign key, and fails the check $0\\le \\mathrm{hours}\\le 24$. The check does not look at Dept."
+      ],
+      "answer": "dept_id $9$ violates referential integrity. A repeated or null id violates entity integrity. hours $30$ violates the check constraint."
+    },
+    {
+      "title": "Delete department 1, two actions",
+      "prompt": "The same Emp rows reference departments. Two employees point at department $1$, and one points at department $2$. Delete department $1$ under ON DELETE CASCADE, and again under ON DELETE RESTRICT.",
+      "steps": [
+        "Under CASCADE the parent delete is what the statement asked for. The database then deletes the child rows whose dept_id is $1$, namely employees $10$ and $11$. Employee $12$ points at department $2$ and stays. One employee row remains.",
+        "The direction is parent to children. The delete of department $1$ is not caused by deleting an employee. After the cascade, department $1$ is gone and its former children are gone with it.",
+        "Under RESTRICT a child still references department $1$, so the delete is rejected. Departments $1$ and $2$ stay, and all three employee rows stay. Restrict does not delete the two children in order to save the statement."
+      ],
+      "answer": "CASCADE leaves $1$ employee row. RESTRICT leaves $3$ employee rows and does not delete the department."
+    }
+  ],
+  "traps": [
+    "Reversing CASCADE. The parent delete removes the referencing children. Deleting a child does not cascade upward and delete the parent.",
+    "Thinking RESTRICT deletes the children and then deletes the parent. RESTRICT refuses the parent delete and leaves every row in place.",
+    "Calling a check failure a foreign-key failure. hours $30$ can violate a check while both the primary key and the foreign key are legal.",
+    "Allowing a null primary key because the foreign key permits null. Entity integrity forbids null in the primary key even when other columns may be null."
+  ],
+  "python": "employees = {10: 1, 11: 1, 12: 2}\nremaining = {i: dept for i, dept in employees.items() if dept != 1}\nassert len(remaining) == 1 and set(remaining) == {12}\nassert any(dept == 1 for dept in employees.values())\nassert 40 - 7 == 33\nprint(len(remaining), 33)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Emp(id, dept_id) has primary key id, and dept_id references Dept. Dept contains ids $1$ and $2$. Inserting Emp $(13, 9)$ violates",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, referential integrity.\n\nThe primary key $13$ is new and not null, so entity integrity holds. There is no department $9$, so the foreign key matches nothing. The row has no salary and no name to blame on a check or a domain of those other columns.",
+      "options": [
+        "referential integrity",
+        "entity integrity, because $13$ is a new key",
+        "a check on a salary column this row does not contain",
+        "a domain constraint on a name this row does not contain"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Department $1$ is referenced by two employee rows. Deleting that department under ON DELETE RESTRICT",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nRESTRICT rejects the parent delete while a child row still references it. No employee is removed, and the department stays. Option B is ON DELETE CASCADE, whose direction is the opposite: the children are deleted because the parent was deleted. RESTRICT does not rewrite foreign keys and does not touch employees of other departments.",
+      "options": [
+        "is rejected, and the employee rows stay",
+        "deletes those two employees and then the department",
+        "deletes the department and sets the two foreign keys to $0$",
+        "deletes every employee in the database"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nEntity integrity is uniqueness plus the ban on null in the primary key. A domain constraint rejects a value outside the attribute's domain. ON DELETE CASCADE, fired by the deletion of a parent, deletes the child rows that reference it. Option D reverses that direction. A child delete does not cascade up to the parent.",
+      "options": [
+        "Entity integrity says the primary key is unique and not null.",
+        "A domain constraint rejects a value outside the attribute's domain.",
+        "ON DELETE CASCADE deletes referencing child rows when the parent row is deleted.",
+        "ON DELETE CASCADE deletes the parent because a child row was deleted."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Dept contains $1$ and $2$. Emp contains $(10,1)$, $(11,1)$, and $(12,2)$, with primary key id and foreign key dept_id. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nInserting $(10, 2)$ repeats the primary key $10$, which violates entity integrity even though department $2$ exists. Inserting a null primary key violates entity integrity. Under CASCADE, deleting department $1$ deletes employees $10$ and $11$ and leaves employee $12$, so one employee row remains. Option D is the RESTRICT outcome only if the delete succeeded; RESTRICT rejects it and leaves all three employees.",
+      "options": [
+        "Inserting $(10, 2)$ violates entity integrity.",
+        "Inserting $(\\mathrm{NULL}, 1)$ violates entity integrity.",
+        "Under ON DELETE CASCADE, deleting department $1$ leaves exactly one employee row.",
+        "Under ON DELETE RESTRICT, deleting department $1$ leaves exactly one employee row."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A table has $40$ employee rows, and $7$ of them reference department $D$. Department $D$ is deleted under ON DELETE CASCADE. How many employee rows remain?",
+      "answer": [
+        "33"
+      ],
+      "solution": "The answer is **33**.\n\nCASCADE deletes the child rows that reference the deleted parent, and no others. Removing those $7$ rows from $40$ leaves $40-7=33$ employee rows. The other departments' employees are not children of $D$.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "slug": "parts-of-speech",
+  "section": "aptitude",
+  "title": "Parts of speech",
+  "syllabus": "Parts of speech, adjective and adverb, pronoun case, who and whom",
+  "minutes": 25,
+  "summary": "Name the eight parts of speech, keep adjectives and adverbs apart, use subject and object pronoun case, and choose who or whom as subject or object.",
+  "keywords": [
+    "parts of speech",
+    "adjective",
+    "adverb",
+    "pronoun case",
+    "who and whom"
+  ],
+  "intuition": "Every word in a sentence is doing a job, and the name of the job is the part of speech. A noun names a person, a place, a thing, or an idea. A pronoun stands in for a noun. A verb states an action or a state. An adjective modifies a noun or a pronoun. An adverb modifies a verb, an adjective, or another adverb. A preposition relates a noun to the rest of the sentence. A conjunction joins words or clauses. An interjection is a short exclamation and does little grammatical work: 'Oh, the reading jumped.'\n\nThe errors that cost the mark are local. Adjectives and adverbs get swapped. She is a quick reader, because quick modifies the noun reader. She reads quickly, because quickly modifies the verb. After a linking verb the word describes the subject, so it is an adjective: the chart looks complete, not completely, when you mean the chart is complete. The mixture tastes bitter, not bitterly, when you mean the taste.\n\nPronouns change case. She and I is a subject: 'She and I checked the balance.' The object form after a preposition is me: between you and me, not between you and I. Who and whom split the same way and no further. Who is the subject. Whom is the object. 'Who signed the sheet?' 'Whom did you ask?'",
+  "definitions": [
+    {
+      "term": "The eight parts of speech",
+      "body": "Noun, pronoun, verb, adjective, adverb, preposition, conjunction, and interjection. The name records the job the word is doing in that sentence."
+    },
+    {
+      "term": "Adjective and adverb",
+      "body": "An adjective modifies a noun or a pronoun: a quick reader. An adverb modifies a verb, an adjective, or another adverb: reads quickly. After a linking verb, a word that describes the subject is an adjective."
+    },
+    {
+      "term": "Pronoun case",
+      "body": "Subject forms are I, he, she, we, they. Object forms are me, him, her, us, them. A compound subject stays in the subject case. The object of a preposition stays in the object case."
+    },
+    {
+      "term": "Who and whom",
+      "body": "Who is a subject. Whom is an object. The test stops there: if the word does the verb's action, use who; if the word receives the action or follows a preposition, use whom."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Adjective and adverb",
+      "latex": "\\text{adjective}+\\text{noun},\\quad \\text{verb}+\\text{adverb}",
+      "note": "A quick analyst. She works quickly. After a linking verb, use the adjective: the trend looks clear."
+    },
+    {
+      "name": "Case",
+      "latex": "\\text{subject: she/I},\\quad \\text{object: her/me}",
+      "note": "She and I recorded the data. Between you and me. The preposition between takes the object case."
+    },
+    {
+      "name": "Who and whom",
+      "latex": "\\text{who}=\\text{subject},\\quad \\text{whom}=\\text{object}",
+      "note": "Who wrote the note? Whom did the editor ask?"
+    }
+  ],
+  "properties": [
+    "The eight labels are noun, pronoun, verb, adjective, adverb, preposition, conjunction, and interjection. Oh, in 'Oh, the solvent spilled', is an interjection.",
+    "Quick is an adjective. Quickly is an adverb. 'She reads quick' swaps them.",
+    "A linking verb such as be, seem, look, taste, or become takes an adjective when the word describes the subject: the mixture tastes bitter.",
+    "A compound subject takes subject case: 'She and I checked the balance', not 'Her and me checked the balance'.",
+    "After a preposition, use the object case: between you and me, and to him and me.",
+    "Who stands where a subject stands. Whom stands where an object stands. 'Whom signed the log' uses an object form as the subject of signed."
+  ],
+  "examples": [
+    {
+      "title": "Quick, quickly, and a linking verb",
+      "prompt": "Explain the forms in 'She is a quick analyst. She works quickly. The trend looks clear.'",
+      "steps": [
+        "Quick modifies the noun analyst, so it is an adjective.",
+        "Quickly modifies the verb works, so it is an adverb.",
+        "Looks is a linking verb here, and clear describes the trend, so the adjective is required. Clearly would modify a manner of looking, which is not the claim."
+      ],
+      "answer": "Quick is the adjective, quickly is the adverb, and clear is the adjective after the linking verb."
+    },
+    {
+      "title": "Case, who, and whom",
+      "prompt": "Explain 'She and I finished the draft. The draft was reviewed by her and me. Who wrote the note? Whom did the editor ask?'",
+      "steps": [
+        "She and I are the subject of finished, so both pronouns stay in the subject case.",
+        "By is a preposition, so her and me are objects. Between you and me is the same object-case pattern.",
+        "Who is the subject of wrote. Whom is the object of ask. Swapping them, 'Whom wrote the note', puts an object form in the subject slot."
+      ],
+      "answer": "Subject case for she and I, object case after by, who as subject, and whom as object."
+    }
+  ],
+  "traps": [
+    "'Between you and I.' Between is a preposition and takes me.",
+    "'Her and me finished the work.' A subject needs she and I.",
+    "'She reads the chart quick.' The verb needs the adverb quickly.",
+    "'The mixture tastes bitterly' when the claim is about flavour. The linking verb takes the adjective bitter.",
+    "'Whom is responsible?' Whom cannot be the subject of is."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which sentence uses subject case correctly?",
+      "options": [
+        "She and I checked the balance.",
+        "Her and me checked the balance.",
+        "She and me checked the balance.",
+        "Her and I checked the balance."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. She and I are the subject of checked, so both pronouns are in the subject case. Her and me, she and me, and her and I each put at least one object form into that subject."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which sentence pairs the adverb and the linking-verb adjective correctly?",
+      "options": [
+        "She reads the chart quickly, and the chart looks complete.",
+        "She reads the chart quick, and the chart looks completely.",
+        "She reads the chart quickly, and the chart looks completely.",
+        "She reads the chart quick, and the chart looks complete."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Quickly is an adverb and modifies reads. Looks is a linking verb, and complete describes the chart, so the adjective is required. Quick cannot modify reads. Completely would describe the manner of looking rather than the chart itself."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Who left the pipette on the bench?",
+        "Whom did you call?",
+        "Between you and me, the zero is off.",
+        "Whom signed the log?"
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Who is the subject of left. Whom is the object of call. Between is a preposition, so me is the object case. Whom signed uses whom as the subject of signed, which fails the subject-versus-object test."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In the sentence 'Oh, the red solvent spilled', the word Oh is",
+      "options": [
+        "an interjection",
+        "a conjunction",
+        "a preposition",
+        "a pronoun"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, an interjection. Oh is a short exclamation and does not join clauses, relate a noun, or stand in for one. A conjunction would join. A preposition would relate the solvent to another noun. A pronoun would replace a noun."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many of the following five sentences are correct? (1) The mixture tastes bitter. (2) The mixture tastes bitterly. (3) Please give the key to him and me. (4) Whom is responsible for the key? (5) She adjusted the valve carefully. Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**. Sentence 1 uses the adjective after the linking verb taste, which is right for a flavour. Sentence 2 uses the adverb for that flavour claim and is wrong. Sentence 3 uses object case after the preposition to. Sentence 4 uses whom as the subject of is. Sentence 5 uses the adverb carefully to modify adjusted. The correct sentences are 1, 3, and 5.",
+      "tolerance": 0
+    }
+  ]
+}

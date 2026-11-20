@@ -1,0 +1,159 @@
+{
+  "slug": "correlation",
+  "section": "probability",
+  "title": "Correlation",
+  "syllabus": "Correlation.",
+  "minutes": 30,
+  "summary": "Correlation is covariance scaled by the two standard deviations, so it lies in [-1, 1]. Zero correlation does not imply independence, and the endpoints are exactly the linear relationships.",
+  "keywords": [
+    "correlation",
+    "Pearson",
+    "independence",
+    "covariance",
+    "linear"
+  ],
+  "intuition": "Covariance still carries the units of $X$ times the units of $Y$. Correlation divides that number by both standard deviations, so the units cancel and the result is a pure number. For random variables with positive finite variances the population correlation is $\\rho=\\mathrm{Cov}(X,Y)/(\\sigma_X\\sigma_Y)$, and it always lands in the interval $[-1,1]$. The sample correlation of paired points uses the same ratio of summed products. If both the covariance and the two variances are computed with divisor $n$, or both with divisor $n-1$, the divisors cancel, so the sample correlation does not depend on that choice.\n\nThe endpoints have a sharp meaning. If the variances are positive and finite, then $|\\rho|=1$ if and only if one variable is an exact linear function of the other almost surely: $Y=aX+b$ with $a\\neq 0$. The sign of $\\rho$ is the sign of $a$. A correlation of $0.6$ is a real association and it is not a line. A correlation of 0 is the absence of linear association, and it is not the absence of every association.\n\nThe standard counterexample is small enough to compute by hand. Let $X$ be uniform on $\\{-1,0,1\\}$ and let $Y=X^2$. Then $E[X]=0$ and $E[X^3]=0$, so the covariance is 0 and, since neither variable is constant, $\\rho=0$. But $Y$ is a function of $X$: the event $\\{X=0\\}$ is exactly $\\{Y=0\\}$, and $P(X=0,Y=0)=1/3$ is not $P(X=0)P(Y=0)=1/9$. Zero correlation does not imply independence.",
+  "definitions": [
+    {
+      "term": "Population correlation",
+      "body": "For random variables with positive finite variances, $\\rho=\\mathrm{Cov}(X,Y)/(\\sigma_X\\sigma_Y)$. It is symmetric in $X$ and $Y$, and it lies in $[-1,1]$."
+    },
+    {
+      "term": "Sample correlation",
+      "body": "For paired points $(x_i,y_i)$, the Pearson sample correlation is $r=\\sum (x_i-\\bar x)(y_i-\\bar y)\\big/\\sqrt{\\sum(x_i-\\bar x)^2\\sum(y_i-\\bar y)^2}$. The $n$ or $n-1$ divisors cancel when they are used consistently."
+    },
+    {
+      "term": "Uncorrelated",
+      "body": "Random variables are uncorrelated when their covariance is 0, equivalently when $\\rho=0$ if both standard deviations are positive. Uncorrelated does not mean independent."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Definition",
+      "latex": "\\rho=\\frac{\\mathrm{Cov}(X,Y)}{\\sigma_X\\sigma_Y}",
+      "note": "Defined when $\\sigma_X>0$ and $\\sigma_Y>0$. Then $\\rho\\in[-1,1]$. Zero correlation does not imply independence."
+    },
+    {
+      "name": "Sample correlation",
+      "latex": "r=\\frac{\\sum_{i=1}^n (x_i-\\bar x)(y_i-\\bar y)}{\\sqrt{\\sum_{i=1}^n (x_i-\\bar x)^2\\sum_{i=1}^n (y_i-\\bar y)^2}}",
+      "note": "The divisors $n$ and $n-1$ cancel, so this ratio matches either the population or the sample scaling of the same points."
+    },
+    {
+      "name": "Perfect linear relation",
+      "latex": "|\\rho|=1\\iff Y=aX+b\\ \\text{a.s. for some }a\\neq 0",
+      "note": "Requires positive finite variances. Then $\\rho$ has the same sign as $a$."
+    }
+  ],
+  "properties": [
+    "$\\rho\\in[-1,1]$. A computed correlation outside that interval is an arithmetic error, usually a missing standard deviation in the denominator.",
+    "$\\rho=0$ does not imply independence. For $X$ uniform on $\\{-1,0,1\\}$ and $Y=X^2$, the covariance is 0 while $P(X=0,Y=0)=1/3\\neq 1/9$.",
+    "If the variances are positive and finite, $|\\rho|=1$ if and only if $Y=aX+b$ almost surely for some $a\\neq 0$. The sign of $\\rho$ equals the sign of $a$.",
+    "Correlation is unchanged by shifts, and $\\rho(cX+d, eY+f)=\\mathrm{sign}(c)\\,\\mathrm{sign}(e)\\,\\rho(X,Y)$ when $c$ and $e$ are nonzero.",
+    "Independence of random variables with finite positive variances implies $\\rho=0$. The converse is false, as $Y=X^2$ shows."
+  ],
+  "examples": [
+    {
+      "title": "Four paired points",
+      "prompt": "Compute the sample correlation of the four pairs $(1,2)$, $(2,1)$, $(3,4)$, and $(4,3)$.",
+      "steps": [
+        "The mean of the $x$ values $1,2,3,4$ is $2.5$, and the mean of the $y$ values $2,1,4,3$ is $10/4=2.5$.",
+        "The centered $x$ values are $-3/2,-1/2,1/2,3/2$, with sum of squares $5$. The centered $y$ values are $-1/2,-3/2,3/2,1/2$, also with sum of squares $5$. The sum of products is $3/4+3/4+3/4+3/4=3$.",
+        "The sample correlation is $r=3/\\sqrt{5\\times 5}=3/5$. The same ratio appears whether the underlying covariance and variances divide by $4$ or by $3$."
+      ],
+      "answer": "The sample correlation is $3/5$."
+    },
+    {
+      "title": "A line, and a zero correlation that is not independence",
+      "prompt": "Compute the sample correlation of $(1,3)$, $(2,5)$, $(3,7)$, $(4,9)$. Then let $X$ be uniform on $\\{-1,0,1\\}$ and set $Y=X^2$. Show that $\\rho(X,Y)=0$ while $X$ and $Y$ are dependent.",
+      "steps": [
+        "The second coordinates are $y=2x+1$. Centered $x$ values on $1,2,3,4$ sum in squares to 5, and the centered $y$ values are twice those, so the sum of products is $2\\times 5=10$ and $r=10/\\sqrt{5\\times 20}=10/10=1$.",
+        "For the discrete pair, $E[X]=(-1+0+1)/3=0$ and $E[XY]=E[X^3]=(-1+0+1)/3=0$, so $\\mathrm{Cov}(X,Y)=0$. Neither variable is constant: $\\mathrm{Var}(X)=2/3$ and $\\mathrm{Var}(Y)=2/9$. Therefore $\\rho=0$.",
+        "Dependence: $P(X=0,Y=0)=P(X=0)=1/3$, while $P(Y=0)=1/3$, so the product of the marginals is $1/9$. Because $1/3\\neq 1/9$, the variables are dependent even though $\\rho=0$."
+      ],
+      "answer": "The four collinear points have sample correlation 1. The pair $Y=X^2$ has $\\rho=0$ and is not independent."
+    }
+  ],
+  "traps": [
+    "Concluding independence from $\\rho=0$. The pair $X$ uniform on $\\{-1,0,1\\}$ and $Y=X^2$ has correlation 0 and fails the product test $1/3=1/9$.",
+    "Forgetting a standard deviation in the denominator. The summed products for the first four pairs equal 3, and the correlation is $3/5$, not 3.",
+    "Reporting a correlation larger than 1. That cannot happen for the Pearson correlation; $|\\rho|=1$ is the case of an exact line, such as $y=2x+1$ on the second set of points.",
+    "Treating a negative slope as a correlation below $-1$. The pairs $(1,4),(2,3),(3,2),(4,1)$ lie on $y=5-x$ and have sample correlation $-1$, which is inside the interval."
+  ],
+  "python": "def sample_r(xs, ys):\n    n = len(xs)\n    mx, my = sum(xs) / n, sum(ys) / n\n    dx = [x - mx for x in xs]\n    dy = [y - my for y in ys]\n    num = sum(a * b for a, b in zip(dx, dy))\n    den = (sum(a * a for a in dx) * sum(b * b for b in dy)) ** 0.5\n    return num, den, num / den\nnum, den, r = sample_r([1, 2, 3, 4], [2, 1, 4, 3])\nassert num == 3 and den == 5 and abs(r - 0.6) < 1e-12\n_, _, r_line = sample_r([1, 2, 3, 4], [3, 5, 7, 9])\nassert abs(r_line - 1) < 1e-12\ncov = ((-1) + 0 + 1) / 3  # E[X^3] with E[X]=0\nassert abs(cov) < 1e-12\nassert abs(1 / 3 - 1 / 9) > 0\nprint(r, r_line, cov)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The sample correlation of the pairs $(1,2)$, $(2,1)$, $(3,4)$, and $(4,3)$ is",
+      "options": [
+        "$3/5$",
+        "$1$",
+        "$0$",
+        "$3$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3/5$.\n\nBoth coordinates have mean $2.5$. The centered products sum to 3, and each centered coordinate has sum of squares 5, so $r=3/\\sqrt{25}=3/5$. Option D is the numerator before dividing by the two square-root factors. Option B would require the points to lie on a line, and these do not."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Suppose $Y=4X+1$ almost surely and $X$ is not constant, with finite positive variance. Then $\\rho(X,Y)$ equals",
+      "options": [
+        "$1$",
+        "$-1$",
+        "$4$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1$.\n\nA nonconstant linear relation with positive slope has correlation 1, not the slope itself. Option C confuses $\\rho$ with the coefficient 4. Option B is the correlation for a negative slope, such as $Y=-4X+1$. Option D would say there is no linear association, which is the opposite of a perfect line."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "If the variances are positive and finite, then $\\rho$ lies in $[-1,1]$.",
+        "The equality $\\rho=0$ does not imply that the two random variables are independent.",
+        "If the variances are positive and finite, then $|\\rho|=1$ if and only if $Y=aX+b$ almost surely for some constants $a\\neq 0$ and $b$.",
+        "A correlation of $3/5$ means the two variables are independent."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA is the bound obtained by scaling covariance by the two standard deviations. B is the $Y=X^2$ counterexample on $\\{-1,0,1\\}$: the covariance is 0, but $P(X=0,Y=0)=1/3\\neq 1/9$. C is the endpoint characterisation, and the sign of $\\rho$ matches the sign of $a$. D is false: $3/5$ is the correlation of $(1,2),(2,1),(3,4),(4,3)$, and a nonzero correlation is dependence, not independence."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "The pairs $(1,2)$, $(2,1)$, $(3,4)$, and $(4,3)$ have sample correlation $r$. Enter $5r$.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\nThe centered products sum to 3 and each sum of squares is 5, so $r=3/5$. Therefore $5r=3$. The numerator 3 is not itself the correlation."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The pairs $(1,3)$, $(2,5)$, $(3,7)$, and $(4,9)$ have sample correlation $r$. Enter $10r$.",
+      "options": [],
+      "answer": [
+        "10"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **10**.\n\nThe points lie on the line $y=2x+1$, with a positive slope and nonconstant coordinates, so $r=1$. Therefore $10r=10$. The slope 2 is not the correlation; the correlation of a perfect positive line is 1."
+    }
+  ]
+}

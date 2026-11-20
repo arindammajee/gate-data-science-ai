@@ -1,0 +1,160 @@
+{
+  "slug": "lu-decomposition",
+  "section": "linear-algebra",
+  "title": "LU decomposition",
+  "syllabus": "LU decomposition",
+  "minutes": 35,
+  "summary": "LU writes A as a unit lower-triangular L times an upper-triangular U. It exists with no row swap when every leading principal minor is nonzero. With partial pivoting the factorization is PA=LU, and not every invertible matrix factors without a swap.",
+  "keywords": [
+    "LU decomposition",
+    "unit lower triangular",
+    "partial pivoting",
+    "leading principal minor",
+    "permutation"
+  ],
+  "intuition": "LU factorization is Gaussian elimination stored as two triangular matrices. The upper factor $U$ is the row echelon matrix the elimination produces, pivots and all. The lower factor $L$ stores the multipliers, with ones on its diagonal: if row $i$ was replaced by row $i$ minus $\\ell_{ij}$ times pivot row $j$, that multiplier $\\ell_{ij}$ is the $(i,j)$ entry of $L$. The convention in this lesson is that $L$ is unit lower triangular, so the pivots sit in $U$, not in $L$. Multiplying $LU$ undoes the bookkeeping and returns $A$, provided no row was swapped.\n\nNo-swap elimination finishes with a nonzero pivot in every column exactly when every leading principal minor of $A$ is nonzero. The $k$-th pivot equals $\\Delta_k/\\Delta_{k-1}$, with $\\Delta_0=1$ and $\\Delta_k$ the $k$-th leading principal minor. So the algorithm meets only nonzero pivots if and only if those minors are all nonzero, and in that case $A=LU$ with this unit $L$. The condition is sufficient for the factorization. It is the right hypothesis to quote. It is not true of every invertible matrix.\n\nA row exchange is sometimes required even when $A$ is invertible. The matrix $\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ has determinant $-1$ and leading principal minor $0$. Suppose $L=\\begin{pmatrix}1&0\\\\a&1\\end{pmatrix}$ and $U=\\begin{pmatrix}p&q\\\\0&r\\end{pmatrix}$. The product has top-left entry $p$, so $p=0$, and then the bottom-left entry $ap$ cannot equal $1$. There is no LU factorization. Partial pivoting swaps the rows first. With a permutation matrix $P$ recording the swaps, the factored equation is $PA=LU$. Every invertible matrix has a factorization of that form. The version without $P$ is the special case $P=I$.",
+  "definitions": [
+    {
+      "term": "LU factorization",
+      "body": "An LU factorization is $A=LU$ with $L$ unit lower triangular (ones on the diagonal, zeros above) and $U$ upper triangular. The entries of $L$ below the diagonal are the elimination multipliers."
+    },
+    {
+      "term": "Leading principal minors",
+      "body": "The $k$-th leading principal minor $\\Delta_k$ is the determinant of the top-left $k\\times k$ corner of $A$. If every $\\Delta_k$ is nonzero, then $A=LU$ exists with no row swap, and the $k$-th pivot is $\\Delta_k/\\Delta_{k-1}$."
+    },
+    {
+      "term": "PA=LU",
+      "body": "With partial pivoting, the factorization is $PA=LU$, where $P$ is the permutation matrix of the row swaps. Not every invertible matrix has an LU factorization with $P=I$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "LU",
+      "latex": "A=LU",
+      "note": "$L$ is unit lower triangular and $U$ is upper. This form, with no row swap, exists when every leading principal minor is nonzero, equivalently when every pivot the algorithm encounters is nonzero."
+    },
+    {
+      "name": "With row swaps",
+      "latex": "PA=LU",
+      "note": "$P$ is a permutation matrix from partial pivoting. Do not drop $P$: an invertible matrix need not have an LU factorization without row exchanges."
+    }
+  ],
+  "properties": [
+    "$L$ has ones on the diagonal. The pivots are the diagonal entries of $U$, not of $L$.",
+    "If every leading principal minor is nonzero, then $A=LU$ with unit lower-triangular $L$ and upper-triangular $U$, and no row swap is required.",
+    "For the algorithm, that minor condition is equivalent to every pivot encountered being nonzero. The $k$-th pivot equals $\\Delta_k/\\Delta_{k-1}$.",
+    "With partial pivoting the stored factorization is $PA=LU$. Row swaps are part of the statement.",
+    "Not every invertible matrix satisfies $A=LU$ without a permutation. $\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ is invertible and has no such factorization."
+  ],
+  "examples": [
+    {
+      "title": "A $3\\times 3$ factorization, multiplied back",
+      "prompt": "Factor $A=\\begin{pmatrix}2&1&1\\\\4&3&3\\\\2&1&2\\end{pmatrix}$ as $LU$ with unit lower-triangular $L$, and multiply $LU$ to recover $A$.",
+      "steps": [
+        "The leading minors are $\\Delta_1=2$, $\\Delta_2=\\det\\begin{pmatrix}2&1\\\\4&3\\end{pmatrix}=2$, and $\\Delta_3=\\det A=2$, all nonzero, so no swap is required. The multipliers are $\\ell_{21}=4/2=2$ and $\\ell_{31}=2/2=1$. After those subtractions the $(3,2)$ entry is already $0$, so $\\ell_{32}=0$.",
+        "Thus $L=\\begin{pmatrix}1&0&0\\\\2&1&0\\\\1&0&1\\end{pmatrix}$ and $U=\\begin{pmatrix}2&1&1\\\\0&1&1\\\\0&0&1\\end{pmatrix}$. The pivots $2,1,1$ match $\\Delta_1$, $\\Delta_2/\\Delta_1$, and $\\Delta_3/\\Delta_2$.",
+        "Row $1$ of $LU$ is row $1$ of $U$, namely $(2,1,1)$. Row $2$ is $2(2,1,1)+(0,1,1)=(4,3,3)$. Row $3$ is $1(2,1,1)+1(0,0,1)=(2,1,2)$. The product is $A$."
+      ],
+      "answer": "$L=\\begin{pmatrix}1&0&0\\\\2&1&0\\\\1&0&1\\end{pmatrix}$, $U=\\begin{pmatrix}2&1&1\\\\0&1&1\\\\0&0&1\\end{pmatrix}$, and $LU=A$."
+    },
+    {
+      "title": "An invertible matrix with no LU factorization",
+      "prompt": "Show that $A=\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ has no factorization $A=LU$ with $L$ unit lower triangular and $U$ upper triangular. Give a $PA=LU$ factorization instead.",
+      "steps": [
+        "The leading principal minor is $0$, so the no-pivot algorithm stops at once. Suppose toward a contradiction that $L=\\begin{pmatrix}1&0\\\\a&1\\end{pmatrix}$ and $U=\\begin{pmatrix}p&q\\\\0&r\\end{pmatrix}$. Then $LU=\\begin{pmatrix}p&q\\\\ap&aq+r\\end{pmatrix}$.",
+        "Matching $A$ forces $p=0$ and $q=1$, and then the bottom-left entry $ap=0$ cannot equal $1$. No such factors exist, even though $\\det A=-1$ and $A$ is invertible.",
+        "Swap the two rows: $P=\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ and $PA=I$. Then $PA=LU$ with $L=I$ and $U=I$. The permutation is essential."
+      ],
+      "answer": "There is no $A=LU$ of the required shape. After the swap, $PA=I$ is an LU factorization with $L=U=I$."
+    }
+  ],
+  "traps": [
+    "Claiming every invertible matrix has an LU factorization with no row exchange. $\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ is a counterexample: the $(1,1)$ entry of $LU$ would have to be both a pivot and zero.",
+    "Putting the pivots on the diagonal of $L$. In this convention $L$ is unit lower triangular, with ones on the diagonal, and the pivots are the diagonal of $U$.",
+    "Forgetting to multiply by $P$ when a swap happened. The multipliers from a pivoted elimination rebuild $PA$, not $A$, unless you also move the rows of $L$ in the matching way. The safe statement is $PA=LU$.",
+    "Treating a zero leading minor as a rounding nuisance that the same formulas survive. A zero $\\Delta_k$ means a zero pivot. The factorization without a swap is then not the one this algorithm produces."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\ndef det2(M):\n    return M[0][0] * M[1][1] - M[0][1] * M[1][0]\n\nA = [[2, 1, 1], [4, 3, 3], [2, 1, 2]]\nL = [[1, 0, 0], [2, 1, 0], [1, 0, 1]]\nU = [[2, 1, 1], [0, 1, 1], [0, 0, 1]]\nassert mul(L, U) == A\nassert det2([[2, 1], [4, 3]]) == 2\n# no LU for the swap matrix: p would be 0 and a*p would need to be 1\nBad = [[0, 1], [1, 0]]\nassert Bad[0][0] == 0\nassert det2(Bad) == -1\nP = [[0, 1], [1, 0]]\nassert mul(P, Bad) == [[1, 0], [0, 1]]\nprint(2)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In the factorization $A=LU$ used in this lesson, the factor $L$ is",
+      "options": [
+        "unit lower triangular",
+        "upper triangular with ones on the diagonal",
+        "orthogonal",
+        "symmetric"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The convention is that $L$ is unit lower triangular: ones on the diagonal and the multipliers below it. The factor $U$ is upper triangular and carries the pivots. Orthogonality and symmetry are different factorizations."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "After partial pivoting, the LU factorization of a square matrix is written",
+      "options": [
+        "$A=LU$ with no permutation, for every invertible $A$",
+        "$PA=LU$",
+        "$A=U\\Sigma V^\\top$",
+        "$A=Q\\Lambda Q^\\top$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Partial pivoting records its row swaps in a permutation matrix $P$, and the triangular factors then satisfy $PA=LU$. Option A is false: $\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ is invertible and has no unpermuted LU factorization. The other two options are the SVD and the symmetric spectral theorem."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "If every leading principal minor of $A$ is nonzero, then $A=LU$ with $L$ unit lower triangular and $U$ upper, and no row swap is required.",
+        "Every invertible matrix has an LU factorization with no row exchange.",
+        "$\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ has no LU factorization with unit lower-triangular $L$.",
+        "The no-pivoting algorithm produces $A=LU$ when every pivot it encounters is nonzero."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**. Nonzero leading minors are equivalent to nonzero pivots in the algorithm, and either condition produces $A=LU$ with unit $L$. The matrix $\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ has first leading minor $0$ and cannot be written $LU$: the top-left entry of any such product would be the first pivot, which would have to be $0$ and $1$ at once. Invertibility does not remove the need for a possible row swap."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}2&1&1\\\\4&3&3\\\\2&1&2\\end{pmatrix}$, $L=\\begin{pmatrix}1&0&0\\\\2&1&0\\\\1&0&1\\end{pmatrix}$, and $U=\\begin{pmatrix}2&1&1\\\\0&1&1\\\\0&0&1\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$LU=A$.",
+        "$L$ has ones on the diagonal.",
+        "$U$ is upper triangular.",
+        "$\\det A=0$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Row $2$ of $LU$ is $2(2,1,1)+(0,1,1)=(4,3,3)$, and row $3$ is $(2,1,1)+(0,0,1)=(2,1,2)$, so the product is $A$. The diagonal of $L$ is $(1,1,1)$ and $U$ has zeros below the diagonal. The determinant equals the product of the pivots $2\\cdot 1\\cdot 1=2$, not $0$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "For $A=\\begin{pmatrix}2&1&1\\\\4&3&3\\\\2&1&2\\end{pmatrix}=LU$ with the unit lower-triangular $L$ from elimination without row swaps, enter the product of the diagonal entries of $U$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. Elimination produces $U=\\begin{pmatrix}2&1&1\\\\0&1&1\\\\0&0&1\\end{pmatrix}$, so the diagonal product is $2\\cdot 1\\cdot 1=2$. Because $L$ has unit diagonal and no row was swapped, this product is also $\\det A$."
+    }
+  ]
+}

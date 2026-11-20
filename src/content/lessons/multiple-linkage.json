@@ -1,0 +1,166 @@
+{
+  "slug": "multiple-linkage",
+  "section": "machine-learning",
+  "title": "Multiple linkage",
+  "syllabus": "Multiple-linkage",
+  "minutes": 30,
+  "summary": "In the GATE wording, multiple-linkage is complete linkage: the distance between two clusters is the maximum pairwise distance. Clusters stay compact, and an outlier inflates the maximum. On the same five points used for single linkage, the final merge height is 12 rather than 5.",
+  "keywords": [
+    "multiple linkage",
+    "complete linkage",
+    "maximum distance",
+    "compact clusters",
+    "outlier"
+  ],
+  "intuition": "The syllabus name multiple-linkage is complete linkage. It is not a third rule, and it is not the minimum. The distance between clusters $A$ and $B$ is the largest pairwise distance between a point of $A$ and a point of $B$. Every pair, including the worst one, must be close before the clusters are called close. The resulting merges prefer compact clusters: a cluster cannot reach across a gap just because one of its points happens to sit near the other group.\n\nThe price is sensitivity to outliers. One far point sets the maximum and can hold two clusters apart, or can decide which merge looks expensive, even if every other pair is tight. On the line this is easy to see. Take the same points used for single linkage, $0,1,3,7,12$. Both rules start by merging $0$ with $1$ at height $1$, because a pair of singletons has only one distance and the minimum equals the maximum. They already disagree at the second merge. Single linkage attaches $3$ at height $\\min(3,2)=2$. Multiple linkage attaches $3$ at height $\\max(3,2)=3$.\n\nThe third merge is a different pair, not only a different height. Single linkage next pulls $7$ into the growing chain at height $4$. Multiple linkage instead joins $7$ with $12$ at height $5$, leaving $\\{0,1,3\\}$ untouched, because the farthest point of $\\{0,1,3\\}$ from $7$ is $0$, at distance $7$, and $7$ is worse than $5$. The last merge has to swallow that farthest pair. Its height is $\\max(7,12,6,11,4,9)=12$, the direct distance between the ends. Single linkage finished at height $5$. The maximum rule did not chain.",
+  "definitions": [
+    {
+      "term": "Multiple linkage",
+      "body": "The syllabus name for complete linkage. The distance between two clusters is the maximum pairwise distance. It is not the minimum, and it is not an average of the minimum and the maximum."
+    },
+    {
+      "term": "Complete-linkage distance",
+      "body": "$d(A,B)=\\max_{a\\in A,\\, b\\in B} d(a,b)$. The clusters are as far apart as their worst pair. A single close pair does not shrink this number."
+    },
+    {
+      "term": "Compact clusters",
+      "body": "Because the worst pair controls the merge, points that join share a small diameter. A chain of short steps does not pull in a distant point the way single linkage does."
+    },
+    {
+      "term": "Outlier effect",
+      "body": "A point far from the other cluster sets the maximum. On $\\{0,1,3\\}$ against $\\{7,12\\}$, the pair $(0,12)$ at distance $12$ is the complete-linkage distance, even though $3$ and $7$ are only $4$ apart."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Multiple linkage",
+      "latex": "d_{\\max}(A,B)=\\max_{a\\in A,\\, b\\in B} d(a,b)",
+      "note": "GATE's wording multiple-linkage is this maximum rule, also called complete linkage. The minimum rule is single linkage."
+    },
+    {
+      "name": "Contrast with single linkage",
+      "latex": "d_{\\min}(A,B)=\\min_{a,b} d(a,b)\\le \\max_{a,b} d(a,b)=d_{\\max}(A,B)",
+      "note": "Equality holds for singleton clusters. On $\\{0,1\\}$ against the point $3$, the minimum is $2$ and the maximum is $3$."
+    }
+  ],
+  "properties": [
+    "Multiple-linkage means the maximum pairwise distance. Inventing a third meaning, or reading the word as the minimum, contradicts the syllabus usage.",
+    "The first merge of $0,1,3,7,12$ is still $\\{0,1\\}$ at height $1$. Singleton pairs do not distinguish minimum from maximum.",
+    "The complete-linkage sequence is then: $3$ joins $\\{0,1\\}$ at height $3$, then $\\{7,12\\}$ merges at height $5$, then the two groups merge at height $12$.",
+    "Single linkage on the same points attaches $3$ at height $2$, then $7$ at height $4$, then $12$ at height $5$. The second height already differs, and the third merge is a different pair.",
+    "The final complete-linkage height equals the largest cross distance, $12$. The final single-linkage height is $5$. Compactness, not chaining, is what the maximum is buying.",
+    "An outlier dominates the maximum. The point at $12$ makes every complete-linkage distance from $\\{0,1,3\\}$ to a cluster that contains $12$ equal to the distance from $0$ to $12$, once $0$ is the farthest point of its cluster."
+  ],
+  "examples": [
+    {
+      "title": "Complete linkage on the five-point line",
+      "prompt": "Points $A,B,C,D,E$ at $0,1,3,7,12$. Run agglomerative clustering with multiple linkage, that is, complete linkage. Record every merge height.",
+      "steps": [
+        "The closest singletons are $A$ and $B$ at distance $1$. Merge them at height $1$. Complete-linkage distances from $\\{A,B\\}$: $\\max(3,2)=3$ to $C$, $\\max(7,6)=7$ to $D$, and $\\max(12,11)=12$ to $E$. Also $|C-D|=4$, $|C-E|=9$, and $|D-E|=5$. The minimum of these cluster distances is $3$, so $C$ joins $\\{A,B\\}$ at height $3$.",
+        "Now compare $\\{A,B,C\\}$ with $D$, $\\{A,B,C\\}$ with $E$, and $D$ with $E$. The maxima are $\\max(7,6,4)=7$, $\\max(12,11,9)=12$, and $|D-E|=5$. The smallest is $5$, so $D$ merges with $E$ at height $5$. This is not the single-linkage third step, which would have pulled $D$ into $\\{A,B,C\\}$ at height $4$.",
+        "The last distance is the maximum of the six cross pairs between $\\{A,B,C\\}$ and $\\{D,E\\}$: $7,12,6,11,4,9$. The maximum is $12$. The final merge height is $12$."
+      ],
+      "answer": "Merge heights $1$, $3$, $5$, and $12$. The third merge joins $D$ with $E$, and the last height is $12$."
+    },
+    {
+      "title": "The same points under single linkage",
+      "prompt": "Using the same points, state the single-linkage heights beside the complete-linkage heights, and mark the first step at which the merged pair differs.",
+      "steps": [
+        "Single linkage also begins with $\\{A,B\\}$ at height $1$. Its distance from $\\{A,B\\}$ to $C$ is $\\min(3,2)=2$, so the second merge is again $C$, but at height $2$ rather than $3$.",
+        "Single linkage then attaches $D$ to $\\{A,B,C\\}$ at height $\\min(7,6,4)=4$. Complete linkage does not: its distance to $D$ is $\\max(7,6,4)=7$, which loses to $|D-E|=5$. The third merged pair differs.",
+        "Single linkage finishes by attaching $E$ at height $5$. Complete linkage finishes by joining $\\{A,B,C\\}$ to $\\{D,E\\}$ at height $12$. The final heights are $5$ and $12$."
+      ],
+      "answer": "Both rules start with $A,B$ at height $1$. The second merge is the same pair at different heights, $2$ against $3$. The third merge differs: single linkage absorbs $D$ at height $4$, and multiple linkage joins $D$ with $E$ at height $5$."
+    }
+  ],
+  "traps": [
+    "Inventing a third meaning for multiple-linkage, such as an average, a product, or a vote between minimum and maximum. In this syllabus the word means the maximum pairwise distance.",
+    "Using the minimum on a cluster that is no longer a singleton. From $\\{0,1\\}$ to the point $3$, the multiple-linkage distance is $\\max(3,2)=3$. The minimum $2$ is single linkage.",
+    "Copying the single-linkage third merge. On these points single linkage attaches $7$ to $\\{0,1,3\\}$ at height $4$. Multiple linkage joins $7$ with $12$ at height $5$.",
+    "Reporting the final multiple-linkage height as $5$. That is the single-linkage final height. The maximum of the cross pairs is $12$.",
+    "Forgetting that an outlier sets the maximum. The pair at distance $4$, namely $3$ and $7$, does not make the complete-linkage distance between $\\{0,1,3\\}$ and $\\{7,12\\}$ equal to $4$. The farthest pair is $0$ with $12$, and the distance is $12$."
+  ],
+  "python": "points = [0, 1, 3, 7, 12]\n\ndef heights(kind):\n    clusters = [frozenset([i]) for i in range(len(points))]\n    out = []\n    while len(clusters) > 1:\n        best = None\n        for i in range(len(clusters)):\n            for j in range(i + 1, len(clusters)):\n                vals = [abs(points[a] - points[b]) for a in clusters[i] for b in clusters[j]]\n                d = min(vals) if kind == \"single\" else max(vals)\n                if best is None or d < best[0]:\n                    best = (d, i, j)\n        d, i, j = best\n        out.append(d)\n        merged = clusters[i] | clusters[j]\n        clusters = [clusters[k] for k in range(len(clusters)) if k != i and k != j]\n        clusters.append(merged)\n    return out\n\nsingle = heights(\"single\")\ncomplete = heights(\"complete\")\nassert single == [1, 2, 4, 5]\nassert complete == [1, 3, 5, 12]\nprint(complete[-1])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In the GATE DA syllabus, multiple-linkage means",
+      "options": [
+        "complete linkage: the distance between clusters is the maximum pairwise distance",
+        "single linkage: the distance between clusters is the minimum pairwise distance",
+        "the average of the minimum and the maximum pairwise distances",
+        "a product of all pairwise distances between the two clusters"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe syllabus name multiple-linkage is the maximum rule, also called complete linkage. The minimum is single linkage. An average or a product would be a third meaning, and this lesson does not use one."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "On the points $0,1,3,7,12$, the third multiple-linkage merge",
+      "options": [
+        "joins $7$ with $12$ at height $5$",
+        "attaches $7$ to $\\{0,1,3\\}$ at height $4$",
+        "joins $0$ with $12$ at height $12$, as the third step",
+        "joins $1$ with $3$ at height $2$, before $0$ has merged"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nAfter $\\{0,1,3\\}$ has formed, the complete-linkage distance to $7$ is $\\max(7,6,4)=7$, the distance to $12$ is $12$, and $|7-12|=5$. The smallest is $5$, so $7$ merges with $12$. Option B is the single-linkage third merge. The first merge was $0$ with $1$, so D has the order backwards."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of multiple linkage?",
+      "options": [
+        "The syllabus wording means the maximum pairwise distance between clusters.",
+        "The rule favours compact clusters, because the worst pair must be close.",
+        "An outlier can dominate the distance, because it inflates the maximum.",
+        "The distance between two clusters is the minimum pairwise distance."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nMultiple-linkage is complete linkage. Requiring the worst pair to be close keeps the cluster diameter small, and a single far point sets that worst pair. D is single linkage, the other lesson."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Points lie at $0,1,3,7,12$. Which of the following are true when both linkages are run?",
+      "options": [
+        "Both linkages merge $0$ with $1$ first, at distance $1$.",
+        "Multiple linkage next attaches $3$ at height $3$.",
+        "Single linkage attaches $3$ at height $2$, so the second-merge heights differ.",
+        "The final multiple-linkage merge height equals the final single-linkage merge height."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nSingleton distances do not distinguish min from max, so both start at height $1$. The next distance to $3$ is $\\max(3,2)=3$ for multiple linkage and $\\min(3,2)=2$ for single linkage. The finals are $12$ and $5$, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Points lie at $0,1,3,7,12$. Enter the height of the final multiple-linkage merge.",
+      "options": [],
+      "answer": [
+        "12"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **12**.\n\nThe last two clusters are $\\{0,1,3\\}$ and $\\{7,12\\}$. The six cross distances are $7,12,6,11,4,9$. Complete linkage takes the maximum, which is $|0-12|=12$."
+    }
+  ]
+}

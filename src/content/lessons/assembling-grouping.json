@@ -1,0 +1,159 @@
+{
+  "slug": "assembling-grouping",
+  "section": "aptitude",
+  "title": "Assembling and grouping",
+  "syllabus": "Assembling and grouping",
+  "minutes": 25,
+  "summary": "Pieces tile a target when their areas add up and their sides actually fit. Area is the filter. The side lengths are the decision.",
+  "keywords": [
+    "tiling",
+    "area",
+    "grouping",
+    "domino",
+    "rectangle"
+  ],
+  "intuition": "Assembling questions ask which pieces make a target without gaps or overlaps. The area check comes first and is not enough. Two rectangles of area 8 can fill a 4 by 4 square only if their sides sit on the square. A 5 by 1 rectangle and a 3 by 1 rectangle have total area 8, and neither pair of sides tiles a 4 by 4, because 5 is already longer than 4.\n\nGroup questions are the same discipline on categories. Put the figures that share a stated property together, and name the property. \"Looks complicated\" is not a property. \"Has an even area,\" \"has a right angle,\" or \"tiles a 4 by 3 board\" is a property. A 4 by 3 board has 12 unit squares. A domino covers 2, so any tiling uses exactly 6 dominoes, and a tiling exists because at least one side is even.\n\nWhen the pieces are described by width and height, multiply first, then try to place the largest piece. If it does not fit, the set does not assemble, whatever the areas said. ",
+  "definitions": [
+    {
+      "term": "Tiling",
+      "body": "A placement of pieces that covers the target exactly: no gaps, no overlaps, and no piece sticking out."
+    },
+    {
+      "term": "Area filter",
+      "body": "The sum of the piece areas must equal the target area. If it does not, no further placement can work."
+    },
+    {
+      "term": "Domino",
+      "body": "A 2 by 1 rectangle. It covers two adjacent unit squares. A board tiles with dominoes only if it has an even number of squares, which is necessary and, for a plain rectangle, also enough when one side is even."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Rectangle area",
+      "latex": "A=wh",
+      "note": "Compare the sum of the piece areas with the target before trying to pack them."
+    },
+    {
+      "name": "Domino count",
+      "latex": "\\frac{wh}{2}",
+      "note": "The number of 2 by 1 dominoes in a tiling of a w by h board, when a tiling exists."
+    }
+  ],
+  "properties": [
+    "Equal area is necessary and not sufficient. The side lengths still have to fit.",
+    "A piece with a side longer than both sides of the target cannot be placed, even after rotation, if the longer side exceeds both target sides.",
+    "Rotating a rectangle swaps its width and height. A 3 by 1 can lie in a row or in a column.",
+    "A 4 by 3 board has area 12 and takes 6 dominoes. A 5 by 5 board has area 25, which is odd, so it cannot be tiled by dominoes.",
+    "Grouping by a property should put every piece that has the property in the group, not only the first one you notice."
+  ],
+  "examples": [
+    {
+      "title": "Two pieces that fill a 4 by 4, and two that do not",
+      "prompt": "Which of these sets tile a 4 by 4 square: two 4 by 2 rectangles; one 3 by 3 and one 2 by 2; one 5 by 2 and one 3 by 2?",
+      "steps": [
+        "The target has area 16. Two 4 by 2 rectangles have area 8+8 = 16, and each has a side of length 4, so they stack to fill the square.",
+        "The 3 by 3 and the 2 by 2 have area 9+4 = 13, which is not 16. Area already rules them out.",
+        "The 5 by 2 and the 3 by 2 have area 10+6 = 16, but the side of length 5 is longer than 4. Rotating that piece still leaves a side of length 5. It cannot sit inside the square."
+      ],
+      "answer": "Only the two 4 by 2 rectangles tile the square."
+    },
+    {
+      "title": "Dominoes on a 4 by 3 board",
+      "prompt": "How many 2 by 1 dominoes tile a 4 by 3 board, and why is a tiling possible?",
+      "steps": [
+        "The board has 4×3 = 12 unit squares. Each domino covers 2, so the count would have to be 12/2 = 6.",
+        "A count is possible only when the area is even. Here it is.",
+        "One explicit tiling is six horizontal dominoes in three rows of two, or the same idea with vertical dominoes in four columns. Existence plus the area count gives 6."
+      ],
+      "answer": "6 dominoes."
+    }
+  ],
+  "traps": [
+    "Stopping at the area check. Area 16 does not place a 5 by 2 rectangle inside a 4 by 4 square.",
+    "Forgetting that a rectangle may be rotated. A 4 by 2 can lie as 2 by 4. A 5-side still does not fit in a 4-side after that swap.",
+    "Counting unit squares and calling them dominoes. A 4 by 3 board has 12 squares and 6 dominoes.",
+    "Trying to tile a board with an odd number of squares by dominoes. Each domino covers two squares, so the total must be even."
+  ],
+  "python": "assert 4 * 4 == 16\nassert 2 * (4 * 2) == 16\nassert 3 * 3 + 2 * 2 == 13\nassert 5 * 2 + 3 * 2 == 16\nassert 5 > 4\nassert (4 * 3) // 2 == 6\nprint(6)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which set tiles a 4 by 4 square without gaps or overlaps?",
+      "options": [
+        "One 3 by 3 and one 2 by 2.",
+        "Two 4 by 2 rectangles.",
+        "One 5 by 2 and one 3 by 2.",
+        "One 4 by 4 and one 1 by 1."
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Two 4 by 2 rectangles have area 16 and stack inside the square. The 3 by 3 plus 2 by 2 has area 13. The 5-side does not fit in a side of length 4. A 4 by 4 together with a 1 by 1 has area 17 and overlaps the target."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A 5 by 5 board is to be covered by 2 by 1 dominoes. The number of dominoes required by the area, and whether a tiling exists, are",
+      "options": [
+        "12, and a tiling exists.",
+        "12.5, so a tiling is impossible.",
+        "12, but a tiling is impossible because the area is odd.",
+        "13, and a tiling exists."
+      ],
+      "answer": [
+        "C"
+      ],
+      "solution": "The answer is **C**. The board has 25 squares. A domino covers 2, so 25/2 is not an integer: 12 dominoes cover 24 squares and leave one square out. The area is odd, so no tiling exists. There is no such thing as half a domino in the count."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following sets tile a 4 by 4 square?",
+      "options": [
+        "Two 4 by 2 rectangles.",
+        "Four 2 by 2 squares.",
+        "One 3 by 3 and one 2 by 2.",
+        "Eight 2 by 1 dominoes."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Two 4 by 2 rectangles stack. Four 2 by 2 squares fill the square. Eight dominoes cover 16 squares, and a 4 by 4 board can be tiled by them, for example as four rows of two horizontal dominoes. The 3 by 3 and 2 by 2 cover only 13."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following statements are true?",
+      "options": [
+        "A 4 by 3 board can be tiled by 6 dominoes.",
+        "Equal area is enough to guarantee that rectangles tile a square.",
+        "A piece with a side of length 5 cannot fit inside a 4 by 4 square.",
+        "Rotating a 4 by 2 rectangle changes its area."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**. The board has 12 squares and one side even, so 6 dominoes tile it. A side of length 5 cannot lie along a side of length 4. Equal area is not enough, as a 5 by 2 plus a 3 by 2 shows. Rotation swaps the sides and does not change the area."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Enter the number of 2 by 1 dominoes needed to tile a 4 by 3 board.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**. The board has 12 unit squares and each domino covers 2, so the tiling uses 12/2 = 6 dominoes."
+    }
+  ]
+}

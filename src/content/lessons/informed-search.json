@@ -1,0 +1,172 @@
+{
+  "slug": "informed-search",
+  "section": "artificial-intelligence",
+  "title": "Informed search",
+  "syllabus": "Search: informed",
+  "minutes": 35,
+  "summary": "Greedy best-first follows h alone and is not optimal. A* follows f=g+h, and it is optimal on trees when h is admissible and on graphs when h is consistent.",
+  "keywords": [
+    "A*",
+    "greedy best-first",
+    "admissible heuristic",
+    "consistent heuristic",
+    "graph search"
+  ],
+  "intuition": "Informed search ranks nodes with a heuristic $h(n)$, an estimate of the cheapest remaining cost from $n$ to a goal. Greedy best-first search uses that estimate alone: its priority is $f=h$. It runs toward whatever looks closest. Nothing in that rule accounts for the cost already spent, so a cheap-looking branch can hide an expensive finish, and the path it returns need not be optimal.\n\nA* adds the cost already spent. The priority is $f(n)=g(n)+h(n)$, where $g(n)$ is the path cost from the start to $n$. If $h$ never overestimates the true remaining cost $h^*$, A* on a tree returns an optimal path: a node on the optimal path is expanded before any goal whose $f$ is worse than the optimum. That property is admissibility, $h(n)\\le h^*(n)$ for every $n$, together with $h(\\mathrm{goal})=0$.\n\n$$\nf(n)=g(n)+h(n)\n$$\n\nGraph search is stricter, because a state can be reached by more than one path and a closed node is not reopened. The hypothesis that makes A* graph search optimal is consistency: $h(n)\\le c(n,a,n')+h(n')$ for every edge. Consistency implies admissibility when $h$ at a goal is $0$, by chaining the inequality along an optimal path. An inadmissible heuristic is outside both theorems. A* with such an $h$ can return a suboptimal path, and the lesson's second trace is one place it does.\n",
+  "definitions": [
+    {
+      "term": "Admissible heuristic",
+      "body": "A heuristic with $h(n)\\le h^*(n)$ for every node, where $h^*(n)$ is the true cheapest cost from $n$ to a goal. It never overestimates. This is enough for optimal A* tree search."
+    },
+    {
+      "term": "Consistent heuristic",
+      "body": "A heuristic with $h(n)\\le c(n,a,n')+h(n')$ on every edge. It is the hypothesis for optimal A* graph search. If $h(\\mathrm{goal})=0$, consistency implies admissibility."
+    },
+    {
+      "term": "Greedy best-first",
+      "body": "Search that expands the open node with the smallest $h$. It uses $f=h$ and ignores $g$. It is not an optimal algorithm."
+    },
+    {
+      "term": "$f$, $g$, and $h$",
+      "body": "$g(n)$ is the cost from the start along the current path, $h(n)$ estimates the cost onward, and A* sorts by $f(n)=g(n)+h(n)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "A* priority",
+      "latex": "f(n)=g(n)+h(n)",
+      "note": "Greedy best-first drops $g$ and sorts by $h$ alone. That version is not optimal."
+    },
+    {
+      "name": "Admissibility",
+      "latex": "h(n)\\le h^{*}(n)",
+      "note": "Never overestimate the remaining cost. Enough for optimal tree search, with $h$ at a goal equal to $0$."
+    },
+    {
+      "name": "Consistency",
+      "latex": "h(n)\\le c(n,a,n')+h(n')",
+      "note": "A triangle inequality on every edge. Implies admissibility when $h(\\mathrm{goal})=0$, and it is the hypothesis for optimal graph search."
+    }
+  ],
+  "properties": [
+    "Greedy best-first uses $f=h$ only. It is not optimal. On the five-node graph below it returns cost $6$ when the optimum is $4$.",
+    "A* uses $f=g+h$. Admissible $h$, with $h(\\mathrm{goal})=0$, makes tree search optimal.",
+    "Consistent $h$ makes graph search optimal. The first time a state is expanded, its $g$ is already the best $g$.",
+    "Consistency implies admissibility when the heuristic is $0$ at every goal: chain $h(n)\\le c+h(n')$ along an optimal path.",
+    "If some $h(n)>h^*(n)$, the optimality theorems do not apply. The modified trace with $h(C)=5$ returns cost $6$."
+  ],
+  "examples": [
+    {
+      "title": "A* on a five-node graph",
+      "prompt": "Nodes are $S,A,B,C,G$. Edges: $S\\xrightarrow{1}A$, $S\\xrightarrow{4}B$, $A\\xrightarrow{2}C$, $A\\xrightarrow{3}B$, $B\\xrightarrow{2}G$, $C\\xrightarrow{1}G$. Heuristic: $h(S)=3$, $h(A)=2$, $h(B)=1$, $h(C)=1$, $h(G)=0$. Run A* graph search, breaking no ties because each chosen $f$ is strictly smaller than the other open $f$ values.",
+      "steps": [
+        "The true remaining costs are $h^*(C)=1$, $h^*(B)=2$, $h^*(A)=3$ via $A-C-G$ (the path $A-B-G$ costs $5$), and $h^*(S)=4$ via $S-A-C-G$ (the path $S-B-G$ costs $6$). Every given $h(n)$ is at most $h^*(n)$, so $h$ is admissible. It is also consistent: for example $h(S)=3\\le 1+h(A)=3$ and $h(A)=2\\le 2+h(C)=3$.",
+        "Start at $S$ with $g=0$, $f=3$. The children are $A$ at $g=1$, $h=2$, $f=3$ and $B$ at $g=4$, $h=1$, $f=5$. Expand $A$.",
+        "From $A$, $C$ has $g=3$, $h=1$, $f=4$. The path $S-A-B$ has $g=4$, which does not beat the copy of $B$ already stored at $g=4$. Expand $C$, the open node with smallest $f$.",
+        "From $C$, $G$ has $g=4$, $h=0$, $f=4$. The other open node is $B$ at $f=5$. Expand $G$. The path $S-A-C-G$ costs $4$, and every remaining open $f$ is at least $4$, with $B$ strictly worse."
+      ],
+      "answer": "A* expands $S,A,C,G$ in that order and returns cost $4$. $B$ is never expanded."
+    },
+    {
+      "title": "Greedy is not optimal, and an overestimate is outside the theorem",
+      "prompt": "On the same graph, run greedy best-first using only $h$. Then change the heuristic at $C$ to $5$ and run A* again.",
+      "steps": [
+        "Greedy best-first expands $S$ and compares children by $h$ alone. $h(B)=1$ is smaller than $h(A)=2$, so it expands $B$ and then $G$.",
+        "The path $S-B-G$ costs $4+2=6$. The optimal path $S-A-C-G$ costs $4$, so this greedy run is not optimal.",
+        "Now set $h(C)=5$. That is larger than $h^*(C)=1$, so the heuristic is inadmissible. A* expands $S$ ($f=3$), then $A$ ($f=3$). The child $C$ has $g=3$ and $f=3+5=8$.",
+        "$B$ has $f=5$, so A* expands $B$ and generates $G$ at $g=6$, $f=6$. That $f$ is smaller than $8$, so $G$ is expanded at cost $6$ and $C$ is never expanded. The returned cost is not optimal. Admissibility was the hypothesis that failed."
+      ],
+      "answer": "Greedy best-first returns cost $6$. A* with the inadmissible value $h(C)=5$ also returns cost $6$, by the expansion order $S,A,B,G$."
+    }
+  ],
+  "traps": [
+    "Sorting by $h$ and calling the algorithm A*. A* adds $g$. The version that uses $h$ alone is greedy best-first, and it is not optimal.",
+    "Using admissibility as the hypothesis for graph search that never reopens a closed node. That hypothesis is consistency.",
+    "Claiming A* is optimal for an inadmissible heuristic. The run with $h(C)=5$ returns $6$ on a graph whose optimum is $4$.",
+    "Forgetting that consistency implies admissibility only with the goal condition. The chaining argument ends at $h(\\mathrm{goal})=0$.",
+    "Treating a tie in $f$ as a change in the optimum. Ties can change the expansion order. They do not change the cost once $h$ is admissible on a tree, or consistent on a graph."
+  ],
+  "python": "import heapq\n\ngph = {\"S\": [(\"A\", 1), (\"B\", 4)], \"A\": [(\"C\", 2), (\"B\", 3)], \"B\": [(\"G\", 2)], \"C\": [(\"G\", 1)], \"G\": []}\nh = {\"S\": 3, \"A\": 2, \"B\": 1, \"C\": 1, \"G\": 0}\nhstar = {\"S\": 4, \"A\": 3, \"B\": 2, \"C\": 1, \"G\": 0}\n\ndef astar(hh):\n    pq = [(hh[\"S\"], 0, \"S\")]\n    best = {\"S\": 0}\n    order = []\n    while pq:\n        f, g, n = heapq.heappop(pq)\n        if g != best.get(n, 10**9):\n            continue\n        order.append(n)\n        if n == \"G\":\n            return order, g\n        for m, c in gph[n]:\n            ng = g + c\n            if ng < best.get(m, 10**9):\n                best[m] = ng\n                heapq.heappush(pq, (ng + hh[m], ng, m))\n\ndef greedy(hh):\n    pq = [(hh[\"S\"], 0, \"S\")]\n    seen = set()\n    order = []\n    while pq:\n        hv, g, n = heapq.heappop(pq)\n        if n in seen:\n            continue\n        seen.add(n)\n        order.append(n)\n        if n == \"G\":\n            return order, g\n        for m, c in gph[n]:\n            heapq.heappush(pq, (hh[m], g + c, m))\n\nfor n, nbrs in gph.items():\n    assert h[n] <= hstar[n]\n    for m, c in nbrs:\n        assert h[n] <= c + h[m]\norder, cost = astar(h)\nassert order == [\"S\", \"A\", \"C\", \"G\"] and cost == 4\ngo, gc = greedy(h)\nassert go == [\"S\", \"B\", \"G\"] and gc == 6\nhbad = dict(h)\nhbad[\"C\"] = 5\nassert hbad[\"C\"] > hstar[\"C\"]\nborder, bcost = astar(hbad)\nassert border == [\"S\", \"A\", \"B\", \"G\"] and bcost == 6\n# second graph: optimal cost is min(4+5, 6+4, 3+8)\nassert min(4 + 5, 6 + 4, 3 + 8) == 9\nprint(order, cost, gc, bcost)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "On the graph with edges $S\\xrightarrow{1}A$, $S\\xrightarrow{4}B$, $A\\xrightarrow{2}C$, $A\\xrightarrow{3}B$, $B\\xrightarrow{2}G$, $C\\xrightarrow{1}G$ and heuristic $h(S)=3$, $h(A)=2$, $h(B)=1$, $h(C)=1$, $h(G)=0$, A* graph search returns",
+      "options": [
+        "expansion $S,B,G$ and cost $6$",
+        "expansion $S,A,C,G$ and cost $4$",
+        "expansion $S,A,B,G$ and cost $6$",
+        "expansion $S,A,C,B,G$ and cost $4$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. $f(S)=3$, $f(A)=3$, $f(B)=5$, $f(C)=4$, and $f(G)=4$ along $S-A-C-G$. The open node with strictly smallest $f$ is $A$, then $C$, then $G$, and $B$ stays at $f=5$. The path cost is $1+2+1=4$. Option A is the greedy path."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Greedy best-first search on that same graph, using $f=h$ only, returns",
+      "options": [
+        "cost $4$, the optimal cost",
+        "cost $6$, along $S-B-G$",
+        "cost $5$",
+        "cost $1$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**, cost $6$ along $S-B-G$. From $S$ the heuristic prefers $B$ because $h(B)=1<h(A)=2$, and $B$'s child is $G$. The path cost is $4+2=6$. The optimal cost is $4$, so this is a concrete case where $f=h$ is not optimal."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For the same five-node graph, $h^*(S)=4$, $h^*(A)=3$, $h^*(B)=2$, $h^*(C)=1$, and $h^*(G)=0$. The heuristic in the lesson is $3,2,1,1,0$ at $S,A,B,C,G$. Which of the following are true?",
+      "options": [
+        "That heuristic is admissible.",
+        "$h(C)=5$ is admissible.",
+        "A* with $h(C)=5$ and the other heuristic values unchanged returns cost $6$.",
+        "Consistency is the hypothesis used for optimal A* graph search."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**. Each lesson value is at most the corresponding $h^*$, so the heuristic is admissible; $h(C)=5>1$, so B is false. With that overestimate, $f(C)=8$ and A* expands $G$ through $B$ at cost $6$. Optimal graph search is stated under consistency, which this admissible heuristic also satisfies, but the implication used in D is the general one."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "An admissible heuristic is enough for optimal A* tree search.",
+        "Greedy best-first uses $f=h$ and is not optimal in general.",
+        "A consistent heuristic with $h(\\mathrm{goal})=0$ is admissible.",
+        "A* sorts open nodes by $h$ alone."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Tree search does not reuse a state along another path, and admissibility is the hypothesis that keeps the optimal path ahead of a suboptimal goal. Greedy best-first really does drop $g$, which is why D is false: A* sorts by $g+h$. Chaining the consistency inequality along an optimal path yields $h(n)\\le h^*(n)$ when the goal heuristic is $0$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A second graph has edges $S\\xrightarrow{4}A\\xrightarrow{5}G$, $S\\xrightarrow{6}B\\xrightarrow{4}G$, and $S\\xrightarrow{3}C\\xrightarrow{8}G$. Every step cost is positive, and an admissible heuristic is available to A*. Enter the optimal path cost.",
+      "options": [],
+      "answer": [
+        "9"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **9**. The three paths cost $4+5=9$, $6+4=10$, and $3+8=11$. The minimum is $9$, along $S-A-G$. Admissibility is what lets A* tree search return that minimum; the number itself is the shortest path."
+    }
+  ]
+}

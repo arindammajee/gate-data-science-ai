@@ -1,0 +1,172 @@
+{
+  "slug": "limits",
+  "section": "calculus",
+  "title": "Limits",
+  "syllabus": "Limit",
+  "minutes": 30,
+  "summary": "The limit is the value a function approaches. Standard one-variable limits, one-sided limits, and the hypotheses of L'Hôpital's rule are the working tools.",
+  "keywords": [
+    "limit",
+    "one-sided limit",
+    "standard limits",
+    "L'Hôpital",
+    "indeterminate form"
+  ],
+  "intuition": "In words, $\\lim_{x\\to a}f(x)=L$ means that $f(x)$ gets arbitrarily close to the number $L$ when $x$ gets close to $a$, while $x$ itself stays different from $a$. The value $f(a)$, and even whether $f(a)$ exists, is irrelevant. That is why a limit can fill a hole, and why a wild value at a single point cannot create a limit or destroy one.\n\nTwo one-sided limits have to be checked when the formula changes at $a$, or when an absolute value splits the expression. The two-sided limit exists exactly when the left-hand limit and the right-hand limit both exist and are equal. A mismatch means the two-sided limit does not exist.\n\nThree standard limits do most of the algebraic work as $x\\to 0$: $\\sin x / x \\to 1$, $(e^{x}-1)/x \\to 1$, and $\\ln(1+x)/x \\to 1$. They are the linear approximations of sine, exponential, and logarithm at the origin. L'Hôpital's rule is the other tool, and it is narrower than its reputation. It applies only to the indeterminate forms $0/0$ and $\\infty/\\infty$, and only when the limit of the new quotient exists.\n\n$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1,\\qquad \\lim_{x\\to 0}\\frac{e^{x}-1}{x}=1,\\qquad \\lim_{x\\to 0}\\frac{\\ln(1+x)}{x}=1.$$",
+  "definitions": [
+    {
+      "term": "Limit",
+      "body": "$\\lim_{x\\to a}f(x)=L$ means $f(x)$ approaches the number $L$ as $x$ approaches $a$ with $x\\neq a$. The limit describes nearby values. It does not read $f(a)$."
+    },
+    {
+      "term": "One-sided limit",
+      "body": "The right-hand limit $\\lim_{x\\to a^{+}}f(x)$ uses only $x>a$. The left-hand limit $\\lim_{x\\to a^{-}}f(x)$ uses only $x<a$. The two-sided limit exists if and only if both exist and are equal."
+    },
+    {
+      "term": "Indeterminate form",
+      "body": "A quotient is an indeterminate form $0/0$ or $\\infty/\\infty$ when the numerator and the denominator both tend to $0$, or both tend to $\\pm\\infty$. Those are the only two forms to which L'Hôpital's rule applies directly."
+    },
+    {
+      "term": "Infinite limit",
+      "body": "Writing $\\lim_{x\\to a}f(x)=+\\infty$ means $f(x)$ grows without a finite upper bound as $x$ approaches $a$. It is a description of unbounded growth, not a claim that the limit exists as a real number."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Standard limits",
+      "latex": "\\lim_{x\\to 0}\\frac{\\sin x}{x}=1,\\quad \\lim_{x\\to 0}\\frac{e^{x}-1}{x}=1,\\quad \\lim_{x\\to 0}\\frac{\\ln(1+x)}{x}=1",
+      "note": "All three are as $x\\to 0$. They are the expansions used to replace a $0/0$ quotient by a ratio of slopes."
+    },
+    {
+      "name": "Scaled versions",
+      "latex": "\\lim_{x\\to 0}\\frac{\\sin(kx)}{x}=k,\\quad \\lim_{x\\to 0}\\frac{e^{kx}-1}{x}=k,\\quad \\lim_{x\\to 0}\\frac{\\ln(1+kx)}{x}=k",
+      "note": "For the logarithm, $kx\\to 0$ is already implied by $x\\to 0$. The constant $k$ must be finite."
+    },
+    {
+      "name": "L'Hôpital",
+      "latex": "\\lim\\frac{f}{g}=\\lim\\frac{f'}{g'}",
+      "note": "Only for the forms $0/0$ or $\\infty/\\infty$, and only when the limit on the right exists. If that new limit does not exist, the rule says nothing."
+    },
+    {
+      "name": "One-sided criterion",
+      "latex": "\\lim_{x\\to a}f(x)=L \\iff \\lim_{x\\to a^{-}}f(x)=\\lim_{x\\to a^{+}}f(x)=L",
+      "note": "Both one-sided limits must be the same real number. One infinite side, or two different finite sides, blocks the two-sided limit."
+    }
+  ],
+  "properties": [
+    "If $\\lim f$ and $\\lim g$ exist, then the limit passes through sums, products, and quotients, provided the denominator's limit is not zero. A zero denominator is a signal to rewrite, not to divide the two limits.",
+    "The standard limit $\\sin x / x \\to 1$ scales: $\\sin(3x)/\\sin(5x)\\to 3/5$ as $x\\to 0$, because each sine contributes its coefficient and the $x$ cancels.",
+    "$\\lim_{x\\to 0}(1-\\cos x)/x^{2}=1/2$. One route is $1-\\cos x=2\\sin^{2}(x/2)$, which becomes $2\\cdot(1/4)=1/2$ after the standard sine limit. L'Hôpital twice is the other route, and both hypotheses hold.",
+    "L'Hôpital's rule does not apply to a quotient that is not $0/0$ or $\\infty/\\infty$. On $(x+1)/x$ as $x\\to 0$, differentiating the top and bottom produces $1$, but the original one-sided limits are $+\\infty$ and $-\\infty$.",
+    "Existence of $\\lim f'/g'$ is a hypothesis, not a conclusion. As $x\\to\\infty$, $(x+\\sin x)/x\\to 1$, while $(1+\\cos x)/1$ oscillates and has no limit. The original limit exists, and L'Hôpital's rule is not available."
+  ],
+  "examples": [
+    {
+      "title": "A quotient of an exponential and a logarithm",
+      "prompt": "Evaluate $\\lim_{x\\to 0}\\dfrac{e^{3x}-1}{\\ln(1+x)}$.",
+      "steps": [
+        "Substitution of $x=0$ gives $(e^{0}-1)/\\ln 1=0/0$, so the quotient is indeterminate and the value of the expression at $0$ is not the limit.",
+        "Divide the numerator and the denominator by $x$: $\\dfrac{(e^{3x}-1)/x}{\\ln(1+x)/x}$. The standard limits give numerator $3$ and denominator $1$.",
+        "The quotient of those two limits is $3/1=3$. The same number comes from one application of L'Hôpital: the new quotient is $3e^{3x}/(1/(1+x))$, and at $x=0$ that equals $3$."
+      ],
+      "answer": "The limit is $3$. Both the standard-limit rewriting and L'Hôpital apply, and they agree."
+    },
+    {
+      "title": "A cosine limit and a one-sided split",
+      "prompt": "Evaluate $\\lim_{x\\to 0}(1-\\cos x)/x^{2}$, and decide whether $\\lim_{x\\to 0}|x|/x$ exists.",
+      "steps": [
+        "The cosine quotient is $0/0$. Rewrite $1-\\cos x=2\\sin^{2}(x/2)$, so the quotient is $2\\sin^{2}(x/2)/x^{2}=\\frac{1}{2}\\left(\\dfrac{\\sin(x/2)}{x/2}\\right)^{2}$.",
+        "The squared factor tends to $1^{2}=1$, so the limit is $\\frac{1}{2}\\cdot 1=\\frac{1}{2}$. Differentiating twice also gives $\\cos x / 2 \\to 1/2$, and each stage is a genuine $0/0$ form whose new limit exists.",
+        "For $|x|/x$, the right-hand quotient is $x/x=1$ and the left-hand quotient is $(-x)/x=-1$. The one-sided limits are $1$ and $-1$, so the two-sided limit does not exist."
+      ],
+      "answer": "$(1-\\cos x)/x^{2}\\to 1/2$. The two-sided limit of $|x|/x$ does not exist, because the one-sided limits differ."
+    }
+  ],
+  "traps": [
+    "Applying L'Hôpital to $(x+1)/x$ as $x\\to 0$. The form is not $0/0$. The differentiated quotient tends to $1$, while the original right-hand limit is $+\\infty$ and the left-hand limit is $-\\infty$.",
+    "Concluding that $\\lim_{x\\to\\infty}(x+\\sin x)/x$ fails because $1+\\cos x$ has no limit. L'Hôpital's rule is silent when the new limit does not exist. The original quotient is $1+(\\sin x)/x$, which tends to $1$ by the squeeze theorem.",
+    "Replacing $\\sin(3x)$ by $3x$ and then cancelling badly against a different factor. The legal move is to write $\\sin(3x)/(3x)\\to 1$, keeping the constant $3$ visible.",
+    "Reading $f(a)$ as the limit. A function can have $f(0)=100$ and still have limit $1$ at $0$, if the nearby values approach $1$."
+  ],
+  "python": "import math\n\nx = 1e-6\nexpo = (math.exp(3 * x) - 1) / math.log(1 + x)\ncosine = (1 - math.cos(x)) / x ** 2\ncombo = (math.log(1 + 2 * x) * math.sin(3 * x)) / x ** 2\nassert abs(expo - 3) < 1e-4\nassert abs(cosine - 0.5) < 1e-3\nassert abs(combo - 6) < 1e-3\nassert abs((abs(x) / x) - 1) < 1e-12\nassert abs((abs(-x) / (-x)) - (-1)) < 1e-12\nprint(round(expo, 5), round(cosine, 5), round(combo, 5))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The value of $\\lim_{x\\to 0}\\dfrac{\\sin(3x)}{\\sin(5x)}$ is",
+      "options": [
+        "$3/5$",
+        "$5/3$",
+        "$1$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3/5$.\n\nRewrite the quotient as $\\dfrac{\\sin(3x)}{3x}\\cdot\\dfrac{5x}{\\sin(5x)}\\cdot\\dfrac{3}{5}$. The first two factors tend to $1$, so the limit is $3/5$. Direct substitution is the indeterminate form $0/0$, which is why the value is not $0$. The reciprocal $5/3$ swaps the two coefficients."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The value of $\\lim_{x\\to 0}\\dfrac{e^{2x}-1}{x}$ is",
+      "options": [
+        "$2$",
+        "$1$",
+        "$e^{2}$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nThis is the scaled standard limit $(e^{kx}-1)/x\\to k$ with $k=2$. Equivalently, $(e^{2x}-1)/(2x)\\to 1$, and multiplying by the constant $2$ gives $2$. The form at $x=0$ is $0/0$, so the limit is not the substituted $0$. The number $e^{2}$ is the function $e^{2x}$ at $x=1$, which is a different point."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "$\\lim_{x\\to 0}(e^{x}-1-x)/x^{2}=1/2$.",
+        "$\\lim_{x\\to 0}\\ln(1+4x)/\\sin(2x)=2$.",
+        "$\\lim_{x\\to\\infty}(x+\\sin x)/x$ follows from L'Hôpital's rule because $\\lim(1+\\cos x)$ exists.",
+        "$\\lim_{x\\to 0}|x|/x$ exists as a real number."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**.\n\nFor A, two rounds of L'Hôpital are legal. The first derivatives give $(e^{x}-1)/(2x)$, still $0/0$. The second give $e^{x}/2\\to 1/2$.\n\nFor B, $\\ln(1+4x)/x\\to 4$ and $\\sin(2x)/x\\to 2$, so the quotient tends to $4/2=2$.\n\nC is false because $1+\\cos x$ oscillates and has no limit, so L'Hôpital's rule does not apply. The original limit is still $1$, by writing $1+(\\sin x)/x$. D is false because the right-hand limit is $1$ and the left-hand limit is $-1$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "$\\lim_{x\\to 0}\\sin x / x = 1$.",
+        "As $x\\to 0$, $(x+1)/x$ is a $0/0$ form, so L'Hôpital's rule applies.",
+        "If the left-hand and right-hand limits at $a$ exist and are equal, then the two-sided limit exists.",
+        "$\\lim_{x\\to 0}\\ln(1+x)/x=0$."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nThe sine limit is one of the three standard limits, and it equals $1$. Equal one-sided limits are exactly the criterion for the two-sided limit.\n\nB is false. As $x\\to 0$, the numerator $x+1$ tends to $1$, not to $0$. The form is not indeterminate, and the one-sided limits are infinite with opposite signs. D replaces the standard logarithm limit by $0$. The correct value is $1$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The limit $\\lim_{x\\to 0}\\dfrac{\\ln(1+2x)\\sin(3x)}{x^{2}}$ is an integer. Enter that integer.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**.\n\nSplit the quotient as $\\dfrac{\\ln(1+2x)}{x}\\cdot\\dfrac{\\sin(3x)}{x}$. The first factor tends to $2$ and the second tends to $3$, by the scaled standard limits. The product tends to $2\\cdot 3=6$."
+    }
+  ]
+}

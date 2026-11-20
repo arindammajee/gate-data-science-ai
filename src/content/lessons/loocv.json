@@ -1,0 +1,171 @@
+{
+  "slug": "loocv",
+  "section": "machine-learning",
+  "title": "Leave-one-out cross-validation",
+  "syllabus": "Leave-one-out (LOO) cross-validation",
+  "minutes": 35,
+  "summary": "Leave each point out once, refit n times, and average the squared test residuals. For a linear fit the residual is the ordinary residual divided by 1 minus the hat-matrix leverage. The estimate has low bias and high variance, and it is k-fold with k equal to n.",
+  "keywords": [
+    "LOOCV",
+    "leverage",
+    "hat matrix",
+    "linear regression",
+    "cross-validation"
+  ],
+  "intuition": "Leave-one-out cross-validation uses the sample twice without training on the point it scores. There are $n$ folds. Fold $i$ holds out point $i$, fits on the other $n-1$ points, and records the error of that fit on the held-out point. Each point is tested once. The LOOCV mean squared error is the average of those $n$ squared residuals. This is $k$-fold cross-validation with $k=n$.\n\nFor ordinary linear regression the $n$ refits can be read off the single full-data fit. If $H=X(X^\\top X)^{-1}X^\\top$ is the hat matrix of the full sample and $h_{ii}$ is its $i$th diagonal entry, the residual from the fit that excluded point $i$ is\n$$y_i-\\hat y_{(-i)}=\\frac{y_i-\\hat y_i}{1-h_{ii}}.$$\nThe numerator is the ordinary residual. The leverage $h_{ii}$ is between $0$ and $1$ for a linear model with a full-rank design, and the diagonal sums to the number of columns of $X$. A point with leverage near $1$ is almost able to pull the fitted hyperplane onto itself; the formula divides by a small number and the leave-one-out residual blows up. If $h_{ii}=1$ the denominator is zero and the shortcut does not apply.\n\nThe training set in each fold has size $n-1$, almost the size of the whole sample, so as an estimate of the test error of a fit on $n-1$ points the procedure has low bias. The $n$ training sets overlap in $n-2$ points, so the $n$ residuals are strongly dependent and the estimate of the error has high variance. Doing it naively costs $n$ fits. The hat-matrix shortcut is special to linear smoothers. A tree or a neural net really is refit $n$ times. And the shortcut is not a licence to scale the features on all $n$ rows first: a preprocessor is part of the fit, so the held-out row must not enter it.",
+  "definitions": [
+    {
+      "term": "Leave-one-out fold",
+      "body": "One of $n$ folds. Fold $i$ trains on every point except $i$ and tests on $i$. The model is refit for each $i$. Each point is the test point exactly once."
+    },
+    {
+      "term": "Hat matrix and leverage",
+      "body": "For a linear fit, $H=X(X^\\top X)^{-1}X^\\top$ and $\\hat y=Hy$. The leverage of row $i$ is the diagonal entry $h_{ii}$. With an intercept column, $X$ includes a column of ones."
+    },
+    {
+      "term": "Leave-one-out residual",
+      "body": "The difference $y_i-\\hat y_{(-i)}$ between the held-out response and the prediction from the fit that excluded $i$. For a linear fit it equals $(y_i-\\hat y_i)/(1-h_{ii})$."
+    },
+    {
+      "term": "LOOCV mean squared error",
+      "body": "The mean of the $n$ squared leave-one-out residuals. It estimates test error. Relative to a fit trained on $n-1$ points it has low bias and, because the folds overlap so heavily, high variance."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Hat matrix",
+      "latex": "H=X(X^\\top X)^{-1}X^\\top, \\qquad h_{ii}=H_{ii}",
+      "note": "$X$ has full column rank and includes a column of ones when the line has an intercept. The trace of $H$ equals the number of columns."
+    },
+    {
+      "name": "LOO residual",
+      "latex": "y_i-\\hat y_{(-i)}=\\frac{y_i-\\hat y_i}{1-h_{ii}}",
+      "note": "Linear smoothers only. The numerator is the full-data residual. The identity is not a shortcut for a tree or a neural net."
+    },
+    {
+      "name": "LOOCV MSE",
+      "latex": "\\frac{1}{n}\\sum_{i=1}^{n}\\left(y_i-\\hat y_{(-i)}\\right)^2",
+      "note": "LOOCV is $k$-fold cross-validation with $k=n$. Low bias as an estimate of test error, high variance, and $n$ fits unless the linear shortcut applies."
+    }
+  ],
+  "properties": [
+    "There are $n$ folds and $n$ refits. Each point is held out once and is absent from the fit that is asked to predict it.",
+    "For linear regression the shortcut uses only the full-data residuals and the diagonal of $H$. It matches the explicit refits, which the three-point example below checks term by term.",
+    "Leverages satisfy $0\\le h_{ii}\\le 1$ in the usual full-rank linear model, and $\\sum_i h_{ii}$ equals the number of columns of $X$. A leverage of $1$ makes the denominator zero.",
+    "As an estimate of the test error of training on $n-1$ points, LOOCV has low bias. The estimate itself has high variance because consecutive training sets differ by only one point.",
+    "The procedure is expensive when each fit is expensive: $n$ of them. The linear shortcut does not extend to nonlinear models.",
+    "A scaling step is part of the fit. Computing the scale from all $n$ rows lets the held-out point influence the model that is then scored on it."
+  ],
+  "examples": [
+    {
+      "title": "Three points, intercept, and the hat diagonal",
+      "prompt": "Fit a line with intercept to $(x,y)=(0,1)$, $(1,3)$, $(2,2)$. Compute the leverages, the leave-one-out residuals, and the LOOCV mean squared error.",
+      "steps": [
+        "The design has rows $(1,0)$, $(1,1)$, $(1,2)$. Then $X^\\top X=\\begin{pmatrix}3&3\\\\3&5\\end{pmatrix}$, determinant $6$, and $(X^\\top X)^{-1}=\\tfrac16\\begin{pmatrix}5&-3\\\\-3&3\\end{pmatrix}$. The leverages are $h_{11}=\\tfrac56$, $h_{22}=\\tfrac13$, $h_{33}=\\tfrac56$. They sum to $2$, the number of columns.",
+        "With $y=(1,3,2)^\\top$, the normal equation gives intercept $\\tfrac32$ and slope $\\tfrac12$, so fitted values are $1.5$, $2$, and $2.5$. Full-data residuals are $-\\tfrac12$, $1$, and $-\\tfrac12$.",
+        "Divide by $1-h_{ii}$: $(-\\tfrac12)/(\\tfrac16)=-3$, $1/(\\tfrac23)=\\tfrac32$, and $(-\\tfrac12)/(\\tfrac16)=-3$. Squared residuals are $9$, $\\tfrac94$, and $9$. Their mean is $(81/4)/3=27/4$."
+      ],
+      "answer": "Leave-one-out residuals are $-3$, $\\tfrac32$, and $-3$. The LOOCV mean squared error is $\\tfrac{27}{4}$."
+    },
+    {
+      "title": "The same residuals by deleting each point",
+      "prompt": "Refit the line three times, each time dropping one of $(0,1)$, $(1,3)$, $(2,2)$, and compare with the shortcut.",
+      "steps": [
+        "Drop $(0,1)$. The remaining points $(1,3)$ and $(2,2)$ give slope $(2-3)/(2-1)=-1$ and intercept $4$. The prediction at $x=0$ is $4$. The residual is $1-4=-3$.",
+        "Drop $(1,3)$. The points $(0,1)$ and $(2,2)$ give slope $\\tfrac12$ and intercept $1$. The prediction at $x=1$ is $1.5$. The residual is $3-1.5=\\tfrac32$.",
+        "Drop $(2,2)$. The points $(0,1)$ and $(1,3)$ give slope $2$ and intercept $1$. The prediction at $x=2$ is $5$. The residual is $2-5=-3$. All three match the hat-matrix shortcut, so the mean of the squared residuals is again $\\tfrac{27}{4}$."
+      ],
+      "answer": "Explicit refits reproduce residuals $-3$, $\\tfrac32$, $-3$. The shortcut did not change the LOOCV mean squared error $\\tfrac{27}{4}$."
+    }
+  ],
+  "traps": [
+    "Dividing the full-data residual by $h_{ii}$, or by $1+h_{ii}$, instead of by $1-h_{ii}$. At the first point the residual $-\\tfrac12$ divided by $1-\\tfrac56=\\tfrac16$ is $-3$, not $(-\\tfrac12)/(\\tfrac56)=-\\tfrac35$.",
+    "Averaging the three full-data residuals and calling that LOOCV. Those residuals are $-\\tfrac12$, $1$, $-\\tfrac12$. The leave-one-out residuals are $-3$, $\\tfrac32$, $-3$.",
+    "Using the linear shortcut on a decision tree or a neural net. The identity needs a linear smoother. Other models are refit once per held-out point.",
+    "Describing LOOCV as a low-variance estimate. The bias, relative to training on $n-1$ points, is low. The variance of the estimate is high because the training sets almost coincide.",
+    "Standardising all $n$ rows, then holding one row out of the linear fit only. The held-out row already entered the scale. The preprocessor is refit on the $n-1$ training rows."
+  ],
+  "python": "# Line with intercept on (0,1), (1,3), (2,2). LOOCV MSE is 27/4.\nxs = [0, 1, 2]\nys = [1.0, 3.0, 2.0]\n\ndef fit(pairs):\n    n = len(pairs)\n    mx = sum(x for x, _ in pairs) / n\n    my = sum(y for _, y in pairs) / n\n    sxx = sum((x - mx) ** 2 for x, _ in pairs)\n    sxy = sum((x - mx) * (y - my) for x, y in pairs)\n    slope = sxy / sxx\n    return my - slope * mx, slope\n\nresiduals = []\nfor i in range(3):\n    train = [(xs[j], ys[j]) for j in range(3) if j != i]\n    intercept, slope = fit(train)\n    pred = intercept + slope * xs[i]\n    residuals.append(ys[i] - pred)\nassert residuals == [-3.0, 1.5, -3.0]\nmse = sum(r * r for r in residuals) / 3\nassert abs(mse - 27 / 4) < 1e-12\nprint(mse)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A linear fit has full-data residual $-\\tfrac12$ at a point whose leverage is $\\tfrac56$. The leave-one-out residual is",
+      "options": [
+        "$-3$",
+        "$-\\tfrac12$",
+        "$-\\tfrac35$",
+        "$-\\tfrac{1}{12}$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $-3$.\n\nDivide by $1-h_{ii}=1-\\tfrac56=\\tfrac16$. Then $(-\\tfrac12)/(\\tfrac16)=-3$. Option C divides by the leverage itself. Option D multiplies the residual by $1-h_{ii}$ instead of dividing."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "For the design with rows $(1,0)$, $(1,1)$, and $(1,2)$, the three leverages are $\\tfrac56$, $\\tfrac13$, and $\\tfrac56$. Their sum equals",
+      "options": [
+        "$2$, the number of columns of $X$",
+        "$1$, because $H$ is a projection of rank $1$",
+        "$3$, the number of rows",
+        "$0$, because residuals sum to zero"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\n$\\tfrac56+\\tfrac13+\\tfrac56=\\tfrac{5}{6}+\\tfrac{2}{6}+\\tfrac{5}{6}=2$. The trace of the hat matrix equals the rank, here the two columns (intercept and slope). It is not the sample size, and it is not the sum of residuals."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of leave-one-out cross-validation?",
+      "options": [
+        "It is $k$-fold cross-validation with $k=n$.",
+        "For a linear fit, $y_i-\\hat y_{(-i)}=(y_i-\\hat y_i)/(1-h_{ii})$.",
+        "As an estimate of test error it has low bias and high variance.",
+        "The point held out is included in the fit that produces its leave-one-out prediction."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nEach of the $n$ points is a test fold of its own, which is $k$-fold with $k=n$. The displayed residual identity is the linear shortcut, with $h_{ii}$ from the full-data hat matrix. Training sets of size $n-1$ keep the bias low and the heavy overlap keeps the variance of the estimate high. D is false: the held-out point is not a training row of the fit that predicts it."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true when LOOCV is computed from a linear fit?",
+      "options": [
+        "The shortcut needs the full-data residuals and the diagonal of $H=X(X^\\top X)^{-1}X^\\top$.",
+        "If some $h_{ii}=1$, the denominator $1-h_{ii}$ is zero.",
+        "The same algebraic shortcut applies to an unpruned decision tree with no change.",
+        "Fitting a scaler on all $n$ rows, then deleting one row only from the linear fit, still lets the held-out row affect the score."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe identity is $(y_i-\\hat y_i)/(1-h_{ii})$, so a leverage of $1$ makes it undefined. A tree is not a linear smoother, so C is false: the tree is refit $n$ times. A scaler fit on every row, including the row about to be scored, has already used the test point."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A line with intercept is fit to $(0,1)$, $(1,3)$, and $(2,2)$. The three leave-one-out residuals are $-3$, $\\tfrac32$, and $-3$. The LOOCV mean squared error is $m$. Enter $4m$.",
+      "options": [],
+      "answer": [
+        "27"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **27**.\n\nThe squared residuals are $9$, $\\tfrac94$, and $9$. Their sum is $\\tfrac{36}{4}+\\tfrac{9}{4}+\\tfrac{36}{4}=\\tfrac{81}{4}$. The mean is $m=(\\tfrac{81}{4})/3=\\tfrac{27}{4}$. Therefore $4m=27$."
+    }
+  ]
+}

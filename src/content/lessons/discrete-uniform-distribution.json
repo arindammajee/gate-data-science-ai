@@ -1,0 +1,168 @@
+{
+  "slug": "discrete-uniform-distribution",
+  "section": "probability",
+  "title": "Discrete uniform distribution",
+  "syllabus": "Uniform distribution (discrete)",
+  "minutes": 25,
+  "summary": "Equal probability on each integer from a to b. The mean is the midpoint, and the variance is (n squared minus 1) over 12.",
+  "keywords": [
+    "discrete uniform",
+    "support",
+    "equally likely",
+    "mean",
+    "variance"
+  ],
+  "intuition": "A discrete uniform random variable is a label drawn from a block of consecutive integers, with every integer in the block equally likely. A fair die is the block {1,...,6}. A ticket drawn from 14 through 20 is the block {14,...,20}. Once the endpoints are fixed there is nothing left to estimate: the probability, the mean, and the variance are determined by the support. This is a mass function, not a density. Values outside the block have probability 0, and values inside it share the probability equally.\n\nCount the support before you divide. From a to b inclusive there are n=b-a+1 points, not b-a. Each point then has probability 1/n. The mean is the midpoint (a+b)/2. On the special support {1,...,n} that midpoint is (n+1)/2, which is not n/2. The variance depends only on how many points there are:\n\n$$\n\\mathrm{Var}(X)=\\frac{n^2-1}{12}.\n$$\n\nSliding the block from {1,...,n} to {a,...,b} changes the mean and leaves the variance alone, because variance ignores location. The average of the squared deviations uses the masses 1/n, so the divisor is n. That is the population variance of the distribution. The divisor n-1 belongs to a sample variance computed from data, and it is the wrong divisor here. The continuous uniform on an interval of length n has variance n^2/12, a different formula for a different kind of support. For a die, (36-1)/12=35/12, while 36/12=3 is already wrong.",
+  "definitions": [
+    {
+      "term": "Support",
+      "body": "The integers the variable can actually take. Either a block $\\{a,a+1,\\ldots,b\\}$ or the standard block $\\{1,\\ldots,n\\}$."
+    },
+    {
+      "term": "Number of points",
+      "body": "On $\\{a,\\ldots,b\\}$ the count is $n=b-a+1$. On $\\{1,\\ldots,n\\}$ the count is $n$. Every formula below uses this $n$."
+    },
+    {
+      "term": "Probability mass function",
+      "body": "Each integer $k$ in the support has $P(X=k)=1/n$, and $P(X=k)=0$ otherwise. The masses sum to 1."
+    },
+    {
+      "term": "Population variance of the law",
+      "body": "$\\mathrm{Var}(X)=\\sum_k (k-\\mu)^2/n$, with $\\mu=\\mathbb{E}[X]$. The divisor is the number of points, not $n-1$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Mass function",
+      "latex": "P(X=k)=\\frac{1}{n},\\quad k\\in\\{a,\\ldots,b\\}",
+      "note": "Here $n=b-a+1$. Outside the block the probability is 0."
+    },
+    {
+      "name": "Mean",
+      "latex": "\\mathbb{E}[X]=\\frac{a+b}{2}=\\frac{n+1}{2}\\ \\text{on }\\{1,\\ldots,n\\}",
+      "note": "The second form is the midpoint of $1$ and $n$, not $n/2$."
+    },
+    {
+      "name": "Variance",
+      "latex": "\\mathrm{Var}(X)=\\frac{n^2-1}{12}",
+      "note": "Same for every block of $n$ consecutive integers. This is $(n-1)(n+1)/12$."
+    }
+  ],
+  "properties": [
+    "The mean of a block $\\{a,\\ldots,b\\}$ is the midpoint $(a+b)/2$. For $\\{1,\\ldots,n\\}$ that is $(n+1)/2$.",
+    "The variance of any $n$ consecutive integers is $(n^2-1)/12$. A shift changes the mean and does not change the variance.",
+    "For a fair die, $n=6$, the mean is $7/2$ and the variance is $35/12$.",
+    "The probability of a subset is the number of favourable integers divided by $n$. There is no weighting inside the block.",
+    "Do not replace $(n^2-1)/12$ by $n^2/12$. The second expression is the variance of a continuous uniform on an interval of length $n$."
+  ],
+  "examples": [
+    {
+      "title": "A fair die",
+      "prompt": "Let $X$ be uniform on $\\{1,2,3,4,5,6\\}$. Find the mean and the variance.",
+      "steps": [
+        "The support has $n=6$ points, so $P(X=k)=1/6$ for each face, and the mean is $(6+1)/2=7/2$.",
+        "The variance formula gives $(6^2-1)/12=35/12$.",
+        "The same number comes from the definition: the squared deviations from $7/2$ sum to $35/2$, and dividing by $n=6$ gives $(35/2)/6=35/12$. Dividing by $5$ instead would be a sample variance, which is not asked for."
+      ],
+      "answer": "The mean is $7/2$ and the variance is $35/12$."
+    },
+    {
+      "title": "A shifted block",
+      "prompt": "Let $X$ be uniform on $\\{3,4,5,6,7\\}$. Find the mean, the variance, and $P(X\\ge 6)$.",
+      "steps": [
+        "There are $n=7-3+1=5$ points, so each has probability $1/5$. The mean is $(3+7)/2=5$.",
+        "The variance depends only on $n$: $(5^2-1)/12=24/12=2$. Shifting $\\{1,\\ldots,5\\}$ up by 2 does not change it.",
+        "The event $X\\ge 6$ is the two points $6$ and $7$, so the probability is $2/5$."
+      ],
+      "answer": "The mean is $5$, the variance is $2$, and $P(X\\ge 6)=2/5$."
+    }
+  ],
+  "traps": [
+    "Counting $b-a$ points instead of $b-a+1$. From 4 to 12 inclusive there are 9 integers, not 8.",
+    "Using the mean $n/2$ on $\\{1,\\ldots,n\\}$. The midpoint is $(n+1)/2$. For a die that is $3.5$, not $3$.",
+    "Importing the continuous formula $n^2/12$, or dividing the squared deviations by $n-1$. The variance of this distribution is $(n^2-1)/12$.",
+    "Treating the variance as if it depended on the left endpoint. Two blocks with the same number of consecutive integers have the same variance."
+  ],
+  "python": "from fractions import Fraction\nxs = list(range(1, 7))\nmu = Fraction(sum(xs), 6)\nvar = sum((Fraction(x) - mu) ** 2 for x in xs) / 6\nassert mu == Fraction(7, 2)\nassert var == Fraction(35, 12)\nblock = [3, 4, 5, 6, 7]\nmu2 = Fraction(sum(block), 5)\nvar2 = sum((Fraction(x) - mu2) ** 2 for x in block) / 5\nassert mu2 == 5 and var2 == 2\nassert (11 ** 2 - 1) / 12 == 10\nprint(float(mu), float(var), float(var2))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "X is uniform on the integers $\\{2,3,4,5,6,7,8\\}$. The variance of X is",
+      "options": [
+        "$4$",
+        "$49/12$",
+        "$5$",
+        "$48/7$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4$.\n\nThe block runs from 2 to 8, so $n=8-2+1=7$. The variance of any 7 consecutive integers is $(7^2-1)/12=48/12=4$. The mean is $(2+8)/2=5$, which is option C and is not the variance. Option B is $n^2/12$, the continuous-style formula with the $-1$ dropped. Option D divides $n^2-1$ by $n$ instead of by 12."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "X is uniform on $\\{4,5,\\ldots,12\\}$. The probability $P(X\\le 6)$ is",
+      "options": [
+        "$1/3$",
+        "$1/9$",
+        "$3/8$",
+        "$1/2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/3$.\n\nInclusive counting gives $n=12-4+1=9$ equally likely integers. The outcomes $4,5,6$ are three of them, so the probability is $3/9=1/3$. Option B is the probability of one point. Option C uses $12-4=8$ points and forgets that both endpoints are included. Option D treats the threshold 6 as if it were the middle of 1 through 12."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "X is uniform on $\\{1,\\ldots,n\\}$. Which of the following are true?",
+      "options": [
+        "The mean is $(n+1)/2$.",
+        "The variance is $(n^2-1)/12$.",
+        "Each integer $k$ from 1 to $n$ has probability $1/n$.",
+        "The variance is $n^2/12$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nOn $\\{1,\\ldots,n\\}$ the midpoint is $(n+1)/2$, the variance of $n$ consecutive integers is $(n^2-1)/12$, and the mass function is constant $1/n$ on that support. Option D is the variance of a continuous uniform distribution on an interval of length $n$, not the variance of this discrete law. For $n=6$ the discrete variance is $35/12$, while $n^2/12=3$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "X takes each of the values 5, 6, 7, 8, and 9 with probability $1/5$. Which of the following are true?",
+      "options": [
+        "The mean is 7.",
+        "The variance is 2.",
+        "The variance is $5/2$, from dividing the squared deviations by $n-1$.",
+        "The probability $P(X=9)$ is $1/4$."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**.\n\nThere are $n=5$ points, the midpoint is $(5+9)/2=7$, and the variance is $(5^2-1)/12=2$. The squared deviations from 7 are $4,1,0,1,4$, which sum to 10. Dividing by $n=5$ gives 2. Dividing by $n-1=4$ gives $5/2$, and that is a sample-variance calculation, not the variance of this distribution, so C is false. Each point has probability $1/5$, not $1/4$, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "X is uniform on $\\{1,\\ldots,n\\}$ for a positive integer $n$, and $\\mathrm{Var}(X)=10$. Enter $n$.",
+      "options": [],
+      "answer": [
+        "11"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **11**.\n\nThe variance formula is $(n^2-1)/12=10$, so $n^2-1=120$ and $n^2=121$. The positive integer solution is $n=11$. As a check, $(121-1)/12=10$."
+    }
+  ]
+}

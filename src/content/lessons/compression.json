@@ -1,0 +1,165 @@
+{
+  "slug": "compression",
+  "section": "databases",
+  "title": "Lossless and lossy compression",
+  "syllabus": "Compression",
+  "minutes": 30,
+  "summary": "Lossless encodings such as run-length encoding and Huffman coding rebuild the original symbols. Lossy compression keeps an approximation and does not.",
+  "keywords": [
+    "lossless",
+    "lossy",
+    "run-length encoding",
+    "Huffman"
+  ],
+  "intuition": "Compression, here, re-encodes values. It does not choose which rows to keep; that was sampling. A lossless encoding rebuilds the original string exactly. A lossy encoding keeps something smaller and accepts that the original cannot be rebuilt. Rounding 3.14159 down to 3 is lossy. Replacing a bin by its mean is lossy. Run-length encoding and Huffman coding are lossless relative to the string you hand them.\n\nRun-length encoding stores a run of identical symbols as the symbol and the count. Long runs shrink. A string with no repeated neighbours grows, because each symbol becomes a pair. Huffman coding is the dictionary idea in miniature: more frequent symbols receive shorter codes. The construction repeatedly merges the two lightest nodes, so a frequent symbol stays nearer the root. The codes are prefix-free, which means a bitstream can be cut into symbols without separators. That is the idea. It is not a proof of optimality written out in full; the worked tree below is small enough that the bit count can be added by hand.\n\nLossy and lossless compose in one direction only. If you round first and then Huffman-code the rounded symbols, Huffman restores the rounded string, not the measurements you discarded. The pipeline is lossless only for the string that entered the Huffman coder.",
+  "definitions": [
+    {
+      "term": "Lossless compression",
+      "body": "An encoding from which the original string can be reconstructed exactly. Run-length encoding and Huffman coding are lossless for the symbols they are given."
+    },
+    {
+      "term": "Lossy compression",
+      "body": "An encoding that discards information. The original values cannot be reconstructed. Replacing measurements by a coarser approximation is lossy."
+    },
+    {
+      "term": "Run-length encoding",
+      "body": "Replace a maximal run of one symbol by the pair (symbol, count). The string 000001111000 has three runs. Expanding each pair by repeating the symbol returns the original string."
+    },
+    {
+      "term": "Huffman code",
+      "body": "A prefix-free code built by merging least-frequent nodes first. More frequent symbols end up with shorter codes. No code is a prefix of another, so the bitstream needs no separators."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "RLE token ratio",
+      "latex": "\\frac{L}{2R}",
+      "note": "$L$ is the original length and $R$ is the number of runs, when each run is stored as two tokens. A ratio above 1 means the encoding is shorter."
+    },
+    {
+      "name": "Weighted code length",
+      "latex": "\\sum_i f_i \\ell_i",
+      "note": "$f_i$ is the count of symbol $i$ and $\\ell_i$ is its code length in bits. This is the size of the encoded multiset, not a claim that every other code is longer."
+    }
+  ],
+  "properties": [
+    "RLE is lossless: repeat each symbol by its count and the original string returns. It shrinks long runs and can expand a string that has no runs.",
+    "Huffman coding gives frequent symbols shorter codes and keeps the code prefix-free. On the frequencies below, A gets 1 bit and C and D get 3.",
+    "A prefix-free set can be decoded left to right. If one code is a prefix of another, the bitstream is ambiguous.",
+    "Replacing 2, 4, and 6 by their mean 4 is lossy. No later lossless coder restores 2, 4, and 6 from the single stored 4.",
+    "The weighted length of the worked Huffman tree is 14 bits for 8 symbols. A fixed 2-bit code for four symbols would use 16 bits on the same multiset. Swapping 0 and 1 labels changes the bits and not the lengths.",
+    "Compression is not sampling. Sampling drops rows. Compression re-encodes the values that remain."
+  ],
+  "examples": [
+    {
+      "title": "Run-length ratio of a short string",
+      "prompt": "Encode the 12-character string 000001111000 by run-length pairs (symbol, count). If each pair is two tokens, what is the ratio of original length to encoded token count?",
+      "steps": [
+        "The runs are five 0s, four 1s, and three 0s. That is the list $(0,5),\\ (1,4),\\ (0,3)$.",
+        "Three pairs at two tokens each is 6 tokens. The original length is 12.",
+        "The ratio is $12/6=2$. Expanding the three pairs repeats the symbols and returns all 12 characters, so the encoding is lossless. The same scheme on ABC produces three pairs and grows from 3 symbols to 6 tokens."
+      ],
+      "answer": "Three runs, 6 tokens, ratio 2. The encoding is lossless."
+    },
+    {
+      "title": "A four-symbol Huffman tree",
+      "prompt": "Symbols occur with counts A: 4, B: 2, C: 1, D: 1. Build the Huffman tree by always merging the two lightest nodes, assign codes, and total the bits used for the eight symbols.",
+      "steps": [
+        "The two lightest nodes are C and D, both weight 1. Merge them into a node CD of weight 2. The remaining weights are A: 4, B: 2, CD: 2.",
+        "Merge B with CD into a node of weight 4, then merge that node with A. One prefix-free assignment is A = 0, B = 10, C = 110, D = 111. No code is a prefix of another.",
+        "The weighted length is $4\\cdot 1+2\\cdot 2+1\\cdot 3+1\\cdot 3=4+4+3+3=14$ bits. A fixed 2-bit code would have used $8\\cdot 2=16$ bits. The frequent symbol received the short code."
+      ],
+      "answer": "The eight symbols use 14 bits. A is one bit, B is two, and C and D are three. The average is $14/8=1.75$ bits per symbol."
+    }
+  ],
+  "traps": [
+    "Calling run-length encoding lossy. Expanding $(0,5),\\ (1,4),\\ (0,3)$ returns 000001111000 exactly.",
+    "Expecting RLE to shrink every string. ABC has three runs and expands from 3 symbols to 6 tokens when each run is a pair.",
+    "Choosing codes that are not prefix-free. If A is 0 and B is 01, the bits 01 can start with A or with B. The Huffman codes 0, 10, 110, 111 do not have that collision.",
+    "Huffman-coding a rounded measurement and calling the pipeline lossless. Huffman restores the rounded symbols. It does not restore the digits the rounding deleted.",
+    "Treating the 14-bit total as a theorem about every code on every alphabet. It is the weighted length of this tree on these four counts. Frequent symbols get shorter codes; that is the design, and the arithmetic is the check."
+  ],
+  "python": "freq = {\"A\": 4, \"B\": 2, \"C\": 1, \"D\": 1}\ncodes = {\"A\": \"0\", \"B\": \"10\", \"C\": \"110\", \"D\": \"111\"}\nbits = sum(freq[s] * len(codes[s]) for s in freq)\nassert bits == 14\nvalues = list(codes.values())\nassert all(not (a != b and b.startswith(a)) for a in values for b in values)\ntext = \"000001111000\"\nruns, cur, k = [], text[0], 1\nfor ch in text[1:]:\n    if ch == cur:\n        k += 1\n    else:\n        runs.append((cur, k))\n        cur, k = ch, 1\nruns.append((cur, k))\nassert runs == [(\"0\", 5), (\"1\", 4), (\"0\", 3)]\nassert len(text) / (2 * len(runs)) == 2\nprint(bits)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The string 000001111000 has length 12. With each run stored as two tokens, the ratio of original length to encoded token count is",
+      "options": [
+        "2",
+        "3",
+        "12",
+        "6"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 2. The runs are five 0s, four 1s, and three 0s, so there are 3 pairs and 6 tokens. The ratio is $12/6=2$. Option D is the token count, not the ratio."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "With counts A: 4, B: 2, C: 1, D: 1 and codes A = 0, B = 10, C = 110, D = 111, how many bits encode the eight symbols?",
+      "options": [
+        "14",
+        "16",
+        "8",
+        "4"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 14. The weighted length is $4\\cdot 1+2\\cdot 2+1\\cdot 3+1\\cdot 3=14$. Option B is a fixed 2-bit encoding of eight symbols. The frequent symbol A is the one with the short code."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of these encodings?",
+      "options": [
+        "Run-length encoding of a run of identical symbols is lossless.",
+        "Huffman coding gives more frequent symbols shorter codes.",
+        "A prefix-free code can be split without storing a separator between symbols.",
+        "Replacing the numbers 2, 4, and 6 by their mean 4 is lossless."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Expanding a run-length pair returns the run, Huffman assigns the short codes to the frequent symbols, and a prefix-free code needs no separators. D is false: the mean 4 does not determine whether the discarded numbers were 2, 4, and 6."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Encoding ABC as three (symbol, count) pairs raises the token count from 3 to 6.",
+        "The codes 0, 10, 110, and 111 are prefix-free.",
+        "The codes 0 and 01 form a safe prefix-free pair.",
+        "Huffman coding restores the string of symbols it was given."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. ABC has no run longer than one, so three pairs use 6 tokens. None of 0, 10, 110, 111 is a prefix of another. Huffman decoding returns those symbols exactly. C is false: 0 is a prefix of 01, so the bits 01 are ambiguous."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Using codes of lengths 1, 2, 3, and 3 for counts 4, 2, 1, and 1, how many bits are used in total? Enter that integer.",
+      "options": [],
+      "answer": [
+        "14"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **14**. Multiply each count by its code length and add: $4\\cdot 1+2\\cdot 2+1\\cdot 3+1\\cdot 3=4+4+3+3=14$ bits for the eight symbols."
+    }
+  ]
+}

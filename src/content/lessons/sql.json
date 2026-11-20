@@ -1,0 +1,164 @@
+{
+  "slug": "sql",
+  "section": "databases",
+  "title": "SQL queries",
+  "syllabus": "SQL",
+  "minutes": 35,
+  "summary": "SQL filters with WHERE before groups exist and with HAVING after aggregates are computed. NULL makes a comparison unknown rather than true, and a left join keeps rows that an inner join drops.",
+  "keywords": [
+    "WHERE",
+    "HAVING",
+    "NULL",
+    "LEFT JOIN",
+    "GROUP BY"
+  ],
+  "intuition": "A SELECT statement is a pipeline even though it is written as one sentence. The logical order is FROM, including its joins, then WHERE, then GROUP BY, then HAVING, then SELECT, then DISTINCT, then ORDER BY. WHERE sees individual rows and cannot use an aggregate. GROUP BY builds one group per value of the grouping columns. Aggregates such as SUM and COUNT are computed on each group. HAVING sees those groups and is allowed to use the aggregates. ORDER BY sorts the finished rows and does not decide which rows exist.\n\nNULL is a missing value, and a comparison with it is unknown, not true. The predicate NULL = NULL is not true, and neither is NULL = 5, nor salary >= 20 when salary is NULL. WHERE keeps a row only when the predicate is true, so unknown is thrown away. The test for a missing value is IS NULL. Aggregates treat that missing value differently from a row. COUNT(*) counts rows, including rows whose measured column is null. COUNT(col) skips the nulls in that column. SUM skips them as well.\n\nJoins change the row count before WHERE ever sees them. An inner join keeps a left row only when some right row makes the condition true. A left join keeps every left row, and fills the right-hand columns with null when nothing matches. If the right-hand key is unique, a left join returns one row per left row, while the inner join returns fewer whenever a left row fails the match. DISTINCT removes duplicate SELECT rows after the filters. It is not a substitute for a key, and it does not run before WHERE.",
+  "definitions": [
+    {
+      "term": "WHERE and HAVING",
+      "body": "WHERE filters input rows before groups are formed. HAVING filters groups after aggregation. A condition on SUM or COUNT belongs in HAVING. A condition on a raw column, used to decide whether the row enters a group, belongs in WHERE."
+    },
+    {
+      "term": "NULL",
+      "body": "A missing value. Any comparison involving NULL, including NULL = NULL, evaluates to unknown rather than true. WHERE and HAVING keep a row or a group only when the predicate is true, so unknown drops it. IS NULL is the test that succeeds on a missing value."
+    },
+    {
+      "term": "COUNT(*) and COUNT(col)",
+      "body": "COUNT(*) counts the rows in the group. COUNT(col) counts the rows whose value in col is not null. They differ exactly on the rows where col is null."
+    },
+    {
+      "term": "Inner and left join",
+      "body": "INNER JOIN returns pairs that satisfy the join condition. LEFT JOIN returns those pairs and also returns each unmatched left row, with nulls in the columns that came from the right table."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Logical order",
+      "latex": "\\mathrm{FROM},\\ \\mathrm{WHERE},\\ \\mathrm{GROUP\\ BY},\\ \\mathrm{HAVING},\\ \\mathrm{SELECT},\\ \\mathrm{ORDER\\ BY}",
+      "note": "DISTINCT is applied with the select list, after HAVING and before ORDER BY. WHERE cannot call an aggregate."
+    },
+    {
+      "name": "The two counts",
+      "latex": "\\mathrm{COUNT}(*)\\ne \\mathrm{COUNT}(c)",
+      "note": "They differ when $c$ contains a null. COUNT(*) counts that row. COUNT($c$) skips it."
+    }
+  ],
+  "properties": [
+    "WHERE filters before grouping. HAVING filters after grouping. Swapping them either changes the groups or is rejected when the WHERE clause contains an aggregate.",
+    "NULL = NULL is not true. A comparison with NULL does not keep the row.",
+    "COUNT(*) counts rows. COUNT(col) skips nulls in col. SUM(col) skips those nulls too.",
+    "An inner join drops an unmatched left row. A left join keeps it and supplies nulls on the right. With a unique right-hand key, the left join has one output row per left row.",
+    "DISTINCT removes duplicate rows of the select list. ORDER BY does not filter. A group key is the column the groups were built from, not a column that merely appears in the table."
+  ],
+  "examples": [
+    {
+      "title": "Three employees, three departments",
+      "prompt": "Employees are $(\\mathrm{Ada},\\mathrm{CS})$, $(\\mathrm{Bo},\\mathrm{EE})$, and $(\\mathrm{Cy},\\mathrm{NULL})$. Departments are $(\\mathrm{CS},101)$, $(\\mathrm{EE},102)$, and $(\\mathrm{MA},103)$. The department code on the department side is unique. How many rows do the inner join and the left join return?",
+      "steps": [
+        "The inner join condition is employee department = department code. Ada matches CS and Bo matches EE. Cy's NULL makes the comparison unknown, so Cy matches nothing, and MA matches nobody. The inner join has $2$ rows.",
+        "The left join keeps every employee. Ada and Bo bring their department rows. Cy is kept with nulls in the department columns. Because department codes are unique, no employee fans out. The left join has $3$ rows.",
+        "On that left-join result, COUNT(*) is $3$ and COUNT of the department code is $2$, since Cy's code is null. The two joins do not have the same cardinality."
+      ],
+      "answer": "The inner join returns $2$ rows. The left join returns $3$ rows. COUNT(*) on the left join is $3$; COUNT of the department code is $2$."
+    },
+    {
+      "title": "WHERE before the groups, HAVING after",
+      "prompt": "Salaries are $(\\mathrm{CS},10)$, $(\\mathrm{CS},30)$, $(\\mathrm{CS},\\mathrm{NULL})$, $(\\mathrm{EE},20)$, $(\\mathrm{EE},40)$. Filter with WHERE salary $\\ge 20$, group by department, and keep groups with HAVING SUM(salary) $\\ge 60$.",
+      "steps": [
+        "The comparison NULL $\\ge 20$ is not true, and $10\\ge 20$ is false. WHERE keeps $30$, $20$, and $40$. Their sum is $30+20+40=90$. The null salary never enters a group.",
+        "The CS group now contains only $30$, so its sum is $30$ and its COUNT(*) is $1$. The EE group contains $20$ and $40$, so its sum is $60$ and its COUNT(*) is $2$.",
+        "HAVING SUM(salary) $\\ge 60$ keeps EE and rejects CS. Had the null row been grouped first, CS would have had COUNT(*) $= 3$ and COUNT(salary) $= 2$, a different group from the one WHERE produced."
+      ],
+      "answer": "Three salaries survive WHERE and sum to $90$. After grouping, only the EE group survives HAVING. Its sum is $60$."
+    }
+  ],
+  "traps": [
+    "Writing WHERE SUM(salary) >= 60. Aggregates are not available in WHERE. That test belongs in HAVING, and it sees different rows if WHERE has already filtered.",
+    "Expecting NULL = NULL to keep the rows with missing values. The comparison is not true. The predicate that succeeds is IS NULL.",
+    "Using COUNT(col) when the question asks how many rows the group has. Nulls in col are invisible to COUNT(col) and visible to COUNT(*).",
+    "Reading a left join as an inner join. On the three-employee table the inner join has $2$ rows and the left join has $3$."
+  ],
+  "python": "emp = [(\"Ada\", \"CS\"), (\"Bo\", \"EE\"), (\"Cy\", None)]\ndept = [(\"CS\", 101), (\"EE\", 102), (\"MA\", 103)]\ninner = [e for e in emp for d in dept if e[1] is not None and e[1] == d[0]]\nleft = []\nfor person in emp:\n    hits = [d for d in dept if person[1] is not None and person[1] == d[0]]\n    left.extend(hits if hits else [None])\nassert len(emp) == len(dept) == 3\nassert len(inner) == 2 and len(left) == 3\nrows = [(\"CS\", 10), (\"CS\", 30), (\"CS\", None), (\"EE\", 20), (\"EE\", 40)]\nassert len(rows) == 5\nassert sum(salary is not None for _, salary in rows) == 4\nkept = [salary for _, salary in rows if salary is not None and salary >= 20]\nassert kept == [30, 20, 40] and sum(kept) == 90\nprint(len(inner), len(left), sum(kept))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Employees are $(\\mathrm{Ada},\\mathrm{CS})$, $(\\mathrm{Bo},\\mathrm{EE})$, $(\\mathrm{Cy},\\mathrm{NULL})$. Departments are $(\\mathrm{CS},101)$, $(\\mathrm{EE},102)$, $(\\mathrm{MA},103)$, with unique codes. An inner join on the department code returns how many rows?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nAda matches CS and Bo matches EE. Cy's null code fails the equality, and MA has no employee. Option B is the left-join count, which keeps Cy. Option C is $3\\times 2$, not a size of either join.",
+      "options": [
+        "$2$",
+        "$3$",
+        "$6$",
+        "$1$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "On the same two tables, with employees on the left, a left join on the department code returns how many rows?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3$.\n\nA left join keeps every left row. Ada and Bo match a department, and Cy is preserved with nulls on the department side. Department codes are unique, so no left row is duplicated. MA is on the right and is not kept. Option B is the inner join.",
+      "options": [
+        "$3$",
+        "$2$",
+        "$4$",
+        "$1$"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nWHERE runs before GROUP BY, so it decides which rows are available to be grouped. HAVING runs after the aggregates exist, so it can reject a group. COUNT(*) counts every row in the group, while COUNT(col) ignores nulls in that column. Option C is false: NULL = NULL is unknown, not true, and a WHERE clause does not keep it.",
+      "options": [
+        "WHERE filters rows before groups are formed.",
+        "HAVING filters groups after aggregation.",
+        "The comparison NULL = NULL is true.",
+        "COUNT(salary) skips null salaries, and COUNT(*) counts rows."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The salary rows are $(\\mathrm{CS},10)$, $(\\mathrm{CS},30)$, $(\\mathrm{CS},\\mathrm{NULL})$, $(\\mathrm{EE},20)$, and $(\\mathrm{EE},40)$. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nWHERE salary $\\ge 20$ keeps $30$, $20$, and $40$, and $30+20+40=90$. The null salary fails the comparison because unknown is not true. After that filter, CS sums to $30$ and EE sums to $20+40=60$. Option D is false: HAVING SUM(salary) $\\ge 60$ keeps EE and rejects the CS sum of $30$.",
+      "options": [
+        "WHERE salary $\\ge 20$ keeps three rows, and those salaries sum to $90$.",
+        "The row with a null salary fails salary $\\ge 20$, because the comparison is not true.",
+        "Grouping the filtered rows by department gives CS sum $30$ and EE sum $60$.",
+        "HAVING SUM(salary) $\\ge 60$ after that filter keeps both groups."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Using the five salary rows above, what is the sum of the salaries that satisfy WHERE salary $\\ge 20$?",
+      "answer": [
+        "90"
+      ],
+      "solution": "The answer is **90**.\n\nThe surviving salaries are $30$, $20$, and $40$. The null is not greater than or equal to $20$, and $10$ is smaller. The sum is $30+20+40=90$.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

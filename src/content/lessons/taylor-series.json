@@ -1,0 +1,175 @@
+{
+  "slug": "taylor-series",
+  "section": "calculus",
+  "title": "Taylor series",
+  "syllabus": "Taylor series",
+  "minutes": 35,
+  "summary": "A Taylor polynomial matches derivatives at a point. The Lagrange remainder bounds the error, and the standard series for exp, sine, cosine, ln(1+x), and 1/(1-x) come with a radius.",
+  "keywords": [
+    "Taylor polynomial",
+    "Lagrange remainder",
+    "Maclaurin",
+    "exponential series",
+    "geometric series"
+  ],
+  "intuition": "The Taylor polynomial of degree $n$ at a point $a$ is the unique polynomial of degree at most $n$ that matches $f(a), f'(a), \\ldots, f^{(n)}(a)$. Matching values and derivatives is a local agreement. It does not, by itself, say how far the polynomial drifts from $f$ at another point. That distance is the remainder.\n\nLagrange's form writes the remainder using the next derivative at some unknown point $c$ strictly between $a$ and $x$. You rarely know $c$. What you can do is bound $|f^{(n+1)}|$ between $a$ and $x$, and that bound is the error estimate. Dropping the remainder turns the polynomial into an uncontrolled approximation. Whenever the polynomial is used as a bound, the remainder stays in the argument.\n\nThe expansion at $0$ is the Maclaurin case. The series for $e^{x}$, $\\sin x$, and $\\cos x$ converge for every real $x$. The series for $\\ln(1+x)$ and for $1/(1-x)$ have radius $1$: the equality is guaranteed for $|x|<1$, and it is not a blanket identity for every real $x$.\n\n$$P_n(x)=\\sum_{k=0}^{n}\\frac{f^{(k)}(a)}{k!}(x-a)^{k}.$$",
+  "definitions": [
+    {
+      "term": "Taylor polynomial",
+      "body": "The degree-$n$ Taylor polynomial of $f$ at $a$ is $P_n(x)=\\sum_{k=0}^{n} f^{(k)}(a)\\,(x-a)^{k}/k!$. It uses the derivatives of $f$ that exist through order $n$ at $a$."
+    },
+    {
+      "term": "Lagrange remainder",
+      "body": "If $f^{(n+1)}$ exists between $a$ and $x$, then $f(x)=P_n(x)+R_n(x)$ with $R_n(x)=f^{(n+1)}(c)/(n+1)!\\,(x-a)^{n+1}$ for some $c$ strictly between $a$ and $x$."
+    },
+    {
+      "term": "Maclaurin polynomial",
+      "body": "A Maclaurin polynomial is a Taylor polynomial with centre $a=0$. The powers are $x^{k}$ and the coefficients are $f^{(k)}(0)/k!$."
+    },
+    {
+      "term": "Radius of convergence",
+      "body": "For $e^{x}$, $\\sin x$, and $\\cos x$ the Taylor series at $0$ converges for every real $x$. For $\\ln(1+x)$ and $1/(1-x)$ the open interval of guaranteed convergence is $|x|<1$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Taylor polynomial",
+      "latex": "P_n(x)=\\sum_{k=0}^{n}\\frac{f^{(k)}(a)}{k!}(x-a)^{k}",
+      "note": "The $k=0$ term is $f(a)$. Derivatives are evaluated at the centre $a$, not at $x$."
+    },
+    {
+      "name": "Lagrange remainder",
+      "latex": "R_n(x)=\\frac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{n+1}",
+      "note": "The point $c$ lies strictly between $a$ and $x$, and it depends on $x$. A bound replaces $f^{(n+1)}(c)$ by the largest size it can have on that interval."
+    },
+    {
+      "name": "Exponential and geometric series",
+      "latex": "e^{x}=\\sum_{k=0}^{\\infty}\\frac{x^{k}}{k!},\\qquad \\frac{1}{1-x}=\\sum_{k=0}^{\\infty}x^{k}\\ (|x|<1)",
+      "note": "The exponential series converges for every real $x$. The geometric series needs $|x|<1$. At $x=1$ the geometric series is the harmonic series, which diverges."
+    },
+    {
+      "name": "Sine, cosine, and logarithm",
+      "latex": "\\sin x=\\sum_{k=0}^{\\infty}\\frac{(-1)^{k}}{(2k+1)!}x^{2k+1},\\ \\cos x=\\sum_{k=0}^{\\infty}\\frac{(-1)^{k}}{(2k)!}x^{2k},\\ \\ln(1+x)=\\sum_{k=1}^{\\infty}(-1)^{k+1}\\frac{x^{k}}{k}",
+      "note": "Sine and cosine converge for every real $x$. The logarithm series is stated for $|x|<1$."
+    }
+  ],
+  "properties": [
+    "Maclaurin means the centre is $0$. A Taylor expansion about $1$ is not a Maclaurin expansion.",
+    "$P_n$ and $f$ share the same derivatives at $a$ through order $n$. That match does not make $P_n(x)$ equal to $f(x)$ at other points.",
+    "The error $f(x)-P_n(x)$ equals the Lagrange remainder. An approximation bound has to keep a bound on $|R_n(x)|$. Deleting $R_n$ deletes the justification for the bound.",
+    "The coefficient of $x^{k}$ in the Maclaurin series of $e^{x}$ is $1/k!$. In particular the coefficient of $x^{2}$ is $1/2$, and $P_4(1)=65/24$.",
+    "$\\ln(1+x)$ and $1/(1-x)$ are not represented by their series at every real $x$. Outside $|x|<1$ the series may diverge, even at points where the function itself exists."
+  ],
+  "examples": [
+    {
+      "title": "Degree 4 for the exponential, with the remainder kept",
+      "prompt": "Let $P_4$ be the Maclaurin polynomial of degree $4$ for $e^{x}$. Compute $24\\,P_4(1)$, and bound $e-P_4(1)$ without dropping the remainder.",
+      "steps": [
+        "The derivatives of $e^{x}$ are all $e^{x}$, so at $0$ they equal $1$. Thus $P_4(x)=1+x+x^{2}/2+x^{3}/6+x^{4}/24$.",
+        "At $x=1$, $P_4(1)=1+1+1/2+1/6+1/24$. The common denominator is $24$, and the sum is $24/24+24/24+12/24+4/24+1/24=65/24$. Therefore $24\\,P_4(1)=65$.",
+        "The Lagrange remainder uses the fifth derivative: $R_4(1)=e^{c}/5!$ for some $c$ strictly between $0$ and $1$. Since $5!=120$ and $1<e^{c}<e$, the error satisfies $1/120 < e-P_4(1) < e/120$.",
+        "The bound uses the remainder. The polynomial value $65/24$ is not claimed to equal $e$."
+      ],
+      "answer": "$24\\,P_4(1)=65$, and $1/120<e-P_4(1)<e/120$. The unknown $c$ is trapped by bounding $e^{c}$ between $1$ and $e$."
+    },
+    {
+      "title": "A logarithm partial sum and its remainder bound",
+      "prompt": "Use the degree-$3$ Maclaurin polynomial of $\\ln(1+x)$ at $x=0.1$, and bound the absolute error.",
+      "steps": [
+        "The series begins $x-x^{2}/2+x^{3}/3-\\cdots$ for $|x|<1$. So $P_3(0.1)=0.1-0.005+0.001/3=143/1500$.",
+        "The fourth derivative of $\\ln(1+x)$ is $-6/(1+x)^{4}$. Lagrange's remainder is $R_3(0.1)=[-6/(1+c)^{4}]/24\\cdot(0.1)^{4}=- (0.1)^{4}/[4(1+c)^{4}]$ for some $c$ in $(0,0.1)$.",
+        "Because $c>0$, the denominator $4(1+c)^{4}$ is larger than $4$. The absolute error is therefore strictly less than $(0.1)^{4}/4=0.000025$.",
+        "The hypothesis $|x|<1$ holds at $x=0.1$. The same numerical bound is not a reason to use the series at $x=2$, where it diverges."
+      ],
+      "answer": "$P_3(0.1)=143/1500$, and $|\\ln(1.1)-P_3(0.1)|<0.000025$. The remainder was bounded, not discarded."
+    }
+  ],
+  "traps": [
+    "Quoting $P_n(x)$ as the value of $f(x)$. Without a remainder bound, $P_n(x)$ is only the matching polynomial. The error is $R_n(x)$.",
+    "Using $\\ln(1+x)=\\sum (-1)^{k+1}x^{k}/k$ at $x=2$. The function $\\ln 3$ exists, and the series diverges because $|2|>1$.",
+    "Using $1/(1-x)=\\sum x^{k}$ at $x=1$ or at $x=-1$. The radius is $1$, and both endpoints fail: at $x=1$ the terms are $1$, and at $x=-1$ the terms do not tend to $0$ in a way that converges to $1/2$.",
+    "Calling an expansion about $a=1$ a Maclaurin expansion. Maclaurin is the special case $a=0$. The factorial in the remainder is $(n+1)!$, not $n!$."
+  ],
+  "python": "import math\nfrom math import factorial\n\np4_times_24 = sum(24 // factorial(k) for k in range(5))\nassert p4_times_24 == 65\np4 = sum(1 / factorial(k) for k in range(5))\nerr = math.exp(1) - p4\nassert 1 / 120 < err < math.exp(1) / 120\npartial = 143 / 1500\nassert abs(partial - (0.1 - 0.005 + 0.001 / 3)) < 1e-15\nassert abs(partial - math.log(1.1)) < 0.000025\nprint(p4_times_24, round(err, 6))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A Maclaurin polynomial is a Taylor polynomial",
+      "options": [
+        "centred at $0$",
+        "centred at $1$",
+        "whose remainder is identically zero for every $x$",
+        "that converges only for $|x|<1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, centred at $0$.\n\nMaclaurin is the name of the Taylor expansion with $a=0$. The remainder is zero for every $x$ only for special functions, not by the definition. The radius depends on the function: $e^{x}$ converges everywhere, while $1/(1-x)$ needs $|x|<1$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The equality $\\sum_{k=0}^{\\infty} x^{k}=1/(1-x)$ holds",
+      "options": [
+        "for $|x|<1$",
+        "for every real $x$",
+        "for $|x|\\leq 1$",
+        "for $|x|>1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, for $|x|<1$.\n\nThis is the geometric series. Inside the open unit interval the partial sums equal $(1-x^{n+1})/(1-x)$ and the $x^{n+1}$ term tends to $0$. At $x=1$ every term is $1$, so the series diverges. At $x=-1$ the terms alternate between $1$ and $-1$ and do not converge. For $|x|>1$ the terms grow, so they cannot converge."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The degree-$1$ Maclaurin polynomial of $e^{x}$ is $1+x$.",
+        "The Lagrange remainder after degree $n$ has the form $f^{(n+1)}(c)/(n+1)!\\,(x-a)^{n+1}$ for some $c$ strictly between $a$ and $x$.",
+        "Deleting the remainder is enough to prove a numerical error bound.",
+        "The power series for $\\ln(1+x)$ equals $\\ln(1+x)$ for every real $x$."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**.\n\n$e^{x}$ has $f(0)=1$ and $f'(0)=1$, so the degree-$1$ Maclaurin polynomial is $1+x$. The displayed Lagrange formula is the remainder in this lesson, including the unknown point $c$ strictly between the centre and the evaluation point.\n\nAn error bound is a bound on the remainder. Deleting it leaves an approximation with no proved gap. The logarithm series needs $|x|<1$; at $x=2$ the terms $(2^{k})/k$ grow and the series diverges."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The coefficient of $x^{2}$ in the Maclaurin series of $\\cos x$ is $-1/2$.",
+        "The coefficient of $x^{3}$ in the Maclaurin series of $\\sin x$ is $-1/6$.",
+        "The coefficient of $x^{2}$ in the Maclaurin series of $e^{x}$ is $1$.",
+        "The Maclaurin series of $e^{x}$ converges for every real $x$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\n$\\cos x=1-x^{2}/2!+x^{4}/4!-\\cdots$, and $2!=2$, so the coefficient of $x^{2}$ is $-1/2$. $\\sin x=x-x^{3}/3!+\\cdots$, and $3!=6$, so the coefficient of $x^{3}$ is $-1/6$. The exponential series is $\\sum x^{k}/k!$, which converges for every real $x$ by the ratio test, since successive-term ratios tend to $0$.\n\nThe coefficient of $x^{2}$ in $e^{x}$ is $1/2!$, which is $1/2$, not $1$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $p$ be the value at $x=1$ of the degree-$4$ Maclaurin polynomial of $e^{x}$. Enter the integer $24p$.",
+      "options": [],
+      "answer": [
+        "65"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **65**.\n\n$p=1+1+1/2+1/6+1/24$. With denominator $24$ this is $24/24+24/24+12/24+4/24+1/24=65/24$. Multiplying by $24$ clears the denominator and leaves $65$. The remainder $e^{c}/120$ is positive, so $p$ itself is not $e$, and $24e$ is not the integer asked for."
+    }
+  ]
+}

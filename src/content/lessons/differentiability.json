@@ -1,0 +1,176 @@
+{
+  "slug": "differentiability",
+  "section": "calculus",
+  "title": "Differentiability",
+  "syllabus": "Differentiability",
+  "minutes": 30,
+  "summary": "The derivative is a limit of difference quotients. Differentiability implies continuity, the absolute value shows the converse fails, and the product, quotient, and chain rules compute the derivative.",
+  "keywords": [
+    "derivative",
+    "difference quotient",
+    "chain rule",
+    "product rule",
+    "absolute value"
+  ],
+  "intuition": "The derivative of $f$ at $a$ is the limit of the difference quotient $[f(a+h)-f(a)]/h$ as $h\\to 0$. Geometrically it is the slope of the tangent: the rise $f(a+h)-f(a)$ divided by the run $h$, then squeezed to the point. If that limit fails to exist, $f$ is not differentiable at $a$, even when the graph has no gap.\n\nDifferentiability is the stronger property. If the difference quotient tends to a finite slope $f'(a)$, then the rise itself is that quotient times $h$, which tends to $0$. So $f(a+h)$ tends to $f(a)$. Differentiable implies continuous. The converse is false, and $|x|$ at $0$ is the witness: the graph is connected, and the left and right slopes are $-1$ and $1$.\n\nOnce derivatives of the elementary pieces are known, three rules build the rest. The product rule is $f'g+fg'$, the quotient rule subtracts in the numerator and squares the denominator, and the chain rule multiplies by the derivative of the inside. A constant function has difference quotient $0$ for every $h$, so its derivative is $0$.\n\n$$\\ f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}.$$",
+  "definitions": [
+    {
+      "term": "Derivative",
+      "body": "$f'(a)=\\lim_{h\\to 0}[f(a+h)-f(a)]/h$, when this limit exists as a real number. The same limit with $h\\to 0^{+}$ and $h\\to 0^{-}$ must agree. One-sided derivatives are those separate limits."
+    },
+    {
+      "term": "Differentiable implies continuous",
+      "body": "If $f'(a)$ exists, then $\\lim_{h\\to 0}(f(a+h)-f(a))=\\lim_{h\\to 0}h\\cdot\\frac{f(a+h)-f(a)}{h}=0\\cdot f'(a)=0$. Hence $\\lim_{x\\to a}f(x)=f(a)$."
+    },
+    {
+      "term": "Corner of the absolute value",
+      "body": "$|x|$ is continuous at $0$ because $\\lim_{x\\to 0}|x|=0$. For $h>0$ the difference quotient is $1$. For $h<0$ it is $-1$. The one-sided derivatives disagree, so $|x|$ is not differentiable at $0$."
+    },
+    {
+      "term": "Product, quotient, and chain rules",
+      "body": "Where the pieces are differentiable and, for the quotient, the denominator is not zero: $(fg)'=f'g+fg'$, $(f/g)'=(f'g-fg')/g^{2}$, and $(f\\circ g)'(x)=f'(g(x))\\,g'(x)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Definition",
+      "latex": "f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}",
+      "note": "The limit has to exist as a real number. A corner or a vertical tangent stops it."
+    },
+    {
+      "name": "Product and chain",
+      "latex": "(fg)'=f'g+fg',\\qquad (f\\circ g)'=f'(g)\\,g'",
+      "note": "The chain rule evaluates $f'$ at $g(x)$, then multiplies by $g'(x)$. Dropping $g'$ is the usual miss."
+    },
+    {
+      "name": "Quotient",
+      "latex": "\\left(\\frac{f}{g}\\right)'=\\frac{f'g-fg'}{g^{2}}",
+      "note": "The numerator is a difference, not a sum. The formula requires $g\\neq 0$ at the point."
+    },
+    {
+      "name": "Constant",
+      "latex": "\\frac{d}{dx}c=0",
+      "note": "The difference quotient of a constant is $(c-c)/h=0$ for every $h\\neq 0$, so the limit is $0$."
+    }
+  ],
+  "properties": [
+    "Differentiable at $a$ implies continuous at $a$. Continuous at $a$ does not imply differentiable at $a$. The function $|x|$ at $0$ is the standard witness.",
+    "The derivative of a constant is $0$. The derivative of $x^{n}$ for a positive integer $n$ is $nx^{n-1}$, which is the definition applied to the binomial expansion.",
+    "Left and right derivatives both exist and are equal if and only if the two-sided derivative exists. For $|x|$ at $0$ they exist and are unequal.",
+    "The product rule is not $(fg)'=f'g'$. That shortcut is the chain-rule pattern applied to the wrong operation. Each factor has to be differentiated while the other is held.",
+    "A vertical tangent, such as $x^{1/3}$ at $0$, is another way for the difference quotient to have no finite limit. The function is still continuous there."
+  ],
+  "examples": [
+    {
+      "title": "The definition at a smooth point and at a corner",
+      "prompt": "Use the definition to differentiate $x^{2}$ at $x=3$, and use one-sided quotients to test $|x|$ at $0$.",
+      "steps": [
+        "The difference quotient of $x^{2}$ at $3$ is $[(3+h)^{2}-9]/h=(9+6h+h^{2}-9)/h=(6h+h^{2})/h=6+h$, for $h\\neq 0$.",
+        "As $h\\to 0$, $6+h\\to 6$. So the derivative of $x^{2}$ at $3$ is $6$, which agrees with the power rule $2x$ at $x=3$.",
+        "For $|x|$ at $0$, if $h>0$ then $(|h|-0)/h=h/h=1$. If $h<0$ then $|h|=-h$, so the quotient is $(-h)/h=-1$.",
+        "The one-sided limits of the quotient are $1$ and $-1$. They disagree, so $|x|$ is not differentiable at $0$. It is continuous there, because both one-sided limits of $|x|$ equal $0=|0|$."
+      ],
+      "answer": "The derivative of $x^{2}$ at $3$ is $6$. The absolute value is continuous at $0$ and not differentiable there."
+    },
+    {
+      "title": "Product rule, chain rule, and a constant",
+      "prompt": "Differentiate $x^{2}(3x+1)$ and $e^{3x}$, and evaluate both derivatives at the indicated points. Also differentiate the constant $7$.",
+      "steps": [
+        "Expand $x^{2}(3x+1)=3x^{3}+x^{2}$. The power rule gives $9x^{2}+2x$. At $x=2$ this is $9\\cdot 4+2\\cdot 2=36+4=40$.",
+        "The product rule on the unexpanded form gives the same polynomial: $(2x)(3x+1)+x^{2}\\cdot 3=6x^{2}+2x+3x^{2}=9x^{2}+2x$. At $x=2$ it is again $40$.",
+        "The chain rule on $e^{3x}$ multiplies $e^{3x}$ by the inner derivative $3$. At $x=0$ the derivative is $3e^{0}=3$.",
+        "The constant function $7$ has difference quotient $(7-7)/h=0$ for every $h\\neq 0$, so its derivative is the zero function."
+      ],
+      "answer": "The derivative of $x^{2}(3x+1)$ at $2$ is $40$. The derivative of $e^{3x}$ at $0$ is $3$. The derivative of a constant is $0$."
+    }
+  ],
+  "traps": [
+    "Reversing the implication. Continuity of $|x|$ at $0$ does not give a derivative. Differentiability is the direction that forces continuity.",
+    "Using a plus in the quotient numerator. The quotient rule is $(f'g-fg')/g^{2}$. The product rule is the one with a plus.",
+    "Forgetting the inner derivative in the chain rule. The derivative of $(2x+1)^{3}$ is $3(2x+1)^{2}\\cdot 2$, not $3(2x+1)^{2}$.",
+    "Differentiating a constant to itself. The difference quotient is identically zero, so the derivative is $0$, not $7$ and not $1$."
+  ],
+  "python": "import math\n\ndef fwd(fn, a, h=1e-6):\n    return (fn(a + h) - fn(a)) / h\n\nassert abs(fwd(lambda t: t * t, 3) - 6) < 1e-4\nh = 1e-6\nassert abs((abs(h)) / h - 1) < 1e-9\nassert abs((abs(-h)) / (-h) - (-1)) < 1e-9\nassert abs(fwd(lambda t: t * t * (3 * t + 1), 2) - 40) < 1e-3\nassert abs(fwd(lambda t: math.exp(3 * t), 0) - 3) < 1e-3\nassert fwd(lambda t: 7, 4) == 0\nassert abs(fwd(lambda t: t ** 3 - 4 * t, 2) - 8) < 1e-3\nprint(40, 3, 8)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "At $x=0$, the function $f(x)=|x|$ is",
+      "options": [
+        "continuous and differentiable",
+        "continuous and not differentiable",
+        "differentiable and not continuous",
+        "neither continuous nor differentiable"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**.\n\n$\\lim_{x\\to 0}|x|=0=|0|$, so $|x|$ is continuous at $0$. The right-hand difference quotient is $1$ and the left-hand difference quotient is $-1$, so the derivative limit does not exist. Differentiability would have forced continuity, which is why option C cannot occur for any function."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The derivative of $(2x+1)^{3}$ at $x=0$ is",
+      "options": [
+        "$6$",
+        "$3$",
+        "$12$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $6$.\n\nThe chain rule gives $3(2x+1)^{2}\\cdot 2=6(2x+1)^{2}$. At $x=0$ the inside is $1$, so the value is $6\\cdot 1=6$. The value $3$ keeps only the outer power and drops the derivative of $2x+1$. The constant $0$ would be right for a constant function, and $(2x+1)^{3}$ is not constant."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "If $f$ is differentiable at $a$, then $f$ is continuous at $a$.",
+        "If $f$ is continuous at $a$, then $f$ is differentiable at $a$.",
+        "The derivative of a constant function is the zero function.",
+        "The quotient rule, at a point, requires the denominator to be nonzero there."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nThe difference $f(a+h)-f(a)$ equals $h$ times a quotient that tends to $f'(a)$, so the difference tends to $0$ whenever the derivative exists. That is continuity. A constant has difference quotient $0$, so its derivative is $0$. The quotient rule divides by $g(a)^{2}$, which requires $g(a)\\neq 0$.\n\nB is the converse, and $|x|$ at $0$ is a counterexample: continuous, not differentiable."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $f(x)=x^{2}$ and $g(x)=x+3$. Which of the following are true?",
+      "options": [
+        "$(fg)'(1)=9$.",
+        "$(f/g)'(1)=7/16$.",
+        "The chain rule says $(f\\circ g)'(x)=f'(x)\\,g'(x)$, with $f'$ evaluated at $x$ rather than at $g(x)$.",
+        "If $f'(a)$ exists, then $\\lim_{h\\to 0}\\bigl(f(a+h)-f(a)\\bigr)=0$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe product is $x^{2}(x+3)=x^{3}+3x^{2}$, with derivative $3x^{2}+6x$. At $x=1$ this is $3+6=9$. The quotient rule gives $(2x(x+3)-x^{2}\\cdot 1)/(x+3)^{2}=(x^{2}+6x)/(x+3)^{2}$. At $x=1$ the value is $(1+6)/16=7/16$.\n\nC writes the chain rule incorrectly. The outer derivative is evaluated at $g(x)$, so $(f\\circ g)'(x)=f'(g(x))\\,g'(x)$. D is the rise tending to zero, which is exactly the continuity conclusion from a finite derivative."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $f(x)=x^{3}-4x$. Enter the integer $f'(2)$.",
+      "options": [],
+      "answer": [
+        "8"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **8**.\n\nThe power rule gives $f'(x)=3x^{2}-4$. Then $f'(2)=3\\cdot 4-4=12-4=8$. From the definition, $f(2)=8-8=0$ and $[f(2+h)-0]/h=8+6h+h^{2}$, which tends to $8$ as $h\\to 0$."
+    }
+  ]
+}

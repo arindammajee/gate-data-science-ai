@@ -1,0 +1,163 @@
+{
+  "slug": "discretization",
+  "section": "databases",
+  "title": "Discretization",
+  "syllabus": "Discretization",
+  "minutes": 25,
+  "summary": "Equal-width and equal-frequency binning replace a number by a bin. The two rules do not produce the same bins, and both throw away the gaps inside a bin.",
+  "keywords": [
+    "equal-width",
+    "equal-frequency",
+    "binning",
+    "information loss"
+  ],
+  "intuition": "Some later steps want a category rather than a measurement. Discretization replaces each numeric value by the label of a bin. That is deliberate information loss: two ages in the same bin become the same symbol, and the difference between them is no longer available. It is not scaling. Min-max still returns a number. A bin label does not.\n\nEqual-width binning cuts the range from the minimum to the maximum into $k$ intervals of the same length. A gap in the data can leave a bin empty, and a dense patch can pack many distinct values into one bin. Equal-frequency binning sorts the values and gives each bin the same count of rows, as nearly as ties allow. Every bin is used. A long gap is then allowed to sit inside a single bin, so the two ends of that bin may be far apart.\n\nThe bins disagree as soon as the line of numbers is skewed. On 1, 2, 3, 4, 5, 20 with three bins, equal width piles the five small values together and leaves the middle bin empty, while equal frequency pairs 5 with 20. Replacing either partition by bin means does not restore the original six numbers. The within-bin variation is the information that was discarded.",
+  "definitions": [
+    {
+      "term": "Equal-width bins",
+      "body": "Intervals of length $w=(\\max-\\min)/k$. Bin $i$ is half-open on the right, and the last bin is closed so that the maximum is included. Empty bins are allowed."
+    },
+    {
+      "term": "Equal-frequency bins",
+      "body": "After sorting, each bin receives the same number of values, up to a remainder or a tie. Also called equal-depth binning. The bins have equal counts, not equal lengths."
+    },
+    {
+      "term": "Information loss",
+      "body": "Values that share a bin become one label. If the label is later replaced by the bin mean, the deviations from that mean are exactly the variation the discretization threw away. The original values are not recoverable."
+    },
+    {
+      "term": "Boundary convention",
+      "body": "A value that lands on an interior edge goes to the higher bin, because the intervals are half-open on the right. The maximum is placed in the last bin by closing that bin."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Equal width",
+      "latex": "w=\\frac{\\max-\\min}{k}",
+      "note": "Bin $i$ for $i=0,\\ldots,k-2$ is $[\\min+iw,\\ \\min+(i+1)w)$. The last bin is $[\\min+(k-1)w,\\ \\max]$."
+    },
+    {
+      "name": "Equal frequency",
+      "latex": "\\left\\lfloor\\frac{n}{k}\\right\\rfloor\\ \\text{or}\\ \\left\\lceil\\frac{n}{k}\\right\\rceil",
+      "note": "Each bin's count is the integer nearest a fair share of the $n$ sorted values. The bin widths are whatever the data require."
+    }
+  ],
+  "properties": [
+    "Equal-width bins have the same length and can be empty. Equal-frequency bins have the same count and are not empty, apart from a tie that forces a shared boundary value.",
+    "The two rules need not produce the same partition. On 1, 2, 3, 4, 5, 20 with $k=3$, equal width gives counts 5, 0, 1 and equal frequency gives the pairs $\\{1,2\\}$, $\\{3,4\\}$, $\\{5,20\\}$.",
+    "Discretization replaces a number by a bin. It is not min-max scaling, which keeps a numeric value in range.",
+    "Equal-frequency requires a sort. Cutting the file in arrival order is not equal frequency.",
+    "Representing a bin by its mean makes the information loss numeric: the absolute deviations from the bin means are the discarded variation. Neither rule is guaranteed to have the smaller total."
+  ],
+  "examples": [
+    {
+      "title": "The same six numbers, two partitions",
+      "prompt": "Bin the values 1, 2, 3, 4, 5, 20 into $k=3$ bins by equal width and by equal frequency. Use the half-open convention, with the last equal-width bin closed.",
+      "steps": [
+        "The width is $(20-1)/3=19/3$. The edges are $1$, $22/3$, $41/3$, and $20$.",
+        "Values 1, 2, 3, 4, and 5 are all below $22/3$, so they share the first bin. Nothing falls in $[22/3,\\ 41/3)$. The value 20 is in the last bin. Counts: 5, 0, 1.",
+        "Equal frequency sorts the six values, which are already sorted, and places two in each bin: $\\{1,2\\}$, $\\{3,4\\}$, $\\{5,20\\}$. The third bin spans a gap that equal width had isolated, and the first bin does not contain 5."
+      ],
+      "answer": "Equal width: $\\{1,2,3,4,5\\}$, an empty middle bin, and $\\{20\\}$. Equal frequency: $\\{1,2\\}$, $\\{3,4\\}$, $\\{5,20\\}$. The partitions differ, and one equal-width bin is empty."
+    },
+    {
+      "title": "What the bin mean throws away",
+      "prompt": "Bin 2, 4, 6, 14 into $k=2$ bins. Represent each bin by its mean, and total the absolute deviations from those means, once for equal width and once for equal frequency.",
+      "steps": [
+        "Equal width has $w=(14-2)/2=6$. The bins are $[2,8)$ and $[8,14]$, so the groups are $\\{2,4,6\\}$ and $\\{14\\}$. The means are 4 and 14.",
+        "The absolute deviations are $|2-4|+|4-4|+|6-4|+|14-14|=2+0+2+0=4$.",
+        "Equal frequency pairs $\\{2,4\\}$ and $\\{6,14\\}$, with means 3 and 10. The absolute deviations are $|2-3|+|4-3|+|6-10|+|14-10|=1+1+4+4=10$."
+      ],
+      "answer": "Equal width loses a total absolute deviation of 4. Equal frequency loses 10. Both replace four numbers by two means, and the original values cannot be rebuilt from the means. The smaller loss here is not a general ranking of the two rules."
+    }
+  ],
+  "traps": [
+    "Assuming equal width and equal frequency always agree. On 1, 2, 3, 4, 5, 20 they do not: one leaves an empty bin and groups 5 with 1, the other pairs 5 with 20.",
+    "Skipping the sort before an equal-frequency cut. The fair counts are taken on the sorted list, not on the order the rows arrived.",
+    "Calling discretization a form of min-max scaling. Scaling keeps a number. A bin label discards the differences inside the bin.",
+    "Describing every equal-width bin as occupied. Skewed data leave empty bins; the middle bin in the six-value example is empty.",
+    "Leaving a boundary value with two legal bins. This lesson puts an interior edge into the higher bin and puts the maximum in the last bin. A different convention must be stated before the counts are quoted."
+  ],
+  "python": "data = [1, 2, 3, 4, 5, 20]\nwidth = (max(data) - min(data)) / 3\ncounts = [0, 0, 0]\nfor value in data:\n    if value == max(data):\n        counts[2] += 1\n    else:\n        counts[int((value - min(data)) / width)] += 1\nassert counts == [5, 0, 1]\nfreq = [data[0:2], data[2:4], data[4:6]]\nassert freq == [[1, 2], [3, 4], [5, 20]]\new = abs(2 - 4) + abs(6 - 4)\nef = abs(2 - 3) + abs(4 - 3) + abs(6 - 10) + abs(14 - 10)\nassert ew == 4 and ef == 10\nprint(counts[0])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The values 1, 2, 3, 4, 5, 20 are cut into 3 equal-width bins with the half-open convention. How many of those bins are empty?",
+      "options": [
+        "1",
+        "0",
+        "2",
+        "3"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, one empty bin. The width is $(20-1)/3=19/3$, so the middle interval $[22/3,\\ 41/3)$ contains none of the values. Five values sit in the first bin and 20 sits in the last."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Equal-frequency binning of 1, 2, 3, 4, 5, 20 into 3 bins produces which partition?",
+      "options": [
+        "$\\{1,2\\}$, $\\{3,4\\}$, $\\{5,20\\}$",
+        "$\\{1,2,3,4,5\\}$, an empty bin, and $\\{20\\}$",
+        "$\\{1,2,3\\}$, $\\{4,5,20\\}$, and an empty bin",
+        "$\\{1,20\\}$, $\\{2,5\\}$, $\\{3,4\\}$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Six sorted values and three bins give two values each: $\\{1,2\\}$, $\\{3,4\\}$, $\\{5,20\\}$. Option B is the equal-width partition, not the equal-frequency one. Option D pairs values that are not adjacent in sorted order."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of these two binning rules?",
+      "options": [
+        "Equal-width bins all have length $(\\max-\\min)/k$.",
+        "Equal-frequency bins have equal counts, up to ties and a remainder.",
+        "Replacing a number by a bin label keeps every original difference available.",
+        "On 1, 2, 3, 4, 5, 20, the two rules produce the same three groups."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. Equal width fixes the length, and equal frequency fixes the counts. C is false because a shared label erases the gaps inside the bin. D is false: equal width yields counts 5, 0, 1, while equal frequency yields three pairs."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The values 2, 4, 6, 14 are binned into $k=2$ bins and each bin is represented by its mean. Which of the following are true?",
+      "options": [
+        "The equal-width groups are $\\{2,4,6\\}$ and $\\{14\\}$.",
+        "The total absolute deviation from the equal-width means is 4.",
+        "The total absolute deviation from the equal-frequency means is 4.",
+        "Equal frequency places 6 and 14 in the same bin."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Width $(14-2)/2=6$ puts 2, 4, and 6 in the first bin and 14 in the second. Means 4 and 14 give absolute deviations $2+0+2+0=4$. Equal frequency uses $\\{2,4\\}$ and $\\{6,14\\}$, so 6 and 14 share a bin, and the deviations from means 3 and 10 total 10, not 4. C is the equal-width total copied onto the wrong rule."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "How many of the values 1, 2, 3, 4, 5, 20 fall in the first equal-width bin when $k=3$ and the half-open convention is used? Enter the count.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**. The first bin is $[1,\\ 22/3)$. The values 1, 2, 3, 4, and 5 all lie in it, and 20 does not. The count is 5."
+    }
+  ]
+}

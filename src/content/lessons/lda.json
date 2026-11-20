@@ -1,0 +1,166 @@
+{
+  "slug": "lda",
+  "section": "machine-learning",
+  "title": "Linear discriminant analysis",
+  "syllabus": "Linear discriminant analysis",
+  "minutes": 35,
+  "summary": "LDA classifies with class-conditional Gaussians that share one covariance. The shared covariance is why the boundary is linear. This is not PCA, and it is not the topic model of the same initials.",
+  "keywords": [
+    "LDA",
+    "shared covariance",
+    "linear boundary",
+    "QDA",
+    "discriminant"
+  ],
+  "intuition": "Linear discriminant analysis, the classifier, models each class as a Gaussian. The Gaussians are allowed different means and different prior probabilities. They are required to share one covariance $\\Sigma$. That single restriction is why the decision boundary is linear, and it is why the method is the one named in the syllabus.\n\nWrite the class-conditional log density, drop the $\\log\\det\\Sigma$ term because $\\Sigma$ does not depend on the class, and expand $-\\frac{1}{2}(x-\\mu_k)^{\\top}\\Sigma^{-1}(x-\\mu_k)$. The piece $-\\frac{1}{2}x^{\\top}\\Sigma^{-1}x$ is the same for every class, so it cancels in a comparison. What remains is the discriminant $\\delta_k(x)=x^{\\top}\\Sigma^{-1}\\mu_k-\\frac{1}{2}\\mu_k^{\\top}\\Sigma^{-1}\\mu_k+\\log\\pi_k$. Predict the class with the largest $\\delta_k(x)$.\n\nIf each class had its own covariance, the quadratic term would not cancel. That classifier is quadratic discriminant analysis. It is not the method named here. Two other names collide with the initials and are not this classifier either. Latent Dirichlet allocation is a topic model. Principal component analysis does not use class labels and maximises variance of the centred data. LDA uses the labels, the class means, and the shared covariance.",
+  "definitions": [
+    {
+      "term": "Shared covariance",
+      "body": "Every class is Gaussian with the same $\\Sigma$ and with its own mean $\\mu_k$. The shared $\\Sigma$ is the modelling assumption that makes the boundary linear."
+    },
+    {
+      "term": "Linear discriminant",
+      "body": "$\\delta_k(x)=x^{\\top}\\Sigma^{-1}\\mu_k-\\frac{1}{2}\\mu_k^{\\top}\\Sigma^{-1}\\mu_k+\\log\\pi_k$. The predicted class maximises $\\delta_k(x)$."
+    },
+    {
+      "term": "QDA, named only as a contrast",
+      "body": "Quadratic discriminant analysis gives each class its own covariance. The quadratic term in $x$ then depends on the class, and the boundary is not the LDA boundary. QDA is not the syllabus method on this page."
+    },
+    {
+      "term": "Not PCA, and not a topic model",
+      "body": "This LDA is a classifier. Principal component analysis ignores labels and maximises variance. Latent Dirichlet allocation is a different expansion of the initials and is not a shared-covariance classifier."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Discriminant",
+      "latex": "\\delta_k(x)=x^{\\top}\\Sigma^{-1}\\mu_k-\\frac{1}{2}\\mu_k^{\\top}\\Sigma^{-1}\\mu_k+\\log\\pi_k",
+      "note": "Shared $\\Sigma$. Predict $\\arg\\max_k\\delta_k(x)$. Equal priors cancel when two classes are compared."
+    },
+    {
+      "name": "Two-class difference, spherical case",
+      "latex": "\\delta_1(x)-\\delta_0(x)=x^{\\top}\\mu_1-\\frac{1}{2}\\|\\mu_1\\|^2",
+      "note": "This simplification uses $\\Sigma=I$, $\\mu_0=0$, and equal priors. The boundary is linear in $x$."
+    }
+  ],
+  "properties": [
+    "Class-conditional distributions are Gaussian, the covariance $\\Sigma$ is the same in every class, and the means may differ. That is the LDA hypothesis.",
+    "The shared $\\Sigma$ makes $-\\frac{1}{2}x^{\\top}\\Sigma^{-1}x$ common to every class, so it cancels. The boundary between two classes is linear.",
+    "QDA lets the covariances differ, so the quadratic term does not cancel. QDA is the contrast, not the named method.",
+    "Equal priors drop out of a comparison of discriminants. Unequal priors remain, through $\\log\\pi_k$, and they shift the boundary.",
+    "The half-mean term is required. Dropping $-\\frac{1}{2}\\mu_k^{\\top}\\Sigma^{-1}\\mu_k$ in the worked plane moves the boundary from $x_1=1$ to $x_1=0$.",
+    "PCA does not use the class labels. LDA does. A variance-maximising direction and a class-separating direction are different jobs."
+  ],
+  "examples": [
+    {
+      "title": "Two means on the horizontal axis",
+      "prompt": "Let $\\Sigma=I$, $\\mu_0=(0,0)$, $\\mu_1=(2,0)$, and $\\pi_0=\\pi_1=1/2$. Find the boundary, and classify $(4,5)$ and $(-1,10)$.",
+      "steps": [
+        "Equal priors cancel. With $\\Sigma^{-1}=I$ and $\\mu_0=0$, the difference is $\\delta_1-\\delta_0=x^{\\top}\\mu_1-\\frac{1}{2}\\|\\mu_1\\|^2=2x_1-\\frac{1}{2}\\cdot 4=2x_1-2$.",
+        "The boundary is $2x_1-2=0$, so $x_1=1$. It is the perpendicular bisector of the two means. The second coordinate does not appear.",
+        "At $(4,5)$ the difference is $2\\cdot 4-2=6>0$, so the class is 1. At $(-1,10)$ the difference is $2\\cdot(-1)-2=-4<0$, so the class is 0. The large second coordinate never entered the score."
+      ],
+      "answer": "The boundary is the line $x_1=1$. The point $(4,5)$ is class 1, with $\\delta_1-\\delta_0=6$. The point $(-1,10)$ is class 0, with difference $-4$."
+    },
+    {
+      "title": "A shared variance that is not 1",
+      "prompt": "In one dimension, let the shared variance be 4, so $\\Sigma^{-1}=1/4$. Let $\\mu_0=0$, $\\mu_1=4$, and the priors be equal. Find the boundary and classify $x=5$.",
+      "steps": [
+        "The difference is $x\\cdot(1/4)\\cdot 4-\\frac{1}{2}\\cdot 4\\cdot(1/4)\\cdot 4=x-\\frac{1}{2}\\cdot 4=x-2$.",
+        "The boundary is $x=2$, the midpoint of 0 and 4. The shared variance scaled both the linear term and the half-mean term, and the midpoint did not move.",
+        "At $x=5$ the difference is $5-2=3>0$, so the class is 1. At $x=0$ the difference is $-2<0$, so the class is 0."
+      ],
+      "answer": "The boundary is $x=2$. The point $x=5$ is class 1, with $\\delta_1-\\delta_0=3$."
+    }
+  ],
+  "traps": [
+    "Giving each class its own covariance and still calling the boundary the LDA boundary. Different covariances are QDA. QDA is not the method named in this lesson.",
+    "Reading LDA as latent Dirichlet allocation. That is a topic model. The classifier on this page is the shared-covariance Gaussian discriminant.",
+    "Reading LDA as PCA. PCA does not use labels and maximises variance. LDA uses the labels and the shared $\\Sigma$.",
+    "Dropping the term $\\frac{1}{2}\\mu_k^{\\top}\\Sigma^{-1}\\mu_k$. In the plane example the boundary would become $2x_1=0$, that is $x_1=0$, instead of the midpoint $x_1=1$.",
+    "Cancelling $\\log\\pi_k$ when the priors differ. Equal priors cancel. Unequal priors shift the boundary and have to stay in $\\delta_k$."
+  ],
+  "python": "def diff_plane(x1):\n    return 2 * x1 - 2\n\nassert diff_plane(4) == 6 and diff_plane(4) > 0\nassert diff_plane(-1) == -4 and diff_plane(-1) < 0\nassert diff_plane(1) == 0\n# Dropping the half-mean term moves the boundary off the midpoint.\nassert 2 * 0 == 0 and diff_plane(0) != 0\n\ndef diff_line(x):\n    return x * (1 / 4) * 4 - 0.5 * 4 * (1 / 4) * 4\n\nassert abs(diff_line(5) - 3) < 1e-12\nassert abs(diff_line(2)) < 1e-12\nprint(diff_plane(4))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "With $\\Sigma=I$, means $(0,0)$ and $(2,0)$, and equal priors, the LDA boundary is",
+      "options": [
+        "the line $x_1=1$",
+        "the line $x_1=0$",
+        "the circle of radius 1 about the origin",
+        "the line $x_2=1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The discriminant difference is $2x_1-2$, which is zero at $x_1=1$, the midpoint of the means. The second coordinate does not appear, so D is not the boundary. Option B is what you get if the half-mean term is dropped."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In that same two-class model, the point $(4,5)$ is classified as",
+      "options": [
+        "class 1, because $\\delta_1-\\delta_0=6$",
+        "class 0, because the second coordinate is 5",
+        "class 0, because the priors are equal",
+        "a tie, because the priors are equal"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. $\\delta_1-\\delta_0=2\\cdot 4-2=6>0$, so class 1 wins. The second coordinate is invisible to this discriminant, and equal priors already cancelled before the difference was formed. A tie would need the difference to be 0, which happens at $x_1=1$, not at $x_1=4$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of linear discriminant analysis?",
+      "options": [
+        "LDA assumes class-conditional Gaussians that share one covariance $\\Sigma$.",
+        "The shared $\\Sigma$ is why the quadratic terms cancel and the two-class boundary is linear.",
+        "QDA gives each class its own covariance and is not the method named in this lesson.",
+        "PCA is the same procedure, because both methods multiply by a covariance."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. One shared covariance cancels the quadratic term and leaves a linear boundary. Different covariances are QDA, which is not the named method. PCA does not use class labels and maximises variance, so sharing the word covariance does not make it LDA. D is false."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "This classifier is linear discriminant analysis, not latent Dirichlet allocation.",
+        "With means 0 and 4, shared variance 4, and equal priors, the one-dimensional boundary is at 2.",
+        "At $x=5$ in that one-dimensional example, $\\delta_1-\\delta_0=3$, so the predicted class is 1.",
+        "Dropping $\\frac{1}{2}\\mu_k^{\\top}\\Sigma^{-1}\\mu_k$ leaves the worked planar boundary unchanged."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The initials here mean the classifier, not the topic model. The one-dimensional difference is $x-2$, so the boundary is 2 and the value at $x=5$ is 3, which selects class 1. D is false: without the half-mean term the planar boundary moves from $x_1=1$ to $x_1=0$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "For the point $(4,5)$ in the planar example, $\\delta_1-\\delta_0$ is an integer. Enter it.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**. With $\\Sigma=I$, $\\mu_1=(2,0)$, and equal priors, the difference is $2x_1-2$. At $x_1=4$ that is $8-2=6$. The coordinate $5$ does not enter."
+    }
+  ]
+}

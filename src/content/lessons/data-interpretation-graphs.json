@@ -1,0 +1,162 @@
+{
+  "slug": "data-interpretation-graphs",
+  "section": "aptitude",
+  "title": "Data interpretation",
+  "syllabus": "Data interpretation from bar charts and pie charts",
+  "minutes": 25,
+  "summary": "Read a bar chart and a pie chart from the numbers in the stem, then compute a share of a total, a ratio of two bars, and a change between two years.",
+  "keywords": [
+    "bar chart",
+    "pie chart",
+    "percentage of a total",
+    "increase by",
+    "increase to"
+  ],
+  "intuition": "A chart question is a table wearing a picture. If the stem already lists the bar heights or the pie slices, you do not need the drawing: the number is the data. Start by writing the total the question is using. A percentage of a total is that one piece divided by the sum of the pieces in the same year, or in the same pie, then multiplied by 100. A ratio of two bars is those two heights written as a fraction in lowest terms. Neither step needs a new formula beyond division.\n\nThe wording of a change is the part that loses the mark. \"Increase by\" names the difference, or that difference as a percent of the old value. \"Increase to\" names the new value itself. If micrometers go from 20 to 40, they increased by 20 and they increased to 40. Saying they increased by 40 confuses the new height of the bar with the gap between the bars.\n\nKeep the base of a percent change as the earlier year unless the question explicitly says otherwise. A pie and a bar chart in the same stem are separate totals. Do not divide a pie slice by a bar height.",
+  "definitions": [
+    {
+      "term": "Percentage of a total",
+      "body": "One component divided by the sum of the components that make the whole in view, times 100. In 2024 the whole is that year's bars added together, not every bar on the page."
+    },
+    {
+      "term": "Ratio of two bars",
+      "body": "The two heights written as $a:b$, which means $a/b$. Cancel the common factor before you compare the ratio with the options."
+    },
+    {
+      "term": "Increase by",
+      "body": "The change added on to the old value. In units it is $\\text{new}-\\text{old}$. As a percent it is that difference divided by the old value, times 100."
+    },
+    {
+      "term": "Increase to",
+      "body": "The new value itself. If a bar ends at 40, the quantity increased to 40, whatever it started from."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Percentage change",
+      "latex": "\\frac{\\text{new}-\\text{old}}{\\text{old}}\\times 100\\%",
+      "note": "'Increase by' adds the change. 'Increase to' names the new value. The base of the percent is the old value."
+    },
+    {
+      "name": "Share of a total",
+      "latex": "\\frac{\\text{part}}{\\text{total}}\\times 100\\%",
+      "note": "The total is the sum of the pieces in that chart and that year, not a number remembered from a different figure."
+    }
+  ],
+  "properties": [
+    "A bar's height is the value. Read it from the table in the stem when there is no picture.",
+    "The percentage one bar is of a year is that bar divided by the sum of the bars for that year.",
+    "A ratio $a:b$ uses the two stated heights. It is not a percentage until you convert it.",
+    "From 20 to 40 is an increase by 20, an increase by 100 percent, and an increase to 40. Those are three different sentences.",
+    "A pie has its own total. A slice percent uses the pie's total, not the bar chart's total."
+  ],
+  "examples": [
+    {
+      "title": "Share of a year, and a ratio of two bars",
+      "prompt": "A workshop's issues, read off a bar chart: calipers were 30, 45, and 60 in 2022, 2023, and 2024. Micrometers were 20, 30, and 40 in those years. What percentage of the 2024 issues were calipers, and what is the ratio of 2024 calipers to 2022 calipers?",
+      "steps": [
+        "The 2024 total is the two bars of that year: $60+40=100$.",
+        "Calipers are $60/100$ of that total, which is 60 percent.",
+        "The ratio of calipers in 2024 to calipers in 2022 is $60:30$. Divide both parts by 30 to get $2:1$."
+      ],
+      "answer": "60 percent of the 2024 issues were calipers, and the ratio of 2024 calipers to 2022 calipers is $2:1$."
+    },
+    {
+      "title": "Increase by, increase to, and a pie slice",
+      "prompt": "Using the same bars, describe the micrometer change from 2022 to 2024. Separately, a pie of the 2024 maintenance budget is parts 80, labour 70, calibration 30, and transport 20, in thousands of rupees. What percentage is parts, and what is parts to transport?",
+      "steps": [
+        "Micrometers went from 20 to 40. The difference is $40-20=20$, so they increased by 20. The new height is 40, so they increased to 40.",
+        "As a percent of the old value, the increase is $20/20\\times 100=100$ percent. They did not increase by 40.",
+        "The pie totals $80+70+30+20=200$. Parts are $80/200\\times 100=40$ percent. The ratio of parts to transport is $80:20=4:1$."
+      ],
+      "answer": "Micrometers increased by 20, which is 100 percent, and increased to 40. Parts are 40 percent of the budget, and parts to transport is $4:1$."
+    }
+  ],
+  "traps": [
+    "Reading 'increased by 40' when the bar increased to 40 and the difference is 20.",
+    "Dividing the change by the new value. From 30 to 45 the base is 30, not 45.",
+    "Using one year's bar as the percentage without adding the other bars of that year.",
+    "Mixing the pie total with the bar total, for example dividing parts 80 by the 2024 issue total 100."
+  ],
+  "python": "calipers = {2022: 30, 2023: 45, 2024: 60}\nmicros = {2022: 20, 2023: 30, 2024: 40}\ntotal_2024 = calipers[2024] + micros[2024]\nassert total_2024 == 100\nassert 100 * calipers[2024] // total_2024 == 60\nassert calipers[2024] // calipers[2022] == 2\nassert micros[2024] - micros[2022] == 20\nassert micros[2024] == 40\nassert 100 * (calipers[2023] - calipers[2022]) // calipers[2022] == 50\nbudget = (80, 70, 30, 20)\nassert sum(budget) == 200\nassert 100 * 80 // 200 == 40\nassert 80 // 20 == 4\nprint(60)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Calipers issued: 30 in 2022, 45 in 2023, 60 in 2024. Micrometers issued: 20, 30, and 40 in those years. In 2024, calipers were what percentage of all instruments issued that year?",
+      "options": [
+        "60 percent",
+        "70 percent",
+        "40 percent",
+        "50 percent"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 60 percent. The 2024 total is $60+40=100$, and $60/100\\times 100=60$. Option B uses 70, which is not a 2024 bar. Option C is the pie figure from a different chart, and option D is the caliper increase from 2022 to 2023, not a share of 2024."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Calipers issued were 30 in 2022 and 60 in 2024. The ratio of calipers issued in 2024 to calipers issued in 2022 is",
+      "options": [
+        "$2:1$",
+        "$3:2$",
+        "$1:2$",
+        "$7:4$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2:1$. The ratio is $60:30$, and dividing both parts by 30 gives $2:1$. Option C reverses the order. Option B, $3:2$, would be $45:30$, the 2023 bar against 2022, which is not what was asked."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Micrometers issued were 20 in 2022 and 40 in 2024. A separate 2024 budget pie, in thousands of rupees, is parts 80, labour 70, calibration 30, and transport 20. Which of the following are true?",
+      "options": [
+        "From 2022 to 2024, micrometers increased by 20.",
+        "Micrometers increased to 40 in 2024.",
+        "From 2022 to 2024, micrometers increased by 40.",
+        "Parts were 40 percent of the 2024 budget pie."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The micrometer difference is $40-20=20$, so they increased by 20, and the 2024 value is 40, so they increased to 40. They did not increase by 40. The pie sums to 200, and $80/200=40$ percent, so parts are 40 percent of that budget."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Calipers issued were 30 in 2022 and 45 in 2023. The percent increase from 2022 to 2023 is an integer. Enter that percent.",
+      "options": [],
+      "answer": [
+        "50"
+      ],
+      "solution": "The answer is **50**. The increase is $45-30=15$. The base is the old value, 30, so the percent increase is $15/30\\times 100=50$. Dividing by the new value 45 instead would not give this integer and would be the wrong base.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A budget pie is parts 80, labour 70, calibration 30, and transport 20. The ratio of the parts allocation to the transport allocation is",
+      "options": [
+        "$4:1$",
+        "$2:1$",
+        "$8:3$",
+        "$7:2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4:1$. The ratio is $80:20$, which simplifies by 20 to $4:1$. Option B stops at a factor of 2. The pie total, 200, is not one of the two parts of this ratio."
+    }
+  ]
+}

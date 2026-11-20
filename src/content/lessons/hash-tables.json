@@ -1,0 +1,171 @@
+{
+  "slug": "hash-tables",
+  "section": "programming",
+  "title": "Hash tables",
+  "syllabus": "Hash tables",
+  "minutes": 30,
+  "summary": "A hash function picks a slot. Collisions are stored by chaining or by linear probing. Average search is O(1) while the load factor stays bounded, and the worst case is O(n).",
+  "keywords": [
+    "hash function",
+    "collision",
+    "chaining",
+    "linear probing",
+    "load factor"
+  ],
+  "intuition": "A hash table stores a key in an array slot chosen by a hash function. If the function spreads keys evenly, the slot you want is a constant-time jump away, which is why the average search is $O(1)$. The jump is not a sort. Nothing about the hash keeps the keys in order, and a hash table is not a stable place to keep ties in the order they arrived.\n\nA collision is two keys that the function sends to the same slot. Chaining stores every key of that slot in a small list. Open addressing stores every key in the array itself and, on a collision, probes a different slot. Linear probing tries the next index, then the next, wrapping at the end of the array. Both schemes are correct. They fail differently when the table gets crowded.\n\nThe load factor $\\alpha=n/m$ is the number of stored keys divided by the number of slots. If $\\alpha$ stays bounded and the hash spreads keys, the average chain or probe sequence has constant length, so search, insert, and delete are average $O(1)$. If every key lands in one chain, that chain has length $n$ and the search is $O(n)$. The worst case does not disappear just because the average is constant.\n\n$$\\alpha=n/m,\\qquad \\text{average }O(1)\\text{ if }\\alpha\\text{ is bounded},\\qquad \\text{worst }O(n).$$",
+  "definitions": [
+    {
+      "term": "Hash function",
+      "body": "A hash function maps a key to a slot index in $\\{0,1,\\ldots,m-1\\}$. A typical teaching function on integer keys is $h(k)=k \\bmod m$. Equal keys must hash to the same slot. Unequal keys may do so as well."
+    },
+    {
+      "term": "Collision",
+      "body": "A collision occurs when two different keys are sent to the same slot. Chaining and open addressing are two ways to store both keys. Ignoring the collision loses a key."
+    },
+    {
+      "term": "Chaining and linear probing",
+      "body": "Chaining keeps a list at each slot and appends the colliding key to that list. Linear probing is open addressing with the probe $h(k, i)=(h(k)+i) \\bmod m$. The key occupies the first empty slot on that path."
+    },
+    {
+      "term": "Load factor",
+      "body": "The load factor is $\\alpha=n/m$, with $n$ keys stored and $m$ slots. Average chain length under chaining is $\\alpha$. Open addressing needs $\\alpha<1$, because an empty slot has to exist for the probe to stop."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Load factor",
+      "latex": "\\alpha=n/m",
+      "note": "$n$ is the number of keys and $m$ is the number of slots. Average cost stays $O(1)$ when $\\alpha$ is bounded and keys spread."
+    },
+    {
+      "name": "Linear probing",
+      "latex": "h(k,i)=(h(k)+i)\\bmod m,\\quad i=0,1,2,\\ldots",
+      "note": "Probe $i=0$ is the home slot. The next probes walk forward and wrap. Clustering makes long occupied runs more likely."
+    },
+    {
+      "name": "Costs",
+      "latex": "\\text{average }O(1)\\ \\text{if }\\alpha\\text{ is bounded},\\qquad \\text{worst }O(n)",
+      "note": "The worst case is every key in one chain, or one long probe sequence. It is $O(n)$ even when a typical operation is constant."
+    }
+  ],
+  "properties": [
+    "Average search, insert, and delete are $O(1)$ when the load factor stays bounded and the hash function spreads keys. They are not $O(1)$ in the worst case.",
+    "The worst case is $O(n)$. Under chaining, one slot's list can hold every key. Under linear probing, a search can walk the whole table.",
+    "Chaining stores collisions in a list at the home slot. Linear probing stores them in later array slots. Deleting under linear probing needs a tombstone, or a later search stops too early.",
+    "A hash table is not ordered. Iteration order is not sorted order. It is not a stable container for ties: the syllabus structure does not promise to preserve insertion order.",
+    "CPython's dict remembers insertion order. That language rule is not the hash-table model used for complexity, and it does not make worst-case lookup constant."
+  ],
+  "examples": [
+    {
+      "title": "Linear probing into five slots",
+      "prompt": "Let $m=5$ and $h(k)=k \\bmod 5$. Insert $12$, then $7$, then $22$ with linear probing. How many probes find $22$?",
+      "steps": [
+        "$12 \\bmod 5=2$, and slot $2$ is empty, so $12$ is stored at index $2$.",
+        "$7 \\bmod 5=2$, which is occupied. The next probe is index $3$, which is empty, so $7$ is stored at index $3$.",
+        "$22 \\bmod 5=2$. Index $2$ holds $12$ and index $3$ holds $7$, so the first empty slot is index $4$. The table is `[empty, empty, 12, 7, 22]`.",
+        "A search for $22$ examines index $2$, then $3$, then $4$, and stops on the match. That is $3$ probes. The load factor is $3/5$."
+      ],
+      "answer": "$12$ is at index $2$, $7$ is at index $3$, and $22$ is at index $4$. Finding $22$ takes $3$ probes."
+    },
+    {
+      "title": "Chaining and the longest chain",
+      "prompt": "Let $m=7$ and $h(k)=k \\bmod 7$. Insert $4, 11, 18, 6$ with chaining. What is the longest chain, and what is the load factor?",
+      "steps": [
+        "$4 \\bmod 7=4$, $11 \\bmod 7=4$, and $18 \\bmod 7=4$. Those three keys share slot $4$. If each new key is appended, the chain is $[4, 11, 18]$.",
+        "$6 \\bmod 7=6$, so slot $6$ holds the chain $[6]$. Every other slot is empty.",
+        "The longest chain has length $3$. A search for $18$ compares $4$, then $11$, then $18$, which is three comparisons, and a search for an absent key that also hashes to $4$ walks the whole chain.",
+        "Four keys and seven slots give load factor $\\alpha=4/7$. The average chain is short, and the worst chain in this table is already length $3$, which is the $O(n)$ pattern on a small scale."
+      ],
+      "answer": "The longest chain has length $3$, at slot $4$. The load factor is $4/7$."
+    }
+  ],
+  "traps": [
+    "Calling hash-table search $O(1)$ with no average-case qualifier. The worst case is $O(n)$ when every key collides.",
+    "Expecting the keys to come out sorted, or in a stable insertion order that an algorithm can rely on. A hash table is not an ordered structure and it is not a stable sort.",
+    "Clearing a linear-probing slot to empty on deletion. A later search treats that empty slot as 'stop, the key is absent' and misses a key that probed past the hole. A tombstone keeps the probe going.",
+    "Letting the load factor grow without bound and still quoting constant time. Average chain length tracks $\\alpha$. If $n$ doubles while $m$ stays fixed, the average cost doubles with it."
+  ],
+  "python": "def linear_probe(m, keys):\n    table = [None] * m\n    for key in keys:\n        slot = key % m\n        while table[slot] is not None:\n            slot = (slot + 1) % m\n        table[slot] = key\n    return table\n\ndef probes(table, key):\n    m = len(table)\n    slot = key % m\n    seen = 0\n    while seen < m:\n        seen += 1\n        if table[slot] == key or table[slot] is None:\n            return seen\n        slot = (slot + 1) % m\n    return seen\n\ntable = linear_probe(5, [12, 7, 22])\nassert table == [None, None, 12, 7, 22]\nassert probes(table, 22) == 3\nother = linear_probe(5, [8, 3, 13])\nassert other == [13, None, None, 8, 3]\nassert probes(other, 13) == 3\nchains = {}\nfor key in (4, 11, 18, 6):\n    chains.setdefault(key % 7, []).append(key)\nassert max(len(v) for v in chains.values()) == 3\nassert chains[4] == [4, 11, 18]\nprint(probes(table, 22), max(len(v) for v in chains.values()))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "With $n$ stored keys and $m$ slots, the load factor $\\alpha$ is",
+      "options": [
+        "$n/m$",
+        "$m/n$",
+        "$n-m$",
+        "$\\log(n/m)$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $n/m$.\n\nThe load factor is the number of keys per slot. Swapping the fraction gives slots per key, which is the reciprocal. A difference $n-m$ is not a ratio, and a logarithm is the shape of a balanced-tree height, not of a load factor."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "If every key collides into one chain, the worst-case cost of search under chaining is",
+      "options": [
+        "$O(n)$",
+        "$O(1)$ for every key",
+        "$O(\\log n)$ for every key",
+        "$O(n^{2})$ comparisons per step of the chain"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $O(n)$.\n\nThe chain then contains all $n$ keys, and finding the last one, or confirming that a key is absent, walks $n$ nodes. Average $O(1)$ needs a bounded load factor and a hash that spreads keys. It is not a promise about this collision pattern. A single comparison is $O(1)$, so the chain is not quadratic per step; the linear cost is the length of the walk."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "If the load factor stays bounded and keys spread evenly, average search is $O(1)$.",
+        "A hash table keeps keys in sorted order.",
+        "Linear probing is a form of open addressing.",
+        "Chaining places colliding keys in a list at the home slot."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nBounded load factor plus an even spread makes the average chain or probe sequence a constant, so the average search is $O(1)$. Linear probing stores collisions in the array by walking forward, which is open addressing. Chaining uses a list at the slot the hash function named.\n\nA hash table does not keep keys sorted. Sorted order is what a binary search tree inorder walk produces, not what a hash iteration produces."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $m=5$ and $h(k)=k \\bmod 5$. Insert $8$, then $3$, then $13$ with linear probing. Which of the following are true?",
+      "options": [
+        "$8$ is stored at index $3$.",
+        "$13$ is stored at index $0$.",
+        "$3$ is stored at index $3$.",
+        "A search for $13$ examines indexes $3$, then $4$, then $0$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\n$8 \\bmod 5=3$, and slot $3$ is empty, so $8$ lands at index $3$. $3 \\bmod 5=3$, which is taken, so $3$ moves to index $4$. $13 \\bmod 5=3$; index $3$ and index $4$ are both taken, so $13$ wraps to index $0$. The table is `[13, empty, empty, 8, 3]`.\n\nSearch for $13$ starts at the home slot $3$, sees $8$, steps to $4$, sees $3$, steps to $0$, and finds $13$. That is the three indexes in D. Option C puts $3$ in the slot that $8$ already occupies."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A chained table has $m=7$ and $h(k)=k \\bmod 7$. Insert $4, 11, 18, 6$. Enter the length of the longest chain.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\n$4$, $11$, and $18$ all leave remainder $4$ on division by $7$, so they share one chain of length $3$. The key $6$ hashes to slot $6$ and sits in a chain of length $1$. The longest chain has length $3$. The load factor $4/7$ is not an integer and is not the quantity asked for."
+    }
+  ]
+}

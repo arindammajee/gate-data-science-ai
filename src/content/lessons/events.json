@@ -1,0 +1,164 @@
+{
+  "slug": "events",
+  "section": "probability",
+  "title": "Events",
+  "syllabus": "Events.",
+  "minutes": 25,
+  "summary": "Events are subsets of the sample space. Complements, unions, intersections, De Morgan's laws, and partitions are the algebra used before any distribution is named.",
+  "keywords": [
+    "event",
+    "complement",
+    "union",
+    "intersection",
+    "De Morgan",
+    "partition"
+  ],
+  "intuition": "An outcome is one thing that can happen. An event is a set of those outcomes, the set on which we are willing to say 'this happened'. On a finite sample space every subset is an event. The whole sample space is the certain event, and the empty set is the impossible event.\n\nThe algebra is the same as the algebra of sets. The complement $A^c$ is everything in $S$ that is not in $A$. The union $A\\cup B$ is the event that at least one of $A$ or $B$ occurs. The intersection $A\\cap B$ is the event that both occur. De Morgan's laws let you push a complement through a union or an intersection: the complement of a union is the intersection of the complements, and the complement of an intersection is the union of the complements.\n\nA partition is a special family of events. The sets are nonempty, pairwise disjoint, and their union is the whole sample space. Exactly one member of a partition occurs. The law of total probability, later, sums over a partition. A pair of mutually exclusive events is not yet a partition unless their union is $S$.",
+  "definitions": [
+    {
+      "term": "Event",
+      "body": "A subset of the sample space whose probability is defined. On a finite sample space, every subset is an event. The certain event is $S$ and the impossible event is $\\emptyset$."
+    },
+    {
+      "term": "Complement",
+      "body": "The complement of $A$, written $A^c$, is $S\\setminus A$. Exactly one of $A$ and $A^c$ occurs. Their intersection is empty and their union is $S$."
+    },
+    {
+      "term": "Union and intersection",
+      "body": "$A\\cup B$ occurs when at least one of $A$ or $B$ occurs. $A\\cap B$ occurs when both occur. Both operations are commutative and associative."
+    },
+    {
+      "term": "Partition",
+      "body": "A finite or countable family of nonempty events that are pairwise disjoint and whose union is $S$. Exactly one block of the partition occurs."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "De Morgan, union",
+      "latex": "(A\\cup B)^c=A^c\\cap B^c",
+      "note": "The complement of 'at least one' is 'neither'."
+    },
+    {
+      "name": "De Morgan, intersection",
+      "latex": "(A\\cap B)^c=A^c\\cup B^c",
+      "note": "The complement of 'both' is 'at least one is missing'."
+    },
+    {
+      "name": "Counting formula for a union",
+      "latex": "|A\\cup B|=|A|+|B|-|A\\cap B|",
+      "note": "The same correction as inclusion-exclusion, applied to sizes of finite sets."
+    }
+  ],
+  "properties": [
+    "$A\\cap A^c=\\emptyset$ and $A\\cup A^c=S$. The pair $\\{A,A^c\\}$ is a partition whenever $A$ is a nonempty proper subset.",
+    "Intersection distributes over union, and union distributes over intersection: $A\\cap(B\\cup C)=(A\\cap B)\\cup(A\\cap C)$.",
+    "If $\\{E_1,\\ldots,E_k\\}$ is a partition, then the sets $A\\cap E_i$ are pairwise disjoint and their union is $A$.",
+    "Mutually exclusive events are pairwise disjoint. They form a partition only if they are also exhaustive, meaning their union is $S$.",
+    "$A\\subset B$ if and only if $A\\cap B=A$, and if and only if $A\\cup B=B$."
+  ],
+  "examples": [
+    {
+      "title": "A die, and a check of De Morgan",
+      "prompt": "A fair die has sample space $S=\\{1,2,3,4,5,6\\}$. Let $A=\\{2,4,6\\}$ and $B=\\{1,2,3,4\\}$. Find $A\\cup B$, $A\\cap B$, and $(A\\cup B)^c$, and check De Morgan's law against $A^c\\cap B^c$.",
+      "steps": [
+        "The union is $A\\cup B=\\{1,2,3,4,6\\}$, and the intersection is $A\\cap B=\\{2,4\\}$.",
+        "The complement of the union in $S$ is $(A\\cup B)^c=\\{5\\}$.",
+        "The separate complements are $A^c=\\{1,3,5\\}$ and $B^c=\\{5,6\\}$, so $A^c\\cap B^c=\\{5\\}$. That matches $(A\\cup B)^c$, which is De Morgan's law on this die."
+      ],
+      "answer": "$A\\cup B=\\{1,2,3,4,6\\}$, $A\\cap B=\\{2,4\\}$, and $(A\\cup B)^c=\\{5\\}=A^c\\cap B^c$. If the die is fair, $P(A\\cup B)=5/6$."
+    },
+    {
+      "title": "A partition into three blocks",
+      "prompt": "A sample space has 12 equally likely outcomes. Events $E_1$, $E_2$, and $E_3$ contain 5, 4, and 3 outcomes respectively, they are pairwise disjoint, and their union is the whole sample space. Find the three probabilities and $P(E_1\\cup E_2)$.",
+      "steps": [
+        "The three sizes sum to $5+4+3=12$, so the events are exhaustive as well as pairwise disjoint. They form a partition.",
+        "Equal likelihood gives $P(E_1)=5/12$, $P(E_2)=4/12=1/3$, and $P(E_3)=3/12=1/4$. These three probabilities sum to 1.",
+        "Because $E_1$ and $E_2$ are disjoint, $P(E_1\\cup E_2)=5/12+4/12=9/12=3/4$. The same number is $1-P(E_3)$."
+      ],
+      "answer": "The probabilities are $5/12$, $1/3$, and $1/4$, and $P(E_1\\cup E_2)=3/4$."
+    }
+  ],
+  "traps": [
+    "Calling two disjoint events a partition when their union is not the sample space. A partition is exhaustive as well as disjoint.",
+    "Swapping De Morgan's operations. The complement of a union is an intersection of complements, not a union of complements.",
+    "Forgetting to subtract the intersection when counting $|A\\cup B|$ from the separate sizes.",
+    "Treating $A\\cap A^c$ as $S$. The intersection of an event with its complement is empty; the union is $S$."
+  ],
+  "python": "S = {1, 2, 3, 4, 5, 6}\nA = {2, 4, 6}\nB = {1, 2, 3, 4}\nassert (S - (A | B)) == ((S - A) & (S - B)) == {5}\nassert len(A | B) == 5\nassert (18 + 14 - 6) == 26\nassert (30 - 26) == 4\nassert 5 + 4 + 3 == 12\nprint(5, 26, 4)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Let $S=\\{1,2,3,4,5,6,7,8\\}$, $A=\\{1,2,3,4\\}$, and $B=\\{3,4,5,6\\}$. The size of $A\\cap B$ is",
+      "options": [
+        "$2$",
+        "$4$",
+        "$6$",
+        "$8$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nThe intersection contains the outcomes that sit in both lists, which are 3 and 4. Option B is the size of $A$ alone. Option C is the size of the union $\\{1,2,3,4,5,6\\}$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "With $S=\\{1,2,3,4,5,6,7,8\\}$, $A=\\{1,2,3,4\\}$, and $B=\\{3,4,5,6\\}$, the size of $(A\\cup B)^c$ is",
+      "options": [
+        "$2$",
+        "$4$",
+        "$6$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nThe union is $\\{1,2,3,4,5,6\\}$, which has 6 elements, so its complement in an 8-element sample space has $8-6=2$ elements, namely 7 and 8. By De Morgan, the same set is $A^c\\cap B^c=\\{5,6,7,8\\}\\cap\\{1,2,7,8\\}=\\{7,8\\}$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true for events $A$ and $B$ in a sample space $S$?",
+      "options": [
+        "$(A\\cup B)^c=A^c\\cap B^c$.",
+        "$(A\\cap B)^c=A^c\\cup B^c$.",
+        "If $\\{E_1,\\ldots,E_k\\}$ is a partition of $S$, then the $E_i$ are nonempty and pairwise disjoint, and their union is $S$.",
+        "$A\\cap A^c=S$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA and B are De Morgan's two laws. C is the definition of a finite partition used in this lesson: nonempty, pairwise disjoint, and exhaustive. D is false. An event meets its complement in the empty set, and their union, not their intersection, is $S$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "A sample space has 30 outcomes. Event $A$ has 18 outcomes, event $B$ has 14 outcomes, and $A\\cap B$ has 6 outcomes. Enter $|A\\cup B|$.",
+      "options": [],
+      "answer": [
+        "26"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **26**.\n\nThe counting formula is $|A\\cup B|=|A|+|B|-|A\\cap B|=18+14-6=26$. The intersection has to be subtracted once. The bounds are consistent: 6 is at least $18+14-30=2$ and at most 14."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A sample space has 30 outcomes. Event $A$ has 18 outcomes, event $B$ has 14 outcomes, and $A\\cap B$ has 6 outcomes. Enter $|(A\\cup B)^c|$.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**.\n\nFirst $|A\\cup B|=18+14-6=26$. The complement in a sample space of 30 outcomes then has $30-26=4$ outcomes. By De Morgan, that is also the size of $A^c\\cap B^c$."
+    }
+  ]
+}

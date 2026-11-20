@@ -1,0 +1,164 @@
+{
+  "slug": "file-organization",
+  "section": "databases",
+  "title": "File organization",
+  "syllabus": "File organization",
+  "minutes": 25,
+  "summary": "A heap file is scanned, a sorted file supports binary search on its sort key, and a hashed file answers equality in expected constant time and does not support range search. The cost is counted in block reads.",
+  "keywords": [
+    "heap file",
+    "sorted file",
+    "hash file",
+    "block",
+    "binary search"
+  ],
+  "intuition": "A file is a sequence of blocks, and a block holds several records. The number that disk time follows is the number of blocks touched, not the number of records. If $n$ records are packed $f$ to a block, the file occupies $b=\\lceil n/f\\rceil$ blocks. Searching one record still means reading blocks.\n\nA heap file has no order. An equality search and a range search are both scans. Confirming that a key is absent reads all $b$ blocks, a cost linear in the number of blocks. Inserting a record appends it to the last block, usually one or two block writes, which is why a heap is cheap to load and expensive to search.\n\nA sorted file stores records in order of one sort key. Equality on that key, and a range on that key, can use the order. Binary search over $b$ blocks reads $\\lfloor \\log_2 b\\rfloor+1$ blocks in the worst case, a logarithmic number of blocks. Once the first qualifying block is found, a range is the contiguous run of blocks that hold the qualifying keys. Equality on any attribute that is not the sort key has no order to use, and it scans all $b$ blocks, just as a heap would. A hashed file sends the hash key to a bucket. An equality search on that key reads the bucket and, if necessary, a short overflow chain: expected $O(1)$ block reads when the hash spreads keys and the chains stay bounded. Consecutive keys are not in consecutive buckets, so a range query cannot follow the hash. It scans the buckets. A hashed file has expected constant-time equality and no range search.",
+  "definitions": [
+    {
+      "term": "Heap file",
+      "body": "An unordered file. Records sit in insertion order. Equality and range searches scan blocks. A search that must discover an absent key reads every block of the file."
+    },
+    {
+      "term": "Sorted file",
+      "body": "Records ordered by one sort key. Binary search and range scans apply to that key. Any other attribute still requires a scan of the blocks."
+    },
+    {
+      "term": "Hashed file",
+      "body": "A hash function maps the hash key to a bucket. Equality on the hash key reads an expected constant number of blocks. A range query has no bucket order to follow and scans the buckets."
+    },
+    {
+      "term": "Blocking factor",
+      "body": "The number $f$ of records in one block. The file length in blocks is $b=\\lceil n/f\\rceil$. Access cost in this lesson is a count of blocks, not a count of records."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Blocks in the file",
+      "latex": "b=\\lceil n/f\\rceil",
+      "note": "$n$ is the number of records and $f$ is the number of records per block. A full scan reads $b$ blocks."
+    },
+    {
+      "name": "Binary search on the sort key",
+      "latex": "\\lfloor \\log_2 b\\rfloor+1",
+      "note": "Worst-case block reads of the usual loop that continues while the block interval is nonempty. It applies only to the sort key."
+    }
+  ],
+  "properties": [
+    "A heap equality or range search reads a number of blocks linear in $b$. Confirming absence reads all $b$ blocks.",
+    "A sorted file supports binary search on its sort key, $\\lfloor \\log_2 b\\rfloor+1$ block reads in the worst case, and a range on that key is a contiguous run of blocks.",
+    "A hashed file answers equality on the hash key in expected $O(1)$ block reads. It does not support range search; a range scans the buckets.",
+    "If every key lands in one overflow chain, hashed equality is no longer expected constant time. The expectation needs a hash that keeps chains bounded.",
+    "Binary search on a sorted file does not apply to a non-sort attribute, and it does not apply to a heap. Those searches read $b$ blocks."
+  ],
+  "examples": [
+    {
+      "title": "Ten thousand records, twenty per block",
+      "prompt": "A file has $n=10000$ records and blocking factor $f=20$. Compare a heap search that must discover a missing key, binary search on the sort key of the same file once it is sorted, and a hash equality probe that finds the record in its primary bucket.",
+      "steps": [
+        "The file occupies $b=\\lceil 10000/20\\rceil=500$ blocks. The heap has no order, so a search that rules the key out reads every block: $500$ block reads, linear in $b$.",
+        "On the sorted file, binary search over $500$ blocks uses $\\lfloor \\log_2 500\\rfloor+1$ reads. Since $2^8=256$ and $2^9=512$, the floor of the log is $8$, and the count is $8+1=9$. That is logarithmic in $b$, and only for the sort key.",
+        "A hash equality that hits the record in the primary bucket reads $1$ block. The cost model for a well-spread hash is expected $O(1)$ blocks, not $500$ and not $9$. A range query cannot use that one bucket."
+      ],
+      "answer": "The heap reads $500$ blocks. Binary search on the sort key reads $9$ blocks in the worst case. The hash equality reads $1$ block when the bucket holds the record."
+    },
+    {
+      "title": "The order only helps the key it was built on",
+      "prompt": "The same $500$-block sorted file is searched on an attribute that is not the sort key. A range on the sort key occupies $4$ consecutive blocks. What does the hashed file do with that range?",
+      "steps": [
+        "The non-sort attribute is not ordered across blocks, so binary search is not valid. The search reads all $500$ blocks, the same full scan a heap would perform.",
+        "The sort-key range is contiguous. After the first qualifying block is located, the file reads the $4$ blocks that hold the range. The cost stays a small run of blocks plus the search that found the start, not a scan of all $500$.",
+        "Hashing scatters consecutive keys into unrelated buckets. The range has no single bucket and no contiguous run. The hashed file reads the buckets, all of them in the worst case, which is a scan and not an expected $O(1)$ probe."
+      ],
+      "answer": "A non-sort attribute costs $500$ block reads. A $4$-block sort-key range reads that contiguous run. A hashed file cannot answer the range by probing one bucket."
+    }
+  ],
+  "traps": [
+    "Binary-searching a heap, or binary-searching a sorted file on a column that is not the sort key. Both are scans of all $b$ blocks.",
+    "Promising a range query on a hashed file in expected $O(1)$ blocks. Equality on the hash key is the expected-constant operation. A range scans buckets.",
+    "Counting $n$ record reads when the device reads blocks. The heap cost of the $10000$-record file is $500$ blocks, not $10000$ block reads.",
+    "Treating hashed equality as worst-case $O(1)$. A single overflow chain of every key is linear. The $O(1)$ bound is an expectation under a hash that bounds the chains."
+  ],
+  "python": "import math\nrecords, per_block = 10000, 20\nblocks = math.ceil(records / per_block)\nassert blocks == 500\nprobes = math.floor(math.log2(blocks)) + 1\nassert probes == 9\nother = math.ceil(2500 / 10)\nassert other == 250\nassert math.floor(math.log2(other)) + 1 == 8\nprint(blocks, probes, other)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A heap file holds $10000$ records at $20$ records per block. A search that must discover a missing key reads how many blocks?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $500$.\n\nThe file has $b=\\lceil 10000/20\\rceil=500$ blocks, and a heap has no order that would let the search stop in fewer blocks once absence must be proved. Option B is the binary-search cost of those $500$ blocks after the file is sorted on the search key. Option D counts records instead of blocks.",
+      "options": [
+        "$500$",
+        "$9$",
+        "$20$",
+        "$10000$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "That same file is sorted on the search key and occupies $500$ blocks. Worst-case binary search, counted as $\\lfloor \\log_2 b\\rfloor+1$ block reads, performs",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $9$.\n\nBecause $256=2^8\\le 500<2^9=512$, $\\lfloor \\log_2 500\\rfloor=8$, and the loop bound is $8+1=9$. Option B is the full scan. Option C forgets the final probe and reports the floor alone. The bound applies to the sort key only.",
+      "options": [
+        "$9$",
+        "$500$",
+        "$8$",
+        "$10$"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nHash equality on the hash key is an expected constant number of block reads, and the hash order does not make a range a local probe. A sorted file binary-searches its sort key and then reads a contiguous run for a range on that key. A heap has neither order, so both equality and range scan blocks. Option D is false: block addresses do not put a heap into sort-key order, so binary search on a heap is not valid.",
+      "options": [
+        "Hash equality on the hash key is expected constant time in blocks, and a range is not.",
+        "A sorted file binary-searches its sort key, and a range on that key is a contiguous run of blocks.",
+        "A heap file scans blocks for equality and for a range.",
+        "Binary search is valid on a heap file because blocks have addresses."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA sorted file's order is the sort key's order. Searching another attribute reads every block. A hash whose keys all collide in one chain no longer has expected constant equality cost. Once records are packed $f$ to a block, the costs above are block counts, with $b=\\lceil n/f\\rceil$. Option D is false: binary search answers the sort key, not every column of the record.",
+      "options": [
+        "Equality search on a non-sort attribute of a sorted file scans the file.",
+        "If every key collides in one hash chain, equality search is no longer expected $O(1)$.",
+        "These access costs are counted in blocks, with $b=\\lceil n/f\\rceil$ blocks in the file.",
+        "Binary search on a sorted file applies to every attribute, not only the sort key."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A sorted file occupies $250$ blocks. Using $\\lfloor \\log_2 b\\rfloor+1$ as the worst-case number of block reads for binary search on the sort key, how many block reads is that?",
+      "answer": [
+        "8"
+      ],
+      "solution": "The answer is **8**.\n\nThe powers surrounding $250$ are $2^7=128$ and $2^8=256$. So $\\lfloor \\log_2 250\\rfloor=7$, and the worst-case read count is $7+1=8$. This is the sort-key search, not a scan of all $250$ blocks.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

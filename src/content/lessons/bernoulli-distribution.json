@@ -1,0 +1,169 @@
+{
+  "slug": "bernoulli-distribution",
+  "section": "probability",
+  "title": "Bernoulli distribution",
+  "syllabus": "Bernoulli distribution",
+  "minutes": 20,
+  "summary": "A Bernoulli random variable is the indicator of an event. It equals 1 with probability p, and its mean and variance are p and p(1-p).",
+  "keywords": [
+    "Bernoulli",
+    "indicator",
+    "success probability",
+    "mean",
+    "variance"
+  ],
+  "intuition": "A Bernoulli random variable records a single yes-or-no trial. Code a success as 1 and a failure as 0. If the success probability is p, then $P(X=1)=p$ and $P(X=0)=1-p$. A coin toss, a defective item, and the indicator that a roll is a multiple of 3 are all Bernoulli once you have named the event and its probability. There is no third outcome hiding in the model.\n\nThe mean is p. That is not a coincidence of algebra so much as the definition of an indicator: the long-run fraction of trials that land on 1 is the probability of the event. The variance is p(1-p). It is small when the trial is nearly certain to go one way, and it is largest at p=1/2, where it equals 1/4. Because X is 0 or 1, the square X^2 equals X, so the second moment is also p and the variance is p minus p squared.\n\n$$\n\\mathbb{E}[X]=p,\\qquad \\mathrm{Var}(X)=p(1-p).\n$$\n\nA binomial count is a sum of independent Bernoulli trials with the same p. One trial is the whole Bernoulli distribution: Binomial(1, p) is Bernoulli(p). The indicator language is the one to keep, because linearity of expectation applies to indicators even when the events are dependent. The variance formula p(1-p) is for a single trial. Dependent indicators still have that marginal variance, but the variance of their sum picks up covariances.",
+  "definitions": [
+    {
+      "term": "Bernoulli trial",
+      "body": "One experiment with two outcomes. The variable $X$ equals 1 with probability $p$ and equals 0 with probability $1-p$."
+    },
+    {
+      "term": "Indicator",
+      "body": "The indicator $I_A$ of an event $A$ is the Bernoulli variable with $p=P(A)$. Then $\\mathbb{E}[I_A]=P(A)$."
+    },
+    {
+      "term": "Success probability",
+      "body": "The parameter $p=P(X=1)$, with $0\\le p\\le 1$. It is the mean of $X$. It is not the variance."
+    },
+    {
+      "term": "Second moment",
+      "body": "Since $X\\in\\{0,1\\}$, one has $X^2=X$, so $\\mathbb{E}[X^2]=p$ and $\\mathrm{Var}(X)=p-p^2=p(1-p)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Mass function",
+      "latex": "P(X=1)=p,\\qquad P(X=0)=1-p",
+      "note": "There are no other points in the support."
+    },
+    {
+      "name": "Mean and variance",
+      "latex": "\\mathbb{E}[X]=p,\\qquad \\mathrm{Var}(X)=p(1-p)",
+      "note": "The variance is at most $1/4$, at $p=1/2$."
+    },
+    {
+      "name": "Indicator expectation",
+      "latex": "\\mathbb{E}[I_A]=P(A)",
+      "note": "This is why a count of events has mean equal to the sum of the probabilities, dependence or not."
+    }
+  ],
+  "properties": [
+    "The mean equals the success probability $p$. The variance equals $p(1-p)$, which is also $\\mathbb{E}[X^2]-(\\mathbb{E}[X])^2$ with $\\mathbb{E}[X^2]=p$.",
+    "The variance is maximised at $p=1/2$, where it equals $1/4$. It is 0 at $p=0$ and at $p=1$.",
+    "For any constant $a$, $\\mathrm{Var}(aX)=a^2 p(1-p)$. Scaling the 0-1 variable by 2 multiplies the variance by 4.",
+    "Bernoulli($p$) is the special case Binomial($1,p$). A sum of $n$ i.i.d. copies is Binomial($n,p$) only when the copies are independent.",
+    "Two different events can have indicator variables that are dependent. Each indicator is still Bernoulli, with its own $p$."
+  ],
+  "examples": [
+    {
+      "title": "A trial with p = 3/10",
+      "prompt": "Let $X$ be Bernoulli with $P(X=1)=3/10$. Find the mean and the variance.",
+      "steps": [
+        "The mean of a Bernoulli variable is the success probability, so $\\mathbb{E}[X]=3/10$.",
+        "The variance is $p(1-p)=(3/10)(7/10)=21/100$.",
+        "The second-moment route agrees: $X^2=X$, so $\\mathbb{E}[X^2]=3/10$ and $\\mathrm{Var}(X)=3/10-(3/10)^2=3/10-9/100=21/100$."
+      ],
+      "answer": "The mean is $3/10$ and the variance is $21/100$."
+    },
+    {
+      "title": "Indicator of a multiple of 3",
+      "prompt": "A fair die is rolled once. Let $X$ be 1 when the face is a multiple of 3, and 0 otherwise. Find $p$, the mean, and the variance.",
+      "steps": [
+        "The event is $\\{3,6\\}$, so $p=P(X=1)=2/6=1/3$. Thus $X$ is Bernoulli($1/3$) and the mean is $1/3$.",
+        "The variance is $(1/3)(2/3)=2/9$.",
+        "As a check, $\\mathbb{E}[X^2]=\\mathbb{E}[X]=1/3$ and $1/3-(1/3)^2=1/3-1/9=2/9$."
+      ],
+      "answer": "Here $p=1/3$, the mean is $1/3$, and the variance is $2/9$."
+    }
+  ],
+  "traps": [
+    "Reporting the variance as $p^2$, or as $p$. The variance is $p(1-p)$. The quantity $p^2$ is $(\\mathbb{E}[X])^2$, and $p$ is $\\mathbb{E}[X^2]$ as well as the mean.",
+    "Forgetting that an indicator is Bernoulli. If $P(A)=p$ then $I_A$ has mean $p$ and variance $p(1-p)$, even when you never write the mass function.",
+    "Using $\\mathrm{Var}(aX)=a\\,\\mathrm{Var}(X)$. The constant comes out squared: $\\mathrm{Var}(2X)=4p(1-p)$.",
+    "Solving $p(1-p)=c$ and keeping the root above $1/2$ when the problem says the success probability is at most $1/2$. The two roots sum to 1."
+  ],
+  "python": "from fractions import Fraction\np = Fraction(3, 10)\nassert p * (1 - p) == Fraction(21, 100)\nq = Fraction(1, 3)\nassert q * (1 - q) == Fraction(2, 9)\nassert Fraction(2, 5) * Fraction(3, 5) == Fraction(6, 25)\nassert abs(0.2 * 0.8 - 0.16) < 1e-12\nprint(float(p * (1 - p)), float(q * (1 - q)))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "X is Bernoulli with success probability $2/5$. The variance of X is",
+      "options": [
+        "$6/25$",
+        "$2/5$",
+        "$4/25$",
+        "$3/5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $6/25$.\n\nThe variance is $p(1-p)=(2/5)(3/5)=6/25$. Option B is the mean. Option C is $p^2$, which is the square of the mean rather than the variance. Option D is $1-p$, the probability of a zero."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The indicator $I_A$ of an event with $P(A)=0.2$ satisfies $\\mathbb{E}[I_A^2]=$",
+      "options": [
+        "$0.2$",
+        "$0.04$",
+        "$0.16$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $0.2$.\n\nAn indicator is 0 or 1, so $I_A^2=I_A$ and the second moment equals the mean, which is $P(A)=0.2$. Option B is $p^2=(\\mathbb{E}[I_A])^2$, not $\\mathbb{E}[I_A^2]$. Option C is the variance $0.2\\times 0.8=0.16$. Option D would be right only for an indicator that is always 1."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "X is Bernoulli($p$) with $0<p<1$. Which of the following are true?",
+      "options": [
+        "The mean equals $p$.",
+        "The variance equals $p(1-p)$.",
+        "The product $X(1-X)$ is always 0.",
+        "The variance can be larger than $1/2$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe mean and variance formulas are $p$ and $p(1-p)$. Because $X$ is 0 or 1, one of $X$ and $1-X$ is always 0, so the product is 0. The variance $p(1-p)$ has maximum $1/4$ at $p=1/2$, so it cannot exceed $1/2$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A biased coin has $P(H)=1/4$, and $X$ is the indicator of heads. Which of the following are true?",
+      "options": [
+        "The mean of $X$ is $1/4$.",
+        "The variance of $X$ is $3/16$.",
+        "The probability $P(X=0)$ is $3/4$.",
+        "The variance of $2X$ is $3/16$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\n$X$ is Bernoulli($1/4$), so the mean is $1/4$, the failure probability is $3/4$, and the variance is $(1/4)(3/4)=3/16$. The variance of $2X$ is $2^2\\times 3/16=3/4$, not $3/16$, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "X is Bernoulli($p$) with $\\mathrm{Var}(X)=0.16$ and $p\\le 1/2$. Enter $100p$.",
+      "options": [],
+      "answer": [
+        "20"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **20**.\n\nSolve $p(1-p)=0.16$, or $p^2-p+0.16=0$. The discriminant is $1-0.64=0.36$, so the roots are $(1\\pm 0.6)/2$, that is $0.8$ and $0.2$. The condition $p\\le 1/2$ selects $p=0.2$, and $100p=20$. Both roots give the same variance because $p$ and $1-p$ trade places."
+    }
+  ]
+}

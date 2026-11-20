@@ -1,0 +1,167 @@
+{
+  "slug": "adjectives",
+  "section": "aptitude",
+  "title": "Adjectives",
+  "syllabus": "Comparatives, superlatives, and absolute adjectives",
+  "minutes": 25,
+  "summary": "Use the comparative for two things and the superlative for three or more, do not mark a comparison twice, and do not grade absolute adjectives such as unique and perfect.",
+  "keywords": [
+    "comparative",
+    "superlative",
+    "absolute adjective",
+    "much and far",
+    "double comparative"
+  ],
+  "intuition": "The adjective questions in this block are about comparison, not about the long order of adjectives in front of a noun. Use the comparative when exactly two things are compared, and the superlative when three or more are compared. 'Of the two routes, the shorter one is safer' is the comparative, and it still takes the. 'Of the three routes, the shortest one is safest' is the superlative. 'The tallest of the two' is the error of using a three-or-more form on a pair.\n\nDo not mark the comparison twice. Better is already the comparative of good, so more better is a double comparative. Taller already carries the comparative ending, so more taller is the same mistake. Good, better, best and bad, worse, worst are irregular. There is no gooder and no more good.\n\nA few adjectives name a limit rather than a scale. Unique and perfect are the ones to hold onto. If something is unique it is one of a kind, and if it is perfect it has already reached the limit the word names. They are not graded with more, most, or an -er ending. Comparatives do take intensifiers, but the intensifier is much or far, not very. Much better and far safer are the patterns. Very belongs with the plain adjective: very safe, not very safer.",
+  "definitions": [
+    {
+      "term": "Comparative",
+      "body": "The form used to compare exactly two items: taller, more careful, better, worse. With of the two, the comparative often takes the: the taller of the two."
+    },
+    {
+      "term": "Superlative",
+      "body": "The form used to compare three or more: the tallest, the most careful, the best. It is not the form for a pair."
+    },
+    {
+      "term": "Absolute adjective",
+      "body": "An adjective such as unique or perfect that names a limit and is not graded. More unique and most perfect are not used."
+    },
+    {
+      "term": "Double comparative",
+      "body": "The error of marking comparison twice, as in more better or more taller. One mark is enough."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Comparative",
+      "latex": "\\text{comparative}+\\text{than}",
+      "note": "Taller than, more careful than, better than. Not more taller, and not more better."
+    },
+    {
+      "name": "Superlative",
+      "latex": "\\text{the}+\\text{superlative}+\\text{of three or more}",
+      "note": "Of the two, use the comparative instead: the shorter of the two."
+    },
+    {
+      "name": "Intensifier",
+      "latex": "\\text{much/far}+\\text{comparative}",
+      "note": "Much better, far safer. Very modifies the base adjective, not the comparative."
+    }
+  ],
+  "properties": [
+    "One-syllable adjectives usually take -er and -est: tall, taller, tallest. Soft, softer, softest.",
+    "Longer adjectives usually take more and most: careful, more careful, most careful.",
+    "Good, better, best and bad, worse, worst are irregular. Worse is already the comparative of bad.",
+    "Exactly two items take the comparative. Three or more take the superlative.",
+    "Much and far modify comparatives. Very modifies a plain adjective: very good, not very better.",
+    "Unique and perfect are not graded. A revision keeps the word and drops more or most."
+  ],
+  "examples": [
+    {
+      "title": "Two ovens, then three",
+      "prompt": "The lab has two ovens. Oven B reaches a higher temperature than oven A. Write the comparison. Then a third oven is added and B is still the highest. Write that sentence.",
+      "steps": [
+        "Exactly two ovens are compared, so the comparative is required: B is hotter than A.",
+        "Hotter is already comparative, so more hotter would mark the comparison twice and is rejected.",
+        "With three ovens, the superlative is required: B is the hottest of the three."
+      ],
+      "answer": "'B is hotter than A.' With three ovens, 'B is the hottest of the three.'"
+    },
+    {
+      "title": "Much, not very, and an absolute adjective",
+      "prompt": "Revise 'This design is very better and more unique.'",
+      "steps": [
+        "Better is a comparative, so the modifier is much or far, not very.",
+        "Unique is absolute. It is not graded, so more unique is dropped rather than repaired with a different intensifier.",
+        "The two points can be said separately without grading unique."
+      ],
+      "answer": "'This design is much better, and it is unique.'"
+    }
+  ],
+  "traps": [
+    "More better, more taller, and more softer. Each comparative is already marked.",
+    "The tallest of the two. A pair takes the taller of the two.",
+    "Very better, or very hotter. The intensifier for a comparative is much or far.",
+    "More unique and most perfect. Unique and perfect are not graded."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Exactly two ovens were compared, and oven B reached a higher temperature than oven A. Which sentence is correct?",
+      "options": [
+        "Oven B is hotter than oven A.",
+        "Oven B is the hottest of the two.",
+        "Oven B is more hotter than oven A.",
+        "Oven B is very hotter than oven A."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The rule is the comparative for two, marked once. Hotter than is that form. The hottest is the superlative and needs three or more. More hotter doubles the comparative. Very does not modify a comparative; much or far would."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which sentence is correct?",
+      "options": [
+        "Of the three designs, this one is the most careful.",
+        "Of the three designs, this one is the more careful.",
+        "This result is more better than the last one.",
+        "The sample is more unique than the control."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Careful is a longer adjective, so the superlative is most careful, and three designs call for the superlative rather than the comparative. More better doubles an irregular comparative. More unique grades an absolute adjective."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The second route is much shorter than the first.",
+        "Of the two reports, this is the clearer one.",
+        "She is the tallest of the two sisters.",
+        "The reading is very better today."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. Much is the right intensifier for the comparative shorter. Of the two, the comparative clearer is the right degree, and the is normal in 'the clearer one'. The tallest of the two uses a superlative for a pair. Very better uses very on a comparative."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The committee called the solution perfect, meaning it meets the limit the word names. Which sentence respects that absolute adjective?",
+      "options": [
+        "The solution is perfect.",
+        "The solution is more perfect.",
+        "The solution is the most perfect of the two drafts.",
+        "The solution is very more perfect."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Perfect is an absolute adjective and is not graded, so more perfect and most perfect are rejected, and very more piles a bad intensifier on a double mark. The acceptable sentence uses perfect once, with no comparative or superlative ending."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many of the following five sentences are correct? (1) This alloy is far harder than that one. (2) Of the two plans, Plan A is the best. (3) The third attempt was worse than the second. (4) He bought the most unique instrument in the shop. (5) Of the four labs, ours is the quietest. Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**. Sentence 1 correctly uses far with a comparative. Sentence 2 uses the superlative best for only two plans; the comparative better is required. Sentence 3 correctly uses worse, the comparative of bad. Sentence 4 grades unique, which is absolute. Sentence 5 correctly uses the superlative for four labs. The correct sentences are 1, 3, and 5.",
+      "tolerance": 0
+    }
+  ]
+}

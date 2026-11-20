@@ -1,0 +1,167 @@
+{
+  "slug": "articles",
+  "section": "aptitude",
+  "title": "Articles",
+  "syllabus": "Articles: a, an, the, and the zero article",
+  "minutes": 25,
+  "summary": "Use a or an for an unspecified countable singular, choosing by the sound, and use the for an identified, unique, or already mentioned noun, with zero article for plural generics and most proper nouns.",
+  "keywords": [
+    "a and an",
+    "vowel sound",
+    "the",
+    "zero article",
+    "proper nouns"
+  ],
+  "intuition": "Articles tell the listener whether a noun is a new, unspecified item or one that can already be picked out. A and an introduce a countable singular noun that the listener cannot yet identify: a beaker, an error. The choice between a and an follows the sound, not the spelling. An hour takes an because hour begins with a vowel sound; the h is silent. A university takes a because university begins with the consonant sound of you, even though the first letter is a vowel.\n\nThe is for a noun that is identified, unique in the context, or already mentioned. Once you have said 'a report', the next sentence can say 'the report'. The sun is unique in ordinary reference, so it takes the. A plural used for a whole class, and most proper nouns, take no article at all: 'Microscopes are expensive', 'India', 'Mount Everest'. That zero article is not a ban on the with every name. The exceptions have to be stated, not invented. A mountain range takes the, as in the Himalayas. A country name that is plural in form takes the, as in the United States. India is neither, so it stands without an article.\n\nThere is also a formal generic with the: 'The microscope is a precision instrument' names the class. The plural generic 'Microscopes are precision instruments' names the class with the zero article. Both are grammatical. What fails is a pattern such as 'the India' or 'an university'.",
+  "definitions": [
+    {
+      "term": "Indefinite article",
+      "body": "A or an, used with an unspecified countable singular noun, one the listener cannot yet pick out."
+    },
+    {
+      "term": "Definite article",
+      "body": "The, used when the noun is identified, unique in the context, already mentioned, or a formal generic such as 'the microscope' for the class."
+    },
+    {
+      "term": "Zero article",
+      "body": "No article. Used with plural generics ('Sensors drift') and with most proper nouns ('India', 'Mount Everest')."
+    },
+    {
+      "term": "Vowel-sound rule",
+      "body": "An stands before a vowel sound, not before a vowel letter. A stands before a consonant sound, not before a consonant letter."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Indefinite article",
+      "latex": "\\text{a/an}+\\text{unspecified countable singular}",
+      "note": "Not with a plural, and not with an uncountable noun used as a mass."
+    },
+    {
+      "name": "Sound, not letter",
+      "latex": "\\text{an}+\\text{vowel sound},\\quad \\text{a}+\\text{consonant sound}",
+      "note": "An hour, an honest report, an M.Sc. A university, a European standard, a one-day pass."
+    },
+    {
+      "name": "Second mention",
+      "latex": "\\text{a/an}+\\text{noun},\\ \\text{then the}+\\text{same noun}",
+      "note": "The first mention introduces it. The later mention points back."
+    }
+  ],
+  "properties": [
+    "Use an before a vowel sound: an hour, an honest report, an M.Sc. student (the letter M is pronounced 'em').",
+    "Use a before a consonant sound: a university, a European standard, a one-day pass (one begins with a 'w' sound).",
+    "The second mention of a noun takes the. So does a unique ordinary noun such as the sun.",
+    "Plural generics take the zero article: 'Sensors need calibration.' The formal generic 'The sensor is a delicate instrument' is also correct and is a different pattern, not a contradiction.",
+    "Most proper nouns take no article: India, Delhi, Mount Everest. The stated exceptions used here are the Himalayas, a mountain range, and the United States, a plural country name."
+  ],
+  "examples": [
+    {
+      "title": "An hour, a university",
+      "prompt": "Fill the articles in 'She waited ___ hour for ___ university shuttle.'",
+      "steps": [
+        "Hour begins with a vowel sound, because the h is silent, so the article is an.",
+        "University begins with the consonant sound of 'you', so the article is a, even though the spelling starts with u.",
+        "Both nouns are unspecified countable singulars: one hour not yet identified, one shuttle not yet identified."
+      ],
+      "answer": "She waited an hour for a university shuttle."
+    },
+    {
+      "title": "The Himalayas, and India with no article",
+      "prompt": "Choose articles for 'We crossed ___ Himalayas and then entered ___ India.' Also say what happens with the United States.",
+      "steps": [
+        "Himalayas is a mountain range. That is one of the exceptions stated in this lesson, so it takes the.",
+        "India is a singular country name and is not on that exception list, so it takes the zero article. 'The India' is the error.",
+        "The United States takes the because the name is plural in form. That is the other exception stated here, and it does not spread to India."
+      ],
+      "answer": "We crossed the Himalayas and then entered India. The United States keeps the."
+    }
+  ],
+  "traps": [
+    "Writing 'an university' because u is a vowel letter. The sound is a consonant sound, so the article is a.",
+    "Writing 'a hour' because h is a consonant letter. The sound is a vowel sound, so the article is an.",
+    "Putting the on Mount Everest or on India. A single mountain and a singular country name, as stated here, take no article.",
+    "Dropping the from the Himalayas or from the United States. Those are the exceptions this lesson actually states."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which sentence uses a and an according to the sound, not the letter?",
+      "options": [
+        "She is a university student who waited an hour.",
+        "She is an university student who waited a hour.",
+        "She is a university student who waited a hour.",
+        "She is an university student who waited an hour."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The rule is an before a vowel sound and a before a consonant sound. Hour has a silent h, so an hour. University begins with a 'you' sound, so a university. The other options swap one or both of those choices."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which sentence treats the Himalayas, the United States, and India correctly?",
+      "options": [
+        "The United States and the Himalayas appear on the map beside India.",
+        "United States and Himalayas appear on the map beside the India.",
+        "The United States and Himalayas appear on the map beside the India.",
+        "United States and the Himalayas appear on the map beside the India."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The rule is the stated exceptions, not a blanket 'the' before places. The Himalayas is a range and takes the. The United States is a plural country name and takes the. India is a singular country name and takes no article. Every other option moves the onto India or strips it from one of the two exceptions."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "I bought a notebook. The notebook has a red cover.",
+        "Sensors need calibration.",
+        "He climbed the Mount Everest.",
+        "We spent the evening reading an honest report."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. A uses the for a second mention of a noun already introduced. B is a plural generic and correctly takes the zero article. D uses an before the vowel sound of honest. C puts the on Mount Everest, which this lesson treats as an ordinary single peak with no article."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Any screw will do, this is the first mention, and the listener has not been told which one. Complete: Please pass me ___ screw from the tray.",
+      "options": [
+        "a",
+        "an",
+        "the",
+        "no article"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, a. The rule is a or an for an unspecified countable singular. Screw begins with a consonant sound, so the article is a, not an. The would say the screw had already been identified. The zero article does not fit a countable singular."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "How many of the following five phrases are correct? (1) an hour (2) a university (3) an university (4) the Himalayas (5) the India. Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**. An hour matches a vowel sound. A university matches a consonant sound, so an university is wrong. The Himalayas is a stated exception and keeps the. The India is wrong because India takes the zero article. The correct items are 1, 2, and 4.",
+      "tolerance": 0
+    }
+  ]
+}

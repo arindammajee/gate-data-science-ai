@@ -1,0 +1,175 @@
+{
+  "slug": "multidimensional-schemas",
+  "section": "databases",
+  "title": "Star, snowflake, and fact constellation",
+  "syllabus": "Multidimensional data models",
+  "minutes": 30,
+  "summary": "A fact table stores measures at a stated grain. Star schemas denormalise each dimension, snowflakes split a dimension along a hierarchy, and a constellation has more than one fact table.",
+  "keywords": [
+    "fact table",
+    "dimension table",
+    "star schema",
+    "snowflake",
+    "fact constellation",
+    "grain"
+  ],
+  "intuition": "A warehouse answers questions about measurements described by context. The fact table holds the measurements and the foreign keys. A dimension table holds the descriptors: which store, which product, which day. The grain is the meaning of one fact row, and it is the first design sentence. 'One row per store, per product, per day' can be rolled up to a month. It cannot be drilled down to an hour, because the hour was summed away before the row was written.\n\nThe schema is how those tables are shaped. A star keeps each dimension in one denormalised table, so city, state, and country sit on the store row and the city name is repeated for every store in that city. Joins are short: fact to dimension, one hop. A snowflake normalises a dimension into its hierarchy. The store row points at a city row, the city row points at a state row, and the state name is stored once. The word 'normalised' here is the relational one. It is not min-max scaling, and it is not a claim that the fact table was checked against Boyce-Codd normal form.\n\nA fact constellation, also called a galaxy, has more than one fact table, and those facts share dimension tables. Sales and inventory can both point at the same date, store, and product. One fact table with several dimensions is still a star or a snowflake. The second fact table is what makes the constellation.",
+  "definitions": [
+    {
+      "term": "Fact table",
+      "body": "The table of measurements. Each row is one event at the declared grain and carries foreign keys to the dimensions plus the numeric measures, such as units sold."
+    },
+    {
+      "term": "Dimension table",
+      "body": "The descriptive context of a fact: store, product, or date. Attributes such as city and brand live here, not in the fact table."
+    },
+    {
+      "term": "Grain",
+      "body": "What one fact row records. A daily grain can be aggregated to a month. It cannot be unpacked into hours that were never stored."
+    },
+    {
+      "term": "Star schema",
+      "body": "One fact table plus denormalised dimension tables. Hierarchy attributes share the dimension row, so the state name is repeated on every store in that state."
+    },
+    {
+      "term": "Snowflake schema",
+      "body": "A star whose dimensions have been split along a hierarchy. Store, city, and state become separate tables linked by foreign keys. The dimensions are normalised; the fact grain is unchanged."
+    },
+    {
+      "term": "Fact constellation",
+      "body": "Two or more fact tables that share dimension tables. Sharing dimensions is the point. A single fact table, however many dimensions it has, is not a constellation."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Star",
+      "latex": "\\text{one fact table}+\\text{denormalised dimensions}",
+      "note": "Each dimension is a single table. Hierarchy attributes are columns of that table, not further tables."
+    },
+    {
+      "name": "Splitting one dimension",
+      "latex": "T_{\\mathrm{snow}}=T_{\\mathrm{star}}-1+h",
+      "note": "Replacing one dimension table by $h$ hierarchy tables changes the table count by $h-1$. The fact grain does not change."
+    }
+  ],
+  "properties": [
+    "Star dimensions are denormalised. Snowflake dimensions are normalised into a hierarchy. Swapping those two sentences is the usual error.",
+    "A fact constellation has more than one fact table. One fact surrounded by dimensions is a star or a snowflake, not a galaxy.",
+    "The grain belongs to the fact table. Splitting DimStore into store, city, and state does not change a daily sales grain into an hourly one.",
+    "You can roll a daily grain up to a month by summing days. You cannot drill it down to an hour that was aggregated away before load.",
+    "Measures such as units sold belong on the fact row. Descriptors such as city belong on a dimension. Putting the city name on every fact row is a different, fatter design, not a dimension.",
+    "Snowflake normalisation of a dimension is not feature scaling, and it is not automatically a proof that the fact table is in BCNF."
+  ],
+  "examples": [
+    {
+      "title": "From a four-table star to a snowflake",
+      "prompt": "A star has FactSales, DimDate, DimStore, and DimProduct. DimStore holds store, city, state, and country on one row. Replace DimStore by three tables: store, city, and state. How many tables does the snowflake have, and what happens to the grain?",
+      "steps": [
+        "The star has 4 tables.",
+        "One dimension table is removed and three hierarchy tables replace it, so the count is $4-1+3=6$.",
+        "FactSales is untouched. If its grain was one row per store, per product, per day, that grain is still the grain. Only the path to the state name got longer."
+      ],
+      "answer": "The snowflake has 6 tables. The grain of FactSales does not change. The state name now lives once on the state table instead of being repeated on every store row."
+    },
+    {
+      "title": "Two facts, and a grain that cannot be unpacked",
+      "prompt": "FactSales and FactInventory both use DimDate, DimStore, and DimProduct. Monday, Tuesday, and Wednesday at one store and product sold 100, 140, and 160 units. What schema is this, and what would a single monthly fact row of 400 units be unable to answer?",
+      "steps": [
+        "There are two fact tables sharing three dimensions, so the schema is a fact constellation. It is not a star: a star has one fact table.",
+        "The daily grain stores 100, 140, and 160. Their sum is $100+140+160=400$, which is the month-to-date total a roll-up can compute.",
+        "A fact table whose grain was already the month would store 400 and could not be drilled back into the three daily values. The finer split is not in the row."
+      ],
+      "answer": "The schema is a fact constellation with two facts and three shared dimensions. The three daily rows sum to 400, and a monthly grain of 400 cannot recover 100, 140, and 160."
+    }
+  ],
+  "traps": [
+    "Swapping star and snowflake. The star is the denormalised one. The snowflake is the one whose dimensions are split along a hierarchy.",
+    "Calling any schema with several dimension tables a constellation. Constellation means more than one fact table. Several dimensions around one fact is a star.",
+    "Treating the grain as a property of the dimension. The grain is what one fact row means. A snowflake join path does not invent a finer grain.",
+    "Expecting to drill below the stored grain. Daily facts sum to a month. They do not contain the hours that were discarded at load.",
+    "Storing a descriptor such as city as if it were a measure, or storing units sold only on the dimension. Measures sit on the fact table."
+  ],
+  "python": "assert 4 - 1 + 3 == 6\nassert 100 + 140 + 160 == 400\n# Two facts sharing three dimensions: not a single-fact star.\nfact_tables = [\"FactSales\", \"FactInventory\"]\nassert len(fact_tables) == 2\nprint(6)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In a star schema, the dimension tables are",
+      "options": [
+        "denormalised, with hierarchy attributes in the same dimension table",
+        "split into one table per level of the hierarchy",
+        "stored as extra measures inside the fact table",
+        "required to be two or more fact tables"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. A star keeps each dimension denormalised, so city, state, and country share the dimension row. Option B is a snowflake. Option D describes a constellation, which is about fact tables, not about denormalising a dimension."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A fact constellation is which of the following?",
+      "options": [
+        "Two or more fact tables that share dimension tables",
+        "One fact table joined to four denormalised dimensions",
+        "A dimension column that has been min-max scaled",
+        "A fact table whose grain was never stated"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The constellation, or galaxy, is defined by more than one fact table sharing dimensions. Option B is a star. Option C is feature scaling, which does not change the schema type."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A star has FactSales, DimDate, DimStore, and DimProduct. DimStore is replaced by store, city, and state tables. Which of the following are true?",
+      "options": [
+        "The original schema is a star with 4 tables.",
+        "The rewritten schema has 6 tables.",
+        "The rewrite changes the grain of FactSales.",
+        "In the rewrite, the state name is not repeated on every store row."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The star has four tables. Replacing one of them by three tables gives $4-1+3=6$, and the state name moves to the state table. The fact table was not edited, so the grain is the same and C is false."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of facts, dimensions, and grain?",
+      "options": [
+        "The grain of a fact table is the meaning of one fact row.",
+        "A daily grain can be rolled up to a month by summing the days.",
+        "A daily grain can be drilled down to an hour that was never stored.",
+        "Units sold belong on the fact table, and city belongs on a dimension."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Grain is what one fact row records, daily rows sum to a month, and measures and descriptors belong in different tables. C is false: drill-down cannot invent an hour that was aggregated away before the row was stored."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "A star of 4 tables has one dimension replaced by 3 hierarchy tables. How many tables does the resulting snowflake have? Enter that integer.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**. Remove the one denormalised dimension and add the three hierarchy tables: $4-1+3=6$."
+    }
+  ]
+}

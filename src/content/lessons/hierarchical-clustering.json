@@ -1,0 +1,166 @@
+{
+  "slug": "hierarchical-clustering",
+  "section": "machine-learning",
+  "title": "Hierarchical clustering",
+  "syllabus": "Hierarchical clustering, top-down and bottom-up",
+  "minutes": 30,
+  "summary": "Hierarchical clustering returns a dendrogram. Agglomerative clustering starts from n singletons and merges upward. Divisive clustering starts from one cluster and splits downward. A horizontal cut at a chosen height is a partition. Linkage is the rule for the distance between clusters; the named rules are the next lessons.",
+  "keywords": [
+    "hierarchical clustering",
+    "agglomerative",
+    "divisive",
+    "dendrogram",
+    "linkage"
+  ],
+  "intuition": "A partitional algorithm hands back one grouping and stops. Hierarchical clustering hands back a family of groupings, nested inside each other, and draws them as a dendrogram. The leaves are the $n$ points. Each internal join is a merge, recorded at a height equal to the distance between the two clusters that merged. Reading the picture upward, clusters only grow. A horizontal line at height $h$ crosses some branches and cuts the rest: the branches it crosses are the clusters of one partition. Two points sit in the same cluster of that partition exactly when the path that joins them in the tree stays at height at most $h$, which means they were merged at a height no larger than $h$.\n\nThere are two directions to build the tree. Agglomerative, or bottom-up, clustering starts with $n$ singleton clusters and merges until one cluster remains. Divisive, or top-down, clustering starts with every point in one cluster and splits until the singletons return. Both produce a dendrogram. The agglomerative direction is the one that can be computed from a table of pairwise distances one merge at a time.\n\nA merge needs a distance between clusters, not only a distance between points. That rule is the linkage. While every cluster is still a singleton, every standard linkage sees the same number, the ordinary distance, so the first merge joins a closest pair of points and does not yet reveal which linkage was declared. The difference appears at the next merge, when a cluster contains more than one point and the linkage has to summarise many pairwise distances. Single linkage uses the minimum of those distances, and multiple linkage, in the syllabus wording, uses the maximum. Both rules get their own lessons. This lesson only needs the idea, one first merge, and the reading of a cut.",
+  "definitions": [
+    {
+      "term": "Agglomerative clustering",
+      "body": "Bottom-up hierarchical clustering. Start with $n$ singleton clusters. Repeatedly merge the two closest clusters under a stated linkage until one cluster remains."
+    },
+    {
+      "term": "Divisive clustering",
+      "body": "Top-down hierarchical clustering. Start with one cluster containing every point, and recursively split clusters. The result is again a dendrogram, read from the root downward."
+    },
+    {
+      "term": "Dendrogram and cut",
+      "body": "The tree of merges drawn against height. A horizontal cut at height $h$ yields a partition: the number of clusters is $n$ minus the number of merges whose height is at most $h$."
+    },
+    {
+      "term": "Linkage",
+      "body": "The rule that turns the pairwise distances between two clusters into one distance. The first merge of singletons does not depend on which usual rule is used. The named rules, minimum and maximum, are the next two lessons."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Clusters after a cut",
+      "latex": "k(h)=n-\\lvert\\{m:\\mathrm{height}(m)\\le h\\}\\rvert",
+      "note": "A merge of height at most $h$ has already joined its two branches at the cut. The height $h$ is chosen; the tree does not announce a unique cut."
+    },
+    {
+      "name": "First merge",
+      "latex": "(i^\\star,j^\\star)=\\arg\\min_{i<j} d(x_i,x_j)",
+      "note": "While every cluster is a singleton, the minimum pairwise distance, the maximum, and the average all equal $d(x_i,x_j)$. The first merge is a closest pair."
+    }
+  ],
+  "properties": [
+    "Agglomerative clustering starts with $n$ singletons. After one merge, $n-1$ clusters remain. After $n-1$ merges, one cluster remains.",
+    "Divisive clustering starts with a single cluster and splits. It is the top-down direction. It is not a different kind of output: the drawing is still a dendrogram.",
+    "A horizontal cut yields a partition. On a tree of $4$ leaves with merge heights $1$, $3$, and $6$, a cut at height $4$ has already accepted two merges, so $k(4)=4-2=2$.",
+    "The cut height is a choice. The same dendrogram supplies a $4$-cluster partition, a $2$-cluster partition, and a $1$-cluster partition.",
+    "Linkage is the definition of distance between two clusters that are no longer singletons. This lesson computes one first step with single linkage declared, and leaves the minimum rule and the maximum rule to the next lessons.",
+    "The first agglomerative merge joins a closest pair of points. Declaring single linkage or complete linkage does not change that first pair, because a singleton pair has only one distance."
+  ],
+  "examples": [
+    {
+      "title": "One agglomerative step",
+      "prompt": "Four points lie at $0$, $1$, $4$, and $7$ on the line, with absolute distance. Take one agglomerative step with single linkage declared. How many clusters remain?",
+      "steps": [
+        "The six pairwise distances are $|0-1|=1$, $|0-4|=4$, $|0-7|=7$, $|1-4|=3$, $|1-7|=6$, and $|4-7|=3$. The unique minimum is $1$.",
+        "The first merge joins the points at $0$ and $1$, at height $1$. For singletons the minimum and the maximum of a one-element set of distances agree, so a complete-linkage declaration would have merged the same pair.",
+        "The partition is $\\{\\{0,1\\},\\{4\\},\\{7\\}\\}$. Four singletons minus one merge leaves $3$ clusters. The next merge would need a linkage rule for the distance between $\\{0,1\\}$ and a singleton; that rule is the subject of the linkage lessons, and it is not computed here."
+      ],
+      "answer": "The first merge joins $0$ and $1$ at height $1$, and $3$ clusters remain."
+    },
+    {
+      "title": "Reading a cut off a finished dendrogram",
+      "prompt": "A dendrogram on $4$ leaves has merge heights $1$, then $3$, then $6$. How many clusters does a horizontal cut at height $4$ produce? How many at height $0.5$?",
+      "steps": [
+        "The formula is $k(h)=4$ minus the number of merges whose height is at most $h$.",
+        "At height $4$, the merges at $1$ and at $3$ qualify, and the merge at $6$ does not. So $k(4)=4-2=2$.",
+        "At height $0.5$, no merge has height at most $0.5$. So $k(0.5)=4-0=4$, the four singletons. A cut above $6$ would give $4-3=1$ cluster."
+      ],
+      "answer": "A cut at height $4$ yields $2$ clusters. A cut at height $0.5$ yields $4$ clusters. The height is a choice."
+    }
+  ],
+  "traps": [
+    "Starting agglomerative clustering from one cluster. That is the divisive direction. Bottom-up starts with $n$ singletons; after the first merge of the points $0,1,4,7$, three clusters remain, not one.",
+    "Treating the first merge as evidence of which linkage was used. On $0,1,4,7$ the closest pair is $0$ and $1$ at distance $1$ under every linkage that agrees with ordinary distance on singletons. Linkage starts to matter when a cluster has two or more points.",
+    "Forgetting that a cut height is chosen. Merge heights $1$, $3$, and $6$ support $k=4$, $k=3$, $k=2$, and $k=1$ at different cuts. The tree does not circle one of them.",
+    "Counting clusters as the number of merges. At height $4$ two merges have occurred and $4-2=2$ clusters remain. The number of merges is not the number of clusters.",
+    "Importing the full minimum-linkage or maximum-linkage theory into this step. Those are the next lessons. The only distance computed here is the closest singleton pair, equal to $1$."
+  ],
+  "python": "points = [0, 1, 4, 7]\nbest = min(abs(points[i] - points[j]) for i in range(4) for j in range(i + 1, 4))\nassert best == 1\nclusters_after_one_merge = 4 - 1\nassert clusters_after_one_merge == 3\n# Dendrogram merge heights 1, 3, 6.\nheights = [1, 3, 6]\n\ndef clusters_at(h, n=4):\n    return n - sum(1 for m in heights if m <= h)\n\nassert clusters_at(4) == 2\nassert clusters_at(0.5) == 4\nprint(clusters_at(4))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Agglomerative hierarchical clustering starts with",
+      "options": [
+        "$n$ singleton clusters and merges upward",
+        "one cluster containing every point, and only splits",
+        "$k$ clusters whose $k$ is fixed by a theorem",
+        "the two farthest points already merged"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nBottom-up clustering begins with one cluster per point and merges. Starting from a single cluster and splitting is the divisive, top-down direction. The first merge joins a closest pair, not a farthest pair, and $k$ is chosen later by a cut."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Divisive hierarchical clustering is which procedure?",
+      "options": [
+        "Start with one cluster and split it top-down.",
+        "Start with $n$ singletons and merge them bottom-up.",
+        "Alternate Lloyd assignment and a mean update.",
+        "Replace each centre by the medoid before any tree is built."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nDivisive means top-down: one cluster is split recursively. Bottom-up is the agglomerative direction. Lloyd updates and medoid swaps are partitional algorithms and do not build this dendrogram."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A horizontal cut of a dendrogram yields a partition.",
+        "Linkage is the rule that turns pairwise distances into a distance between clusters.",
+        "The first merge of singletons joins a closest pair, for both the minimum rule and the maximum rule.",
+        "The first merge of singletons changes when the linkage switches from minimum to maximum."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe cut is the partition the tree can supply, and linkage is what a later merge will need. On a pair of singletons the set of pairwise distances has one element, so the minimum and the maximum agree. D is the negation of that fact."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Points lie at $0$, $1$, $4$, and $7$. One agglomerative step uses single linkage. Which of the following are true?",
+      "options": [
+        "The first merge joins the points at $0$ and $1$.",
+        "The height of that merge is $1$.",
+        "After the merge, three clusters remain.",
+        "This single step fixes the maximum-linkage distance between every later pair of clusters."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe pairwise distances are $1,4,7,3,6,3$, so the unique closest pair is $0$ with $1$, at height $1$. Four singletons minus one merge leaves three clusters. D is false: the step used the closest singleton pair only. Distances between nonsingleton clusters are the linkage lessons."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A dendrogram on $4$ leaves has merge heights $1$, $3$, and $6$. Enter the number of clusters in a horizontal cut at height $4$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**.\n\nMerges of height at most $4$ are the ones at $1$ and $3$. Then $k(4)=4-2=2$. The merge at height $6$ is still above the cut."
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "slug": "functions-single-variable",
+  "section": "calculus",
+  "title": "Functions of a single variable",
+  "syllabus": "Functions of a single variable",
+  "minutes": 30,
+  "summary": "Domain, range, injectivity, inverses, and composition for one real input, including the elementary functions used later in limits.",
+  "keywords": [
+    "domain",
+    "range",
+    "injective",
+    "inverse",
+    "composition",
+    "exponential",
+    "logarithm"
+  ],
+  "intuition": "A function of one real variable sends each allowed input to exactly one output. The allowed inputs are the domain. The outputs that actually occur are the range. Limits, derivatives, Taylor polynomials, and maxima in this block are all statements about such a rule.\n\nMultivariable calculus is outside the DA calculus syllabus. A formula here has one real input. A constraint that begins with two lengths is reduced, by substitution, to a function of one variable before any derivative is taken.\n\nInjectivity is the condition that makes an inverse possible. If two inputs share an output, no single-valued rule can undo the function. On its range, an injective function has an inverse, and the two compositions are the identity on the matching set. Composition is not symmetric: $f(g(x))$ and $g(f(x))$ are different rules, and their domains need not agree.\n\nThe elementary functions used in the limit lessons are polynomials, rational functions, the exponential, the logarithm, and sine, cosine, and tangent. A polynomial is defined on all of $\\mathbb{R}$. A rational function is undefined where its denominator is zero. The exponential maps $\\mathbb{R}$ onto $(0,\\infty)$, and $\\ln$ is the inverse, defined only on $(0,\\infty)$. Sine and cosine are defined on $\\mathbb{R}$. Tangent is undefined at odd multiples of $\\pi/2$.",
+  "definitions": [
+    {
+      "term": "Function of one variable",
+      "body": "A function $f$ assigns to each $x$ in a set $D\\subseteq\\mathbb{R}$ exactly one real number $f(x)$. The DA calculus syllabus uses only this one-input case."
+    },
+    {
+      "term": "Domain and range",
+      "body": "The domain is the set of inputs for which the formula is defined. The range is $\\{f(x):x\\in D\\}$, the set of values that are actually attained. The range can be smaller than a codomain someone wrote down out of habit."
+    },
+    {
+      "term": "Injective",
+      "body": "$f$ is injective on $D$ when $f(x_1)=f(x_2)$ implies $x_1=x_2$. Equivalently, each horizontal line meets the graph at most once. Only then does an inverse function exist, from the range back to $D$."
+    },
+    {
+      "term": "Inverse",
+      "body": "If $f$ is injective, its inverse $f^{-1}$ satisfies $f(f^{-1}(y))=y$ for $y$ in the range and $f^{-1}(f(x))=x$ for $x$ in the domain. The graph of the inverse is the original graph reflected across $y=x$."
+    },
+    {
+      "term": "Composition",
+      "body": "$(f\\circ g)(x)=f(g(x))$. The domain is $\\{x:x\\text{ is in the domain of }g\\text{ and }g(x)\\text{ is in the domain of }f\\}$. Composition is associative and is not commutative."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Composition",
+      "latex": "(f\\circ g)(x)=f(g(x))",
+      "note": "This is not the product $f(x)g(x)$. The domain is restricted to inputs whose $g$-value $f$ can accept."
+    },
+    {
+      "name": "Inverse identities",
+      "latex": "f(f^{-1}(y))=y,\\qquad f^{-1}(f(x))=x",
+      "note": "The first identity uses $y$ in the range. The second uses $x$ in the domain. Both need injectivity."
+    },
+    {
+      "name": "Exponential and logarithm",
+      "latex": "\\ln(e^{x})=x\\ (x\\in\\mathbb{R}),\\qquad e^{\\ln x}=x\\ (x>0)",
+      "note": "$\\exp:\\mathbb{R}\\to(0,\\infty)$ and $\\ln:(0,\\infty)\\to\\mathbb{R}$ are inverses. $\\ln$ is undefined at $0$ and on the negatives."
+    },
+    {
+      "name": "A linear inverse",
+      "latex": "f(x)=mx+c\\ (m\\neq 0)\\Rightarrow f^{-1}(y)=\\frac{y-c}{m}",
+      "note": "Nonzero slope is the injectivity check for a nonconstant linear polynomial."
+    }
+  ],
+  "properties": [
+    "A function returns one output per input. A formula such as $\\pm\\sqrt{x}$ is two values, so it is not a single function until a sign is chosen.",
+    "Polynomials have domain $\\mathbb{R}$. A rational function $p(x)/q(x)$ has domain $\\mathbb{R}$ excluding the roots of $q$. Cancelling a common factor does not put those roots back into the original domain.",
+    "$e^{x}$ is injective on $\\mathbb{R}$ with range $(0,\\infty)$. $x^{2}$ is not injective on $\\mathbb{R}$, because $(-2)^{2}=2^{2}$, and it is injective on $[0,\\infty)$, with inverse $\\sqrt{x}$.",
+    "$\\sin$ and $\\cos$ have domain $\\mathbb{R}$ and range $[-1,1]$. $\\tan$ has domain $\\{x:x\\neq \\pi/2+k\\pi,\\ k\\in\\mathbb{Z}\\}$. These are the trigonometric facts used when a limit formula is inspected.",
+    "$(f\\circ g)\\circ h=f\\circ(g\\circ h)$, but $f\\circ g$ and $g\\circ f$ can differ in both formula and domain. Multivariable calculus is outside the DA calculus syllabus."
+  ],
+  "examples": [
+    {
+      "title": "Domain, range, and inverse of a square root",
+      "prompt": "Let $f(x)=2+\\sqrt{x-3}$. Find the domain, the range, and a formula for $f^{-1}$.",
+      "steps": [
+        "The square root is defined when $x-3\\geq 0$, so the domain is $[3,\\infty)$. At the endpoint, $f(3)=2+\\sqrt{0}=2$.",
+        "As $x$ runs through $[3,\\infty)$, $\\sqrt{x-3}$ runs through $[0,\\infty)$, so $f(x)$ runs through $[2,\\infty)$. That interval is the range.",
+        "Solve $y=2+\\sqrt{x-3}$ for $x$, with $y\\geq 2$. Then $y-2=\\sqrt{x-3}$, and squaring gives $(y-2)^{2}=x-3$, so $x=(y-2)^{2}+3$.",
+        "Check the identities at a sample point. $f(7)=2+\\sqrt{4}=4$, and the inverse formula sends $4$ to $(4-2)^{2}+3=7$. Also $f(3)=2$ and $(2-2)^{2}+3=3$."
+      ],
+      "answer": "Domain $[3,\\infty)$, range $[2,\\infty)$, and $f^{-1}(y)=(y-2)^{2}+3$ for $y\\geq 2$. The function is injective because the square root is increasing."
+    },
+    {
+      "title": "Composition is not commutative",
+      "prompt": "Let $f(x)=x^{2}$ and $g(x)=x+1$, both on $\\mathbb{R}$. Compute $(f\\circ g)(3)$ and $(g\\circ f)(3)$.",
+      "steps": [
+        "The inner value for $f\\circ g$ is $g(3)=3+1=4$. Then $f(4)=4^{2}=16$, so $(f\\circ g)(3)=16$.",
+        "The inner value for $g\\circ f$ is $f(3)=3^{2}=9$. Then $g(9)=9+1=10$, so $(g\\circ f)(3)=10$.",
+        "The two formulas are $(f\\circ g)(x)=(x+1)^{2}=x^{2}+2x+1$ and $(g\\circ f)(x)=x^{2}+1$. They agree nowhere except where $2x=0$, that is only at $x=0$."
+      ],
+      "answer": "$(f\\circ g)(3)=16$ and $(g\\circ f)(3)=10$. The same two functions do not commute."
+    }
+  ],
+  "traps": [
+    "Treating composition as multiplication. $(f\\circ g)(x)$ means $f(g(x))$, not $f(x)g(x)$.",
+    "Inverting $x^{2}$ on all of $\\mathbb{R}$. The outputs $4$ comes from both $-2$ and $2$, so there is no inverse function until the domain is cut down to $[0,\\infty)$ or $(-\\infty,0]$.",
+    "Keeping a cancelled root in the domain. $(x^{2}-1)/(x-1)$ equals $x+1$ only for $x\\neq 1$. The original rational function is undefined at $x=1$.",
+    "Calling the codomain the range. If someone declares the codomain of $e^{x}$ to be $\\mathbb{R}$, the range is still $(0,\\infty)$. The inverse $\\ln$ is defined on the range, not on every number in that larger codomain.",
+    "Starting a two-variable Lagrange-multiplier argument. Multivariable calculus is outside the DA calculus syllabus; reduce the problem to one input first."
+  ],
+  "python": "import math\n\ndef f(x):\n    return 2 + math.sqrt(x - 3)\n\ndef inv(y):\n    return (y - 2) ** 2 + 3\n\nassert abs(inv(f(7)) - 7) < 1e-12\nassert abs(f(inv(5)) - 5) < 1e-12\nassert (3 + 1) ** 2 == 16\nassert 3 ** 2 + 1 == 10\n# (x^2 - 1) composed with (2x+1), at 3\nassert (2 * 3 + 1) ** 2 - 1 == 48\nprint(16, 10, 48)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The domain of $f(x)=\\dfrac{\\sqrt{x-2}}{x-5}$ is",
+      "options": [
+        "$[2,5)\\cup(5,\\infty)$",
+        "$(2,\\infty)$",
+        "$[2,\\infty)$",
+        "$(2,5)\\cup(5,\\infty)$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $[2,5)\\cup(5,\\infty)$.\n\nThe square root requires $x-2\\geq 0$, so $x\\geq 2$. The denominator requires $x\\neq 5$. At $x=2$ the value is $0/(2-5)=0$, which is defined, so the endpoint $2$ stays in the domain. Option B drops the endpoint and does not mention the hole at $5$. Option C includes $x=5$, where the expression is undefined. Option D excludes the defined point $x=2$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which of the following functions is injective on $\\mathbb{R}$?",
+      "options": [
+        "$f(x)=x^{2}$",
+        "$f(x)=e^{-x}$",
+        "$f(x)=\\cos x$",
+        "$f(x)=|x|-x$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**, $e^{-x}$.\n\n$e^{-x}$ is strictly decreasing, so $e^{-x_1}=e^{-x_2}$ forces $x_1=x_2$. Its range is $(0,\\infty)$, and the inverse is $-\\ln y$ on that range. $x^{2}$ sends $-2$ and $2$ to the same output. Cosine repeats every $2\\pi$. For every $x\\geq 0$, $|x|-x=0$, so the last function is constant on $[0,\\infty)$ and is not injective."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The domain of $\\ln(x-3)+\\sqrt{7-x}$ is $(3,7]$.",
+        "For every pair of functions, $f\\circ g$ and $g\\circ f$ have the same domain.",
+        "An injective function has an inverse defined on its range.",
+        "Functions of two variables are part of the DA calculus syllabus."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\n$\\ln(x-3)$ needs $x>3$, and $\\sqrt{7-x}$ needs $x\\leq 7$. The intersection is $(3,7]$. At $x=7$ the expression is $\\ln 4+\\sqrt{0}$, which is defined. At $x=3$, $\\ln 0$ is not defined.\n\nAn injective function hits each output once, so the inverse from the range back to the domain is a function. Composition domains need not match: $\\ln(e^{x})$ is defined for every real $x$, while $e^{\\ln x}$ is defined only for $x>0$. Multivariable calculus is outside the DA calculus syllabus."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $f(x)=2x+1$ and $g(x)=x-4$. Which of the following are true?",
+      "options": [
+        "$(f\\circ g)(5)=3$.",
+        "$(g\\circ f)(5)=7$.",
+        "$f^{-1}(9)=4$.",
+        "$(f\\circ g)(x)=(g\\circ f)(x)$ for every real $x$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\n$(f\\circ g)(x)=2(x-4)+1=2x-7$, so $(f\\circ g)(5)=10-7=3$. $(g\\circ f)(x)=(2x+1)-4=2x-3$, so $(g\\circ f)(5)=10-3=7$. Solving $2x+1=9$ gives $2x=8$ and $x=4$, so $f^{-1}(9)=4$.\n\nThe two compositions are $2x-7$ and $2x-3$. They differ by $4$ at every $x$, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $f(x)=x^{2}-1$ and $g(x)=2x+1$. Enter the integer $(f\\circ g)(3)$.",
+      "options": [],
+      "answer": [
+        "48"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **48**.\n\nFirst apply the inner function: $g(3)=2\\cdot 3+1=7$. Then $f(7)=7^{2}-1=49-1=48$. The other order is $(g\\circ f)(3)=g(8)=17$, which is a different integer and is not what was asked."
+    }
+  ]
+}

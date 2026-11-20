@@ -1,0 +1,164 @@
+{
+  "slug": "conjunctions",
+  "section": "aptitude",
+  "title": "Conjunctions",
+  "syllabus": "Coordinating and subordinating conjunctions, and correlative agreement",
+  "minutes": 25,
+  "summary": "Join equal clauses with and, but, or, so, or yet, subordinate with although, because, if, or when, and apply the proximity rule when either-or, neither-nor, or not only-but also joins two subjects.",
+  "keywords": [
+    "coordinating",
+    "subordinating",
+    "comma splice",
+    "neither nor",
+    "proximity rule"
+  ],
+  "intuition": "A conjunction joins, and the kind of conjunction decides the shape of the join. A coordinating conjunction joins two units of the same rank. And, but, or, so, and yet can join two independent clauses. A subordinating conjunction such as although, because, if, or when puts one clause inside the other. The because-clause is not a second independent sentence standing beside the first with only a comma between them.\n\nTwo independent clauses cannot be joined by a comma alone. 'The pump failed, the tank overflowed' is a comma splice. The comma is not a conjunction, and a second comma does not repair it. Use a coordinating conjunction, a semicolon, or two sentences. If the second clause is the result of the first, so is the natural coordinator: 'The pump failed, so the tank overflowed.'\n\nCorrelative pairs come in matched halves: neither with nor, either with or, not only with but also. When those pairs join two subjects, the verb agrees with the subject closer to it. That is the proximity rule. It does not cancel the separate rule for either or neither used as the subject by itself. 'Either of the plans is viable' stays singular, because either is the subject. The proximity rule applies only when the pair joins two subjects, as in 'Either the lamp or the meters are faulty.'",
+  "definitions": [
+    {
+      "term": "Coordinating conjunction",
+      "body": "And, but, or, so, or yet, joining units of equal rank, including two independent clauses."
+    },
+    {
+      "term": "Subordinating conjunction",
+      "body": "Although, because, if, or when, introducing a dependent clause. Although already marks the contrast, so a further but is not added."
+    },
+    {
+      "term": "Comma splice",
+      "body": "Two independent clauses joined only by a comma. A comma is not a coordinator. Repair the splice with a conjunction, a semicolon, or a full stop."
+    },
+    {
+      "term": "Proximity rule",
+      "body": "When either...or, neither...nor, or not only...but also joins two subjects, the verb agrees with the nearer subject. Either of or neither of, used as the subject, stays singular."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Coordinators",
+      "latex": "\\text{clause}+\\text{and/but/or/so/yet}+\\text{clause}",
+      "note": "The coordinator, not a bare comma, joins two independent clauses."
+    },
+    {
+      "name": "Proximity",
+      "latex": "\\text{neither}+\\text{subject}+\\text{nor}+\\text{nearer subject}+\\text{verb}",
+      "note": "The verb agrees with the nearer subject. The same rule applies to either...or and not only...but also."
+    }
+  ],
+  "properties": [
+    "And adds, but and yet contrast, or gives an alternative, and so marks a result.",
+    "Although concedes, because gives a reason, if sets a condition, and when sets a time. Each introduces a dependent clause.",
+    "A comma splice is not repaired by another comma. 'The seal cracked, the pressure dropped' needs so, a semicolon, or a full stop.",
+    "Although and but do not share one contrast. 'Although the seal cracked, but the pressure held' doubles the conjunction.",
+    "The halves match: either with or, neither with nor, not only with but also. Neither...or is a mismatch.",
+    "Nearer subject: 'Neither the coils nor the motor is faulty.' 'Neither the motor nor the coils are faulty.' 'Either of the plans is' remains singular, the same rule as in the verb-noun lesson."
+  ],
+  "examples": [
+    {
+      "title": "A comma splice repaired with so",
+      "prompt": "Repair 'The seal cracked, the pressure dropped.'",
+      "steps": [
+        "Both halves have a subject and a finite verb. They are independent clauses.",
+        "A comma alone cannot join them. Adding another comma would not supply the missing conjunction.",
+        "The second clause is the result of the first, so the coordinating conjunction so repairs it: 'The seal cracked, so the pressure dropped.' A semicolon or two sentences would also be grammatical."
+      ],
+      "answer": "The seal cracked, so the pressure dropped."
+    },
+    {
+      "title": "The verb follows the nearer subject",
+      "prompt": "Choose the verb in 'Not only the assistant but also the supervisors ___ present.' Then swap the subjects.",
+      "steps": [
+        "Not only...but also joins two subjects, so the proximity rule applies.",
+        "The nearer subject is supervisors, which is plural, so the verb is are.",
+        "Swapped, the nearer subject is the assistant: 'Not only the supervisors but also the assistant is present.' The same rule, with the nearer noun changed, changes the verb."
+      ],
+      "answer": "Are present when supervisors is nearer. Is present when the assistant is nearer."
+    }
+  ],
+  "traps": [
+    "Leaving a comma splice as it stands, or 'fixing' it with a second comma and still no conjunction.",
+    "Although together with but for the same contrast: 'Although the filter clogged, but the flow stopped.'",
+    "Mismatched correlatives: neither...or, or either...nor.",
+    "Making the verb agree with the farther subject. In 'Not only the notes but also the diagram ___ missing', the nearer noun diagram is singular, so the verb is is.",
+    "Treating 'either of the plans' as plural. Either, as the subject, takes a singular verb. That is not the proximity rule."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which sentence is correct?",
+      "options": [
+        "The seal cracked, so the pressure dropped.",
+        "The seal cracked, the pressure dropped.",
+        "Although the seal cracked, but the pressure held.",
+        "Neither the seal or the gauge was checked."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. So is a coordinating conjunction and legally joins the two independent clauses, with the second clause as the result. Option B is a comma splice: a comma is not a conjunction. Option C doubles although with but. Option D mismatches neither with or; the pair is neither...nor."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Not only the notes but also the diagram ___ missing. Which verb follows the proximity rule?",
+      "options": [
+        "is",
+        "are",
+        "be",
+        "am"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, is. Not only...but also joins two subjects, and the verb agrees with the nearer subject. Diagram is singular, so the verb is is. Are would agree with notes, which is the farther subject. Be and am are not agreement with diagram."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Either the lamp or the meters are faulty.",
+        "Neither of the meters is faulty.",
+        "The lamp failed, the room went dark.",
+        "She stayed because the run had not finished."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. In A the nearer subject is meters, plural, so are follows the proximity rule. In B, neither of is the subject and takes the singular verb is, the same rule as the verb-noun lesson. D uses because to subordinate a reason. C is a comma splice and has no conjunction between the clauses."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which sentence is correct?",
+      "options": [
+        "Because the filter clogged, the flow stopped.",
+        "Because the filter clogged, so the flow stopped.",
+        "The filter clogged, the flow stopped.",
+        "Although the filter clogged, but the flow continued."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Because is a subordinating conjunction and does not need a second coordinator. Option B adds so on top of because. Option C is a comma splice. Option D pairs although with but, which doubles the contrast."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many of the following five sentences are correct? (1) Either the students or the tutor is ready. (2) Either the tutor or the students is ready. (3) Not only the map but also the keys are gone. (4) The pump stopped, the alarm sounded. (5) I closed the valve and I logged the time. Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**. Sentence 1 follows the proximity rule: the nearer subject tutor is singular, so is. Sentence 2 has the nearer subject students, which needs are, so is is wrong. Sentence 3 has the nearer subject keys, plural, so are is correct. Sentence 4 is a comma splice. Sentence 5 joins two independent clauses with and. The correct sentences are 1, 3, and 5.",
+      "tolerance": 0
+    }
+  ]
+}

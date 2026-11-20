@@ -1,0 +1,162 @@
+{
+  "slug": "narrative-sequencing",
+  "section": "aptitude",
+  "title": "Narrative sequencing",
+  "syllabus": "Ordering events from time markers in a short narrative",
+  "minutes": 25,
+  "summary": "Order four or five events from markers such as before, after, by the time, and having, remembering that the first clause is not always the earliest event.",
+  "keywords": [
+    "sequence",
+    "time markers",
+    "before and after",
+    "by the time",
+    "having"
+  ],
+  "intuition": "A narrative-sequencing item gives you a short story whose clauses are not lined up in time. The order lives in the markers, not in the order of the sentences on the page. Before and after are the plain ones. By the time, followed by a past perfect, says the perfect action was already finished when the other event happened. Having plus a past participle says that action was finished before the action of the main clause. The opening words can name a late event.\n\nRead Anil's afternoon with the markers rather than with the first line. 'By the time the results were posted, Anil had already repeated the titration' puts the titration before the posting. 'He had prepared the solution the evening before he repeated it' puts the preparation before the titration. 'After the results were posted, he mailed the table' puts the mailing after the posting. 'Having mailed the table, he closed the notebook' puts the closing last. The earliest event is the preparation, and the first clause on the page is about the posting, which is the middle event. The first clause is not the earliest event.\n\nThe same markers fix a second, shorter story about Noor. Asking Lata for the figures happens before the printing, because the sentence says before. Printing happens before reading aloud, because of having printed. Correcting the labels happens after the reading and before the submission, because of after and by the time. Nothing in either story has to be guessed from what laboratories usually do. If a marker is missing, the order is not yet known.",
+  "definitions": [
+    {
+      "term": "Before and after",
+      "body": "Before places its event earlier than the event it is tied to. After places its event later. The word, not the left-to-right order of the clauses, decides."
+    },
+    {
+      "term": "By the time",
+      "body": "'By the time' plus a clause, with a past perfect in the other clause, means the perfect action was already complete when the 'by the time' event happened."
+    },
+    {
+      "term": "Having plus a participle",
+      "body": "'Having locked the door, she left' means the locking happened before the leaving. The participle phrase can open the sentence without being the earliest event in the whole narrative."
+    },
+    {
+      "term": "Earliest event",
+      "body": "The event that every other dated event follows. It need not be named in the first clause."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Having",
+      "latex": "\\text{having}+\\text{past participle}=\\text{earlier than the main clause}",
+      "note": "Having mailed the table, he closed the notebook: mailing before closing."
+    },
+    {
+      "name": "By the time",
+      "latex": "\\text{by the time}+\\text{event}_2,\\ \\text{had}+\\text{past participle}",
+      "note": "The past perfect action is earlier than event 2. Event 2 itself may be late in the story."
+    }
+  ],
+  "properties": [
+    "Anil's order is fixed: he prepared the solution, repeated the titration, the results were posted, he mailed the table, he closed the notebook.",
+    "The first clause of Anil's paragraph names the posting, which is the third of the five events. The earliest event is the preparation.",
+    "Two events sit before the posting: the preparation and the repeated titration. The mailing and the closing sit after it.",
+    "Noor's order is fixed: she asked Lata for the figures, printed the draft, read it aloud, corrected two labels, and then submitted the file.",
+    "Having printed puts printing before reading aloud. It does not put printing before the request to Lata, because a different marker, before, puts the request first.",
+    "Do not reorder a pair the markers do not constrain. In these two narratives every consecutive pair is constrained, so the order is unique."
+  ],
+  "examples": [
+    {
+      "title": "Anil: the first clause is not the earliest event",
+      "prompt": "By the time the results were posted, Anil had already repeated the titration. He had prepared the solution the evening before he repeated it. After the results were posted, he mailed the table to his partner. Having mailed the table, he closed the notebook. Put the five events in order.",
+      "steps": [
+        "'The evening before he repeated it' places the preparation earlier than the titration. That is the earliest event, even though the paragraph does not open with it.",
+        "'By the time the results were posted, he had already repeated the titration' places the titration before the posting. The opening clause names the posting, and the posting is not first.",
+        "'After the results were posted, he mailed the table' places the mailing after the posting, and 'having mailed' places the closing of the notebook after the mailing."
+      ],
+      "answer": "He prepared the solution, repeated the titration, the results were posted, he mailed the table, and he closed the notebook."
+    },
+    {
+      "title": "Noor: having does not mean earliest of all",
+      "prompt": "Having printed the draft, Noor read it aloud. She had asked Lata for the figures before she printed. After she read the draft aloud, she corrected two labels. By the time she submitted the file, she had already corrected those labels. What is the earliest event, and what is the last?",
+      "steps": [
+        "The paragraph opens with having printed, so printing is before reading aloud. It is not the earliest event in the story.",
+        "'She had asked Lata for the figures before she printed' places the request before the printing. The request is earliest.",
+        "She corrected the labels after reading aloud, and by the time she submitted the file the correction was already done. Submission is last."
+      ],
+      "answer": "The earliest event is asking Lata for the figures. The last event is submitting the file."
+    }
+  ],
+  "traps": [
+    "Taking the first clause as the earliest event. Anil's first clause is about the posting, which happens after the preparation and the titration.",
+    "Reading having printed as 'this is the start of everything'. In Noor's paragraph a before-clause names an earlier request.",
+    "Reversing by the time. The past perfect action is the earlier one, not the later one.",
+    "Inserting an event the markers do not mention, such as a phone call, because it would be a sensible thing to do."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "What happened first in the narrative below?\n\nBy the time the results were posted, Anil had already repeated the titration. He had prepared the solution the evening before he repeated it. After the results were posted, he mailed the table to his partner. Having mailed the table, he closed the notebook.",
+      "options": [
+        "He prepared the solution.",
+        "He repeated the titration.",
+        "The results were posted.",
+        "He mailed the table."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. He prepared the solution the evening before he repeated the titration, and he had already repeated the titration by the time the results were posted. The posting, the mailing, and the closing are all later. The paragraph opens with the posting, and that opening is not the earliest event."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "In the narrative below, which event is immediately before he closed the notebook?\n\nBy the time the results were posted, Anil had already repeated the titration. He had prepared the solution the evening before he repeated it. After the results were posted, he mailed the table to his partner. Having mailed the table, he closed the notebook.",
+      "options": [
+        "He mailed the table.",
+        "The results were posted.",
+        "He prepared the solution.",
+        "He repeated the titration."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Having mailed the table, he closed the notebook, so the mailing is the event immediately before the closing. The posting is before the mailing, and the preparation and the titration are earlier still. Immediately before means the neighbour in the order, not any earlier event."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of the narrative below?\n\nBy the time the results were posted, Anil had already repeated the titration. He had prepared the solution the evening before he repeated it. After the results were posted, he mailed the table to his partner. Having mailed the table, he closed the notebook.",
+      "options": [
+        "Preparing the solution happened before the titration was repeated.",
+        "The results were posted before he repeated the titration.",
+        "He mailed the table after the results were posted.",
+        "Closing the notebook happened before he mailed the table."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**. The preparation is marked as the evening before the titration, so it is earlier. The mailing is marked as after the results were posted. Option B reverses the by-the-time relation: the titration was already done when the results were posted. Option D reverses having mailed: the closing comes after the mailing, not before it."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "What is the earliest event in the narrative below?\n\nHaving printed the draft, Noor read it aloud. She had asked Lata for the figures before she printed. After she read the draft aloud, she corrected two labels. By the time she submitted the file, she had already corrected those labels.",
+      "options": [
+        "She asked Lata for the figures.",
+        "She printed the draft.",
+        "She read the draft aloud.",
+        "She corrected two labels."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. She had asked Lata for the figures before she printed, so the request is earlier than the printing, the reading, the correction, and the submission. Having printed opens the paragraph and only places printing before reading aloud. It does not place printing first of all."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "In the narrative below there are five events: preparing the solution, repeating the titration, the posting of the results, mailing the table, and closing the notebook. How many of those five events occurred before the results were posted?\n\nBy the time the results were posted, Anil had already repeated the titration. He had prepared the solution the evening before he repeated it. After the results were posted, he mailed the table to his partner. Having mailed the table, he closed the notebook.\n\nEnter the count.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "solution": "The answer is **2**. The preparation happened the evening before the titration, and the titration had already been repeated by the time the results were posted. The mailing is after the posting, and the closing is after the mailing. Two of the five events are before the posting.",
+      "tolerance": 0
+    }
+  ]
+}

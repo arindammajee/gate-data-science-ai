@@ -1,0 +1,171 @@
+{
+  "slug": "svm",
+  "section": "machine-learning",
+  "title": "Support vector machines",
+  "syllabus": "Support vector machine",
+  "minutes": 35,
+  "summary": "Separate labels coded as minus one and plus one by the widest slab that still respects every training point. Slack handles overlap; the width to compute is 2 over the length of w.",
+  "keywords": [
+    "support vector machine",
+    "hard margin",
+    "soft margin",
+    "slack",
+    "geometric margin"
+  ],
+  "intuition": "A support vector machine looks for the boundary that stays as far as possible from the nearest training points. Labels are coded $-1$ and $+1$, so the predicted class is the sign of $w^\\top x+b$. The two planes $w^\\top x+b=\\pm 1$ bound a slab. The distance between those planes, the geometric margin width, is $2/\\|w\\|$. Shortening $w$, once every point is forced to land on the correct side of its plane, is exactly widening that slab.\n\nThe points that sit on a margin plane have functional margin $1$. Those are the support vectors. A point with functional margin strictly above $1$ is outside the slab: deleting it does not change the same feasible $w$ and $b$. The fit is determined by the points on the boundary, not by a head-count of the whole sample.\n\nIf the two classes interleave, no single $w$ and $b$ can put every point on the correct side of the slab. The soft-margin objective keeps $\\tfrac12\\|w\\|^2$ and adds $C$ times the total slack. Each slack $\\xi_i\\ge 0$ is the amount by which point $i$ is allowed to miss the margin constraint. Raising $C$ charges more for that total, so the optimum tolerates less slack. It does not add regularisation: the coefficient in front of $\\|w\\|^2$ stays $\\tfrac12$, and a larger $C$ is the opposite of a larger ridge penalty. A kernel, if one is used at all, only swaps the ordinary dot product for another similarity; the margin geometry above is the part to compute.",
+  "definitions": [
+    {
+      "term": "Functional margin",
+      "body": "For a point $(x_i,y_i)$ with $y_i\\in\\{-1,+1\\}$, the functional margin is $y_i(w^\\top x_i+b)$. The hard-margin constraints require it to be at least $1$."
+    },
+    {
+      "term": "Geometric margin width",
+      "body": "The distance between the parallel planes $w^\\top x+b=1$ and $w^\\top x+b=-1$. It equals $2/\\|w\\|$. Each plane lies at distance $1/\\|w\\|$ from the decision boundary $w^\\top x+b=0$."
+    },
+    {
+      "term": "Support vector",
+      "body": "In the hard-margin problem, a training point whose functional margin is exactly $1$. It lies on a margin plane. Points with functional margin greater than $1$ are not support vectors."
+    },
+    {
+      "term": "Slack and the penalty $C$",
+      "body": "A slack $\\xi_i\\ge 0$ relaxes one constraint to $y_i(w^\\top x_i+b)\\ge 1-\\xi_i$. The objective adds $C\\sum_i\\xi_i$. Larger $C$ penalises slack more heavily, which is less slack, not more regularisation."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Hard-margin primal",
+      "latex": "\\min_{w,b}\\ \\frac12\\|w\\|^2 \\quad \\text{s.t.}\\quad y_i(w^\\top x_i+b)\\ge 1",
+      "note": "Labels are in $\\{-1,+1\\}$. Minimising $\\|w\\|$ maximises the geometric margin width $2/\\|w\\|$."
+    },
+    {
+      "name": "Geometric margin width",
+      "latex": "\\frac{2}{\\|w\\|}",
+      "note": "Distance between the planes $w^\\top x+b=\\pm 1$. The distance from the decision boundary to either plane is half of this, $1/\\|w\\|$."
+    },
+    {
+      "name": "Soft-margin primal",
+      "latex": "\\frac12\\|w\\|^2+C\\sum_i\\xi_i \\quad \\text{s.t.}\\quad y_i(w^\\top x_i+b)\\ge 1-\\xi_i,\\ \\xi_i\\ge 0",
+      "note": "Larger $C$ weights the sum of slacks more. It is not a larger penalty on $\\|w\\|$."
+    }
+  ],
+  "properties": [
+    "Scaling $(w,b)$ by a positive constant scales every functional margin by the same constant and leaves the decision boundary unchanged. The constraint $y_i(w^\\top x_i+b)\\ge 1$ fixes that scale, which is why the objective can just minimise $\\|w\\|$.",
+    "The geometric margin width is $2/\\|w\\|$. Halving $\\|w\\|$, if the constraints still hold, doubles the width.",
+    "Hard-margin support vectors are exactly the points with functional margin $1$. A feasible point with a larger functional margin can be removed without making that same $(w,b)$ infeasible.",
+    "The hard-margin problem is feasible only when the two classes are linearly separable. Overlapping classes need slack.",
+    "In the soft-margin objective the coefficient of $\\|w\\|^2$ is $\\tfrac12$, independent of $C$. Raising $C$ punishes slack more, so the fit allows less of it. As $C$ grows, a separable dataset's soft-margin solution approaches the hard-margin solution.",
+    "A kernel replaces the dot product with a positive semidefinite similarity. It is an extension of this geometry, not a different margin formula."
+  ],
+  "examples": [
+    {
+      "title": "Two points on a line",
+      "prompt": "Labels are $-1$ at $x=-1$ and $+1$ at $x=3$. Find the hard-margin $w$ and $b$, and the geometric margin width $2/\\|w\\|$.",
+      "steps": [
+        "Both points are support vectors, so both constraints are equalities: $(-1)(w\\cdot(-1)+b)=1$ simplifies to $w-b=1$, and $(+1)(3w+b)=1$ simplifies to $3w+b=1$.",
+        "Adding the two equations gives $4w=2$, so $w=\\tfrac12$. Then $\\tfrac12-b=1$, so $b=-\\tfrac12$. The second equation checks: $3\\cdot\\tfrac12-\\tfrac12=1$.",
+        "The geometric margin width is $2/\\|w\\|=2/(\\tfrac12)=4$. The decision boundary $\\tfrac12 x-\\tfrac12=0$ sits at $x=1$, halfway between $-1$ and $3$, and the points themselves are $4$ apart."
+      ],
+      "answer": "The solution is $w=\\tfrac12$, $b=-\\tfrac12$, and the geometric margin width is $4$."
+    },
+    {
+      "title": "Three points, one of them not a support vector",
+      "prompt": "In the plane, $(2,2)$ and $(3,3)$ have label $+1$ and $(0,0)$ has label $-1$. Take $w=(\\tfrac12,\\tfrac12)$ and $b=-1$. Check the constraints, name the support vectors, and compute the geometric margin width.",
+      "steps": [
+        "Functional margin of $(2,2)$: $(+1)(\\tfrac12\\cdot 2+\\tfrac12\\cdot 2-1)=1$. Functional margin of $(0,0)$: $(-1)(0+0-1)=1$. Both constraints are tight, so both points are support vectors.",
+        "Functional margin of $(3,3)$: $(+1)(\\tfrac12\\cdot 3+\\tfrac12\\cdot 3-1)=2$, which is strictly greater than $1$. The point is feasible and is not a support vector.",
+        "$\\|w\\|^2=\\tfrac14+\\tfrac14=\\tfrac12$, so $\\|w\\|=\\sqrt{1/2}$. The geometric margin width is $2/\\|w\\|=2\\sqrt{2}$. That equals the distance from $(0,0)$ to $(2,2)$, because those two support vectors lie on the margin planes and the segment between them is parallel to $w$."
+      ],
+      "answer": "Support vectors are $(2,2)$ and $(0,0)$. The point $(3,3)$ has functional margin $2$ and is not a support vector. The geometric margin width is $2\\sqrt{2}$."
+    }
+  ],
+  "traps": [
+    "Calling $1/\\|w\\|$ the full geometric margin width. On this syllabus the geometric margin width is the distance between the two margin planes, $2/\\|w\\|$. The quantity $1/\\|w\\|$ is the distance from the decision boundary to one of those planes.",
+    "Treating a larger $C$ as a larger ridge penalty. $C$ multiplies the slacks. Raising it allows less slack. The term $\\tfrac12\\|w\\|^2$ does not acquire a bigger coefficient.",
+    "Coding labels as $0$ and $1$ inside the constraint $y_i(w^\\top x_i+b)\\ge 1$. The algebra above needs $y_i\\in\\{-1,+1\\}$. With a $0$ label the product $y_i(w^\\top x_i+b)$ is identically $0$ and the constraint is impossible.",
+    "Declaring every training point a support vector. In the three-point example, $(3,3)$ has functional margin $2$ and does not define the slab.",
+    "Forcing a hard-margin fit on overlapping classes. If any point of each class sits in the convex hull of the other, the hard-margin constraints have no solution; slack is required."
+  ],
+  "python": "# 1-D hard margin: label -1 at x=-1, label +1 at x=3.\nw = 0.5\nb = -0.5\nassert abs((w - b) - 1) < 1e-12\nassert abs((3 * w + b) - 1) < 1e-12\nwidth = 2 / abs(w)\nassert abs(width - 4) < 1e-12\n# 3-point check: functional margin of (3, 3) is 2; width squared is 8.\nfunctional = 0.5 * 3 + 0.5 * 3 - 1\nassert abs(functional - 2) < 1e-12\nwidth_sq = (2 / (0.5 ** 2 + 0.5 ** 2) ** 0.5) ** 2\nassert abs(width_sq - 8) < 1e-9\nprint(width)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A hard-margin SVM in one dimension has label $-1$ at $x=-2$ and label $+1$ at $x=2$. The geometric margin width $2/\\|w\\|$ is",
+      "options": [
+        "$4$",
+        "$2$",
+        "$1$",
+        "$\\tfrac12$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4$.\n\nBoth constraints are tight: $(-1)(-2w+b)=1$ gives $2w-b=1$, and $2w+b=1$. Adding them yields $4w=2$, so $w=\\tfrac12$ and $b=0$. The geometric margin width is $2/(\\tfrac12)=4$, the distance between the two points. Option B is the distance from either point to the boundary at $0$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "In the soft-margin objective $\\tfrac12\\|w\\|^2+C\\sum_i\\xi_i$, what does a larger value of $C$ mean?",
+      "options": [
+        "Slack is penalised more heavily, so the fit tolerates less slack. This is not a stronger penalty on $\\|w\\|$.",
+        "It acts like a larger ridge penalty: $\\|w\\|$ is shrunk harder and the constraints are ignored.",
+        "Every slack is forced to equal $C$, whatever the points are.",
+        "The labels must be recoded from $\\{-1,+1\\}$ to $\\{0,1\\}$."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\n$C$ multiplies the sum of slacks only. The coefficient of $\\|w\\|^2$ remains $\\tfrac12$. Raising $C$ makes each unit of slack more expensive, so the optimum uses less slack. That is the opposite of raising a ridge penalty, which is what B claims. $C$ is not itself a slack, and the label set does not change with $C$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For the hard-margin solution $w=(\\tfrac12,\\tfrac12)$, $b=-1$ on the points $(2,2)$ with label $+1$, $(0,0)$ with label $-1$, and $(3,3)$ with label $+1$, which of the following are true?",
+      "options": [
+        "$(2,2)$ and $(0,0)$ have functional margin $1$, so they are support vectors.",
+        "The geometric margin width is $2/\\|w\\|=2\\sqrt{2}$.",
+        "The point $(3,3)$ has functional margin $2$ and is not a support vector.",
+        "Every labelling of every finite point set has a feasible hard-margin solution."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe functional margins are $1$, $1$, and $2$ respectively, so only the first two points are support vectors. $\\|w\\|^2=\\tfrac12$, hence $2/\\|w\\|=2\\sqrt{2}$. D is false: if the classes are not linearly separable, the hard-margin inequalities have no solution."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the soft-margin primal on this syllabus?",
+      "options": [
+        "Each slack satisfies $\\xi_i\\ge 0$.",
+        "The relaxed constraint is $y_i(w^\\top x_i+b)\\ge 1-\\xi_i$.",
+        "A larger $C$ puts a heavier penalty on $\\sum_i\\xi_i$.",
+        "Raising $C$ multiplies the $\\tfrac12\\|w\\|^2$ term by $C$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nSlacks are nonnegative and each constraint gives way by exactly that slack. $C$ stands in front of the sum of slacks. The quadratic term keeps the coefficient $\\tfrac12$ when $C$ changes, so D is the ridge-style misreading of $C$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A hard-margin SVM uses label $-1$ at $x=-1$ and label $+1$ at $x=3$. Enter the geometric margin width $2/\\|w\\|$.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**.\n\nThe active constraints are $w-b=1$ and $3w+b=1$. Adding them gives $4w=2$, so $w=\\tfrac12$ and $b=-\\tfrac12$. The geometric margin width is $2/(\\tfrac12)=4$."
+    }
+  ]
+}

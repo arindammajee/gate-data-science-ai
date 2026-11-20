@@ -1,0 +1,180 @@
+{
+  "slug": "programming-in-python",
+  "section": "programming",
+  "title": "Programming in Python",
+  "syllabus": "Programming in Python",
+  "minutes": 35,
+  "summary": "Types, mutability, copies, identity, and the costs of list and dict operations, traced on short snippets that actually run.",
+  "keywords": [
+    "mutability",
+    "list",
+    "tuple",
+    "dict",
+    "identity",
+    "recursion"
+  ],
+  "intuition": "A Python value has a type, and the type decides whether an operation builds a new object or changes the old one. Integers, floats, strings, and tuples are immutable: an assignment such as `s + \"!\"` produces a new string. Lists, dicts, and sets are mutable: `append`, item assignment, and `add` change the object that existing names already point at. Two names can refer to one list. A slice is a new list.\n\nIndexing starts at $0$. The last element is at index $-1$. `==` asks whether values are equal. `is` asks whether two names refer to the same object. Equal lists are not automatically the same object, and CPython interns small integers, so a test that used `is` on the number $3$ can fail on $3000$. A mutable default argument is evaluated once, when the function is defined, and then shared by later calls.\n\nLoops are `for` over a sequence and `while` with an explicit index. A function returns a value; a recursive function needs a base case. The costs that are worth memorising are short. `append` and `pop()` at the end of a list are amortised $O(1)$. `insert(0, x)` and `pop(0)` shift every later element, so they are $O(n)$. Dict and set lookup are average $O(1)$ and worst-case $O(n)$.\n\n$$\\text{append is amortised }O(1),\\qquad \\text{insert}(0)\\text{ is }O(n).$$",
+  "definitions": [
+    {
+      "term": "Mutable and immutable",
+      "body": "A mutable object can be changed without creating a new object. Lists, dicts, and sets are mutable. Integers, floats, booleans, strings, and tuples are immutable. Item assignment on a tuple raises `TypeError`."
+    },
+    {
+      "term": "Name binding",
+      "body": "An assignment binds a name to an object. After `b = a` with `a` a list, `a` and `b` are the same list. A later `b.append(...)` or `b[0] = ...` is visible through `a`."
+    },
+    {
+      "term": "Slice copy",
+      "body": "The slice `a[:]` is a new list containing the same elements. Mutating the new list does not mutate `a`, and mutating `a` does not mutate the slice. A slice of a list of lists is a shallow copy."
+    },
+    {
+      "term": "Identity and equality",
+      "body": "`a == b` compares values. `a is b` compares object identity. Two separately built lists with the same items satisfy `==` and fail `is`. Do not use `is` to test numeric equality."
+    },
+    {
+      "term": "Mutable default",
+      "body": "A default such as `acc=[]` is created once. Every call that omits the argument receives that same list. Values appended on one call are still there on the next call."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "End of a list",
+      "latex": "\\text{append and pop() are amortised }O(1)",
+      "note": "Occasional resizing copies the whole list. Across a sequence of appends the average cost per append is constant."
+    },
+    {
+      "name": "Front of a list",
+      "latex": "\\text{insert}(0)\\text{ and pop}(0)\\text{ are }O(n)",
+      "note": "Every element after the front moves one slot. A stack uses the end of the list. A queue does not use `pop(0)`."
+    },
+    {
+      "name": "Dict and set",
+      "latex": "\\text{average }O(1),\\quad \\text{worst }O(n)",
+      "note": "Average lookup assumes hashing spreads the keys. A collision chain of length $n$ makes one lookup linear."
+    },
+    {
+      "name": "Summation by recursion",
+      "latex": "s(n)=n+s(n-1),\\quad s(0)=0",
+      "note": "Then $s(n)=n(n+1)/2$. The base case is what stops the calls."
+    }
+  ],
+  "properties": [
+    "Indexing starts at $0$. For a list of length $n$ the legal indexes run from $0$ through $n-1$, and index $-1$ is the last element.",
+    "`list.append` and `list.pop()` are amortised $O(1)$. `list.insert(0, x)` and `list.pop(0)` are $O(n)$ because they move the tail.",
+    "A dict lookup and a set membership test are average $O(1)$ and worst-case $O(n)$. Building `{1, 1, 2, 3}` keeps three elements, because a set stores each value once.",
+    "Slicing copies. After `c = a[:]` and a later mutation of `a` through another name, `c` still holds the old items. `a is b` can be true while `a == c` is false.",
+    "A recursive call without a base case does not return. `fact(0)` must return $1$ so that `fact(5)` can unwind as $5\\cdot 4\\cdot 3\\cdot 2\\cdot 1=120$."
+  ],
+  "examples": [
+    {
+      "title": "Alias, slice, and a shared default list",
+      "prompt": "The lesson snippet binds `b = a` and `c = a[:]` for `a = [10, 20, 30]`, then sets `b[0] = 99`. It also calls `collect(\\\"p\\\")` and `collect(\\\"q\\\")`, where `collect` appends to a default list and returns a copy of that list. Trace the first two printed lines.",
+      "steps": [
+        "Before the assignment, `a` is `[10, 20, 30]`. The name `b` refers to that same list, so `a is b` is true. The slice `c = a[:]` copies the three integers into a new list.",
+        "The assignment `b[0] = 99` changes the shared list. Afterwards `a` is `[99, 20, 30]` and `a[0]` prints as $99$. The copy `c` is still `[10, 20, 30]`, so `c[0]` is $10$ and `a == c` is false.",
+        "`collect(\\\"p\\\")` appends to the default list, which was empty, and returns a new list equal to `['p']`. `collect(\\\"q\\\")` appends to that same default list, so the returned copy is `['p', 'q']`.",
+        "The first printed line is `(99, 10, True, False)`. The second is `(['p'], ['p', 'q'])`. The snippet asserts both tuples."
+      ],
+      "answer": "The printout begins with `(99, 10, True, False)` and then `(['p'], ['p', 'q'])`. The slice protected `c`. The default list remembered `p`."
+    },
+    {
+      "title": "Recursion, a front insert, and a while loop",
+      "prompt": "In the same snippet, trace `fact(5)`, `insert(0, 9)` on `[1, 2, 3]`, and the while loop that sums `[4, 5, 6, 7]`.",
+      "steps": [
+        "`fact(0)` returns $1$. Then `fact(1)=1`, `fact(2)=2`, `fact(3)=6`, `fact(4)=24`, and `fact(5)=5\\cdot 24=120`.",
+        "`row` starts as `[1, 2, 3]`. `insert(0, 9)` shifts the three existing elements one slot to the right and writes $9$ at index $0$. The list becomes `[9, 1, 2, 3]`. That shift is why `insert(0)` is $O(n)$.",
+        "The while loop starts at index $0$. It adds `data[0]+data[1]+data[2]+data[3]=4+5+6+7=22` and stops when the index equals the length $4$. A `for` loop over the same list adds the same $22$.",
+        "The snippet asserts `row == [9, 1, 2, 3]`, `fact(5) == 120`, and `total == 22`, and it prints those three results on the third line."
+      ],
+      "answer": "`fact(5)` is $120$, the list after the front insert is `[9, 1, 2, 3]`, and the loop total is $22$."
+    }
+  ],
+  "traps": [
+    "Assuming `b = a` copies a list. It binds a second name. A slice `a[:]` or a call to `list(a)` is the copy.",
+    "Using `is` to compare numbers. `int(\\\"3000\\\") == int(\\\"3000\\\")` is true and `int(\\\"3000\\\") is int(\\\"3000\\\")` is false. Small integers are interned, so the same test on $3$ can pass by accident.",
+    "Expecting a fresh list from a mutable default. `def f(x, acc=[])` shares one list across calls, so the lengths returned by three calls are $1$, $2$, and $3$, not $1$, $1$, and $1$.",
+    "Treating `insert(0, x)` as an amortised constant, the way `append` is. The front insert moves every element and is $O(n)$. Index $0$ is the first element, not the second."
+  ],
+  "python": "def collect(x, bag=[]):\n    bag.append(x)\n    return list(bag)\n\na = [10, 20, 30]\nb = a\nc = a[:]\nb[0] = 99\nline1 = (a[0], c[0], a is b, a == c)\nline2 = (collect(\"p\"), collect(\"q\"))\nassert line1 == (99, 10, True, False)\nassert line2 == ([\"p\"], [\"p\", \"q\"])\n\nrow = [1, 2, 3]\nrow.insert(0, 9)\nassert row == [9, 1, 2, 3]\n\ndef fact(n):\n    return 1 if n == 0 else n * fact(n - 1)\n\ndata = [4, 5, 6, 7]\ntotal = 0\ni = 0\nwhile i < len(data):\n    total += data[i]\n    i += 1\nassert fact(5) == 120 and total == 22 and data[0] == 4 and data[-1] == 7\nassert len({1, 1, 2, 3}) == 3\nleft, right = [1], [1]\nassert left == right and not (left is right)\nassert int(\"3000\") == int(\"3000\") and not (int(\"3000\") is int(\"3000\"))\n\ndef s(n):\n    return 0 if n == 0 else n + s(n - 1)\n\nassert s(10) == 55\nprint(line1)\nprint(line2)\nprint(row, fact(5), total, s(10))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "After `a = [1, 2, 3]`, `b = a`, `c = a[:]`, and `b.append(4)`, what does `print(len(a), len(c), a is b)` show?",
+      "options": [
+        "`4 3 True`",
+        "`4 4 True`",
+        "`3 3 False`",
+        "`4 3 False`"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, `4 3 True`.\n\n`b = a` binds both names to one list, so `a is b` stays true and `append` changes that list from length $3$ to length $4$. The slice `c = a[:]` was taken before the append, and slicing copies, so `c` still has length $3$. Option B would be right if the slice were another alias. Option D would be right if `b = a` had copied."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A function is defined by `def f(x, acc=[]):` then `acc.append(x)` and `return len(acc)`. What does `print(f(10), f(20), f(30))` show?",
+      "options": [
+        "`1 2 3`",
+        "`1 1 1`",
+        "`3 3 3`",
+        "`10 20 30`"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, `1 2 3`.\n\nThe default list is created once. The first call appends $10$ and returns length $1$. The second appends $20$ to that same list and returns length $2$. The third returns length $3$. A fresh list on every call would have printed `1 1 1`. The return value is the length, not the appended integer, so `10 20 30` is the contents rather than the printout."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "`==` compares values and `is` compares object identity.",
+        "`list.insert(0, x)` is amortised $O(1)$.",
+        "Average-case lookup in a Python dict is $O(1)$.",
+        "A tuple supports item assignment."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nEquality is `==`. Identity is `is`. Two lists built separately can be equal and not identical. Dict lookup is average $O(1)$, with a linear worst case when every key collides.\n\n`insert(0, x)` moves every current element, so it is $O(n)$, unlike `append`. A tuple is immutable: assigning to `point[0]` raises `TypeError`."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Start with `xs = [10, 20, 30, 40]`, set `ys = xs[1:3]`, then set `ys[0] = 0`. Which of the following are true?",
+      "options": [
+        "`ys` is `[0, 30]` after the assignment.",
+        "`xs` is still `[10, 20, 30, 40]`.",
+        "`xs[0]` is $20$.",
+        "`xs[-1]` is $40$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe slice `xs[1:3]` copies the items at indexes $1$ and $2$, namely $20$ and $30$. Assigning `ys[0] = 0` changes that copy, so `ys` becomes `[0, 30]`. Slicing copied, so `xs` is untouched and is still `[10, 20, 30, 40]`.\n\nIndex $0$ is the first element, $10$, not $20$. Index $-1$ is the last element, $40$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Define `s(0) = 0` and `s(n) = n + s(n - 1)` for `n > 0`. Enter the integer `s(10)`.",
+      "options": [],
+      "answer": [
+        "55"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **55**.\n\nUnwinding the recurrence gives $s(10)=10+9+\\cdots+1+s(0)$. The sum of the integers from $1$ through $10$ is $10\\cdot 11/2=55$, and the base case adds $0$. The same value is $s(9)+10=45+10$."
+    }
+  ]
+}

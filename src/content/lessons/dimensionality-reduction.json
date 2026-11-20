@@ -1,0 +1,166 @@
+{
+  "slug": "dimensionality-reduction",
+  "section": "machine-learning",
+  "title": "Dimensionality reduction",
+  "syllabus": "Dimensionality reduction",
+  "minutes": 25,
+  "summary": "High dimension makes distance less informative, scatters volume toward the boundary, and wastes columns on copies of the same feature. Selection keeps some of the original columns. Extraction builds new ones. PCA is extraction and does not use labels; LDA does.",
+  "keywords": [
+    "dimensionality reduction",
+    "feature selection",
+    "feature extraction",
+    "PCA",
+    "LDA"
+  ],
+  "intuition": "A coordinate that is a copy of another coordinate adds a column and no information. A coordinate measured in a huge unit can also drown its neighbours when a later method uses raw distances or raw variances. Dimensionality reduction is the decision to work in fewer coordinates, made before a distance-based learner or a plot has to live in the original space. Three motives show up together. The curse of dimensionality: in the unit cube, most of the volume of a high-dimensional box sits near the boundary, and distances between points become less distinctive. Visualisation: a page has two axes. Collinear features: if one column is exactly twice another, the column space is unchanged when the copy is dropped.\n\nThere are two different operations. Feature selection keeps a subset of the original columns and deletes the rest. The surviving numbers are still measurements you started with. Feature extraction builds new columns, usually linear combinations of the old ones. The new numbers need not equal any original feature. Principal component analysis is extraction, and the eigen-recipe is the next lesson. This lesson only needs the distinction, and one fact about what that recipe optimises: variance, not class separation.\n\nLabels change the question. Linear discriminant analysis uses the class labels. It looks for a direction that separates the classes, and with one shared covariance the boundary that comes out is linear. PCA does not use labels. It can spend the whole first component on a direction that varies a lot inside every class and does not separate the classes at all. On the four-point cloud below, the sample variance of $y$ is $16$ times the sample variance of $x$, so an unsupervised variance ranking keeps $y$. The two class means differ only in $x$.",
+  "definitions": [
+    {
+      "term": "Feature selection",
+      "body": "Keep a subset of the original columns and discard the others. The retained coordinates are still the measured features. Dropping a column that is an exact linear copy of the others does not change the column space."
+    },
+    {
+      "term": "Feature extraction",
+      "body": "Build new columns from the old ones. PCA is extraction: the new coordinates are linear combinations chosen from the covariance of the centred data. They are not a subset of the original columns."
+    },
+    {
+      "term": "Curse of dimensionality",
+      "body": "In high dimension, volume concentrates near the boundary of a cube, and pairwise distances become less useful for neighbourhoods. One concrete fraction: the inner cube $[0.1,0.9]^{10}$ has volume $0.8^{10}=1073741824/10^{10}\\approx 0.107$, so most of the unit cube's volume is in the outer shell."
+    },
+    {
+      "term": "Supervised and unsupervised reduction",
+      "body": "LDA uses class labels and, with one shared covariance, produces a linear boundary. PCA does not use labels and maximises variance. A high-variance direction need not separate the classes."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Sample variance of one column",
+      "latex": "s_j^2=\\frac{1}{n-1}\\sum_{i=1}^{n}(x_{ij}-\\bar x_j)^2",
+      "note": "The divisor is $n-1$, the sample variance. The comparison of directions below uses this divisor on each column."
+    },
+    {
+      "name": "Exact linear dependence",
+      "latex": "x_{i2}=2 x_{i1}\\ \\text{for every row }i",
+      "note": "The centred second column is twice the centred first column, so the rank of the centred matrix is $1$. Selection can drop the second column. Extraction would build one new coordinate along that same line. The PCA procedure itself is the next lesson."
+    }
+  ],
+  "properties": [
+    "Selection keeps original columns. Extraction builds new ones. PCA is extraction. Choosing the two most predictive original columns is selection, not extraction.",
+    "A column that is an exact multiple of another is redundant for linear reconstruction. On $(1,2)$, $(2,4)$, $(3,6)$ the second coordinate equals twice the first, and the centred matrix has rank $1$.",
+    "Volume concentrates at the boundary as dimension grows. The inner fraction $0.8^{10}\\approx 0.107$ of the unit cube in ten dimensions is the part at least $0.1$ away from every face.",
+    "PCA does not use labels and maximises variance. LDA uses labels. With a shared covariance, the LDA boundary is linear. The two methods answer different questions.",
+    "A direction of large variance can be useless for class separation. In the labelled example the sample variance of $y$ is $16$ times the sample variance of $x$, and the class means differ only in $x$.",
+    "The eigen-decomposition that turns this variance ranking into principal axes, including the case of correlated columns, is the next lesson. Nothing here replaces that calculation."
+  ],
+  "examples": [
+    {
+      "title": "A column that is a copy",
+      "prompt": "Three points have coordinates $(1,2)$, $(2,4)$, and $(3,6)$. Show that the second feature is redundant, and that the centred matrix has rank $1$.",
+      "steps": [
+        "On every row the second coordinate equals twice the first: $2=2\\cdot 1$, $4=2\\cdot 2$, and $6=2\\cdot 3$. Feature selection can keep the first column and drop the second without leaving the column space.",
+        "The column means are $2$ and $4$. The centred rows are $(-1,-2)$, $(0,0)$, and $(1,2)$.",
+        "The centred second column equals $2$ times the centred first column, and the middle row is zero. Every centred row is a multiple of $(-1,-2)$, so the rank is $1$. An extraction method has only one direction of variation to find; computing that direction by eigenvectors is the PCA lesson."
+      ],
+      "answer": "The second feature is exactly twice the first, the centred rank is $1$, and selection can drop one column."
+    },
+    {
+      "title": "Large variance is not class separation",
+      "prompt": "Class $+$ has points $(0,0)$ and $(0,4)$. Class $-$ has points $(1,0)$ and $(1,4)$. Using the sample variance with divisor $n-1$, compare the two columns with the direction that separates the classes.",
+      "steps": [
+        "There are $n=4$ points. The mean of $x$ is $0.5$ and the mean of $y$ is $2$. Centred $x$-values: $-0.5,-0.5,0.5,0.5$. Centred $y$-values: $-2,2,-2,2$.",
+        "Sum of squared centred $x$ is $4\\cdot 0.25=1$, so the sample variance is $1/(4-1)=\\tfrac13$. Sum of squared centred $y$ is $4\\cdot 4=16$, so the sample variance is $16/3$. The ratio is $(16/3)/(\\tfrac13)=16$.",
+        "Class $+$ has mean $(0,2)$ and class $-$ has mean $(1,2)$. The means differ by $1$ in $x$ and by $0$ in $y$. The high-variance direction is vertical. The separating direction is horizontal. PCA, which does not read the labels, follows the variance. LDA reads the labels."
+      ],
+      "answer": "The sample variance of $y$ is $16$ times the sample variance of $x$, but the classes separate along $x$. Variance and class separation are different goals."
+    }
+  ],
+  "traps": [
+    "Calling PCA feature selection. PCA builds new coordinates. Keeping a subset of the original columns is selection. The copy column in $(1,2),(2,4),(3,6)$ can be dropped by selection; that drop is not yet a principal-component calculation.",
+    "Dividing by $n$ and still calling the result the sample variance used here. With divisor $n=4$ the $y$ variance would be $16/4=4$ and the $x$ variance $1/4$, and the ratio would still be $16$. The ratio happens to agree. The lesson still uses divisor $n-1$, so the variances themselves are $\\tfrac{16}{3}$ and $\\tfrac13$, not $4$ and $\\tfrac14$.",
+    "Expecting the high-variance axis to separate the classes. In the labelled example $y$ has $16$ times the sample variance of $x$, and the class means agree in $y$. PCA does not use the labels. LDA does.",
+    "Swapping the supervised and unsupervised methods. LDA uses labels and, with one shared covariance, has a linear boundary. PCA maximises variance and ignores labels. Each is the wrong tool for the other's job.",
+    "Treating $0.8^{10}\\approx 0.107$ as a small boundary effect. That number is the inner volume. About $0.893$ of the ten-dimensional unit cube lies within $0.1$ of some face. Neighbourhoods in high dimension are not the two-dimensional picture."
+  ],
+  "python": "rows = [(1, 2), (2, 4), (3, 6)]\nassert all(y == 2 * x for x, y in rows)\ncentred = [(x - 2, y - 4) for x, y in rows]\nassert all(cy == 2 * cx for cx, cy in centred)\n\npts = [(0, 0), (0, 4), (1, 0), (1, 4)]\nn = len(pts)\nmx = sum(p[0] for p in pts) / n\nmy = sum(p[1] for p in pts) / n\nsxx = sum((p[0] - mx) ** 2 for p in pts) / (n - 1)\nsyy = sum((p[1] - my) ** 2 for p in pts) / (n - 1)\nassert abs(syy / sxx - 16) < 1e-12\nassert abs((0 + 0) / 2 - 0) < 1e-12\nassert abs((1 + 1) / 2 - 1) < 1e-12\nprint(syy / sxx)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Principal component analysis, relative to the two operations in this lesson, is",
+      "options": [
+        "feature extraction: it builds new coordinates",
+        "feature selection: it only deletes original columns",
+        "a supervised search for the direction that separates class means",
+        "a clustering rule that returns $k$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nPCA replaces the original columns by linear combinations, which is extraction. Selection would have kept a subset of the measured columns. PCA does not use class labels, and it does not return a clustering."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which comparison of LDA and PCA matches this syllabus?",
+      "options": [
+        "LDA uses class labels; PCA does not, and PCA maximises variance.",
+        "Both methods maximise the gap between class means and ignore variance.",
+        "PCA uses the labels and LDA ignores them.",
+        "Both methods are feature selection and keep original columns only."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nLDA is supervised. With one shared covariance its boundary is linear. PCA is unsupervised and follows variance, so a direction that separates the classes can be a low-variance direction and be passed over. Neither method is plain column selection."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Feature selection keeps a subset of the original columns; feature extraction builds new columns.",
+        "If one column is an exact multiple of another, selection can drop the copy and stay in the same column space.",
+        "In high dimension, volume in a cube concentrates near the boundary.",
+        "Reducing dimension also returns the correct number of clusters as part of the same theorem."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nSelection and extraction are different operations, and an exact copy, such as the column twice the first in $(1,2),(2,4),(3,6)$, can be dropped. The inner volume $0.8^{10}\\approx 0.107$ is the concrete boundary effect. D is false: dimensionality reduction does not choose $k$ for a clustering algorithm."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Class $+$ is $\\{(0,0),(0,4)\\}$ and class $-$ is $\\{(1,0),(1,4)\\}$. Sample variances use divisor $n-1$. Which of the following are true?",
+      "options": [
+        "The sample variance of $y$ is larger than the sample variance of $x$.",
+        "The class means differ in $x$ and agree in $y$.",
+        "The high-variance direction is not the direction that separates the classes.",
+        "PCA, because it ignores labels, is guaranteed to keep the separating direction."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nCentred sums of squares are $1$ for $x$ and $16$ for $y$, so the sample variances are $\\tfrac13$ and $\\tfrac{16}{3}$. Class means are $(0,2)$ and $(1,2)$. The vertical direction has the variance and the horizontal direction has the separation. D is the opposite of what an unlabelled variance ranking does."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "For the four points $(0,0)$, $(0,4)$, $(1,0)$, and $(1,4)$, let $s_y^2$ and $s_x^2$ be the sample variances with divisor $n-1$. Enter $s_y^2/s_x^2$.",
+      "options": [],
+      "answer": [
+        "16"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **16**.\n\nThe mean of $x$ is $\\tfrac12$ and the sum of squared deviations is $1$, so $s_x^2=\\tfrac13$. The mean of $y$ is $2$ and the sum of squared deviations is $16$, so $s_y^2=\\tfrac{16}{3}$. The ratio is $16$."
+    }
+  ]
+}

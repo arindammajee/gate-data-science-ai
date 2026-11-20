@@ -1,0 +1,172 @@
+{
+  "slug": "conditional-independence",
+  "section": "artificial-intelligence",
+  "title": "Conditional independence",
+  "syllabus": "Conditional independence and Bayesian networks",
+  "minutes": 35,
+  "summary": "X is independent of Y given Z when the joint factors given Z. In a Bayesian network the joint is the product of the parent conditionals, and the chain, fork, and collider use that product differently.",
+  "keywords": [
+    "conditional independence",
+    "Bayesian network",
+    "d-separation",
+    "collider",
+    "explaining away"
+  ],
+  "intuition": "Conditional independence is a statement about a conditional joint. $X\\perp Y\\mid Z$ means $P(X,Y\\mid Z)=P(X\\mid Z)P(Y\\mid Z)$ whenever $P(Z)>0$. The same claim, when $P(Y,Z)>0$, is $P(X\\mid Y,Z)=P(X\\mid Z)$: once $Z$ is known, learning $Y$ does not move the probability of $X$. The definition does not say that $X$ and $Y$ are independent before $Z$ is known.\n\nA Bayesian network is a directed acyclic graph with a conditional distribution for each node given its parents. The joint is the product of those factors, $P(X_1,\\ldots,X_n)=\\prod_i P(X_i\\mid\\mathrm{Pa}_i)$. The arrows are what make the product short. They also decide which independencies the graph forces, path by path, and only when that path is the only path.\n\n$$\nP(X_1,\\ldots,X_n)=\\prod_i P(X_i\\mid\\mathrm{Pa}_i)\n$$\n\nOn a chain $X\\to Y\\to Z$ and on a fork $X\\leftarrow Y\\to Z$, the ends are dependent in the marginal joint and independent given the middle. On a collider $X\\to Y\\leftarrow Z$ the ends are independent in the marginal joint and dependent given the middle. That last dependence is explaining away: the effect is observed, so one cause accounts for it and the other cause moves. A second path between the same two nodes can cancel the conclusion, which is why the pattern is stated for the only path.\n",
+  "definitions": [
+    {
+      "term": "Conditional independence",
+      "body": "$X\\perp Y\\mid Z$ means $P(X,Y\\mid Z)=P(X\\mid Z)P(Y\\mid Z)$ when $P(Z)>0$. Equivalently, $P(X\\mid Y,Z)=P(X\\mid Z)$ when $P(Y,Z)>0$."
+    },
+    {
+      "term": "Bayesian network",
+      "body": "A directed acyclic graph and a conditional $P(X_i\\mid\\mathrm{Pa}_i)$ for each node. The joint equals the product of those conditionals."
+    },
+    {
+      "term": "Chain and fork",
+      "body": "Along the only path $X\\to Y\\to Z$ or $X\\leftarrow Y\\to Z$, the ends are dependent marginally and independent given the middle node."
+    },
+    {
+      "term": "Collider",
+      "body": "Along the only path $X\\to Y\\leftarrow Z$, the ends are independent marginally and dependent given the middle. Dependence given the middle is explaining away."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Conditional independence",
+      "latex": "P(X,Y\\mid Z)=P(X\\mid Z)P(Y\\mid Z)",
+      "note": "Requires $P(Z)>0$. The equivalent form $P(X\\mid Y,Z)=P(X\\mid Z)$ requires $P(Y,Z)>0$."
+    },
+    {
+      "name": "Network factorisation",
+      "latex": "P(X_1,\\ldots,X_n)=\\prod_i P(X_i\\mid \\mathrm{Pa}_i)",
+      "note": "Each factor uses the parents in the graph. A chain $X\\to Y\\to Z$ is $P(X)P(Y\\mid X)P(Z\\mid Y)$."
+    },
+    {
+      "name": "Chain joint, two margins",
+      "latex": "P(X{=}1,Z{=}1)=\\tfrac{13}{40}\\neq \\tfrac{1}{4}=P(X{=}1)P(Z{=}1)",
+      "note": "The numbers come from the chain worked below. Given $Y=1$ the two sides both equal $3/5$."
+    }
+  ],
+  "properties": [
+    "On a chain $X\\to Y\\to Z$ and on a fork $X\\leftarrow Y\\to Z$, when that is the only path, the ends are dependent marginally and independent given the middle.",
+    "On a collider $X\\to Y\\leftarrow Z$, when that is the only path, the ends are independent marginally and dependent given the middle. That dependence is explaining away.",
+    "Conditioning on a descendant of a collider also opens that collider path, when it is the only path. The syllabus case is conditioning on the middle node itself.",
+    "The joint is $\\prod_i P(X_i\\mid\\mathrm{Pa}_i)$. Multiplying in a different order does not change the product. Using a child as if it were a parent does.",
+    "A pattern read off one path is not a conclusion when a second path joins the same two nodes. Both paths have to be blocked."
+  ],
+  "examples": [
+    {
+      "title": "A chain with fractions",
+      "prompt": "The chain is $X\\to Y\\to Z$, with $P(X=1)=1/2$, $P(Y=1\\mid X=1)=4/5$, $P(Y=1\\mid X=0)=1/5$, $P(Z=1\\mid Y=1)=3/4$, and $P(Z=1\\mid Y=0)=1/4$. Compare $P(X=1,Z=1)$ with $P(X=1)P(Z=1)$, and check the conditional independence given $Y=1$.",
+      "steps": [
+        "The joint factor is $P(X)P(Y\\mid X)P(Z\\mid Y)$. The two routes to $X=1,Z=1$ are $(1,1,1)$, with probability $(1/2)(4/5)(3/4)=3/10$, and $(1,0,1)$, with probability $(1/2)(1/5)(1/4)=1/40$. Their sum is $12/40+1/40=13/40$.",
+        "The same expansion gives $P(Z=1)=1/2$. Then $P(X=1)P(Z=1)=(1/2)(1/2)=1/4=10/40$, which is not $13/40$. Marginally, $X$ and $Z$ are dependent.",
+        "Given $Y=1$, $P(X=1\\mid Y=1)=(4/5)$ and $P(Z=1\\mid Y=1)=3/4$, so the product is $(4/5)(3/4)=3/5$. The joint route $(1,1,1)$ has probability $3/10$, and $P(Y=1)=1/2$, so $P(X=1,Z=1\\mid Y=1)=(3/10)/(1/2)=3/5$.",
+        "The conditional joint equals the product of the conditional margins. Given the middle node, the ends of this only path are independent."
+      ],
+      "answer": "$P(X=1,Z=1)=13/40$, while $P(X=1)P(Z=1)=1/4$. Given $Y=1$, both sides of the independence statement equal $3/5$."
+    },
+    {
+      "title": "A collider and explaining away",
+      "prompt": "Battery $B$ and switch $S$ are parents of lamp $L$, with no edge between $B$ and $S$. Priors are $P(B=1)=P(S=1)=1/2$. The lamp probabilities $P(L=1\\mid B,S)$ are $4/5$, $2/5$, $2/5$, and $1/10$ for $(B,S)=(1,1),(1,0),(0,1),(0,0)$.",
+      "steps": [
+        "The factorisation is $P(B)P(S)P(L\\mid B,S)$. The marginal $P(B=1,S=1)=(1/2)(1/2)=1/4$, so $B$ and $S$ are independent before the lamp is observed.",
+        "The four joints with $L=1$ are $1/5$, $1/10$, $1/10$, and $1/40$. Their sum is $17/40$. Then $P(B=1,S=1\\mid L=1)=(1/5)/(17/40)=8/17$, while $P(B=1\\mid L=1)=P(S=1\\mid L=1)=12/17$.",
+        "The product $(12/17)(12/17)=144/289$, and $8/17=136/289$. Those are not equal, so $B$ and $S$ are dependent given $L=1$.",
+        "Explaining away is the further comparison $P(B=1\\mid L=1)=12/17$ against $P(B=1\\mid L=1,S=1)=2/3$. Learning that the switch is closed lowers the probability of the battery. The other cause accounts for the lit lamp."
+      ],
+      "answer": "$B\\perp S$ marginally, since both sides equal $1/4$. Given $L=1$ the joint $8/17$ is not the product $144/289$. Given $L=1$ and $S=1$, $P(B=1)$ falls from $12/17$ to $2/3$."
+    }
+  ],
+  "traps": [
+    "Reversing the collider. Given the middle, a chain becomes independent and a collider becomes dependent. The arrows decide which one.",
+    "Reading $P(X\\mid Y,Z)=P(X\\mid Z)$ as a marginal independence $P(X,Y)=P(X)P(Y)$. The conditional statement says nothing about the marginal until the numbers are computed.",
+    "Factoring the collider as $P(B\\mid L)P(S\\mid L)P(L)$. The graph says $P(B)P(S)P(L\\mid B,S)$.",
+    "Applying a one-path rule when a second path is present. A chain on one path and a collider on another are not settled by either pattern alone.",
+    "Calling $12/17$ and $2/3$ the same probability. $12/17=36/51$ and $2/3=34/51$, so learning $S=1$ really does move $P(B=1)$."
+  ],
+  "python": "from fractions import Fraction\n\ndef px(x):\n    return Fraction(1, 2)\n\ndef py(y, x):\n    return {(1, 1): Fraction(4, 5), (0, 1): Fraction(1, 5), (1, 0): Fraction(1, 5), (0, 0): Fraction(4, 5)}[(y, x)]\n\ndef pz(z, y):\n    return {(1, 1): Fraction(3, 4), (0, 1): Fraction(1, 4), (1, 0): Fraction(1, 4), (0, 0): Fraction(3, 4)}[(z, y)]\n\njoint = {(x, y, z): px(x) * py(y, x) * pz(z, y) for x in (0, 1) for y in (0, 1) for z in (0, 1)}\nassert sum(joint.values()) == 1\npxz = sum(v for (x, y, z), v in joint.items() if x == 1 and z == 1)\npz1 = sum(v for (x, y, z), v in joint.items() if z == 1)\npy1 = sum(v for (x, y, z), v in joint.items() if y == 1)\nassert pxz == Fraction(13, 40) and pz1 == Fraction(1, 2) and py1 == Fraction(1, 2)\nassert px(1) * pz1 == Fraction(1, 4) and pxz != px(1) * pz1\ncond_joint = joint[(1, 1, 1)] / py1\ncond_prod = (sum(v for (x, y, z), v in joint.items() if x == 1 and y == 1) / py1) * (sum(v for (x, y, z), v in joint.items() if z == 1 and y == 1) / py1)\nassert cond_joint == cond_prod == Fraction(3, 5)\n\ndef pl(l, b, s):\n    truth = {(1, 1): Fraction(4, 5), (1, 0): Fraction(2, 5), (0, 1): Fraction(2, 5), (0, 0): Fraction(1, 10)}[(b, s)]\n    return truth if l == 1 else 1 - truth\n\ncj = {(b, s, l): Fraction(1, 2) * Fraction(1, 2) * pl(l, b, s) for b in (0, 1) for s in (0, 1) for l in (0, 1)}\npl1 = sum(v for (b, s, l), v in cj.items() if l == 1)\nassert pl1 == Fraction(17, 40)\np_both = cj[(1, 1, 1)] / pl1\np_b = sum(v for (b, s, l), v in cj.items() if b == 1 and l == 1) / pl1\np_s = sum(v for (b, s, l), v in cj.items() if s == 1 and l == 1) / pl1\nassert p_both == Fraction(8, 17) and p_b == p_s == Fraction(12, 17)\nassert p_b * p_s == Fraction(144, 289) and p_both == Fraction(136, 289)\nassert cj[(1, 1, 1)] / sum(v for (b, s, l), v in cj.items() if s == 1 and l == 1) == Fraction(2, 3)\nassert sum(v for (b, s, l), v in cj.items() if b == 1 and s == 1) == Fraction(1, 4)\nprint(pxz, p_both)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "On the chain $X\\to Y\\to Z$ with the lesson's conditional probabilities, $P(X=1,Z=1)$ equals",
+      "options": [
+        "$13/40$",
+        "$1/4$",
+        "$3/5$",
+        "$1/2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $13/40$. The two agreeing assignments are $(X,Y,Z)=(1,1,1)$ at $3/10$ and $(1,0,1)$ at $1/40$, and $3/10+1/40=13/40$. Option B is the product of the marginals $P(X=1)P(Z=1)$. Option C is the conditional joint given $Y=1$. Option D is $P(Z=1)$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "On the collider $B\\to L\\leftarrow S$ with the lesson's tables, $P(B=1\\mid L=1,S=1)$ equals",
+      "options": [
+        "$12/17$",
+        "$2/3$",
+        "$4/5$",
+        "$1/2$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**, $2/3$. $P(B=1,S=1,L=1)=1/5$ and $P(S=1,L=1)=1/5+1/10=3/10$, so the quotient is $(1/5)/(3/10)=2/3$. Option A is $P(B=1\\mid L=1)$ before the switch is known. Option C is $P(B=1\\mid L=1,S=0)$. Option D is the prior of the battery."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Each pattern below is the only path between the two end nodes. Which of the following are true?",
+      "options": [
+        "On a chain $X\\to Y\\to Z$, $X$ and $Z$ are independent given $Y$.",
+        "On a fork $X\\leftarrow Y\\to Z$, $X$ and $Z$ are independent given $Y$.",
+        "On a collider $X\\to Y\\leftarrow Z$, $X$ and $Z$ are independent given $Y$.",
+        "On a collider $X\\to Y\\leftarrow Z$, $X$ and $Z$ are independent marginally."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The chain and the fork are blocked by the middle node, so the ends are independent given that node and dependent when it is hidden. The collider is the opposite pattern: the ends are independent before the middle is known, and dependent given the middle. C states the chain's conditional claim on the collider's graph."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Using the chain $X\\to Y\\to Z$ and the probabilities in the worked example, which of the following are true?",
+      "options": [
+        "$P(X=1,Z=1)=13/40$.",
+        "$P(X=1)P(Z=1)=1/4$.",
+        "Given $Y=1$, $P(X=1,Z=1\\mid Y=1)=P(X=1\\mid Y=1)P(Z=1\\mid Y=1)$.",
+        "The chain factorisation is $P(Z)P(Y\\mid Z)P(X\\mid Y)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The joint marginal $13/40$ and the product of marginals $1/4$ were computed from $P(X)P(Y\\mid X)P(Z\\mid Y)$, and given $Y=1$ both sides of the conditional independence equal $3/5$. Option D reverses the arrows. The factorisation that matches this graph is $P(X)P(Y\\mid X)P(Z\\mid Y)$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "On the lesson chain, $P(X=1,Z=1)=a/40$ in lowest terms for the joint probability already reduced. Enter $a$.",
+      "options": [],
+      "answer": [
+        "13"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **13**. $(1/2)(4/5)(3/4)=3/10$ for $(X,Y,Z)=(1,1,1)$, and $(1/2)(1/5)(1/4)=1/40$ for $(1,0,1)$. The sum is $12/40+1/40=13/40$, so $a=13$. The product $P(X=1)P(Z=1)=10/40$ is a different number."
+    }
+  ]
+}

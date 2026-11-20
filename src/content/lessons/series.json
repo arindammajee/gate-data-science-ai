@@ -1,0 +1,158 @@
+{
+  "slug": "series",
+  "section": "aptitude",
+  "title": "Series",
+  "syllabus": "Arithmetic and geometric series, and a pattern series",
+  "minutes": 30,
+  "summary": "Sum an arithmetic progression and a geometric progression with the stated formulas, and continue a pattern only after the first and second differences pick out one simple rule.",
+  "keywords": [
+    "arithmetic progression",
+    "geometric progression",
+    "series sum",
+    "second difference",
+    "pattern"
+  ],
+  "intuition": "An arithmetic progression adds the same difference at every step. A geometric progression multiplies by the same ratio at every step. The sum formulas are shortcuts for those two patterns and for no others. If the difference is not constant, the arithmetic sum is the wrong tool. If the ratio is not constant, the geometric sum is the wrong tool. For a geometric sum the formula used here also needs $r\\neq 1$. When $r=1$ every term equals the first term and the sum is $na$.\n\nA short list of terms can invite more than one story, so the lesson uses a list whose simple continuations disagree except for one of them. The terms 3, 8, 15, 24, 35 have first differences 5, 7, 9, 11, which are not constant, so the list is not arithmetic. The ratios $8/3$, $15/8$, $24/15$, and $35/24$ are not constant, so the list is not geometric. The second differences are 2, 2, 2. A constant second difference means there is exactly one polynomial of degree at most 2 that fits the given terms, and the next term of that polynomial is fixed. Here the polynomial is $n(n+2)$, and the next term is 48. A higher-degree polynomial could be bent to pass through the same five points and then go somewhere else, but that is not an equally simple rule on these terms.",
+  "definitions": [
+    {
+      "term": "Arithmetic progression",
+      "body": "A sequence with first term $a$ and common difference $d$. The $n$th term is $a+(n-1)d$."
+    },
+    {
+      "term": "Geometric progression",
+      "body": "A sequence with first term $a$ and common ratio $r$. The $n$th term is $ar^{n-1}$."
+    },
+    {
+      "term": "First and second differences",
+      "body": "The first differences are the gaps between successive terms. The second differences are the gaps between those gaps. A constant second difference selects one polynomial of degree at most 2."
+    },
+    {
+      "term": "Pattern rule",
+      "body": "The continuation used here is the unique degree-at-most-2 polynomial that fits the listed terms, checked against the closed form $n(n+2)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Arithmetic sum",
+      "latex": "S_n=\\frac{n}{2}\\left(2a+(n-1)d\\right)",
+      "note": "Equivalent form: $S_n=n/2$ times (first term plus last term)."
+    },
+    {
+      "name": "Geometric sum",
+      "latex": "S_n=a\\frac{r^n-1}{r-1}",
+      "note": "For $r\\neq 1$. If $r=1$, the sum is $na$."
+    }
+  ],
+  "properties": [
+    "The arithmetic sum uses the common difference. If the first differences are not constant, do not use this formula.",
+    "The geometric sum uses one common ratio. If successive ratios differ, do not use this formula.",
+    "The $n$th term of an arithmetic progression is not the sum. For $a=4$, $d=3$, and $n=12$, the term is 37 and the sum is 246.",
+    "Forgetting the factor $n/2$ doubles the arithmetic sum. The product $n(2a+(n-1)d)$ is twice $S_n$.",
+    "On 3, 8, 15, 24, 35 the second differences are constantly 2, the ratios are not constant, and the first differences are not constant. The next term of the quadratic rule is 48."
+  ],
+  "examples": [
+    {
+      "title": "An arithmetic sum and its last term",
+      "prompt": "An arithmetic progression has $a=4$ and $d=3$. Find the 12th term and $S_{12}$.",
+      "steps": [
+        "The 12th term is $a+(n-1)d=4+11\\times 3=4+33=37$.",
+        "The sum formula gives $S_{12}=12/2\\times(2\\times 4+(12-1)\\times 3)=6\\times(8+33)=6\\times 41=246$.",
+        "The first-plus-last check is $12/2\\times(4+37)=6\\times 41=246$. The two forms agree."
+      ],
+      "answer": "The 12th term is 37 and $S_{12}=246$."
+    },
+    {
+      "title": "A geometric sum, then a pattern that is neither",
+      "prompt": "Sum the geometric progression with $a=3$, $r=2$, and $n=6$. Then find the next term of 3, 8, 15, 24, 35.",
+      "steps": [
+        "Since $r\\neq 1$, $S_6=3(2^6-1)/(2-1)=3\\times(64-1)=3\\times 63=189$. The terms are 3, 6, 12, 24, 48, 96.",
+        "For 3, 8, 15, 24, 35 the first differences are 5, 7, 9, 11, not constant, and the ratios are not constant. The second differences are 2, 2, 2.",
+        "The unique polynomial of degree at most 2 that fits is $n(n+2)$: $1\\cdot 3$, $2\\cdot 4$, $3\\cdot 5$, $4\\cdot 6$, $5\\cdot 7$. The next term is $6\\cdot 8=48$."
+      ],
+      "answer": "The geometric sum is 189. The next term of the pattern is 48."
+    }
+  ],
+  "traps": [
+    "Quoting the 12th term, 37, when the question asks for the sum, 246.",
+    "Dropping the $1/2$ in the arithmetic sum and reporting $12\\times 41=492$.",
+    "Using $a r^n=3\\times 64=192$ as the geometric sum. The last term is $ar^{n-1}=96$, and the sum is 189.",
+    "Treating 3, 8, 15, 24, 35 as arithmetic because the gaps grow smoothly. The gaps 5, 7, 9, 11 are not a common difference."
+  ],
+  "python": "a, d, n = 4, 3, 12\ns_ap = n * (2 * a + (n - 1) * d) // 2\nterm = a + (n - 1) * d\nassert term == 37\nassert s_ap == 246\nassert n * (a + term) // 2 == 246\na, r, n = 3, 2, 6\ns_gp = a * (r ** n - 1) // (r - 1)\nassert s_gp == 189\nseq = [k * (k + 2) for k in range(1, 7)]\nassert seq == [3, 8, 15, 24, 35, 48]\ndiffs = [seq[i + 1] - seq[i] for i in range(5)]\nassert diffs == [5, 7, 9, 11, 13]\nsecond = [diffs[i + 1] - diffs[i] for i in range(4)]\nassert second == [2, 2, 2, 2]\nratios = [seq[i + 1] / seq[i] for i in range(4)]\nassert len(set(ratios)) > 1\nprint(246)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "An arithmetic progression has first term 4 and common difference 3. The sum of the first 12 terms is",
+      "options": [
+        "246",
+        "37",
+        "123",
+        "492"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 246. $S_{12}=12/2\\times(8+11\\times 3)=6\\times(8+33)=6\\times 41=246$. Option B is the 12th term, 37, not the sum. Option D is what you get if you omit the factor $1/2$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A geometric progression has first term 3 and common ratio 2. The sum of the first 6 terms is",
+      "options": [
+        "189",
+        "192",
+        "96",
+        "63"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 189. Because $r\\neq 1$, $S_6=3(2^6-1)/(2-1)=3\\times 63=189$. Option B, 192, is $3\\times 2^6$, which is $a r^n$ and not the sum. Option D, 96, is the last term $3\\times 2^5$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Consider the terms 3, 8, 15, 24, 35. Which of the following are true?",
+      "options": [
+        "The first differences are 5, 7, 9, and 11.",
+        "The second differences are constant and equal to 2.",
+        "The next term given by $n(n+2)$ is 48.",
+        "The sequence is an arithmetic progression."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The first differences are $8-3$, $15-8$, $24-15$, and $35-24$, that is 5, 7, 9, 11. The second differences are 2, 2, 2, so one polynomial of degree at most 2 fits, namely $n(n+2)$, whose next value is $6\\times 8=48$. The first differences are not constant, so the sequence is not arithmetic."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "An arithmetic progression has first term 4 and common difference 3. Enter the 12th term.",
+      "options": [],
+      "answer": [
+        "37"
+      ],
+      "solution": "The answer is **37**. The $n$th term is $a+(n-1)d=4+11\\times 3=37$. The sum of the twelve terms is 246, which is a different question.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The sequence 3, 8, 15, 24, 35 follows $n(n+2)$ for $n=1,2,3,4,5$. Enter the next term.",
+      "options": [],
+      "answer": [
+        "48"
+      ],
+      "solution": "The answer is **48**. The sixth term is $6\\times 8=48$. The first differences 5, 7, 9, 11 grow by 2 each time, so the next difference is 13 and $35+13=48$, the same term. The sequence is not arithmetic and not geometric, so those sum formulas are not the way to the next term.",
+      "tolerance": 0
+    }
+  ]
+}

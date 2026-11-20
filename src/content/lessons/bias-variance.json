@@ -1,0 +1,166 @@
+{
+  "slug": "bias-variance",
+  "section": "machine-learning",
+  "title": "Bias and variance",
+  "syllabus": "Bias-variance trade-off",
+  "minutes": 30,
+  "summary": "For squared error, at a fixed input, the expected prediction error splits into squared bias, variance across training sets, and irreducible noise. High bias underfits. High variance overfits. The algebra is for squared error.",
+  "keywords": [
+    "bias",
+    "variance",
+    "squared error",
+    "underfitting",
+    "overfitting"
+  ],
+  "intuition": "Fix an input $x$ and imagine drawing many training sets from the same source, fitting the same procedure on each, and reading the prediction $\\hat f(x)$. Those predictions scatter. Their centre may also sit away from the true mean response $f(x)$. Squared error cares about both facts, and about the noise in $y$ that no function of $x$ can remove.\n\nWrite $y=f(x)+\\varepsilon$ with $\\mathbb{E}[\\varepsilon]=0$ and $\\mathrm{Var}(\\varepsilon)=\\sigma^2$, and take $\\varepsilon$ independent of the training set. Then, at that fixed $x$,\n$$\\mathbb{E}[(y-\\hat f(x))^2]=\\mathrm{Bias}(x)^2+\\mathrm{Var}(x)+\\sigma^2.$$\nThe expectation is over training sets and over the noise. Bias is $\\mathbb{E}[\\hat f(x)]-f(x)$, a property of the average predictor, not of one unlucky sample. Variance is the ordinary second moment of $\\hat f(x)$ around that average, again an expectation, not a sample variance with divisor $n-1$. The noise term does not depend on the fitting procedure.\n\nHigh bias is underfitting: the procedure is too rigid, or the model class cannot represent $f$, so the average prediction is systematically wrong. High variance is overfitting: the procedure tracks the particular sample, so a new sample moves $\\hat f(x)$ a lot. More training data, with the procedure held fixed, typically shrinks the variance term. It does not cancel bias that comes from a model class which cannot represent $f$. Regularisation pulls wild fits back toward a simpler family: the variance falls and the bias rises. The identity above is for squared error. It is not the decomposition used for $0$-$1$ loss, and the three terms do not transfer to classification error unchanged.",
+  "definitions": [
+    {
+      "term": "Bias at $x$",
+      "body": "$\\mathrm{Bias}(x)=\\mathbb{E}[\\hat f(x)]-f(x)$, where the expectation is over training sets and $f(x)$ is the true mean of $y$ given $x$. The sign flips in some books; the squared bias does not."
+    },
+    {
+      "term": "Variance at $x$",
+      "body": "$\\mathrm{Var}(x)=\\mathbb{E}\\big[(\\hat f(x)-\\mathbb{E}[\\hat f(x)])^2\\big]$, the spread of the fitted prediction across training sets. It is an expectation, not the sample variance formula that divides by $n-1$."
+    },
+    {
+      "term": "Irreducible noise",
+      "body": "The variance $\\sigma^2$ of $y-f(x)$. It remains after the best possible prediction $f(x)$ and does not depend on $\\hat f$."
+    },
+    {
+      "term": "Underfit and overfit",
+      "body": "High bias is the usual picture of underfitting: the average fit is systematically off. High variance is the usual picture of overfitting: the fit changes sharply from one training set to the next."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Squared-error decomposition",
+      "latex": "\\mathbb{E}[(y-\\hat f(x))^2]=\\mathrm{Bias}(x)^2+\\mathrm{Var}(x)+\\sigma^2",
+      "note": "At a fixed $x$. The expectation is over training sets and noise. This identity is for squared error, not unchanged for $0$-$1$ loss."
+    },
+    {
+      "name": "Bias and variance",
+      "latex": "\\mathrm{Bias}(x)=\\mathbb{E}[\\hat f(x)]-f(x), \\qquad \\mathrm{Var}(x)=\\mathbb{E}\\big[(\\hat f(x)-\\mathbb{E}[\\hat f(x)])^2\\big]",
+      "note": "Both expectations are over the draw of the training set. Dividing a sample of fits by $n-1$ is a different calculation."
+    }
+  ],
+  "properties": [
+    "The three terms are nonnegative, so the expected squared error is at least $\\sigma^2$. No choice of $\\hat f$ removes the noise.",
+    "Bias is computed from the average of $\\hat f(x)$ across training sets. One training set that happens to predict $f(x)$ exactly can still come from a procedure with large bias.",
+    "With the fitting procedure held fixed, more training data typically reduces $\\mathrm{Var}(x)$. It does not, by itself, remove bias caused by a model class that cannot represent $f$.",
+    "Regularisation, in the usual trade-off, increases bias and reduces variance. The point of the trade-off is the sum, not either term alone.",
+    "The displayed decomposition is for squared error. Classification $0$-$1$ loss has related but different expansions. Do not quote $\\mathrm{Bias}^2+\\mathrm{Var}+\\sigma^2$ as if it were unchanged for $0$-$1$ loss.",
+    "A procedure can have low bias and high variance (a deep tree, a very small $k$ in $k$-nearest neighbours) or high bias and low variance (a constant fit, a heavily penalised linear model)."
+  ],
+  "examples": [
+    {
+      "title": "Four equally likely training sets",
+      "prompt": "At a fixed $x$, four equally likely training sets produce predictions $0$, $2$, $2$, and $4$. The true mean is $f(x)=5$ and the noise variance is $\\sigma^2=1$. Compute bias squared, variance, and the expected squared error.",
+      "steps": [
+        "The average prediction is $(0+2+2+4)/4=2$. Bias is $2-5=-3$, so squared bias is $9$.",
+        "The variance is the average squared deviation from $2$: $(4+0+0+4)/4=2$. The divisor is $4$ because this is an expectation over four equally likely training sets, not a sample variance with divisor $3$.",
+        "Add the noise: $9+2+1=12$. The same total comes from averaging $(5-0)^2$, $(5-2)^2$, $(5-2)^2$, and $(5-4)^2$, which is $44/4=11$, and then adding $\\sigma^2=1$."
+      ],
+      "answer": "Squared bias is $9$, variance is $2$, and the expected squared error is $12$."
+    },
+    {
+      "title": "A penalty that trades variance for bias",
+      "prompt": "The true mean is $f(x)=3$ and $\\sigma^2=1$. Without regularisation, two equally likely training sets predict $0$ and $6$. With regularisation they predict $1$ and $3$. Compare bias squared, variance, and risk.",
+      "steps": [
+        "Unregularised mean: $(0+6)/2=3$, so bias is $0$. Variance is $(9+9)/2=9$. Risk is $0+9+1=10$.",
+        "Regularised mean: $(1+3)/2=2$, so bias is $2-3=-1$ and squared bias is $1$. Variance is $(1+1)/2=1$. Risk is $1+1+1=3$.",
+        "The noise term stayed $1$. Squared bias rose from $0$ to $1$ and variance fell from $9$ to $1$. The sum fell from $10$ to $3$."
+      ],
+      "answer": "Regularisation raised squared bias from $0$ to $1$, cut variance from $9$ to $1$, and cut the expected squared error from $10$ to $3$."
+    }
+  ],
+  "traps": [
+    "Quoting the three-term identity for $0$-$1$ loss. The derivation expands $(y-\\hat f)^2$. Classification error does not obey the same algebra unchanged.",
+    "Dividing the four squared deviations by $3$, as in a sample variance. The variance term is $\\mathbb{E}[(\\hat f-\\mathbb{E}\\hat f)^2]$. On four equally likely training sets the divisor is $4$, and the variance is $2$, not $8/3$.",
+    "Calling bias the error of one training set. Bias uses $\\mathbb{E}[\\hat f(x)]$. A single fit equal to $f(x)$ does not make the bias zero.",
+    "Expecting more data to repair high bias. More data shrinks variance for a fixed procedure. A model class that cannot represent $f$ keeps its bias.",
+    "Treating regularisation as a free reduction in risk with no effect on bias. In the two-set example the squared bias rose from $0$ to $1$ while the variance fell."
+  ],
+  "python": "# Four equally likely fits: 0, 2, 2, 4. f(x)=5, noise variance 1.\npreds = [0, 2, 2, 4]\nmean = sum(preds) / len(preds)\nvariance = sum((p - mean) ** 2 for p in preds) / len(preds)\nbias2 = (mean - 5) ** 2\nrisk = bias2 + variance + 1\nassert abs(mean - 2) < 1e-12\nassert abs(variance - 2) < 1e-12\nassert abs(bias2 - 9) < 1e-12\nassert abs(risk - 12) < 1e-12\n# Regularised pair 1, 3 against f=3.\nreg = [1, 3]\nreg_mean = sum(reg) / 2\nreg_var = sum((p - reg_mean) ** 2 for p in reg) / 2\nreg_risk = (reg_mean - 3) ** 2 + reg_var + 1\nassert abs(reg_risk - 3) < 1e-12\nprint(risk)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "At a fixed $x$, four equally likely training sets predict $0$, $2$, $2$, and $4$. The true mean is $5$ and $\\sigma^2=1$. The expected squared error is",
+      "options": [
+        "$12$",
+        "$11$",
+        "$9$",
+        "$2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $12$.\n\nThe mean prediction is $2$, so squared bias is $9$. The variance across the four training sets is $2$. Adding $\\sigma^2=1$ gives $12$. Option B is squared bias plus variance, with the noise left out. Option C is the squared bias alone."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The identity $\\mathbb{E}[(y-\\hat f)^2]=\\mathrm{Bias}^2+\\mathrm{Var}+\\sigma^2$ in this lesson applies to which loss, as written?",
+      "options": [
+        "Squared error, at a fixed $x$, with the expectation over training sets and noise.",
+        "$0$-$1$ classification error, with the same three terms unchanged.",
+        "Cross-entropy, with the same three terms unchanged.",
+        "Hinge loss, with the same three terms unchanged."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe expansion is algebraic and uses the square. Bias, variance, and noise still have meanings for other losses, but the displayed three-term sum is the squared-error decomposition. It should not be copied unchanged onto $0$-$1$ loss."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of the squared-error decomposition at a fixed $x$?",
+      "options": [
+        "High bias is the usual signature of underfitting.",
+        "High variance is the usual signature of overfitting.",
+        "With the fitting procedure held fixed, more training data typically reduces the variance term.",
+        "The same three-term formula holds unchanged for $0$-$1$ loss."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nUnderfitting shows up as a systematic gap of the average predictor. Overfitting shows up as sensitivity to the particular training set. Extra data usually calms that sensitivity. D is false: the identity was expanded from a square, and $0$-$1$ loss does not inherit it unchanged."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "The true mean is $f(x)=3$ and $\\sigma^2=1$. Two equally likely unregularised predictions are $0$ and $6$. The regularised predictions are $1$ and $3$. Which of the following are true?",
+      "options": [
+        "Regularisation raised squared bias from $0$ to $1$ and lowered variance from $9$ to $1$.",
+        "The regularised expected squared error is $3$.",
+        "Bias is computed from the average of the predictions across training sets.",
+        "Regularisation changed the noise variance from $1$ to $0$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe unregularised mean is $3$, so the bias is $0$ and the variance is $9$. The regularised mean is $2$, so squared bias is $1$ and variance is $1$. Risks are $10$ and $3$, with $\\sigma^2$ still $1$. The noise is a property of $y$, not of the penalty, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Four equally likely training sets predict $0$, $2$, $2$, and $4$ at a fixed $x$. The true mean is $5$ and the noise variance is $1$. Enter the expected squared error.",
+      "options": [],
+      "answer": [
+        "12"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **12**.\n\nMean prediction $2$, squared bias $(2-5)^2=9$, variance $(4+0+0+4)/4=2$, noise $1$. The sum is $9+2+1=12$."
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "slug": "single-variable-optimization",
+  "section": "calculus",
+  "title": "Single-variable optimization",
+  "syllabus": "Optimization involving a single variable",
+  "minutes": 30,
+  "summary": "On a closed interval, compare critical values with the endpoints. A sign chart of the first derivative shows the increases, and a fence or a box is reduced to one variable before differentiating.",
+  "keywords": [
+    "closed interval",
+    "endpoint",
+    "sign chart",
+    "optimization",
+    "constraint"
+  ],
+  "intuition": "Optimization on this syllabus is a checklist for one function of one variable. Locate the critical points inside the interval, evaluate the function there, evaluate it at the endpoints, and keep the best value. Continuity on the closed interval is the reason a best value exists. The comparison is what finds it.\n\nA sign chart of $f'$ does the same job in slope language. Where $f'$ is positive the function is increasing. Where $f'$ is negative it is decreasing. A change from positive to negative is a local maximum. A change from negative to positive is a local minimum. A critical point with no sign change, such as $x^{3}$ at $0$, is not a candidate you can keep just because the derivative vanished.\n\nA fence against a wall, or an open box cut from a sheet, starts as a sentence with two lengths. The constraint spends one of them. After that substitution there is a single variable, a closed interval of feasible lengths, and an ordinary derivative. Lagrange multipliers are not the method, and they are not a substitute for $f'(x)=0$.\n\n$$\\max_{[a,b]} f = \\max\\{f(a), f(b), f(c_i)\\}.$$",
+  "definitions": [
+    {
+      "term": "Closed-interval method",
+      "body": "If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$ except possibly at finitely many critical points, the global maximum and minimum on $[a,b]$ occur at an endpoint or at a critical point in $(a,b)$. Compute those values and compare them."
+    },
+    {
+      "term": "Sign chart",
+      "body": "A sign chart records the sign of $f'$ on the intervals determined by the critical points. An increase followed by a decrease marks a local maximum. A decrease followed by an increase marks a local minimum."
+    },
+    {
+      "term": "Feasible interval",
+      "body": "After a constraint is substituted, the remaining variable usually lies in a closed interval forced by nonnegative lengths. Degenerate endpoints, where a length is zero, are in that closed interval and must be evaluated."
+    },
+    {
+      "term": "One-variable reduction",
+      "body": "A geometric constraint such as a fixed amount of fencing is used to express one length in terms of the other. The objective becomes a function of a single variable. Multivariable calculus is outside the DA calculus syllabus, and Lagrange multipliers are not used."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Closed interval",
+      "latex": "\\max_{[a,b]}f=\\max\\{f(a),f(b),f(c_i)\\}",
+      "note": "The $c_i$ are the critical points inside $(a,b)$. The identity needs continuity of $f$ on $[a,b]$. The minimum is the min of the same list."
+    },
+    {
+      "name": "Three-sided pen",
+      "latex": "A(x)=x(L-2x),\\qquad 0\\leq x\\leq L/2",
+      "note": "$L$ is the fencing used for two ends of length $x$ and one side of length $L-2x$ opposite a wall. Then $A'(x)=L-4x$."
+    },
+    {
+      "name": "Sign of a quadratic area",
+      "latex": "A'(x)=L-4x,\\qquad A''(x)=-4",
+      "note": "The single zero $x=L/4$ is a maximum because $A''$ is negative and the endpoint areas are $0$."
+    }
+  ],
+  "properties": [
+    "On a closed interval the global maximum is the largest among the endpoint values and the critical values. Checking only the critical points misses an endpoint winner.",
+    "The second-derivative test is local. A negative second derivative at an interior critical point does not answer the question until that value is compared with $f(a)$ and $f(b)$.",
+    "A sign chart that changes from $+$ to $-$ at $c$ gives a local maximum. Combined with a single critical point and endpoint values below $f(c)$, it gives the global maximum on the interval.",
+    "If $f'$ does not change sign at a critical point, that point is not a local extremum and it will not win the closed-interval comparison unless it ties an endpoint by accident. The test is still to evaluate it.",
+    "The wall or the sheet is substituted away. The resulting function has one variable. Lagrange multipliers are outside this syllabus."
+  ],
+  "examples": [
+    {
+      "title": "A pen against a wall",
+      "prompt": "Forty metres of fencing form two ends and the side opposite a long wall. Maximise the rectangular area.",
+      "steps": [
+        "Let each end have length $x$ metres. The side opposite the wall then has length $40-2x$. Nonnegative lengths force $0\\leq x\\leq 20$. The area is $A(x)=x(40-2x)=40x-2x^{2}$.",
+        "Differentiate: $A'(x)=40-4x$. The only critical point is $x=10$, and it lies in $(0,20)$. The opposite side is $40-20=20$, and $A(10)=10\\cdot 20=200$.",
+        "The sign of $A'$ is positive on $(0,10)$ and negative on $(10,20)$, so $A$ increases up to $x=10$ and decreases after it. Also $A''(x)=-4<0$, which agrees with a local maximum.",
+        "The endpoint values are $A(0)=0$ and $A(20)=0$. Both are smaller than $200$. The global maximum on $[0,20]$ is $200$ square metres."
+      ],
+      "answer": "The maximum area is $200$ square metres, when the ends are $10$ metres and the side opposite the wall is $20$ metres."
+    },
+    {
+      "title": "Critical values and endpoints on a closed interval",
+      "prompt": "Find the global maximum and minimum of $f(x)=x^{3}-6x^{2}+9x+1$ on $[0,4]$.",
+      "steps": [
+        "The derivative is $f'(x)=3x^{2}-12x+9=3(x^{2}-4x+3)=3(x-1)(x-3)$. The critical points are $x=1$ and $x=3$, and both lie in $(0,4)$.",
+        "Evaluate the checklist: $f(0)=1$, $f(1)=1-6+9+1=5$, $f(3)=27-54+27+1=1$, and $f(4)=64-96+36+1=5$.",
+        "The sign of $f'$ is positive on $[0,1)$, negative on $(1,3)$, and positive on $(3,4]$. So $f$ rises from $1$ to $5$, falls from $5$ to $1$, and rises from $1$ to $5$.",
+        "The largest checklist value is $5$ and the smallest is $1$. Both a critical point and an endpoint attain the maximum."
+      ],
+      "answer": "On $[0,4]$ the maximum value is $5$, attained at $x=1$ and at $x=4$. The minimum value is $1$, attained at $x=0$ and at $x=3$."
+    }
+  ],
+  "traps": [
+    "Reporting a critical value and skipping the endpoints. On $[0,5]$, $x^{2}-4x+6$ has critical value $2$ at $x=2$, and the maximum is the endpoint value $11$ at $x=5$.",
+    "Invoking a Lagrange multiplier for a fence or a box. The constraint is substituted, one variable remains, and the derivative of that function is the whole method.",
+    "Treating $f''(c)<0$ as a global certificate. It only says 'local maximum'. The closed-interval checklist still compares $f(c)$ with $f(a)$ and $f(b)$.",
+    "Leaving the feasible set open and then claiming a maximum at a missing endpoint. If a length must be positive, a supremum might be unattained. The closed interval $[0,L/2]$ is what makes the extreme value theorem apply to the pen."
+  ],
+  "python": "def area(x):\n    return x * (40 - 2 * x)\n\nassert area(10) == 200\nassert area(0) == 0 and area(20) == 0\nassert 40 - 4 * 10 == 0\n\ndef f(x):\n    return x ** 3 - 6 * x * x + 9 * x + 1\n\nassert f(0) == 1 and f(1) == 5 and f(3) == 1 and f(4) == 5\nassert 3 * (1 - 1) * (1 - 3) == 0\n\ndef box(x):\n    return x * (12 - 2 * x) ** 2\n\nassert box(2) == 128 and box(0) == 0 and box(6) == 0\nprint(area(10), f(1), box(2))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A function continuous on a closed bounded interval attains its maximum",
+      "options": [
+        "at a critical point in the open interval or at an endpoint",
+        "only at a point where the second derivative is negative",
+        "only at an endpoint",
+        "only at a point where the first derivative is zero"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe closed-interval method compares endpoint values with values at critical points inside the interval. Critical points include places where the derivative does not exist, so 'only where the derivative is zero' is too small. A negative second derivative marks one kind of local maximum and says nothing about endpoints. An endpoint is not the only possible location: the pen of $40$ metres has its maximum at the interior point $x=10$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Twenty metres of fencing form the two ends and the side opposite a wall. The maximum rectangular area, in square metres, is",
+      "options": [
+        "$50$",
+        "$25$",
+        "$100$",
+        "$40$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $50$.\n\nLet each end have length $x$. The opposite side has length $20-2x$, with $0\\leq x\\leq 10$. The area is $A(x)=x(20-2x)=20x-2x^{2}$. Then $A'(x)=20-4x=0$ at $x=5$, where the opposite side is $10$ and $A(5)=5\\cdot 10=50$. The endpoint areas are $0$. Since $A''(x)=-4<0$ and there is only one critical point, $50$ is the maximum. The value $25$ is $5\\cdot 5$, which drops the opposite side. The value $100$ would be a $10$ by $10$ rectangle using $30$ metres of fencing."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Let $g(x)=x^{2}-4x+6$ on $[0,5]$. Which of the following are true?",
+      "options": [
+        "The minimum value of $g$ on $[0,5]$ is $2$.",
+        "The maximum value of $g$ on $[0,5]$ is $6$.",
+        "$x=2$ is a critical point of $g$.",
+        "The maximum on $[0,5]$ occurs at an endpoint."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\n$g'(x)=2x-4$, so the only critical point is $x=2$, and $g(2)=4-8+6=2$. The endpoint values are $g(0)=6$ and $g(5)=25-20+6=11$. The smallest of $6$, $2$, and $11$ is $2$. The largest is $11$, attained at the endpoint $x=5$.\n\nOption B stops at the left endpoint. The right endpoint is larger, so the maximum is $11$, not $6$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true for optimization on this syllabus?",
+      "options": [
+        "On a closed interval, compare the critical values with the endpoint values.",
+        "A fence of fixed length against a wall is solved with a Lagrange multiplier.",
+        "A sign chart of $f'$ shows the intervals on which $f$ is increasing.",
+        "A continuous function on an open interval always attains a maximum."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nThe closed-interval checklist is the comparison of critical values and endpoint values. Where the first derivative is positive, the function is increasing, which is what a sign chart records.\n\nA fence constraint is substituted until one variable remains. Lagrange multipliers are outside the DA calculus syllabus. A continuous function on an open interval need not attain a maximum: $f(x)=x$ on $(0,1)$ does not."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "An open box is made by cutting a square of side $x$ from each corner of a $12$ by $12$ sheet and folding up the sides. The maximum volume is an integer. Enter that integer.",
+      "options": [],
+      "answer": [
+        "128"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **128**.\n\nThe base is a square of side $12-2x$, and the height is $x$, with $0\\leq x\\leq 6$. The volume is $V(x)=x(12-2x)^{2}$. Differentiating gives $V'(x)=(12-2x)^{2}+x\\cdot 2(12-2x)\\cdot(-2)=(12-2x)(12-6x)$. The roots are $x=6$ and $x=2$. The endpoint volumes are $V(0)=0$ and $V(6)=0$. The interior value is $V(2)=2\\cdot 8^{2}=2\\cdot 64=128$. The factor $12-6x$ changes from positive to negative at $x=2$, so the volume increases on $[0,2]$ and decreases on $[2,6]$."
+    }
+  ]
+}

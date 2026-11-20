@@ -1,0 +1,167 @@
+{
+  "slug": "k-fold-cv",
+  "section": "machine-learning",
+  "title": "k-fold cross-validation",
+  "syllabus": "k-folds cross-validation",
+  "minutes": 30,
+  "summary": "Split the sample into k folds, train on k minus one of them, and test on the fold that was held out. Average those test scores. Each point is tested once. The scaler is fit on the training fold only. Five and ten folds are conventions.",
+  "keywords": [
+    "k-fold",
+    "cross-validation",
+    "stratified",
+    "data leakage",
+    "preprocessing"
+  ],
+  "intuition": "$k$-fold cross-validation cuts the sample into $k$ blocks. One block is the test fold. The model is fit on the other $k-1$ blocks and scored only on the block it did not see. Then the next block takes a turn. After $k$ fits, every point has been a test point once and a training point $k-1$ times. The reported score is the average of the held-out errors, pooled over points. If the folds have equal size, averaging the $k$ fold-wise mean squared errors gives the same number.\n\nThe test fold is not a source of fitted coefficients, of a chosen threshold, or of the minimum and maximum used to scale a feature. Those are training calculations. Fit the scaler on the training fold, apply that frozen scaler to the test fold, and throw the scaler away when the next fold starts. Fitting it once on the whole dataset, then running cross-validation on the scaled matrix, lets every test point influence the scale of the model that is later scored on it.\n\nFor classification, stratified $k$-fold builds the blocks so that each one keeps, as closely as possible, the class proportions of the full sample. An unstratified shuffle of a rare class can drop that class from a fold entirely, and the fold's error then says nothing about it. The integer $k$ itself is a choice. Values $5$ and $10$ are conventions that trade extra fits against training sets much smaller than the sample. They are not theorems. The extreme $k=n$ is leave-one-out, already a separate lesson: low bias, high variance of the estimate, and $n$ fits.",
+  "definitions": [
+    {
+      "term": "$k$-fold partition",
+      "body": "A split of the $n$ points into $k$ disjoint folds whose union is the whole sample. Fold $t$ is the test set for one fit; the other folds are the training set. Each point belongs to exactly one test fold."
+    },
+    {
+      "term": "Stratified $k$-fold",
+      "body": "The classification version that keeps class proportions approximately constant across folds. With $18$ points of class $A$ and $12$ of class $B$ and $k=3$, each fold can take $6$ of class $A$ and $4$ of class $B$."
+    },
+    {
+      "term": "Training-fold preprocessor",
+      "body": "A scaler, encoder, or feature selection whose parameters are estimated on the training fold and then applied, unchanged, to the test fold. Refit those parameters on every fold."
+    },
+    {
+      "term": "Convention for $k$",
+      "body": "Using $5$ or $10$ folds is a convention, not a theorem. Smaller $k$ means larger test folds, smaller training sets, and fewer fits. The case $k=n$ is leave-one-out."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Pooled cross-validated MSE",
+      "latex": "\\mathrm{CV}=\\frac{1}{n}\\sum_{i=1}^{n}\\big(y_i-\\hat f^{(-t(i))}(x_i)\\big)^2",
+      "note": "$\\hat f^{(-t)}$ is the fit that held fold $t$ out. The test fold is not used to fit. With equal fold sizes this matches the average of the $k$ fold-wise MSEs."
+    },
+    {
+      "name": "Min-max scaler on the training fold",
+      "latex": "x'=\\frac{x-\\min_{\\mathrm{train}}}{\\max_{\\mathrm{train}}-\\min_{\\mathrm{train}}}",
+      "note": "The minimum and the maximum are computed on the training fold only, then applied to the test fold. Refit them for the next fold."
+    }
+  ],
+  "properties": [
+    "Exactly $k$ models are fit. Each point is tested once and is omitted from the fit that tests it.",
+    "The score uses predictions on the held-out fold. Training error of the same fit is a different, usually optimistic, number.",
+    "When folds differ in size, weight each fold's total squared error by the number of test points, or equivalently pool the pointwise errors. An unweighted average of fold MSEs then disagrees with the pooled MSE.",
+    "Stratified folds are for classification. They keep class proportions. They do not look at the response of a regression problem in order to balance the folds by $y$; that would be a different design.",
+    "$k=5$ and $k=10$ are conventions. Nothing in the definition forces those integers. $k=n$ is leave-one-out.",
+    "Preprocessing fit on the whole matrix before the split leaks the test fold into the training transformation. The scaler in this lesson is fit on the training fold only."
+  ],
+  "examples": [
+    {
+      "title": "Three folds and a constant predictor",
+      "prompt": "Six responses are grouped as fold $A=(0,0)$, fold $B=(0,6)$, and fold $C=(6,6)$. The predictor is the mean of the training fold. Compute the pooled sum of squared test errors and the cross-validated MSE.",
+      "steps": [
+        "Hold out $A$. The training responses are $0,6,6,6$, mean $4.5$. Squared errors on $A$ are $4.5^2+4.5^2=40.5$.",
+        "Hold out $B$. The training responses are $0,0,6,6$, mean $3$. Squared errors are $(0-3)^2+(6-3)^2=18$.",
+        "Hold out $C$. The training responses are $0,0,0,6$, mean $1.5$. Squared errors are $4.5^2+4.5^2=40.5$. The pooled sum is $40.5+18+40.5=99$, and the MSE is $99/6=16.5$. Each fold has two points, so the average of the three fold MSEs $20.25$, $9$, and $20.25$ is the same $16.5$."
+      ],
+      "answer": "The pooled sum of squared test errors is $99$, and the cross-validated mean squared error is $16.5$. The test fold was never part of the mean that predicted it."
+    },
+    {
+      "title": "A min-max scaler that must not see the test point",
+      "prompt": "The training fold has feature values $0$, $2$, and $4$. The test fold has the single value $10$. Scale $10$ by min-max, first correctly and then incorrectly using the test value in the minimum and maximum.",
+      "steps": [
+        "On the training fold the minimum is $0$ and the maximum is $4$. The test value maps to $(10-0)/(4-0)=2.5$.",
+        "If the scaler is fit on $\\{0,2,4,10\\}$, the minimum is still $0$ and the maximum becomes $10$. The same test value maps to $(10-0)/(10-0)=1$.",
+        "The two pipelines disagree: $2.5$ versus $1$. The value $1$ used the point being scored to set the scale. The cross-validated pipeline uses $2.5$, and the next fold estimates its own minimum and maximum from scratch."
+      ],
+      "answer": "Fit on the training fold only, $10$ scales to $2.5$. Fit on the training and test values together, it scales to $1$. The second figure leaks the test point."
+    }
+  ],
+  "traps": [
+    "Fitting the min-max scaler on all of $\\{0,2,4,10\\}$ and then holding $10$ out of the model only. The scaled test value becomes $1$ instead of the honest $2.5$.",
+    "Letting a point sit in two test folds, or in none. A partition tests each point once. Leave-one-out is the special case $k=n$, not a reason to test a point $k$ times inside ordinary $k$-fold.",
+    "Treating $k=5$ or $k=10$ as a derived constant. They are conventions. The definition works for any $k$ from $2$ to $n$.",
+    "Calling a fold stratified when one fold of a $3$-fold split on $18$ points of class $A$ and $12$ of class $B$ receives all $12$ of class $B$. The other folds then have no class $B$. A stratified fold takes $6$ and $4$.",
+    "Averaging fold MSEs without weights when the folds have different sizes. Pool the squared errors and divide by $n$, so a larger test fold counts for more points.",
+    "Using the test fold to pick the number of neighbours, the tree depth, or the penalty, and then quoting that same fold as an untouched test score. The fold used to choose the model is no longer an unseen test."
+  ],
+  "python": "# 3-fold CV. Predict the training-fold mean. Pooled SSE is 99.\nfolds = [(0, 0), (0, 6), (6, 6)]\nsse = 0.0\nfor i in range(3):\n    train = [y for j, fold in enumerate(folds) if j != i for y in fold]\n    mu = sum(train) / len(train)\n    sse += sum((y - mu) ** 2 for y in folds[i])\nassert abs(sse - 99) < 1e-12\nassert abs(sse / 6 - 16.5) < 1e-12\n# Min-max on the training fold only.\nscaled = (10 - 0) / (4 - 0)\nleaked = (10 - 0) / (10 - 0)\nassert abs(scaled - 2.5) < 1e-12\nassert abs(leaked - 1) < 1e-12\nprint(sse)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In a $k$-fold partition, how many times is each point used as a test point?",
+      "options": [
+        "Once",
+        "$k$ times",
+        "$k-1$ times",
+        "Never; the test fold is also used to fit"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, once.\n\nThe folds are a partition, so each point lies in exactly one test fold. It is a training point in the other $k-1$ fits, and it is never part of the fit that is scored on it."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A training fold has values $0$, $2$, and $4$. The held-out value is $10$. Min-max scaling fit on the training fold only sends $10$ to",
+      "options": [
+        "$\\tfrac52$",
+        "$1$",
+        "$10$",
+        "$4$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $\\tfrac52$.\n\nTraining minimum $0$, training maximum $4$, so $(10-0)/(4-0)=2.5$. The value $1$ is what you get if $10$ is allowed into the maximum, which is the leak. The test fold does not refit the scaler."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of $k$-fold cross-validation?",
+      "options": [
+        "The model scored on a fold is fit on the other folds only.",
+        "A scaler used as preprocessing is fit on the training fold only, then applied to the test fold.",
+        "Choosing $k=5$ or $k=10$ is a convention, not a theorem.",
+        "Every point is placed in more than one test fold so that the score has more terms."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nHolding the test fold out of the fit is the whole procedure, and the scaler is part of that fit. Five and ten are common choices, not consequences of a theorem. D is false: a partition puts each point in one test fold. Testing a point more than once would reuse it."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "A labelled set has $18$ points of class $A$ and $12$ of class $B$. Stratified $3$-fold cross-validation is used. Which of the following are true?",
+      "options": [
+        "Each fold can contain $6$ points of class $A$ and $4$ of class $B$.",
+        "Stratification is there to keep class proportions stable across folds.",
+        "The model for a fold is fit on the other two folds, not on the fold being scored.",
+        "A fold with all $12$ points of class $B$ and $6$ of class $A$ is a stratified fold."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe class counts divide evenly: $18/3=6$ and $12/3=4$, and $6:4$ matches $18:12$. The fit still excludes the test fold. D describes a fold that has taken every point of class $B$, so the other folds have none. That shuffle is not stratified."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Folds $(0,0)$, $(0,6)$, and $(6,6)$ are scored by the mean of the other fold's responses. Enter the pooled sum of squared test errors over the six points.",
+      "options": [],
+      "answer": [
+        "99"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **99**.\n\nHolding out $(0,0)$ uses mean $4.5$ and contributes $40.5$. Holding out $(0,6)$ uses mean $3$ and contributes $18$. Holding out $(6,6)$ uses mean $1.5$ and contributes $40.5$. The sum is $40.5+18+40.5=99$."
+    }
+  ]
+}

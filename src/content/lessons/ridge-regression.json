@@ -1,0 +1,166 @@
+{
+  "slug": "ridge-regression",
+  "section": "machine-learning",
+  "title": "Ridge regression",
+  "syllabus": "Ridge regression",
+  "minutes": 30,
+  "summary": "Ridge minimises residual sum of squares plus $\\lambda\\|\\beta\\|^2$. It shrinks slopes toward 0, does not set them to 0, and does not penalise the intercept.",
+  "keywords": [
+    "ridge",
+    "shrinkage",
+    "penalty",
+    "intercept",
+    "bias-variance"
+  ],
+  "intuition": "Ordinary least squares minimises the residual sum of squares and will follow a nearly collinear design out to a large coefficient. Ridge adds a penalty on the size of the coefficient vector. The objective is $\\|y-X\\beta\\|^2+\\lambda\\|\\beta\\|^2$ with $\\lambda>0$. Larger $\\lambda$ pulls harder toward 0.\n\nThe closed form $(X^{\\top}X+\\lambda I)^{-1}X^{\\top}y$ adds $\\lambda$ to every diagonal entry of the matrix it inverts. That is the right formula when there is no intercept, or when the features have been centred and the vector $\\beta$ contains only slopes. Do not penalise the intercept. Penalising a column of ones shrinks the fitted mean toward 0, which is not the ridge this lesson fits. With centred columns, the unpenalised intercept stays at $\\bar y$, and only the slopes are shrunk.\n\nAs $\\lambda\\to 0$, the slope formula returns the ordinary least-squares slopes, provided $X^{\\top}X$ is invertible. The shrunk slopes move toward 0 and, for finite $\\lambda$, they are not set to exactly 0 when $X^{\\top}y$ is not 0. Setting a coefficient to exactly 0 is the lasso, which uses an absolute-value penalty and is not this syllabus item. The lasso is named here only so the two penalties are not swapped. Ridge adds bias, because the shrink is toward 0 rather than toward the unpenalised coefficient, and it reduces variance relative to ordinary least squares.",
+  "definitions": [
+    {
+      "term": "Ridge objective",
+      "body": "Minimise $\\|y-X\\beta\\|^2+\\lambda\\|\\beta\\|^2$ for a fixed $\\lambda>0$. The first term is the residual sum of squares. The second term penalises the squared length of the coefficient vector that is included in the penalty."
+    },
+    {
+      "term": "Unpenalised intercept",
+      "body": "The intercept is left out of the penalty. Centre the features, estimate the slopes with the ridge formula, and set the intercept to $\\bar y$. Do not add $\\lambda$ on the diagonal entry that belongs to a column of ones."
+    },
+    {
+      "term": "Shrinkage",
+      "body": "Ridge coefficients lie closer to 0 than the corresponding ordinary least-squares coefficients. They are not forced to be exactly 0. Exact zeros are the lasso's behaviour, and the lasso is not this item."
+    },
+    {
+      "term": "Bias and variance",
+      "body": "Shrinking toward 0 adds bias relative to ordinary least squares. The point of the penalty is a reduction in variance. A larger residual sum of squares on one sample is the in-sample price, not itself a variance calculation."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Ridge objective",
+      "latex": "\\|y-X\\beta\\|^2+\\lambda\\|\\beta\\|^2",
+      "note": "$\\lambda>0$. The penalty applies to the slopes. The intercept is not part of the penalised vector."
+    },
+    {
+      "name": "Centred closed form",
+      "latex": "\\hat\\beta=(X^{\\top}X+\\lambda I)^{-1}X^{\\top}y",
+      "note": "For a model with no intercept, or for centred slope columns. As $\\lambda\\to 0$ this returns the ordinary least-squares slopes when $X^{\\top}X$ is invertible. Do not drop an intercept column of ones into this formula."
+    }
+  ],
+  "properties": [
+    "The intercept is not penalised. In the worked fit the centred columns leave the intercept at $\\bar y=3$, while the slopes shrink.",
+    "$\\lambda\\to 0$ recovers the ordinary least-squares slopes when $X^{\\top}X$ is invertible. On this design those slopes are $3/2$ and $1$.",
+    "Ridge shrinks coefficients toward 0. It does not set them to exactly 0. Here the slopes $3/4$ and $1/2$ are smaller than $3/2$ and $1$, and neither is 0. Exact zeros belong to the lasso, which is not this syllabus item.",
+    "Ordinary least squares has the smaller residual sum of squares, because it minimises that sum alone. On this fit the sums are 1 and $17/4$. Ridge wins the penalised objective, not the unpenalised one.",
+    "The penalty adds bias and reduces variance relative to ordinary least squares. The bias is the pull toward 0.",
+    "Adding $\\lambda I$ to a matrix that still contains a column of ones penalises the intercept. Centre first, or put a 0 rather than $\\lambda$ in the intercept's diagonal slot."
+  ],
+  "examples": [
+    {
+      "title": "Centred slopes, intercept left alone",
+      "prompt": "Two centred predictors are $x_1=(-1,-1,1,1)$ and $x_2=(-1,1,-1,1)$, with $y=(1,2,3,6)$. Fit the slopes by ordinary least squares and by ridge with $\\lambda=4$. Do not penalise the intercept.",
+      "steps": [
+        "Each column has squared length 4, and the two columns are orthogonal, so $X^{\\top}X=4I$. Also $X^{\\top}y=(6,4)$. The mean of $y$ is 3, and because the columns are centred the unpenalised intercept is 3 for both fits.",
+        "Ordinary least squares inverts $4I$ and returns slopes $(6/4,\\ 4/4)=(3/2,\\ 1)$. Ridge inverts $4I+4I=8I$ and returns $(6/8,\\ 4/8)=(3/4,\\ 1/2)$.",
+        "Both ridge slopes are closer to 0 than the ordinary slopes, and neither is 0. At $\\lambda=0$ the same formula returns $(3/2,\\ 1)$."
+      ],
+      "answer": "The intercept is 3. Ordinary slopes are $3/2$ and $1$. Ridge slopes at $\\lambda=4$ are $3/4$ and $1/2$."
+    },
+    {
+      "title": "Residual sum of squares against the penalised objective",
+      "prompt": "Using the same rows, compare residual sum of squares and the penalised objective $\\mathrm{RSS}+\\lambda(\\beta_1^2+\\beta_2^2)$ at $\\lambda=4$, for the ordinary slopes and the ridge slopes. The intercept is 3 in both fits and is not inside the penalty.",
+      "steps": [
+        "Ordinary fitted values are $0.5$, $2.5$, $3.5$, and $5.5$. The residuals are $0.5$, $-0.5$, $-0.5$, and $0.5$, so RSS $=4\\cdot(1/4)=1$.",
+        "Ridge fitted values are $1.75$, $2.75$, $3.25$, and $4.25$. The squared residuals are $0.5625$, $0.5625$, $0.0625$, and $3.0625$, so RSS $=17/4$.",
+        "The penalty at $\\lambda=4$ is $4((3/2)^2+1^2)=13$ for the ordinary slopes and $4((3/4)^2+(1/2)^2)=13/4$ for the ridge slopes. The penalised objectives are $1+13=14$ and $17/4+13/4=15/2$. Ridge is worse on RSS and better on the objective it minimises."
+      ],
+      "answer": "Ordinary RSS is 1 and the penalised objective is 14. Ridge RSS is $17/4$ and the penalised objective is $15/2$."
+    }
+  ],
+  "traps": [
+    "Penalising the intercept. The worked intercept stays at 3. Adding $\\lambda$ on a column of ones would shrink the fitted mean, and that is not the estimator in the centred formula.",
+    "Saying ridge sets a coefficient to exactly 0. These slopes are $3/4$ and $1/2$. Exact zeros are what the lasso can do, and the lasso is not this syllabus item.",
+    "Forgetting that $\\lambda\\to 0$ returns ordinary least squares when $X^{\\top}X$ is invertible. On this design the limit is $(3/2,\\ 1)$, not the zero vector.",
+    "Expecting ridge to have a smaller residual sum of squares than ordinary least squares. It cannot: least squares minimises that sum. Here RSS rises from 1 to $17/4$.",
+    "Describing the penalty as reducing bias. The shrink toward 0 adds bias and reduces variance."
+  ],
+  "python": "xs1 = [-1, -1, 1, 1]\nxs2 = [-1, 1, -1, 1]\nys = [1, 2, 3, 6]\nxty1 = sum(a * y for a, y in zip(xs1, ys))\nxty2 = sum(a * y for a, y in zip(xs2, ys))\nassert xty1 == 6 and xty2 == 4\nols = (xty1 / 4, xty2 / 4)\nridge = (xty1 / 8, xty2 / 8)\nassert ols == (1.5, 1.0) and ridge == (0.75, 0.5)\nassert sum(ys) / len(ys) == 3\n\ndef rss(b1, b2):\n    total = 0.0\n    for a, c, y in zip(xs1, xs2, ys):\n        total += (y - (3 + b1 * a + b2 * c)) ** 2\n    return total\n\nrss_ols, rss_ridge = rss(*ols), rss(*ridge)\nassert abs(rss_ols - 1) < 1e-12\nassert abs(rss_ridge - 4.25) < 1e-12\nassert abs(4 * rss_ridge - 17) < 1e-9\npen = lambda b1, b2: 4 * (b1 ** 2 + b2 ** 2)\nassert abs(rss_ols + pen(*ols) - 14) < 1e-12\nassert abs(rss_ridge + pen(*ridge) - 7.5) < 1e-12\nprint(ridge[0])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "With $\\lambda=4$ on the centred two-slope design, the ridge slope vector is",
+      "options": [
+        "$(3/4,\\ 1/2)$",
+        "$(3/2,\\ 1)$",
+        "$(0,\\ 0)$",
+        "$(3,\\ 3)$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $(3/4,\\ 1/2)$. Here $X^{\\top}X=4I$ and $X^{\\top}y=(6,4)$, so $\\lambda=4$ gives $(4I+4I)^{-1}(6,4)=(6/8,\\ 4/8)$. Option B is the ordinary least-squares slope vector. The intercept is the separate number 3, not a slope."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "As $\\lambda\\to 0$ on this design, the slope formula returns",
+      "options": [
+        "the ordinary least-squares slopes $(3/2,\\ 1)$",
+        "the zero vector",
+        "the intercept 3 in both coordinates",
+        "a vector with one slope exactly 0"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The matrix being inverted is $4I+\\lambda I$, which tends to $4I$, and $(4I)^{-1}(6,4)=(3/2,\\ 1)$. Ridge does not send these slopes to 0 at $\\lambda=0$, and it does not set either of them exactly to 0 for finite $\\lambda$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For the worked fit at $\\lambda=4$, which of the following are true?",
+      "options": [
+        "The intercept is 3 and is not penalised.",
+        "Both ridge slopes are closer to 0 than the ordinary slopes, and neither slope is exactly 0.",
+        "The residual sum of squares is smaller for ridge than for ordinary least squares.",
+        "The penalised objective is $15/2$ for ridge and 14 for ordinary least squares."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Centering leaves the intercept at $\\bar y=3$, outside the penalty. The slopes move from $(3/2,\\ 1)$ to $(3/4,\\ 1/2)$, both nonzero. The penalised values are $17/4+13/4=15/2$ and $1+13=14$. C is false: ordinary residual sum of squares is 1 and the ridge value is $17/4$, which is larger."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of ridge regression?",
+      "options": [
+        "The objective adds $\\lambda\\|\\beta\\|^2$ to the residual sum of squares.",
+        "The closed form $(X^{\\top}X+\\lambda I)^{-1}X^{\\top}y$ is for slopes with no intercept in the penalty. Do not penalise the intercept.",
+        "On this design the ridge penalty sets one slope to exactly 0, which is how it differs from the lasso.",
+        "Ridge adds bias and reduces variance relative to ordinary least squares."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The objective is the residual sum of squares plus $\\lambda\\|\\beta\\|^2$, the displayed inverse is the no-intercept or centred-slope formula, and the intercept stays unpenalised. Shrinkage adds bias and reduces variance. C is false on the numbers, $3/4$ and $1/2$ are not 0, and exact zeros are the lasso's contrast rather than what this penalty did."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "At $\\lambda=4$ the ridge residual sum of squares is $17/4$. Enter 4 times that residual sum of squares.",
+      "options": [],
+      "answer": [
+        "17"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **17**. The squared residuals are $0.5625$, $0.5625$, $0.0625$, and $3.0625$, which add to $4.25=17/4$. Multiplying by 4 gives 17."
+    }
+  ]
+}

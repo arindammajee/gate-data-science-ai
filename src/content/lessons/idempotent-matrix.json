@@ -1,0 +1,161 @@
+{
+  "slug": "idempotent-matrix",
+  "section": "linear-algebra",
+  "title": "Idempotent matrices",
+  "syllabus": "Idempotent matrix",
+  "minutes": 30,
+  "summary": "Idempotent means A squared equals A. Every eigenvalue is 0 or 1, the matrix is diagonalizable, and the trace equals the rank. Symmetry is not part of the definition.",
+  "keywords": [
+    "idempotent",
+    "eigenvalue",
+    "trace",
+    "rank",
+    "minimal polynomial",
+    "diagonalizable"
+  ],
+  "intuition": "Idempotent means that applying the matrix twice is the same as applying it once: $A^2=A$. Geometrically this is what a projection does, but the word idempotent does not include a right angle. An orthogonal projection is an idempotent matrix that is also symmetric. Symmetry is an extra assumption, and it is not implied by $A^2=A$. A question that says only \"idempotent\" has not given you $A^\\top=A$.\n\nThe polynomial $x(x-1)$ annihilates $A$, because $A^2-A=0$. The minimal polynomial divides $x(x-1)$. Those two roots are distinct, so the minimal polynomial has distinct linear factors and $A$ is diagonalizable over $\\mathbb{R}$. In a diagonal form every diagonal entry is $0$ or $1$. The trace is the number of $1$s on that diagonal. The rank is the same count, because a diagonal matrix of zeros and ones has rank equal to the number of ones, and rank is unchanged by invertible factors $P$ and $P^{-1}$. Therefore $\\mathrm{trace}(A)=\\mathrm{rank}(A)$. The eigenvalues, which are those diagonal entries, are only $0$ and $1$.\n\nNone of that argument used $A^\\top=A$. The $2\\times 2$ matrix $\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$ satisfies $A^2=A$, has trace $1$ and rank $1$, and is not symmetric. It is the example to keep against the claim that every idempotent matrix is a symmetric projection.",
+  "definitions": [
+    {
+      "term": "Idempotent matrix",
+      "body": "A square matrix $A$ is idempotent when $A^2=A$. Symmetry is not part of the definition. An orthogonal projection is the special case that is also symmetric."
+    },
+    {
+      "term": "Eigenvalues",
+      "body": "Every eigenvalue of an idempotent matrix is $0$ or $1$. If $Av=\\lambda v$ with $v\\neq 0$, then $\\lambda^2 v=A^2 v=Av=\\lambda v$, so $\\lambda^2=\\lambda$."
+    },
+    {
+      "term": "Trace and rank",
+      "body": "For a real idempotent matrix, $\\mathrm{trace}(A)=\\mathrm{rank}(A)$. The reason is diagonalizability: the minimal polynomial divides $x(x-1)$, so $A$ is similar to a diagonal matrix of zeros and ones, and both the trace and the rank count the ones."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Idempotent",
+      "latex": "A^2=A",
+      "note": "Eigenvalues are $0$ or $1$, and $\\mathrm{trace}(A)=\\mathrm{rank}(A)$. Symmetry is extra: it is not implied."
+    },
+    {
+      "name": "Why the trace equals the rank",
+      "latex": "m_A(x)\\mid x(x-1)",
+      "note": "The minimal polynomial divides $x(x-1)$. Distinct linear factors imply that $A$ is diagonalizable, with diagonal entries $0$ or $1$."
+    }
+  ],
+  "properties": [
+    "$A^2=A$ forces every eigenvalue to be $0$ or $1$. No other real or complex number satisfies $\\lambda^2=\\lambda$ and can appear.",
+    "The minimal polynomial divides $x(x-1)$. Distinct linear factors imply that every idempotent matrix is diagonalizable over $\\mathbb{R}$.",
+    "$\\mathrm{trace}(A)=\\mathrm{rank}(A)$. Both numbers count the eigenvalues equal to $1$.",
+    "Symmetry is not implied. There are idempotent matrices with $A^\\top\\neq A$.",
+    "If $A$ is idempotent then so is $I-A$, because $(I-A)^2=I-2A+A^2=I-A$. And $\\mathrm{rank}(A)+\\mathrm{rank}(I-A)=n$."
+  ],
+  "examples": [
+    {
+      "title": "A non-symmetric $2\\times 2$ idempotent matrix",
+      "prompt": "Let $A=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$. Compute $A^2$, and compare $A$ with $A^\\top$, the trace, and the rank.",
+      "steps": [
+        "Multiply: $A^2=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}=\\begin{pmatrix}1\\cdot 1+1\\cdot 0&1\\cdot 1+1\\cdot 0\\\\0&0\\end{pmatrix}=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}=A$.",
+        "The transpose is $\\begin{pmatrix}1&0\\\\1&0\\end{pmatrix}$, which is not $A$ because the off-diagonal entries $1$ and $0$ disagree. Idempotence did not produce symmetry.",
+        "The trace is $1+0=1$. The second row is zero and the first row is not, so the rank is $1$. The characteristic polynomial is $(1-\\lambda)(-\\lambda)$, so the eigenvalues are $1$ and $0$. Trace, rank, and the number of eigenvalues equal to $1$ all agree."
+      ],
+      "answer": "$A^2=A=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$. The matrix is not symmetric, and $\\mathrm{trace}(A)=\\mathrm{rank}(A)=1$."
+    },
+    {
+      "title": "Another non-symmetric example, and $I-A$",
+      "prompt": "Let $B=\\begin{pmatrix}2&-2\\\\1&-1\\end{pmatrix}$. Compute $B^2$. Then, with $A$ as in the previous example, compute $(I-A)^2$.",
+      "steps": [
+        "$B^2=\\begin{pmatrix}2&-2\\\\1&-1\\end{pmatrix}\\begin{pmatrix}2&-2\\\\1&-1\\end{pmatrix}=\\begin{pmatrix}4-2&-4+2\\\\2-1&-2+1\\end{pmatrix}=\\begin{pmatrix}2&-2\\\\1&-1\\end{pmatrix}=B$.",
+        "$B^\\top=\\begin{pmatrix}2&1\\\\-2&-1\\end{pmatrix}\\neq B$. The trace is $2+(-1)=1$. The second row is half the first, so the rank is $1$. Again the trace equals the rank, without symmetry.",
+        "For $A=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$, one has $I-A=\\begin{pmatrix}0&-1\\\\0&1\\end{pmatrix}$. Then $(I-A)^2=\\begin{pmatrix}0&-1\\\\0&1\\end{pmatrix}\\begin{pmatrix}0&-1\\\\0&1\\end{pmatrix}=\\begin{pmatrix}0&-1\\\\0&1\\end{pmatrix}=I-A$. The complement is idempotent and not symmetric either."
+      ],
+      "answer": "$B^2=B$ and $B$ is not symmetric, with trace and rank both equal to $1$. Also $(I-A)^2=I-A$."
+    }
+  ],
+  "traps": [
+    "Adding symmetry to the definition. $A^2=A$ does not imply $A^\\top=A$. The matrix $\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$ is a counterexample, and its square really is itself.",
+    "Thinking a non-symmetric idempotent matrix fails to be diagonalizable. The minimal polynomial still divides $x(x-1)$, so it is diagonalizable. Symmetry is what upgrades the diagonalization to an orthogonal one, as in the symmetric-matrix spectral theorem.",
+    "Replacing $\\mathrm{trace}(A)=\\mathrm{rank}(A)$ by $\\mathrm{trace}(A)=n$ or by the ambient dimension. The trace counts only the eigenvalues equal to $1$.",
+    "Using the orthogonal-matrix test $A^\\top A=I$ on an idempotent matrix. Unless $A=I$, an idempotent matrix has a zero eigenvalue and cannot be orthogonal."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\nA = [[1, 1], [0, 0]]\nassert mul(A, A) == A\nassert A != [list(row) for row in zip(*A)]\nassert A[0][0] + A[1][1] == 1\nB = [[2, -2], [1, -1]]\nassert mul(B, B) == B\nassert B[0][0] + B[1][1] == 1\nImA = [[0, -1], [0, 1]]\nassert mul(ImA, ImA) == ImA\nprint(1)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A square matrix $A$ is idempotent when",
+      "options": [
+        "$A^\\top A=I$",
+        "$A^2=A$",
+        "$A^\\top=A$",
+        "$A^{-1}=A^\\top$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Idempotent means $A^2=A$ and nothing else. Option A is the orthogonal-matrix equation. Option C is symmetry, which an orthogonal projection adds on top of idempotence and which a general idempotent matrix need not have. Option D is again the orthogonal case."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Every eigenvalue of a real idempotent matrix is",
+      "options": [
+        "$\\pm 1$",
+        "$0$ or $1$",
+        "$1$",
+        "positive"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. If $Av=\\lambda v$ with $v\\neq 0$, then $\\lambda^2 v=A^2 v=Av=\\lambda v$, so $\\lambda(\\lambda-1)=0$. The only possibilities are $0$ and $1$. Option A describes determinants of orthogonal matrices, not eigenvalues of idempotent ones. The zero eigenvalue occurs whenever $A\\neq I$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of every real idempotent matrix $A$?",
+      "options": [
+        "$A$ is diagonalizable.",
+        "$\\mathrm{trace}(A)=\\mathrm{rank}(A)$.",
+        "$A$ is symmetric.",
+        "Every eigenvalue of $A$ is $0$ or $1$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Since $A^2-A=0$, the minimal polynomial divides $x(x-1)$. The roots are distinct, so $A$ is diagonalizable, and the diagonal entries are $0$ or $1$. The trace and the rank both count the ones. Symmetry is not implied: $\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$ is idempotent and not symmetric."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$A^2=A$.",
+        "$A^\\top=A$.",
+        "$\\mathrm{trace}(A)=1$.",
+        "$\\mathrm{rank}(A)=1$."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**. The product is $\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$. The trace is $1$ and the second row is zero, so the rank is $1$. The transpose is $\\begin{pmatrix}1&0\\\\1&0\\end{pmatrix}$, which is not $A$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&1\\\\0&0\\end{pmatrix}$. Enter the $(1,2)$ entry of $A^2$.",
+      "options": [],
+      "answer": [
+        "1"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **1**. The $(1,2)$ entry of the product is $(1)(1)+(1)(0)=1$. The whole product equals $A$, so this entry is also the $(1,2)$ entry of $A$. The computation is the check that $A$ is idempotent."
+    }
+  ]
+}

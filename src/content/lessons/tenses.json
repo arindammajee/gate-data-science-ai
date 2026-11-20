@@ -1,0 +1,167 @@
+{
+  "slug": "tenses",
+  "section": "aptitude",
+  "title": "Tenses",
+  "syllabus": "Tenses, including the sequence of tenses in reported speech",
+  "minutes": 25,
+  "summary": "Choose present, past, or future together with simple, continuous, perfect, or perfect continuous, and step the tense back after a past reporting verb.",
+  "keywords": [
+    "tense",
+    "aspect",
+    "reported speech",
+    "present perfect",
+    "backshift"
+  ],
+  "intuition": "English tense is a pair of choices. One choice is the time you are speaking about: present, past, or future. The other is the viewpoint, often called aspect: simple, continuous, perfect, or perfect continuous. The simple form treats the action as a whole fact. The continuous form, built with be and an -ing participle, puts the reader inside an action that is, was, or will be in progress. The perfect form, built with have and a past participle, looks back from a reference moment at an action already complete. The perfect continuous form looks back at an action that has been going on up to that moment.\n\nReported speech adds a second clock. If the reporting verb is past, the verb inside the report usually steps back one stage. A present becomes a past, a present perfect becomes a past perfect, and will becomes would. The pair \"I have finished the draft\" and \"She said that she had finished the draft\" is one event told from two clocks. If the reporting verb is present, as in \"She says that she has finished the draft\", there is no backshift.\n\nTwo restrictions keep the forms from being mixed at random. A finished time word such as yesterday or last Monday goes with the simple past, not with the present perfect. A past perfect needs two past times: it marks the earlier one. A universal truth, such as water boiling at 100 degrees Celsius at standard pressure, may stay in the simple present even after said.",
+  "definitions": [
+    {
+      "term": "Simple form",
+      "body": "A verb form that presents the action as a whole: she writes, she wrote, she will write. It is the form for habits, facts, and completed events."
+    },
+    {
+      "term": "Continuous form",
+      "body": "Be plus a present participle: she is writing, she was writing, she will be writing. The action is in progress at the reference time."
+    },
+    {
+      "term": "Perfect form",
+      "body": "Have plus a past participle: she has written, she had written, she will have written. It links an earlier event to a later reference time."
+    },
+    {
+      "term": "Sequence of tenses",
+      "body": "After a past reporting verb, the reported clause usually steps back: present to past, present perfect to past perfect, will to would. A universal truth may stay in the simple present."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Present perfect",
+      "latex": "\\text{has/have}+\\text{past participle}",
+      "note": "Has with he, she, and it. Have with I, you, we, and they. Do not add a finished time such as yesterday."
+    },
+    {
+      "name": "Backshift after said",
+      "latex": "\\text{said that}+\\text{one step further back}",
+      "note": "Will becomes would. A simple present usually becomes a simple past. A universal truth may remain present."
+    },
+    {
+      "name": "Perfect continuous",
+      "latex": "\\text{has/have/had been}+\\text{verb-ing}",
+      "note": "Present perfect continuous becomes past perfect continuous after said."
+    }
+  ],
+  "properties": [
+    "Simple present is for habits, schedules, and facts. Present continuous is for an action in progress now.",
+    "Present perfect does not take a finished past-time adverb such as yesterday, last year, or in 2019 used as a closed date. Simple past does.",
+    "Past perfect places one past event earlier than another past event. It is not the ordinary form for a single finished action.",
+    "After said, will usually becomes would, and a simple past usually becomes a past perfect.",
+    "A universal truth may stay in the simple present after said: he said that water boils at 100 degrees Celsius at standard pressure.",
+    "Stative verbs such as know are not normally continuous. 'I know the answer' is the form; 'I am knowing the answer' is not."
+  ],
+  "examples": [
+    {
+      "title": "A worked pair: the direct sentence and the report",
+      "prompt": "Riya said, 'I have been checking the balance since noon.' Report the sentence.",
+      "steps": [
+        "The reporting verb said is past, so the tense inside the quotation steps back.",
+        "Have been checking is present perfect continuous. One step back is past perfect continuous: had been checking.",
+        "The pronoun I becomes she. Since noon can stay, because it is the same starting point."
+      ],
+      "answer": "Riya said that she had been checking the balance since noon. The rule is the sequence of tenses after a past reporting verb."
+    },
+    {
+      "title": "Simple past, not present perfect, with yesterday",
+      "prompt": "Choose between 'I have submitted the form yesterday' and 'I submitted the form yesterday', and name the rule.",
+      "steps": [
+        "Yesterday names a finished time. The moment of submitting is closed.",
+        "The present perfect is not used with that kind of finished time adverb.",
+        "The simple past is the form that goes with yesterday, so the second sentence is the grammatical one."
+      ],
+      "answer": "'I submitted the form yesterday' is correct. The rule is simple past with a finished time expression."
+    }
+  ],
+  "traps": [
+    "'I have seen him yesterday' mixes the present perfect with a finished time. Use the simple past: I saw him yesterday.",
+    "Leaving will unchanged after said. The expected backshift is would: she said that she would come.",
+    "Using the past perfect for a single completed action that has no earlier-and-later contrast.",
+    "Putting a stative verb in the continuous: 'they are knowing the procedure' instead of 'they know the procedure'."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "He said, 'I finished the draft.' Which report follows the sequence-of-tenses rule?",
+      "options": [
+        "He said that he had finished the draft.",
+        "He said that he has finished the draft.",
+        "He said that he finish the draft.",
+        "He said that he will finish the draft."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The rule is backshift after a past reporting verb. The direct simple past 'finished' steps back to the past perfect 'had finished'. Option B keeps a present perfect against the past verb said. Options C and D do not report the completed draft at all."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "By the time we arrived, the technician ___ the calibration. Which completion is correct?",
+      "options": [
+        "had completed",
+        "has completed",
+        "completes",
+        "is completing"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, had completed. The rule is the past perfect for the earlier of two past events. Our arrival is the later past time, and the calibration was already done. Has completed is a present perfect and does not sit with the past verb arrived. The simple present and the present continuous are the wrong time entirely."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "I submitted the notebook yesterday.",
+        "I have submitted the notebook yesterday.",
+        "She said that she had lost the key.",
+        "They are knowing the procedure."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**. A uses the simple past with the finished time yesterday, which is the rule. C is an acceptable report of 'I lost the key' or 'I have lost the key' after said, by the sequence-of-tenses rule. B breaks the yesterday rule by keeping the present perfect. D puts the stative verb know in the continuous, which this lesson does not allow."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "This time next week the action will be in progress. Which sentence uses the future continuous correctly?",
+      "options": [
+        "This time next week, I will be testing the samples.",
+        "This time next week, I will have been test the samples.",
+        "This time next week, I test the samples as an action then in progress.",
+        "This time next week, I was testing the samples."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The rule is future continuous for an action in progress at a future time: will be plus the -ing form. Option B is not a verb form. Option C is simple present, and option D is past continuous, so neither matches 'this time next week'."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many of the following five sentences are grammatically correct under the rules in this lesson? (1) She has been working here since 2019. (2) She has been working here yesterday. (3) He said that he would call. (4) He said that he will call. (5) They had left before the storm started. Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**. Sentence 1 is a correct present perfect continuous with since. Sentence 2 is wrong because yesterday is a finished time and does not go with the present perfect. Sentence 3 follows the backshift will to would. Sentence 4 leaves will unchanged after said, which breaks the sequence-of-tenses rule used here. Sentence 5 correctly uses the past perfect for the earlier of two past events. The correct sentences are 1, 3, and 5.",
+      "tolerance": 0
+    }
+  ]
+}

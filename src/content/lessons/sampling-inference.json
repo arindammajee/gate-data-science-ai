@@ -1,0 +1,167 @@
+{
+  "slug": "sampling-inference",
+  "section": "artificial-intelligence",
+  "title": "Sampling inference",
+  "syllabus": "Approximate inference",
+  "minutes": 30,
+  "summary": "Prior sampling draws each node from its parents. Rejection sampling discards draws that miss the evidence. Likelihood weighting clamps the evidence and weights the sample by the product of those clamped probabilities.",
+  "keywords": [
+    "prior sampling",
+    "rejection sampling",
+    "likelihood weighting",
+    "topological order",
+    "approximate inference"
+  ],
+  "intuition": "Sampling inference estimates a conditional probability by drawing assignments, instead of summing a hidden variable out of every factor. The estimate moves as more draws arrive. It is approximate. Variable elimination, which adds every value, is the exact algorithm and is not what these procedures do.\n\nPrior sampling, also called ancestral sampling, follows a topological order. Each node is drawn from its conditional distribution given the parent values already drawn. A full draw is one joint assignment, and the probability of producing a particular assignment is the product of the conditionals along it. The draws estimate the joint. They do not, by themselves, condition on evidence.\n\n$$\nw=\\prod_{X_i\\in E} P(x_i\\mid \\mathrm{Pa}_i)\n$$\n\nRejection sampling starts from a prior sample and throws it away when the evidence variables do not match. The samples that remain are draws from the posterior, so the fraction among them is an unbiased estimate. The cost is the discarded pile: when the evidence is rare, most draws miss it. Likelihood weighting does not draw the evidence and does not discard the row. It clamps the evidence variables, draws the other variables from their conditionals, and multiplies, for each evidence variable, the probability of the clamped value given that variable's parents. The parents are the sampled values, or the clamped values if a parent is itself evidence. That product is the weight. One weight is not the posterior.\n",
+  "definitions": [
+    {
+      "term": "Prior sample",
+      "body": "A joint assignment drawn in topological order: each node from $P(X_i\\mid\\mathrm{Pa}_i)$ using the parent values already chosen. Also called an ancestral sample."
+    },
+    {
+      "term": "Rejection sampling",
+      "body": "Draw a prior sample and discard it if the evidence does not match. Kept samples are draws from the posterior. The procedure is unbiased and wasteful when a match is rare."
+    },
+    {
+      "term": "Likelihood weight",
+      "body": "With the evidence clamped, the weight is $\\prod P(\\text{evidence}\\mid\\text{its parents})$, using the sampled parent values, or the clamped value when a parent is evidence."
+    },
+    {
+      "term": "Topological order",
+      "body": "An order in which every parent appears before its children. Ancestral sampling and the non-evidence draws inside likelihood weighting use that order."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Ancestral probability",
+      "latex": "P(x_1,\\ldots,x_n)=\\prod_i P(x_i\\mid \\mathrm{Pa}_i)",
+      "note": "The probability of one full prior sample. Draw the factors in topological order."
+    },
+    {
+      "name": "Likelihood weight",
+      "latex": "w=\\prod_{X_i\\in E} P(x_i\\mid \\mathrm{Pa}_i)",
+      "note": "Evidence nodes are clamped, not sampled. The product uses the parent assignment on that draw."
+    }
+  ],
+  "properties": [
+    "Prior sampling draws each node given its parents, in topological order. The draws estimate the joint distribution.",
+    "Rejection sampling discards a prior sample whose evidence variables miss the query. The samples that remain are unbiased draws from the posterior, and most of them are thrown away when the evidence is rare.",
+    "Likelihood weighting clamps every evidence variable, samples the rest from their conditional distributions, and weights the sample by $\\prod P(\\text{evidence}\\mid\\text{parents})$.",
+    "The parents in that product are the values on the draw: sampled values for hidden parents, clamped values for evidence parents.",
+    "A single weight is the product of those conditional probabilities. It is not the posterior. The posterior estimate divides total weight on the query event by total weight."
+  ],
+  "examples": [
+    {
+      "title": "One weight, with the evidence clamped",
+      "prompt": "The chain is $X\\to Y\\to Z$ with $P(X=1)=1/2$, $P(Y=1\\mid X=1)=4/5$, $P(Y=1\\mid X=0)=1/5$, $P(Z=1\\mid Y=1)=3/4$, and $P(Z=1\\mid Y=0)=1/4$. Evidence is $Z=1$. A likelihood-weighted draw samples $X=1$ and $Y=1$. Find its weight. Also record the prior probability of the full assignment $(1,1,1)$.",
+      "steps": [
+        "Topological order is $X$, then $Y$, then $Z$. Likelihood weighting does not draw $Z$, because $Z$ is evidence. It draws $X$ from $P(X)$ and $Y$ from $P(Y\\mid X)$.",
+        "The only evidence variable is $Z$, and its only parent is $Y$. The sampled parent value is $Y=1$, so the weight is $P(Z=1\\mid Y=1)=3/4$.",
+        "A prior sample of the same bits would also have drawn $Z$. Its probability is $P(X=1)P(Y=1\\mid X=1)P(Z=1\\mid Y=1)=(1/2)(4/5)(3/4)=3/10$.",
+        "The weight $3/4$ is not that joint probability, and it is not $P(X=1\\mid Z=1)$, which equals $13/20$. One weighted row is not the posterior."
+      ],
+      "answer": "The likelihood weight is $3/4$. The prior probability of $(X,Y,Z)=(1,1,1)$ is $3/10$."
+    },
+    {
+      "title": "Two evidence variables, so the weight is a product",
+      "prompt": "On the same chain, clamp both $Y=1$ and $Z=1$. The only sampled variable is $X$. Compute the weight when $X$ is sampled as $1$, and the probability that a prior sample would have survived rejection on this evidence.",
+      "steps": [
+        "$Y$ and $Z$ are clamped. $X$ is drawn from $P(X)$. No child is drawn before its parent: $X$ has no parent, and the evidence nodes are not drawn at all.",
+        "The weight multiplies one factor per evidence node. $Y$'s parent is the sampled $X$, and $Z$'s parent is the clamped $Y$. For $X=1$, $w=P(Y=1\\mid X=1)\\,P(Z=1\\mid Y=1)=(4/5)(3/4)=3/5$.",
+        "The same product at $X=0$ is $(1/5)(3/4)=3/20$. The two weights differ because the sampled parent of $Y$ differs.",
+        "Rejection sampling would instead draw $X$, $Y$, and $Z$, and keep the draw only when $Y=1$ and $Z=1$. That event has probability $P(Y=1)P(Z=1\\mid Y=1)=(1/2)(3/4)=3/8$. Five eighths of the prior draws are discarded. The kept fraction is unbiased; the waste is the price."
+      ],
+      "answer": "The likelihood weight at $X=1$ is $3/5$. Rejection sampling keeps a prior draw with probability $3/8$ under this evidence."
+    }
+  ],
+  "traps": [
+    "Drawing the evidence variable inside likelihood weighting. The evidence is clamped. Drawing it and then hoping it matches is rejection sampling.",
+    "Forgetting a factor when two nodes are evidence. The weight is a product, $(4/5)(3/4)=3/5$ when $X=1$, not the single factor $3/4$.",
+    "Using a made-up parent value in the weight. $P(Z=1\\mid Y)$ uses the $Y$ of this draw. If $Y$ is evidence, that value is the clamped one.",
+    "Calling rejection sampling biased because it discards rows. The discard rule 'evidence mismatched' leaves an unbiased posterior sample. The defect is waste, not bias.",
+    "Treating the weight $3/4$ as $P(X=1\\mid Z=1)$. The posterior is $13/20$. The weight is only the clamped conditional for that one row."
+  ],
+  "python": "from fractions import Fraction\n\ndef px(x):\n    return Fraction(1, 2)\n\ndef py(y, x):\n    return {(1, 1): Fraction(4, 5), (0, 1): Fraction(1, 5), (1, 0): Fraction(1, 5), (0, 0): Fraction(4, 5)}[(y, x)]\n\ndef pz(z, y):\n    return {(1, 1): Fraction(3, 4), (0, 1): Fraction(1, 4), (1, 0): Fraction(1, 4), (0, 0): Fraction(3, 4)}[(z, y)]\n\n# one likelihood weight: evidence Z=1, sampled parents X=1, Y=1\nw_one = pz(1, 1)\nassert w_one == Fraction(3, 4)\n# product of two evidence factors, X sampled as 1 and as 0\nw_two = py(1, 1) * pz(1, 1)\nw_zero = py(1, 0) * pz(1, 1)\nassert w_two == Fraction(3, 5) and w_zero == Fraction(3, 20)\nassert 5 * w_two == 3\nprior = px(1) * py(1, 1) * pz(1, 1)\nassert prior == Fraction(3, 10)\nkeep = sum(px(x) * py(y, x) * pz(z, y) for x in (0, 1) for y in (0, 1) for z in (0, 1) if y == 1 and z == 1)\nassert keep == Fraction(3, 8)\n# a two-point weighted estimate is not the posterior 13/20\nweights = [w_one, pz(1, 0)]\nestimate = sum(weights) / sum(weights)  # both samples have X=1\nassert estimate == 1\nassert estimate != Fraction(13, 20)\nprint(w_one, w_two, keep)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Evidence is $Z=1$ on the lesson chain, and a likelihood-weighted draw samples $X=1$, $Y=1$. The weight of that draw is",
+      "options": [
+        "$3/4$",
+        "$3/10$",
+        "$3/5$",
+        "$13/20$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3/4$. The only evidence variable is $Z$, its parent on this draw is $Y=1$, and $P(Z=1\\mid Y=1)=3/4$. Option B is the prior probability of the full assignment $(1,1,1)$. Option C is the weight when both $Y$ and $Z$ are evidence. Option D is the posterior $P(X=1\\mid Z=1)$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which description of rejection sampling is right?",
+      "options": [
+        "Draw a prior sample, discard it when the evidence mismatches, and the kept samples come from the posterior.",
+        "Clamp the evidence and multiply the clamped conditional probabilities.",
+        "Sum every value of each hidden variable out of the factors that contain it.",
+        "It is biased, because a discarded sample changes the posterior."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Rejection sampling throws away prior draws that miss the evidence, and a draw that survives is a draw from the posterior, so the fraction among survivors is unbiased. Option B is likelihood weighting. Option C is variable elimination. Discarding mismatches does not bias the kept set; it spends draws."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Prior sampling draws each node from its conditional distribution given its parents, in topological order.",
+        "Likelihood weighting clamps the evidence variables.",
+        "The weight is the product of $P(\\text{evidence}\\mid\\text{its parents})$ on that draw.",
+        "Likelihood weighting draws the evidence from its conditional and keeps the draw only if the draw matches."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Ancestral sampling follows parents before children. Likelihood weighting fixes the evidence, samples everyone else, and multiplies the evidence conditionals evaluated at the parent values on the draw. Option D is rejection sampling: the evidence is drawn there, and a mismatch is discarded rather than weighted."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "On the lesson chain, which of the following are true?",
+      "options": [
+        "With evidence $Z=1$ and sample $(X,Y)=(1,1)$, the likelihood weight is $3/4$.",
+        "With evidence $Y=1,Z=1$ and sample $X=1$, the likelihood weight is $3/5$.",
+        "$P(Y=1,Z=1)=3/8$.",
+        "The weight $3/4$ equals the posterior $P(X=1\\mid Z=1)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. One evidence node gives the single factor $P(Z=1\\mid Y=1)=3/4$. Two evidence nodes give the product $(4/5)(3/4)=3/5$. The rejection probability of the double evidence is $P(Y=1)P(Z=1\\mid Y=1)=(1/2)(3/4)=3/8$. The posterior $P(X=1\\mid Z=1)$ is $13/20$, not $3/4$, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "On the lesson chain, clamp $Y=1$ and $Z=1$, and sample $X=1$. The likelihood weight is $w$. Enter $5w$.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**. The weight is $P(Y=1\\mid X=1)\\,P(Z=1\\mid Y=1)=(4/5)(3/4)=3/5$. Multiply by $5$: $5w=3$. The factor $3/4$ alone would be the weight if $Y$ had been sampled rather than clamped."
+    }
+  ]
+}

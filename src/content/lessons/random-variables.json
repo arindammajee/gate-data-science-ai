@@ -1,0 +1,158 @@
+{
+  "slug": "random-variables",
+  "section": "probability",
+  "title": "Random variables",
+  "syllabus": "Random variables.",
+  "minutes": 25,
+  "summary": "A random variable is a function from the sample space to the real numbers. It pushes probability forward onto its values, which may be discrete, continuous, or mixed.",
+  "keywords": [
+    "random variable",
+    "induced probability",
+    "support",
+    "mixed",
+    "discrete"
+  ],
+  "intuition": "The sample space holds outcomes. A random variable is a numerical measurement of an outcome: a function $X$ from $S$ to $\\mathbb{R}$. On two coin tosses the outcome is a string such as HT, and the number of heads is the function that sends HH to 2, HT and TH to 1, and TT to 0. The random variable is that function, not the sample space and not the list of probabilities.\n\nProbability moves forward along the function. The induced probability of a set $A$ of real numbers is $P(X\\in A)=P(\\{\\omega:X(\\omega)\\in A\\})$, the probability of the preimage. Several outcomes can share one value, so the induced distribution can put more mass on that value than any single outcome had. On a fair two-coin space, $P(X=1)=1/2$ because the preimage $\\{\\text{HT},\\text{TH}\\}$ contains two of the four outcomes.\n\nThe distribution that comes out is discrete, continuous, or mixed. A discrete random variable puts all of its probability on a countable set of atoms. A continuous random variable has a density and satisfies $P(X=x)=0$ for every single $x$. A mixed random variable has at least one atom and also a spread-out piece. With probability $1/3$ set $X=0$, and with probability $2/3$ draw $X$ uniformly from $[1,3]$. Then $P(X=0)=1/3\\neq 0$, so $X$ is not continuous, and it takes a whole interval of values, so it is not discrete. The support is $\\{0\\}\\cup[1,3]$.",
+  "definitions": [
+    {
+      "term": "Random variable",
+      "body": "A function $X$ from the sample space to $\\mathbb{R}$. On a finite sample space every such function is a random variable. In general one requires $\\{\\omega:X(\\omega)\\le x\\}$ to be an event for every real $x$."
+    },
+    {
+      "term": "Induced probability",
+      "body": "The distribution of $X$, given by $P(X\\in A)=P(\\{\\omega\\in S:X(\\omega)\\in A\\})$. It lives on the real line, not on the original sample space."
+    },
+    {
+      "term": "Support",
+      "body": "For a discrete random variable, the set of $x$ with $P(X=x)>0$. For a continuous random variable with density $f$, the closure of $\\{x:f(x)>0\\}$. A mixed random variable uses both an atom and a density piece."
+    },
+    {
+      "term": "Discrete, continuous, and mixed",
+      "body": "Discrete means the distribution is a sum of atoms on a countable set. Continuous means there is a density and every singleton has probability 0. Mixed means there is at least one atom and a remaining part that is not a collection of atoms."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Induced probability",
+      "latex": "P(X\\in A)=P(\\{\\omega:X(\\omega)\\in A\\})",
+      "note": "The probability of a value is the probability of its preimage in the sample space."
+    },
+    {
+      "name": "Continuous singleton",
+      "latex": "P(X=x)=0",
+      "note": "True for every $x$ when $X$ is continuous. It is false for a discrete atom and false for the atom of a mixed random variable."
+    }
+  ],
+  "properties": [
+    "A random variable is a function. Two different functions can have the same distribution, and one function has one distribution.",
+    "On a countable sample space every real-valued function induces a discrete distribution, because the image of a countable set is countable.",
+    "A continuous random variable satisfies $P(X=x)=0$ for every $x$. Probabilities are computed on intervals.",
+    "A mixed random variable is neither purely discrete nor purely continuous. An atom of probability $1/3$ at 0, plus a uniform draw on $[1,3]$ with probability $2/3$, is mixed.",
+    "The support is a set of real numbers, not a subset of the original sample space. The preimage of the support is an event of probability 1."
+  ],
+  "examples": [
+    {
+      "title": "Number of heads as a function",
+      "prompt": "Two fair coins are tossed, and the four outcomes HH, HT, TH, and TT are equally likely. Let $X$ be the number of heads. Describe $X$ as a function and give its induced distribution.",
+      "steps": [
+        "As a function, $X(\\text{HH})=2$, $X(\\text{HT})=1$, $X(\\text{TH})=1$, and $X(\\text{TT})=0$. The sample space is the four strings; the values of $X$ are the numbers 0, 1, and 2.",
+        "The preimage of $\\{1\\}$ is $\\{\\text{HT},\\text{TH}\\}$, which contains 2 of the 4 outcomes, so $P(X=1)=1/2$.",
+        "The preimage of $\\{0\\}$ is $\\{\\text{TT}\\}$ and the preimage of $\\{2\\}$ is $\\{\\text{HH}\\}$, so $P(X=0)=P(X=2)=1/4$. These three probabilities sum to 1, and the support is $\\{0,1,2\\}$."
+      ],
+      "answer": "$X$ maps the four strings to 0, 1, or 2, with $P(X=0)=1/4$, $P(X=1)=1/2$, and $P(X=2)=1/4$."
+    },
+    {
+      "title": "An atom plus an interval",
+      "prompt": "With probability $1/3$, set $X=0$. With probability $2/3$, draw $X$ uniformly from the interval $[1,3]$. Find $P(X=0)$ and $P(X\\le 2)$, and classify the distribution.",
+      "steps": [
+        "The value 0 is an atom: $P(X=0)=1/3$. A continuous random variable cannot have a singleton of positive probability, so $X$ is not continuous.",
+        "The other piece is uniform on an interval, so the distribution is not a sum of atoms either. It is mixed. The support is $\\{0\\}\\cup[1,3]$.",
+        "Split $P(X\\le 2)$ across the two pieces. The atom contributes $1/3$. The uniform piece contributes $(2/3)$ times the length fraction $(2-1)/(3-1)=1/2$, which is another $1/3$. The total is $2/3$. The single point 2, inside the continuous piece, still has probability 0."
+      ],
+      "answer": "$P(X=0)=1/3$ and $P(X\\le 2)=2/3$. The distribution is mixed, with support $\\{0\\}\\cup[1,3]$."
+    }
+  ],
+  "traps": [
+    "Calling the sample space the random variable. The four coin strings are outcomes. The random variable is the function that counts heads.",
+    "Insisting that every random variable is either discrete or continuous. The atom at 0 combined with a uniform draw on $[1,3]$ is mixed.",
+    "Assigning probability 0 to an atom because that rule is true for continuous variables. Here $P(X=0)=1/3$, and $P(X=2)=0$ only because 2 is not an atom.",
+    "Describing the support as a subset of the sample space. The support of the coin-count variable is $\\{0,1,2\\}$, not $\\{\\text{HH},\\text{HT},\\text{TH},\\text{TT}\\}$."
+  ],
+  "python": "from fractions import Fraction\nheads = {'HH': 2, 'HT': 1, 'TH': 1, 'TT': 0}\nassert sum(v == 1 for v in heads.values()) == 2\nassert sum(v == 0 for v in heads.values()) == 1\nassert sum(v == 2 for v in heads.values()) == 1\np_le = Fraction(1, 3) + Fraction(2, 3) * Fraction(2 - 1, 3 - 1)\nassert p_le == Fraction(2, 3)\nassert Fraction(1, 3) != 0\nprint(2, float(p_le))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Two fair coins are tossed and the four outcomes are equally likely. Let $X$ be the number of heads. Then $P(X=1)$ equals",
+      "options": [
+        "$1/2$",
+        "$1/4$",
+        "$1$",
+        "$0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/2$.\n\nThe function $X$ sends HT and TH to 1, and the other two outcomes elsewhere. The preimage has 2 of the 4 equally likely outcomes, so $P(X=1)=1/2$. Option B is $P(X=0)$, the probability of a single outcome. The value 1 is not an outcome; it is a number attached to two outcomes."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "With probability $1/3$, a random variable $X$ equals 0. With probability $2/3$, $X$ is drawn uniformly from $[1,3]$. Then $P(X=0)$ equals",
+      "options": [
+        "$1/3$",
+        "$0$",
+        "$2/3$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/3$.\n\nThe construction places an atom of probability $1/3$ at 0. Option B would be correct for a continuous random variable, and this one is mixed. Option C is the probability of the continuous piece, not the probability of the atom. The point 0 does not receive extra mass from the uniform draw, whose interval starts at 1."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A random variable on a finite sample space is a function from that sample space to the real numbers.",
+        "Every random variable is either purely discrete or purely continuous.",
+        "The induced probability satisfies $P(X\\in A)=P(\\{\\omega:X(\\omega)\\in A\\})$.",
+        "If $X$ is continuous, then $P(X=x)=0$ for every real $x$."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nA is the definition on a finite sample space, where every real-valued function is a random variable. C is the induced distribution, the probability of the preimage. D is the singleton rule for a continuous random variable. B is false: probability $1/3$ at 0 and probability $2/3$ spread uniformly on $[1,3]$ is a mixed distribution, with $P(X=0)=1/3\\neq 0$ and with an interval of values."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Two coins produce the equally likely outcomes HH, HT, TH, and TT. Let $X$ be the number of heads. The number of outcomes in the preimage of the value 1 is $N$. Enter $N$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**.\n\n$X(\\text{HT})=1$ and $X(\\text{TH})=1$, while $X(\\text{HH})=2$ and $X(\\text{TT})=0$. The preimage of $\\{1\\}$ contains two outcomes. Because the four outcomes are equally likely, the induced probability is $2/4=1/2$, but the question asks for the size of the preimage."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "With probability $1/3$, $X=0$. With probability $2/3$, $X$ is uniform on $[1,3]$. Let $p=P(X\\le 2)$. Enter $3p$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**.\n\nThe atom contributes $1/3$. Given the continuous piece, $P(U\\le 2)=(2-1)/(3-1)=1/2$, and that piece has probability $2/3$, so it contributes $(2/3)(1/2)=1/3$. Thus $p=1/3+1/3=2/3$ and $3p=2$. The singleton $\\{2\\}$ itself has probability 0."
+    }
+  ]
+}

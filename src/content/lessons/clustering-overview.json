@@ -1,0 +1,166 @@
+{
+  "slug": "clustering-overview",
+  "section": "machine-learning",
+  "title": "Clustering",
+  "syllabus": "Clustering algorithms",
+  "minutes": 25,
+  "summary": "Clustering groups points that were never given labels. Partitional methods return a flat grouping; hierarchical methods return a nested one. The score is a similarity, not a supervised loss, and the number of groups is a choice the algorithm does not announce.",
+  "keywords": [
+    "clustering",
+    "unsupervised",
+    "partitional",
+    "hierarchical",
+    "similarity"
+  ],
+  "intuition": "Supervised learning scores a prediction against a label. Clustering has no label. The input is a set of points, and the output is a grouping of those points by similarity: points in the same group should be close, under whatever dissimilarity the method uses, and points in different groups should be less so. The cluster index is not a class. You cannot compute an accuracy against it unless someone later supplies a labelling and a rule for matching names.\n\nThe methods split into two shapes. A partitional method returns one flat partition into $k$ groups. $k$-means and $k$-medoids are the two partitional procedures in the next lessons; they are not the same procedure, and neither is the only clustering algorithm. A hierarchical method returns a nested family, drawn as a dendrogram, which a horizontal cut turns into a partition. Agglomerative clustering builds that tree upward from singletons. Divisive clustering starts from one cluster and splits. Linkage, the rule that measures distance between clusters rather than between raw points, is a later lesson.\n\nNothing in the definition prints the right $k$. A partitional algorithm takes $k$ as an input. A dendrogram can be cut at many heights, and each height is a different partition of the same points. One way to score a flat partition is the within-cluster sum of squared distances to the cluster mean. That is the $k$-means criterion, and the four-point arithmetic below uses it only as a score. A medoid cost, or a linkage height, would rank partitions by a different number. Choosing among those scores, and choosing $k$, is outside the algorithm.",
+  "definitions": [
+    {
+      "term": "Clustering",
+      "body": "Unsupervised grouping. The data have no class labels. Similarity or distance replaces a supervised loss such as squared error against a response $y_i$."
+    },
+    {
+      "term": "Partitional clustering",
+      "body": "A method that returns one flat partition into $k$ groups. $k$-means and $k$-medoids are partitional. They differ in what they use as a centre. Neither is the only clustering algorithm."
+    },
+    {
+      "term": "Hierarchical clustering",
+      "body": "A nested family of partitions, drawn as a dendrogram. Agglomerative clustering merges upward from $n$ singletons. Divisive clustering splits downward from one cluster. A cut at a chosen height yields one partition."
+    },
+    {
+      "term": "Choice of $k$",
+      "body": "The number of groups is an input or a cut, not a value the algorithm derives. The same points are a legal $1$-cluster partition and a legal $2$-cluster partition; the scores differ, and the data do not announce which score is the intended one."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Within-cluster sum of squares",
+      "latex": "\\sum_{i=1}^{n}\\|x_i-\\mu_{c(i)}\\|^2",
+      "note": "One score of a flat partition: squared Euclidean distance to the mean of the assigned cluster. It is the $k$-means objective. A medoid method scores total dissimilarity to a data point instead, and is derived in a later lesson."
+    },
+    {
+      "name": "A cut of a nested family",
+      "latex": "k(h)=n-\\lvert\\{m:\\mathrm{height}(m)\\le h\\}\\rvert",
+      "note": "A cut at height $h$ keeps every merge of height at most $h$. The height is chosen. Linkage, which supplies those heights, is a later lesson and is not derived here."
+    }
+  ],
+  "properties": [
+    "There is no response $y_i$. A supervised loss against a label is the wrong objective. The cluster index is a name for a group, not a ground-truth class.",
+    "Partitional output is one partition. Hierarchical output is a dendrogram of nested partitions. A cut converts the second into the first.",
+    "$k$-means, $k$-medoids, and hierarchical clustering are different procedures. This lesson does not derive their updates. It only fixes what they are asked to return.",
+    "The within-cluster sum of squares depends on the partition. On the points $0,0,10,10$ the balanced partition scores $0$ and the one-cluster partition scores $100$. The algorithm does not choose between them.",
+    "Changing the dissimilarity changes the ranking. A partition that is best for squared distance to a mean need not be best for total absolute distance to a medoid, or for a linkage height.",
+    "Choosing $k$, or choosing where to cut, is a modelling decision. No identity in this lesson extracts a unique $k$ from the points alone."
+  ],
+  "examples": [
+    {
+      "title": "Two partitions, one sum of squares",
+      "prompt": "Points $0,0,10,10$ on the line. Score the partition $\\{\\{0,0\\},\\{10,10\\}\\}$ and the partition $\\{\\{0,0,10\\},\\{10\\}\\}$ by within-cluster sum of squares.",
+      "steps": [
+        "In the balanced partition each cluster mean equals its two points, $0$ and $10$. Every squared distance is $0$, so the score is $0$.",
+        "In the unbalanced partition the singleton $\\{10\\}$ scores $0$. The cluster $\\{0,0,10\\}$ has mean $(0+0+10)/3=\\tfrac{10}{3}$.",
+        "Squared distances in that cluster: two copies of $\\left(0-\\tfrac{10}{3}\\right)^2=\\tfrac{100}{9}$, and $\\left(10-\\tfrac{10}{3}\\right)^2=\\left(\\tfrac{20}{3}\\right)^2=\\tfrac{400}{9}$. The sum is $\\tfrac{200}{9}+\\tfrac{400}{9}=\\tfrac{600}{9}=\\tfrac{200}{3}$."
+      ],
+      "answer": "The balanced partition scores $0$. The unbalanced partition scores $\\tfrac{200}{3}$. Squared distance to the mean prefers the balanced partition on these points. Another clustering criterion could score them differently; this number is only the sum of squares."
+    },
+    {
+      "title": "The same points, forced into one cluster",
+      "prompt": "Score $\\{0,0,10,10\\}$ as a single cluster, and compare with the balanced two-cluster score.",
+      "steps": [
+        "The mean of all four points is $(0+0+10+10)/4=5$.",
+        "Each point lies $5$ away from the mean, so each squared distance is $25$. The within-cluster sum of squares is $4\\cdot 25=100$.",
+        "The balanced two-cluster partition scored $0$, which is smaller. Both partitions are legal outputs of clustering algorithms run with different $k$, or of a dendrogram cut at different heights. The drop from $100$ to $0$ does not by itself announce that $k=2$ is correct."
+      ],
+      "answer": "One cluster scores $100$. Two balanced clusters score $0$. The number of groups was chosen, not returned by the points."
+    }
+  ],
+  "traps": [
+    "Computing classification accuracy against the cluster index. Until a true labelling and a matching of names are supplied, the index is only a group name. Clustering did not see labels.",
+    "Treating $k$ as an output. $k$-means is given $k$. A dendrogram is cut at a height the user chooses. On $0,0,10,10$ both the score $100$ and the score $0$ are valid scores of different choices.",
+    "Assuming every clustering algorithm minimises within-cluster sum of squares. That is the $k$-means score. $k$-medoids minimises total dissimilarity to a data point. Hierarchical clustering merges by a linkage. This lesson does not derive those updates.",
+    "Calling $k$-means the definition of clustering. It is one partitional algorithm. A hierarchical method on the same four points returns a dendrogram, not a single run of Lloyd's iteration.",
+    "Ranking the unbalanced partition as better because it uses $k=2$ and one of the means equals a data point. Its sum of squares is $\\tfrac{200}{3}$, worse than the balanced partition's $0$ under this particular score."
+  ],
+  "python": "# Points 0, 0, 10, 10.\nmean_unbalanced = 10 / 3\nwcss_unbalanced = 2 * (0 - mean_unbalanced) ** 2 + (10 - mean_unbalanced) ** 2\nassert abs(wcss_unbalanced - 200 / 3) < 1e-9\nwcss_balanced = 0\nwcss_one = 4 * (5 ** 2)\nassert wcss_one == 100\nassert wcss_balanced < wcss_unbalanced < wcss_one\nprint(wcss_one)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Clustering, as distinct from a classifier trained on labelled examples, uses which of the following?",
+      "options": [
+        "No class labels; points are grouped by similarity or distance.",
+        "A supervised squared error against a response $y_i$.",
+        "A margin constraint with labels in $\\{-1,+1\\}$.",
+        "A posterior probability of a class given a label."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nClustering is unsupervised. There is no $y_i$ to regress, no label inside a margin constraint, and no class posterior to update. The objective is a notion of similarity among the points."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which statement distinguishes the two shapes of clustering in this lesson?",
+      "options": [
+        "Partitional methods return one flat partition; hierarchical methods return a nested family that a cut turns into a partition.",
+        "Hierarchical clustering requires class labels to draw the dendrogram.",
+        "A partitional algorithm derives a unique $k$ and does not take $k$ as an input.",
+        "$k$-means is the only clustering algorithm, so the shapes coincide."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nA flat partition and a dendrogram are different objects. The dendrogram does not need labels. $k$ is supplied or chosen by a cut. $k$-means is one partitional method among others, including $k$-medoids and the hierarchical methods."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Choosing $k$ is a modelling choice; the algorithm does not announce a unique $k$.",
+        "$k$-means, $k$-medoids, and hierarchical clustering are different procedures.",
+        "Within-cluster sum of squares is one score of a partition; a medoid cost is a different score.",
+        "The integer name of a cluster can be used as a ground-truth class when reporting accuracy, with no further labelling."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\n$k$ is an input or a cut. The three named procedures differ: means, data-point centres, and a nested linkage tree. Sum of squares and a medoid cost are different functions of a partition. D is false because the cluster index was not given as a class label."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "The points are $0,0,10,10$. Which of the following are true?",
+      "options": [
+        "The partition $\\{\\{0,0\\},\\{10,10\\}\\}$ has within-cluster sum of squares $0$.",
+        "The partition $\\{\\{0,0,10\\},\\{10\\}\\}$ has within-cluster sum of squares $\\tfrac{200}{3}$.",
+        "These two numbers use squared distance to the cluster mean, which is not the only clustering criterion.",
+        "The smaller score identifies a true number of clusters with no further choice."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nBalanced clusters sit on their means, so the sum of squares is $0$. The triple $\\{0,0,10\\}$ has mean $\\tfrac{10}{3}$ and sum of squares $\\tfrac{200}{9}+\\tfrac{400}{9}=\\tfrac{200}{3}$. That criterion is the $k$-means score, not a medoid or linkage score. D is false: a still finer partition also scores $0$, and $k$ remains a choice."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The points $0,0,10,10$ are placed in one cluster. Enter the within-cluster sum of squares.",
+      "options": [],
+      "answer": [
+        "100"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **100**.\n\nThe mean is $5$. Each of the four points contributes $(5)^2=25$. The total is $4\\cdot 25=100$."
+    }
+  ]
+}

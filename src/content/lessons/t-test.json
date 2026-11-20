@@ -1,0 +1,164 @@
+{
+  "slug": "t-test",
+  "section": "probability",
+  "title": "t-test",
+  "syllabus": "t-test",
+  "minutes": 30,
+  "summary": "A t-test of a normal mean replaces σ by the sample standard deviation s and refers the statistic to a t distribution with n−1 degrees of freedom. A paired comparison is a one-sample t-test on the differences. Critical values used for a decision are given in the problem.",
+  "keywords": [
+    "t-test",
+    "sample standard deviation",
+    "degrees of freedom",
+    "paired differences",
+    "normal model"
+  ],
+  "intuition": "A t-test is the z-test with the scale estimated from the same sample. The data are modelled as normal. The sample standard deviation $s$ uses the divisor $n-1$, and the statistic is\n\n$$\nt=\\frac{\\bar x-\\mu_0}{s/\\sqrt{n}},\n$$\n\nreferred to Student's t distribution with $n-1$ degrees of freedom. The degrees of freedom match the sample variance. Using $n$ instead, or using a normal critical value as though $\\sigma$ were known, answers the z-test's question. The t critical value depends on the degrees of freedom and on the level. This lesson does not ask you to remember a t table. When a reject-or-not decision needs a cutoff, the cutoff is stated in the problem.\n\nPaired data are handled by subtracting. If each subject contributes two measurements, the differences are one sample. A test that the mean difference is 0 is a one-sample t-test on those differences, with degrees of freedom equal to the number of pairs minus 1. It is not a two-sample test on the two columns, and it is not a chi-squared test. Chi-squared tests compare counts. A t-test compares a mean, here the mean of the differences, with a hypothesised value.\n\nThe same reading of a p-value carries over from the z-test. Under the null, the statistic has the stated t distribution, and the p-value is a tail probability in that distribution. It is not the probability that the null is true.",
+  "definitions": [
+    {
+      "term": "One-sample t statistic",
+      "body": "For a normal sample with sample standard deviation $s$, the statistic is $t=(\\bar x-\\mu_0)/(s/\\sqrt{n})$, with $n-1$ degrees of freedom. The divisor inside $s^2$ is $n-1$."
+    },
+    {
+      "term": "Supplied critical value",
+      "body": "A numerical t cutoff is used only when the question gives it. Compare $|t|$ with that given number. Do not invent $t_{n-1,\\alpha/2}$."
+    },
+    {
+      "term": "Paired t-test",
+      "body": "On paired data, form the differences and run a one-sample t-test on them. With $n$ pairs the degrees of freedom are $n-1$."
+    },
+    {
+      "term": "Normal model",
+      "body": "The exact t reference distribution is the model for normal data, or for normal differences in the paired case. It is not a test about counts."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Statistic and degrees of freedom",
+      "latex": "t=\\frac{\\bar x-\\mu_0}{s/\\sqrt{n}},\\qquad \\mathrm{df}=n-1",
+      "note": "The sample variance inside $s$ divides by $n-1$."
+    },
+    {
+      "name": "Paired differences",
+      "latex": "t=\\frac{\\bar d-\\delta_0}{s_d/\\sqrt{n}}",
+      "note": "One-sample t on the $n$ differences. Degrees of freedom $n-1$."
+    }
+  ],
+  "properties": [
+    "The t statistic uses $s$, not a known $\\sigma$, and it is referred to a t distribution with $n-1$ degrees of freedom. The data are modelled as normal.",
+    "The sample standard deviation in the denominator is computed with the divisor $n-1$. That is the same divisor that makes $(n-1)s^2/\\sigma^2$ chi-squared under normality.",
+    "A decision that needs a critical value uses the critical value given in the problem. This lesson does not invent t table entries.",
+    "Paired measurements are reduced to one sample of differences. The test of a mean difference is a one-sample t-test, with degrees of freedom equal to the number of pairs minus 1.",
+    "A t-test is about a mean. A chi-squared test is about counts. Replacing one by the other changes the question."
+  ],
+  "examples": [
+    {
+      "title": "A one-sample t statistic",
+      "prompt": "A normal sample of size $n=16$ has $\\bar x=22$ and $s=8$, with $s$ using the divisor $n-1$. Test $H_0:\\mu=20$ against a two-sided alternative. Use the supplied critical value $t_{15,0.025}=2.131$.",
+      "steps": [
+        "The standard error is $s/\\sqrt{n}=8/4=2$. The statistic is $(22-20)/2=1$.",
+        "The degrees of freedom are $16-1=15$, which matches the supplied critical value's index.",
+        "The two-sided 5% test rejects when $|t|>2.131$. The observed value is $1$, and $1<2.131$, so the test does not reject $H_0$. The cutoff 2.131 is an input, not a calculated output."
+      ],
+      "answer": "The statistic is $t=1$ on 15 degrees of freedom. Using the supplied cutoff 2.131, the test does not reject."
+    },
+    {
+      "title": "Paired differences",
+      "prompt": "Five paired differences are 2, 4, 0, 6, and 3. Test the null that the mean difference is 0, against a two-sided alternative. A table supplies the 5% two-sided critical value 2.776 on 4 degrees of freedom.",
+      "steps": [
+        "The sample of differences has size $n=5$ and mean $\\bar d=(2+4+0+6+3)/5=3$. This is a one-sample problem on the differences.",
+        "The deviations from 3 are $-1, 1, -3, 3, 0$. Their squares sum to $1+1+9+9+0=20$. The sample variance divides by $n-1=4$, so $s^2=20/4=5$ and $s=\\sqrt{5}$.",
+        "The standard error is $\\sqrt{5}/\\sqrt{5}=1$. The statistic is $3/1=3$, on $5-1=4$ degrees of freedom. Since $3>2.776$, the two-sided 5% test rejects the null of mean difference 0."
+      ],
+      "answer": "The paired t statistic is 3 on 4 degrees of freedom. Using the supplied cutoff 2.776, the test rejects."
+    }
+  ],
+  "traps": [
+    "Using a known-$\\sigma$ z critical value in a t-test, or using $n$ degrees of freedom. The statistic uses $s$, and the degrees of freedom are $n-1$.",
+    "Dividing the sum of squared deviations by $n$ and calling the result $s$. The sample standard deviation in the t statistic divides by $n-1$. In the paired example that divisor is 4, and $s^2=5$.",
+    "Running a two-sample test on paired columns, with degrees of freedom $n_1+n_2-2$. Pairing reduces the data to $n$ differences and $n-1$ degrees of freedom.",
+    "Inventing the critical value 2.776 or 2.131 when the problem did not give it. Both numbers above were supplied. A question that asks for a decision states the cutoff."
+  ],
+  "python": "from fractions import Fraction\nassert (22 - 20) / (8 / 4) == 1\ndiffs = [2, 4, 0, 6, 3]\ndbar = Fraction(sum(diffs), len(diffs))\nss = sum((Fraction(d) - dbar) ** 2 for d in diffs)\nassert dbar == 3 and ss == 20\ns2 = ss / (len(diffs) - 1)\nassert s2 == 5\nassert s2 / len(diffs) == 1\nassert dbar / 1 == 3\nassert (18 - 15) / (10 / 5) == 1.5\nprint(1, float(dbar), 3)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A normal sample of size $n=25$ has $\\bar x=18$ and $s=10$, with $s$ using the divisor $n-1$. For $H_0:\\mu=15$, the t statistic is",
+      "options": [
+        "$1.5$",
+        "$3$",
+        "$0.3$",
+        "$7.5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1.5$.\n\nThe standard error is $10/\\sqrt{25}=2$, so $t=(18-15)/2=1.5$ on $24$ degrees of freedom. Option B is the raw difference. Option C divides the difference by $s$ and ignores $\\sqrt{n}$. Option D divides by $s/n=10/25$ instead of by $s/\\sqrt{n}$. The scale in the denominator is the sample standard deviation, not a known $\\sigma$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Ten paired differences are modelled as an i.i.d. normal sample. A test that the mean difference is 0 uses",
+      "options": [
+        "a one-sample t statistic on the ten differences, with 9 degrees of freedom",
+        "a z statistic that treats $\\sigma$ as known",
+        "a chi-squared statistic that treats the ten numbers as counts",
+        "a two-sample t statistic with 18 degrees of freedom"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nPairing produces one sample of 10 differences. The one-sample t-test has $10-1=9$ degrees of freedom. Option D uses the unpaired count $n_1+n_2-2=18$ and ignores the pairing. Option B is the known-scale test. Option C is a test for counts, not for a mean difference. The model for the differences is normal, which is what puts the statistic on a t distribution."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the one-sample t-test for a normal mean?",
+      "options": [
+        "The statistic uses the sample standard deviation $s$ in the denominator.",
+        "Under $H_0$, the reference distribution has $n-1$ degrees of freedom.",
+        "The observations are modelled as normal.",
+        "The same t critical values are used when $\\sigma$ is known and no scale is estimated."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe t-test estimates the scale by $s$, with the sample divisor $n-1$, and the exact reference law is for normal data. Option D describes a z-test. Known $\\sigma$ does not produce a t statistic, and it does not use a t critical value."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The paired differences are 2, 4, 0, 6, and 3. A table gives the two-sided 5% critical value on 4 degrees of freedom as 2.776. Which of the following are true for a test that the mean difference is 0?",
+      "options": [
+        "The sample mean of the differences is 3.",
+        "The t statistic equals 3.",
+        "Using the supplied critical value, the two-sided 5% test rejects $H_0$.",
+        "The degrees of freedom are 5."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe five differences average to 3. The squared deviations from 3 sum to 20, so the sample variance is $20/4=5$ and the standard error is $\\sqrt{5}/\\sqrt{5}=1$. The statistic is $3/1=3$. The supplied cutoff is 2.776, and $3>2.776$, so the test rejects. The degrees of freedom are $5-1=4$, not 5, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The paired differences are 2, 4, 0, 6, and 3. For $H_0$ that the mean difference is 0, enter the t statistic.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\nThe mean of the differences is $(2+4+0+6+3)/5=3$. The squared deviations from 3 sum to 20. Dividing by $n-1=4$ gives $s^2=5$. The standard error is $\\sqrt{s^2/n}=\\sqrt{5/5}=1$, so $t=3/1=3$. The degrees of freedom are 4. A critical value is not needed to report the statistic."
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "slug": "maxima-minima",
+  "section": "calculus",
+  "title": "Maxima and minima",
+  "syllabus": "Maxima and minima",
+  "minutes": 25,
+  "summary": "Critical points are where the derivative is zero or undefined. The second-derivative test classifies some of them, is silent when the second derivative is zero, and does not by itself give a global extremum.",
+  "keywords": [
+    "critical point",
+    "second derivative test",
+    "local minimum",
+    "local maximum",
+    "global extremum"
+  ],
+  "intuition": "A local maximum is a point where the function is at least as large as the nearby values. A local minimum is the same idea with the inequality reversed. A global maximum is the greatest value on the whole domain under discussion, which may be larger than the set of nearby points. The second-derivative test only talks about the local question, and only at an interior critical point.\n\nA critical point is a place where $f'(c)=0$ or where $f'(c)$ does not exist. Endpoints of a closed interval are checked when the problem asks for a global extremum, and they are not automatically called critical points. On the whole real line a local peak need not be global: $x^{3}-3x$ peaks at height $2$ near $x=-1$ and then tends to infinity.\n\nThe second-derivative test reads the concavity at a point where $f'(c)=0$. Positive means the graph opens upward, a local minimum. Negative means a local maximum. Zero means the test says nothing. Both $x^{3}$ and $x^{4}$ have a vanishing second derivative at the origin, and they behave differently: $x^{3}$ is neither a local max nor a local min, while $x^{4}$ has a local and global minimum.\n\n$$f''(c)>0\\Rightarrow \\text{local min},\\qquad f''(c)<0\\Rightarrow \\text{local max}.$$",
+  "definitions": [
+    {
+      "term": "Critical point",
+      "body": "An interior point $c$ of the domain is a critical point when $f'(c)=0$ or $f'(c)$ does not exist. Every local extremum in the interior occurs at a critical point. The converse is false: $x^{3}$ has a critical point at $0$ and no local extremum there."
+    },
+    {
+      "term": "Local extremum",
+      "body": "$f(c)$ is a local maximum when $f(x)\\leq f(c)$ for every $x$ in some open interval around $c$. It is a local minimum when $f(x)\\geq f(c)$ on such an interval. The comparison is local, not against the whole domain."
+    },
+    {
+      "term": "Global extremum",
+      "body": "A global maximum on a set $S$ is a value $f(c)$, with $c\\in S$, such that $f(x)\\leq f(c)$ for every $x\\in S$. A local maximum need not be global. On $\\mathbb{R}$, a cubic can have a local maximum and still be unbounded above."
+    },
+    {
+      "term": "Second-derivative test",
+      "body": "Suppose $f'(c)=0$ and $f''(c)$ exists. If $f''(c)>0$, then $f$ has a local minimum at $c$. If $f''(c)<0$, then $f$ has a local maximum at $c$. If $f''(c)=0$, the test is silent."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Critical point",
+      "latex": "f'(c)=0\\ \\text{or}\\ f'(c)\\ \\text{does not exist}",
+      "note": "Interior local extrema occur among these points. Endpoints are extra candidates when the domain is a closed interval."
+    },
+    {
+      "name": "Second-derivative test",
+      "latex": "f''(c)>0\\Rightarrow\\text{local min},\\qquad f''(c)<0\\Rightarrow\\text{local max}",
+      "note": "This needs $f'(c)=0$. The case $f''(c)=0$ says nothing: compare $x^{3}$ and $x^{4}$ at $0$."
+    },
+    {
+      "name": "First-derivative sign change",
+      "latex": "f'\\ \\text{changes}\\ -\\to +\\ \\Rightarrow\\ \\text{local min},\\qquad +\\to-\\ \\Rightarrow\\ \\text{local max}",
+      "note": "No sign change means the critical point is not a local extremum, as with $f'(x)=3x^{2}$ for $f(x)=x^{3}$."
+    }
+  ],
+  "properties": [
+    "If $f'(c)=0$ and $f''(c)>0$, the critical point is a local minimum. If $f''(c)<0$, it is a local maximum. The test does not compare this local value with distant values or with endpoints.",
+    "If $f''(c)=0$, the second-derivative test is silent. For $f(x)=x^{3}$ at $0$ there is no local extremum. For $f(x)=x^{4}$ at $0$ there is a local minimum. The same vanishing second derivative covers both outcomes.",
+    "$f'(x)=3x^{2}-3$ for $f(x)=x^{3}-3x$, so the critical points are $x=\\pm 1$. Then $f''(x)=6x$ gives a local maximum value $2$ at $x=-1$ and a local minimum value $-2$ at $x=1$.",
+    "Those local values are not global on $\\mathbb{R}$. As $x\\to\\infty$, $x^{3}-3x\\to\\infty$, and as $x\\to-\\infty$ the function tends to $-\\infty$.",
+    "A point where $f'$ does not exist can be a local extremum. The absolute value has a local minimum at $0$ even though the derivative there does not exist. It is still a critical point."
+  ],
+  "examples": [
+    {
+      "title": "Classify the critical points of a cubic",
+      "prompt": "Find and classify the critical points of $f(x)=x^{3}-3x$ on $\\mathbb{R}$. Decide which local extrema are global.",
+      "steps": [
+        "Differentiate: $f'(x)=3x^{2}-3=3(x^{2}-1)=3(x-1)(x+1)$. The derivative exists everywhere, so the critical points are the zeros $x=1$ and $x=-1$.",
+        "The second derivative is $f''(x)=6x$. At $x=1$, $f''(1)=6>0$, so $x=1$ is a local minimum. The value is $f(1)=1-3=-2$.",
+        "At $x=-1$, $f''(-1)=-6<0$, so $x=-1$ is a local maximum. The value is $f(-1)=-1+3=2$.",
+        "The function is a cubic with positive leading coefficient, so $f(x)\\to\\infty$ as $x\\to\\infty$ and $f(x)\\to-\\infty$ as $x\\to-\\infty$. The local maximum $2$ is not a global maximum, and the local minimum $-2$ is not a global minimum."
+      ],
+      "answer": "Local maximum value $2$ at $x=-1$, local minimum value $-2$ at $x=1$. Neither is global on $\\mathbb{R}$."
+    },
+    {
+      "title": "The second-derivative test goes silent",
+      "prompt": "Apply the second-derivative test to $f(x)=x^{3}$ and to $g(x)=x^{4}$ at $x=0$, and classify each point another way.",
+      "steps": [
+        "For $f(x)=x^{3}$, $f'(x)=3x^{2}$ and $f''(x)=6x$. Both $f'(0)$ and $f''(0)$ are $0$. The second-derivative test says nothing.",
+        "The first derivative $3x^{2}$ does not change sign: it is nonnegative on both sides of $0$. Also $f(-0.1)=-0.001<0$ and $f(0.1)=0.001>0$, so every neighbourhood of $0$ contains values above $f(0)$ and values below $f(0)$. The origin is not a local extremum.",
+        "For $g(x)=x^{4}$, $g'(x)=4x^{3}$ and $g''(x)=12x^{2}$. Again $g'(0)=g''(0)=0$, so the second-derivative test says nothing.",
+        "But $g(x)=x^{4}\\geq 0=g(0)$ for every real $x$. The origin is a local minimum and also the global minimum, even though $g''(0)=0$."
+      ],
+      "answer": "Both tests are silent at $0$. The function $x^{3}$ has neither a local max nor a local min there. The function $x^{4}$ has a local and global minimum there."
+    }
+  ],
+  "traps": [
+    "Reading $f''(c)=0$ as 'not an extremum'. For $x^{4}$ at $0$ the second derivative vanishes and the point is a minimum. The test is silent, not negative.",
+    "Reading $f''(c)=0$ as 'an extremum of unknown type' and stopping. For $x^{3}$ at $0$ the second derivative vanishes and there is no local extremum at all. A sign chart or a direct comparison is required.",
+    "Promoting a local maximum to a global maximum. The value $2$ of $x^{3}-3x$ at $x=-1$ is only local; $f(3)=18$ is already larger.",
+    "Forgetting a critical point where the derivative does not exist. On a domain that includes $0$, $|x|$ has its minimum at a point where $f'$ is undefined."
+  ],
+  "python": "def f(x):\n    return x ** 3 - 3 * x\n\nassert f(1) == -2 and f(-1) == 2\nassert 3 * (1) ** 2 - 3 == 0\nassert 6 * 1 > 0 and 6 * (-1) < 0\nassert (-0.1) ** 3 < 0 < (0.1) ** 3\nassert all((k / 5) ** 4 >= 0 for k in range(-10, 11))\n\ndef wide(x):\n    return x ** 3 - 12 * x\n\nassert wide(-2) == 16 and wide(2) == -16\nassert 3 * ((-2) ** 2) - 12 == 0\nprint(f(-1), f(1), wide(-2))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For $f(x)=x^{3}$ at $x=0$, the second-derivative test and the local behaviour say that",
+      "options": [
+        "$f''(0)>0$, so $0$ is a local minimum",
+        "$f''(0)<0$, so $0$ is a local maximum",
+        "$f''(0)=0$, the test is silent, and $0$ is not a local extremum",
+        "$f''(0)=0$, the test is silent, and $0$ is a local minimum"
+      ],
+      "answer": [
+        "C"
+      ],
+      "solution": "The answer is **C**.\n\n$f'(x)=3x^{2}$ and $f''(x)=6x$, so $f'(0)=f''(0)=0$. The test gives no classification. Because $f$ takes both negative values, such as $f(-0.1)=-0.001$, and positive values, such as $f(0.1)=0.001$, the number $f(0)=0$ is neither a local maximum nor a local minimum. Option D is the correct story for $x^{4}$, not for $x^{3}$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "For $g(x)=x^{4}$ at $x=0$, which statement is correct?",
+      "options": [
+        "$g''(0)>0$, so the second-derivative test reports a local minimum",
+        "$g''(0)=0$, so the test is silent, but $g$ has a local minimum at $0$",
+        "$0$ is not a critical point of $g$",
+        "$0$ is a local maximum because $g''(0)=0$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**.\n\n$g'(x)=4x^{3}$ is zero at $0$, so the origin is a critical point. $g''(x)=12x^{2}$ is also zero there, so the second-derivative test does not fire. Independently, $x^{4}\\geq 0$ for every real $x$, with equality only at $0$, so the origin is a local minimum. A zero second derivative is not a report of a maximum, and it is not a positive second derivative."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Let $f(x)=x^{3}-3x$. Which of the following are true?",
+      "options": [
+        "$x=1$ and $x=-1$ are critical points.",
+        "$f$ has a local minimum at $x=1$.",
+        "$f$ has a global maximum on $\\mathbb{R}$ at $x=-1$.",
+        "$x=0$ is a critical point."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**.\n\n$f'(x)=3x^{2}-3=3(x-1)(x+1)$, so the only critical points are $x=\\pm 1$. And $f''(x)=6x$, so $f''(1)=6>0$ and $x=1$ is a local minimum, with value $f(1)=-2$.\n\nThe local maximum at $x=-1$ has value $2$, but $f(3)=18>2$, so it is not global. At $x=0$, $f'(0)=-3\\neq 0$ and the derivative exists, so $0$ is not a critical point."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A critical point is a point where $f'$ is zero or $f'$ does not exist.",
+        "If $f'(c)=0$ and $f''(c)>0$, then $f$ has a local minimum at $c$.",
+        "If $f''(c)=0$, then $c$ is not a local extremum.",
+        "Every local maximum is a global maximum."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**.\n\nThe critical-point definition includes both a zero derivative and a missing derivative. The second-derivative test says that a zero first derivative together with a positive second derivative produces a local minimum.\n\nC is false because $x^{4}$ satisfies $g''(0)=0$ and has a local minimum at $0$. D is false because $x^{3}-3x$ has a local maximum value $2$ at $x=-1$ and is unbounded above."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The local maximum value of $f(x)=x^{3}-12x$ is an integer. Enter that integer.",
+      "options": [],
+      "answer": [
+        "16"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **16**.\n\n$f'(x)=3x^{2}-12=3(x^{2}-4)$, so the critical points are $x=2$ and $x=-2$. The second derivative is $f''(x)=6x$. At $x=-2$, $f''(-2)=-12<0$, so this critical point is a local maximum. Its value is $f(-2)=-8-12\\cdot(-2)=-8+24=16$. The other critical value is $f(2)=8-24=-16$, a local minimum."
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "slug": "powers-exponents-logarithms",
+  "section": "aptitude",
+  "title": "Powers, exponents, and logarithms",
+  "syllabus": "Powers, exponents, and logarithms",
+  "minutes": 30,
+  "summary": "Apply the product and power rules for exponents, keep a nonzero number to the power 0 equal to 1, and evaluate a logarithm by the change-of-base formula.",
+  "keywords": [
+    "exponents",
+    "logarithm",
+    "change of base",
+    "product rule",
+    "positive argument"
+  ],
+  "intuition": "Exponents count repeated multiplication, and the rules are bookkeeping for that count. Multiplying two powers of the same base adds the exponents, because you are placing the two strings of factors side by side. Raising a power to a further power multiplies the exponents, because each of the original factors is itself repeated. Neither rule applies to a sum of powers: $2^3+2^4$ is not $2^7$.\n\nA nonzero number to the power 0 is 1. That is the empty product, and it is the value that makes $a^m/a^m=a^0$ consistent. The base 0 is excluded. A real logarithm is the inverse question: $\\log_b a$ is the exponent to which $b$ must be raised to obtain $a$. It is defined only for a positive argument and a positive base other than 1. A negative number has no real logarithm.\n\nChange of base is how you turn one logarithm into a ratio of two others. In particular $\\log_b a=\\ln a/\\ln b$. The same identity says $\\log_b a=1/\\log_a b$. Use it on a number you can also check by writing both the argument and the base as powers of a common integer, so the ratio of logarithms is not left as a button you hope you pressed correctly.",
+  "definitions": [
+    {
+      "term": "Product of powers",
+      "body": "For a common base, $a^m a^n=a^{m+n}$. The exponents add. The bases do not multiply."
+    },
+    {
+      "term": "Power of a power",
+      "body": "$(a^m)^n=a^{mn}$. The exponents multiply. This is not the same as $a^m a^n$."
+    },
+    {
+      "term": "Logarithm",
+      "body": "$\\log_b a$ is the real number $c$ such that $b^c=a$, when $a>0$, $b>0$, and $b\\neq 1$."
+    },
+    {
+      "term": "Change of base",
+      "body": "$\\log_b a=\\ln a/\\ln b$. The same value equals $1/\\log_a b$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Exponent rules",
+      "latex": "a^m a^n=a^{m+n},\\quad (a^m)^n=a^{mn},\\quad a^0=1\\ (a\\neq 0)",
+      "note": "Adding exponents is for a product of powers. Multiplying exponents is for a power of a power."
+    },
+    {
+      "name": "Logarithm rules",
+      "latex": "\\log(ab)=\\log a+\\log b,\\quad \\log(a^c)=c\\log a,\\quad \\log_b a=\\frac{\\ln a}{\\ln b}",
+      "note": "Also $\\log_b a=1/\\log_a b$. Every argument of a real logarithm is positive."
+    }
+  ],
+  "properties": [
+    "For $a\\neq 0$, $a^0=1$. In particular $5^0=1$. This does not define $0^0$.",
+    "$a^m a^n=a^{m+n}$ needs the same base. It does not turn $2^3\\cdot 3^2$ into a single power of 2.",
+    "$(a^m)^n=a^{mn}$, whereas $a^m a^n=a^{m+n}$. The two right-hand sides differ whenever $mn\\neq m+n$.",
+    "$\\log(ab)=\\log a+\\log b$ and $\\log(a^c)=c\\log a$ require positive $a$ and, for the product, positive $b$.",
+    "A real logarithm of a negative number is undefined. So is a logarithm of 0.",
+    "Change of base does not change the value: $\\ln 81/\\ln 3$ is exactly $\\log_3 81$."
+  ],
+  "examples": [
+    {
+      "title": "Add and subtract exponents on one base",
+      "prompt": "Simplify $2^3\\cdot 2^5/2^4$.",
+      "steps": [
+        "The bases match, so the numerator is $2^{3+5}=2^8$.",
+        "Dividing by $2^4$ subtracts the exponent: $2^{8-4}=2^4$.",
+        "$2^4=16$. The same count is $3+5-4=4$, and $2^4=16$."
+      ],
+      "answer": "$2^3\\cdot 2^5/2^4=16$."
+    },
+    {
+      "title": "Change of base, checked by prime factors",
+      "prompt": "Evaluate $\\log_4 32$ by change of base, and check it by writing 32 and 4 as powers of 2.",
+      "steps": [
+        "Change of base says $\\log_4 32=\\ln 32/\\ln 4$.",
+        "Now $32=2^5$ and $4=2^2$, so $\\ln 32=5\\ln 2$ and $\\ln 4=2\\ln 2$. The ratio is $5/2$.",
+        "The same value is the exponent $c$ in $4^c=32$. Since $4^{5/2}=(2^2)^{5/2}=2^5=32$, the exponent $5/2$ checks."
+      ],
+      "answer": "$\\log_4 32=5/2$. The change-of-base ratio $\\ln 32/\\ln 4$ equals $5/2$."
+    }
+  ],
+  "traps": [
+    "Treating $(3^2)^3$ as $3^{2+3}=3^5$. A power of a power multiplies the exponents, so the exponent is $2\\cdot 3=6$.",
+    "Treating $2^3\\cdot 2^4$ as $2^{3\\cdot 4}$. A product of powers adds the exponents, so the exponent is $7$.",
+    "Assigning a real value to $\\log(-8)$ or to $\\log 0$. The argument must be positive.",
+    "Claiming $0^0=1$ from the rule $a^0=1$. The rule stated here requires $a\\neq 0$."
+  ],
+  "python": "import math\nassert 2 ** (3 + 5 - 4) == 16\nassert abs(math.log(32) / math.log(4) - 2.5) < 1e-12\nassert 4 ** 2.5 == 32\nassert 3 ** 4 == 81\nassert abs(math.log(81) / math.log(3) - 4) < 1e-12\nassert 5 ** 0 == 1 and 2 ** 0 == 1\nassert (3 ** 2) ** 3 == 3 ** 6 == 729\nassert 2 ** 3 * 2 ** 4 == 2 ** 7 == 128\nassert 2 ** 7 == 128\nprint(16)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For a nonzero base, $5^0$ equals",
+      "options": [
+        "$1$",
+        "$0$",
+        "$5$",
+        "undefined"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 1. The rule is $a^0=1$ for $a\\neq 0$, and 5 is not 0. Option B confuses the power with the zero exponent itself. The expression is defined; it is not left undefined the way $0^0$ is."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The value of $\\log_2 32$ is",
+      "options": [
+        "$5$",
+        "$16$",
+        "$32$",
+        "$2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 5. Because $2^5=32$, the logarithm is the exponent 5. Change of base agrees: $\\ln 32/\\ln 2=5$. Option B is $2^4$, a nearby power, not the log."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true for real logarithms and real powers?",
+      "options": [
+        "For positive $a$ and $b$, $\\log(ab)=\\log a+\\log b$.",
+        "For positive $a$, $\\log(a^c)=c\\log a$.",
+        "A real logarithm is defined for negative arguments.",
+        "For $a\\neq 0$, $a^0=1$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The product rule and the power rule for logarithms hold for positive arguments. For a nonzero $a$, $a^0=1$. Option C is false: a real logarithm requires a positive argument, so a negative argument is not in the domain."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The value of $\\log_2 128$ is an integer. Enter that integer.",
+      "options": [],
+      "answer": [
+        "7"
+      ],
+      "solution": "The answer is **7**. Since $2^7=128$, $\\log_2 128=7$. The same integer is $\\ln 128/\\ln 2$ by change of base. Do not enter 128, which is the argument rather than the exponent.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The value of $(3^2)^3$ is",
+      "options": [
+        "$729$",
+        "$243$",
+        "$6561$",
+        "$81$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 729. A power of a power multiplies the exponents: $(3^2)^3=3^{6}$. Then $3^5=243$ and $3^6=243\\times 3=729$. Option B is the trap of adding the exponents to get $3^5$."
+    }
+  ]
+}

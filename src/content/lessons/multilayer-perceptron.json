@@ -1,0 +1,166 @@
+{
+  "slug": "multilayer-perceptron",
+  "section": "machine-learning",
+  "title": "Multilayer perceptron",
+  "syllabus": "Multi-layer perceptron",
+  "minutes": 30,
+  "summary": "A perceptron is one linear threshold. XOR is not linearly separable, so a multilayer perceptron adds a hidden layer and a nonlinearity. If every activation is linear, the stack collapses to one linear map. Universal approximation is an existence result.",
+  "keywords": [
+    "multilayer perceptron",
+    "perceptron",
+    "XOR",
+    "hidden layer",
+    "universal approximation"
+  ],
+  "intuition": "A perceptron computes a linear threshold: the sign of $w^\\top x+b$, or a step of that same affine function. Its decision boundary is one hyperplane. Two classes that can be cut by a hyperplane are linearly separable, and a perceptron can represent them. XOR cannot. The points $(0,0)$ and $(1,1)$ want one label, and $(1,0)$ and $(0,1)$ want the other. Adding the two inequalities that put the mixed points on the positive side contradicts the two inequalities that put the repeated points on the negative side. No single threshold implements XOR.\n\nA multilayer perceptron has at least one hidden layer between the input and the output. The hidden units are themselves thresholds or smooth gates, and the output reads a function of those gates rather than of $x$ directly. With a step nonlinearity, two hidden units are enough for XOR: one unit turns on when at least one input is $1$ (an OR), the other turns on only when both are $1$ (an AND), and the output turns on when the first is on and the second is off. That is a hidden layer doing something a single plane cannot.\n\nThe nonlinearity is the entire extra power. If every activation is linear, each layer is a matrix times the previous layer plus a bias, and the product of matrices is one matrix. The whole network is one affine map, the same family as a perceptron without a threshold. Universal approximation says something narrower than \"any network works\". One hidden layer, a non-polynomial activation such as a sigmoid, and enough units, can approximate a continuous function uniformly on a compact set. The theorem asserts that some choice of widths and weights exists. It does not assert that two units are enough for every function, that a polynomial activation will do, or that a training run finds the weights.",
+  "definitions": [
+    {
+      "term": "Perceptron",
+      "body": "A single linear threshold, $\\mathrm{step}(w^\\top x+b)$, with no hidden layer. The boundary is one hyperplane. It represents exactly the linearly separable dichotomies of its input."
+    },
+    {
+      "term": "Hidden layer",
+      "body": "A layer that is neither the raw input nor the final output. A multilayer perceptron has at least one. Its units are combined by later weights, so the map from $x$ to the output need not be a single threshold."
+    },
+    {
+      "term": "Linear collapse",
+      "body": "If every activation is linear, a stack of layers composes to one matrix and one bias. The network is one affine map, and it cannot separate XOR."
+    },
+    {
+      "term": "Universal approximation",
+      "body": "An existence result: on a compact subset of $\\mathbb{R}^d$, continuous functions can be approximated uniformly by one hidden layer with a non-polynomial activation, if the layer is allowed to be wide enough. It does not say that an arbitrary small network succeeds."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Perceptron",
+      "latex": "\\hat y=\\mathrm{step}(w^\\top x+b)",
+      "note": "One hyperplane. Labels of XOR cannot be written in this form."
+    },
+    {
+      "name": "Linear stack",
+      "latex": "W_2(W_1 x)= (W_2 W_1) x",
+      "note": "Biases fold into one bias the same way. A stack of linear maps is one linear map. A non-polynomial hidden activation is what breaks the collapse."
+    }
+  ],
+  "properties": [
+    "XOR on $\\{(0,0),(0,1),(1,0),(1,1)\\}$ is not linearly separable. A perceptron misclassifies at least one of the four points. Three of the four are separable: the OR threshold is correct on every point except $(1,1)$.",
+    "A hidden layer with a nonlinear activation can separate XOR. The step network below is an explicit weight setting, not an appeal to a general theorem.",
+    "If every activation is linear, adding layers does not add functions. The product of the weight matrices is the only matrix that matters.",
+    "A polynomial activation of fixed degree $d$, in one hidden layer, produces a polynomial of degree at most $d$. Those polynomials are not dense in the continuous functions on a compact set with an interior.",
+    "Universal approximation is existential. It needs a non-polynomial activation, a compact domain, and enough hidden units. It is not a claim that every initialisation, every width, or every activation works.",
+    "The input layer is not a hidden layer. A perceptron has inputs and one threshold output. The word multilayer starts when a hidden layer is present."
+  ],
+  "examples": [
+    {
+      "title": "XOR has no linear threshold",
+      "prompt": "Suppose $\\mathrm{step}(z)=1$ for $z>0$ and $0$ otherwise. Show that no $w_1,w_2,b$ realises XOR: output $0$ on $(0,0)$ and $(1,1)$, and output $1$ on $(1,0)$ and $(0,1)$.",
+      "steps": [
+        "Output $0$ at $(0,0)$ forces $b<0$. Output $0$ at $(1,1)$ forces $w_1+w_2+b<0$.",
+        "Output $1$ at $(1,0)$ forces $w_1+b>0$. Output $1$ at $(0,1)$ forces $w_2+b>0$. Adding these two gives $w_1+w_2+2b>0$.",
+        "Adding the two strict negative inequalities gives $w_1+w_2+2b<0$. The same quantity cannot be both positive and negative, so no such threshold exists."
+      ],
+      "answer": "XOR is not linearly separable. The four strict inequalities contradict each other."
+    },
+    {
+      "title": "Two step units that do separate XOR",
+      "prompt": "Hidden units $h_1=\\mathrm{step}(x_1+x_2-0.5)$ and $h_2=\\mathrm{step}(x_1+x_2-1.5)$, and output $y=\\mathrm{step}(h_1-h_2-0.5)$. Evaluate all four XOR inputs. Separately, with every activation left linear, $h_1=x_1+x_2$, $h_2=x_1-x_2$, and $y=2h_1+3h_2$. Evaluate $(x_1,x_2)=(2,1)$.",
+      "steps": [
+        "At $(0,0)$: $h_1=\\mathrm{step}(-0.5)=0$, $h_2=\\mathrm{step}(-1.5)=0$, $y=\\mathrm{step}(-0.5)=0$. At $(1,0)$ and at $(0,1)$: $h_1=\\mathrm{step}(0.5)=1$, $h_2=\\mathrm{step}(-0.5)=0$, $y=\\mathrm{step}(0.5)=1$.",
+        "At $(1,1)$: $h_1=\\mathrm{step}(1.5)=1$, $h_2=\\mathrm{step}(0.5)=1$, $y=\\mathrm{step}(1-1-0.5)=0$. All four XOR labels match, so this hidden layer separates XOR.",
+        "With linear activations, $y=2(x_1+x_2)+3(x_1-x_2)=5x_1-x_2$. At $(2,1)$ the value is $10-1=9$. The two layers are the single map $(x_1,x_2)\\mapsto 5x_1-x_2$."
+      ],
+      "answer": "The step network returns $(0,1,1,0)$ on the four XOR inputs, in the order $(0,0)$, $(1,0)$, $(0,1)$, $(1,1)$. The linear stack returns $9$ at $(2,1)$ and is one linear map."
+    }
+  ],
+  "traps": [
+    "Claiming a perceptron can label all four XOR points. The inequalities $b<0$, $w_1+w_2+b<0$, $w_1+b>0$, and $w_2+b>0$ cannot hold together. The maximum it can get right is $3$.",
+    "Stacking linear layers and expecting a nonlinear region. $W_2(W_1 x)=(W_2 W_1)x$. XOR remains impossible until a hidden activation is nonlinear.",
+    "Reading universal approximation as 'any one-hidden-layer net approximates any function'. The result says there exist enough units and some weights, for a non-polynomial activation, on a compact set. A polynomial activation of fixed degree stays inside a finite-dimensional family.",
+    "Counting the input as a hidden layer. A perceptron then looks multilayer. The hidden layer is the one whose outputs are not the raw coordinates and not the final scalar.",
+    "Using the successful XOR step network as if it proved that two hidden units approximate every continuous function. That network is one explicit solution of one Boolean function."
+  ],
+  "python": "def step(z):\n    return 1 if z > 0 else 0\n\ndef xor_net(x1, x2):\n    h1 = step(x1 + x2 - 0.5)\n    h2 = step(x1 + x2 - 1.5)\n    return step(h1 - h2 - 0.5)\n\noutputs = [xor_net(0, 0), xor_net(1, 0), xor_net(0, 1), xor_net(1, 1)]\nassert outputs == [0, 1, 1, 0]\nlinear = 5 * 2 - 1\nassert linear == 9\nprint(sum(outputs))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "With $h_1=\\mathrm{step}(x_1+x_2-0.5)$, $h_2=\\mathrm{step}(x_1+x_2-1.5)$, and $y=\\mathrm{step}(h_1-h_2-0.5)$, the output on $(1,1)$ is",
+      "options": [
+        "$0$",
+        "$1$",
+        "$\\tfrac12$",
+        "$2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $0$.\n\nBoth inputs are on, so $h_1=\\mathrm{step}(1.5)=1$ and $h_2=\\mathrm{step}(0.5)=1$. The output step sees $1-1-0.5=-0.5<0$ and returns $0$, which is the XOR label of $(1,1)$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Every activation is linear, $h_1=x_1+x_2$, $h_2=x_1-x_2$, and $y=2h_1+3h_2$. The value at $(x_1,x_2)=(2,1)$ is",
+      "options": [
+        "$9$",
+        "$5$",
+        "$3$",
+        "$2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $9$.\n\nSubstitute: $y=2(x_1+x_2)+3(x_1-x_2)=5x_1-x_2$. At $(2,1)$ this is $10-1=9$. The two-layer linear network is the single map $5x_1-x_2$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A perceptron is a linear threshold and has no hidden layer.",
+        "XOR is not linearly separable.",
+        "Universal approximation is an existence result: enough units and a non-polynomial activation, on a compact set.",
+        "Every two-hidden-unit network, at arbitrary weights, separates XOR."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA perceptron has one threshold and a hyperplane boundary. The four XOR inequalities contradict, so no such hyperplane exists. The approximation theorem says some sufficiently wide one-hidden-layer net exists for a non-polynomial activation; it does not say every small net works. D is false: zero weights, for example, do not separate XOR."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of hidden layers and activations?",
+      "options": [
+        "A multilayer perceptron has at least one hidden layer.",
+        "A hidden layer of step units, with the OR-and-AND weights above, separates XOR.",
+        "One hidden layer with a polynomial activation of fixed degree stays inside the polynomials of that degree.",
+        "Stacking linear layers produces a nonlinear decision region that a perceptron cannot."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe hidden layer is what makes the network multilayer. The explicit step network matches XOR on all four inputs. A degree-$d$ polynomial activation, summed over hidden units, is still a polynomial of degree at most $d$, and that family is not dense in the continuous functions on a compact interval. D is false: linear layers compose to one linear map."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "XOR has four points: $(0,0)$ and $(1,1)$ label $0$, and $(1,0)$ and $(0,1)$ label $1$. Enter the maximum number of these points a single perceptron can label correctly.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\nAll four cannot be correct, because the linear-threshold inequalities contradict. The OR rule, output $1$ when $x_1+x_2-0.5>0$, is correct on $(0,0)$, $(1,0)$, and $(0,1)$, and wrong only on $(1,1)$. So the maximum is $3$."
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "slug": "logistic-regression",
+  "section": "machine-learning",
+  "title": "Logistic regression",
+  "syllabus": "Logistic regression",
+  "minutes": 30,
+  "summary": "Logistic regression models a class probability with the logistic of a linear score, and it is fit by log loss. There is no normal-equation closed form, and squared error is the wrong objective.",
+  "keywords": [
+    "logistic",
+    "sigmoid",
+    "log loss",
+    "odds",
+    "threshold"
+  ],
+  "intuition": "Logistic regression is a classifier with a linear score inside a probability. For a feature vector $x$ the model says $P(y=1\\mid x)=\\sigma(w\\cdot x+b)$, where $\\sigma(z)=1/(1+e^{-z})$. The score $w\\cdot x+b$ is the log-odds. Exponentiating it gives the odds $p/(1-p)$. The probability itself is not linear in $x$: pushing the score from 0 to 2 does not add the same probability as pushing it from 2 to 4, because $\\sigma$ flattens near 0 and near 1.\n\nThe fit minimises log loss, also called binary cross-entropy. There is no closed form. The stationarity condition still contains $p_i=\\sigma(w\\cdot x_i+b)$, and that map is nonlinear in the coefficients, so it does not become a linear system the way $X^{\\top}X\\beta=X^{\\top}y$ does. One gradient step is an update you can compute by hand. It is not, by itself, the maximum likelihood estimate, unless the gradient was already zero.\n\nDo not fit this model by squared error. Minimising $(y-p)^2$ is a different objective from log loss, and it is not the fit this syllabus uses. The decision rule at threshold $1/2$ is the plane $w\\cdot x+b=0$, because $\\sigma(z)\\ge 1/2$ exactly when $z\\ge 0$. A different threshold is a different parallel plane.",
+  "definitions": [
+    {
+      "term": "Logistic function",
+      "body": "$\\sigma(z)=1/(1+e^{-z})$. It maps the real line into $(0,1)$, $\\sigma(0)=1/2$, and $\\sigma(z)+\\sigma(-z)=1$."
+    },
+    {
+      "term": "Log-odds",
+      "body": "The linear score $w\\cdot x+b$. It equals $\\log(p/(1-p))$, where $p=\\sigma(w\\cdot x+b)$. The odds are $e^{w\\cdot x+b}$."
+    },
+    {
+      "term": "Log loss",
+      "body": "For one row, $-[y\\log p+(1-y)\\log(1-p)]$, with $y\\in\\{0,1\\}$ and $p=\\sigma(w\\cdot x+b)$. The training objective is the sum, or the mean, of these terms. This lesson's worked step uses the sum."
+    },
+    {
+      "term": "Decision plane",
+      "body": "At threshold $1/2$, predict class 1 when $w\\cdot x+b\\ge 0$ and class 0 otherwise. The boundary is the plane $w\\cdot x+b=0$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Class probability",
+      "latex": "P(y=1\\mid x)=\\sigma(w\\cdot x+b),\\quad \\sigma(z)=\\frac{1}{1+e^{-z}}",
+      "note": "Labels are 0 and 1. The probability is the logistic of the score, not the score itself."
+    },
+    {
+      "name": "Log loss",
+      "latex": "-\\sum_i\\left[y_i\\log p_i+(1-y_i)\\log(1-p_i)\\right]",
+      "note": "No closed form. Do not replace this with $\\sum_i(y_i-p_i)^2$."
+    },
+    {
+      "name": "Odds",
+      "latex": "\\frac{p}{1-p}=e^{w\\cdot x+b}",
+      "note": "The log-odds are $w\\cdot x+b$. Threshold $1/2$ is the same event as log-odds equal to 0."
+    }
+  ],
+  "properties": [
+    "$\\sigma(0)=1/2$, $\\sigma(z)\\to 1$ as $z\\to\\infty$, and $\\sigma(z)\\to 0$ as $z\\to-\\infty$. The derivative of log loss in the score $z$ is $p-y$.",
+    "The level set $\\sigma(w\\cdot x+b)=1/2$ is the plane $w\\cdot x+b=0$. A threshold $t\\neq 1/2$ is the parallel plane $w\\cdot x+b=\\log(t/(1-t))$.",
+    "Log-odds are linear in $x$. Probabilities are not.",
+    "There is no normal-equation closed form for the log-loss minimiser. The factor $p_i-y_i$ depends on $\\sigma(w\\cdot x_i+b)$, which is nonlinear in $(w,b)$.",
+    "Squared error on $y$ and $p$ is not the objective. The syllabus fit is log loss.",
+    "A single gradient step from $(w,b)=(0,0)$ moves the coefficients. It is not automatically the fitted model."
+  ],
+  "examples": [
+    {
+      "title": "One gradient step from the origin",
+      "prompt": "Two rows are $(x,y)=(2,1)$ and $(-1,0)$. Start at $w=0$, $b=0$, and take one step of length 1 on the sum of the log losses. Use $\\partial L/\\partial w=\\sum_i(p_i-y_i)x_i$ and $\\partial L/\\partial b=\\sum_i(p_i-y_i)$.",
+      "steps": [
+        "At the origin every score is 0, so every probability is $1/2$. The negative log-likelihood is $-\\log(1/2)-\\log(1/2)=2\\ln 2$.",
+        "The slope in $w$ is $(1/2-1)\\cdot 2+(1/2-0)\\cdot(-1)=-1-1/2=-3/2$. The slope in $b$ is $(1/2-1)+(1/2-0)=0$.",
+        "The update is $w\\leftarrow 0-1\\cdot(-3/2)=3/2$ and $b\\leftarrow 0$. At $x=2$ the new log-odds are $(3/2)\\cdot 2=3$. The threshold-$1/2$ boundary is $(3/2)x=0$, that is $x=0$."
+      ],
+      "answer": "After the step, $w=3/2$ and $b=0$. The log-odds at $x=2$ are 3. The starting negative log-likelihood is $2\\ln 2$."
+    },
+    {
+      "title": "A fixed score and its threshold",
+      "prompt": "Take $w=2$ and $b=-6$, in one dimension. Where is the threshold-$1/2$ boundary, and what class is predicted at $x=4$ and at $x=1$?",
+      "steps": [
+        "The boundary solves $2x-6=0$, so $x=3$. Predict class 1 on the side where the score is positive.",
+        "At $x=4$ the score is $8-6=2>0$, so $\\sigma(2)>1/2$ and the predicted class is 1. The log-odds equal 2, and the odds equal $e^{2}$.",
+        "At $x=1$ the score is $2-6=-4<0$, so the predicted class is 0. The probability is $\\sigma(-4)$, not the number $-4$."
+      ],
+      "answer": "The boundary is $x=3$. The point $x=4$ is class 1 and the point $x=1$ is class 0."
+    }
+  ],
+  "traps": [
+    "Fitting the coefficients by minimising $(y-p)^2$. That is not log loss, and it is not the logistic fit used here.",
+    "Looking for a closed form like $(X^{\\top}X)^{-1}X^{\\top}y$. The gradient equation is nonlinear in $(w,b)$ because $p=\\sigma(w\\cdot x+b)$.",
+    "Treating the linear score as the probability. At the updated parameters the log-odds at $x=2$ are 3. The probability is $\\sigma(3)$, which is not 3.",
+    "Putting the threshold $1/2$ at $w\\cdot x+b=1/2$. Because $\\sigma(0)=1/2$, the boundary is $w\\cdot x+b=0$.",
+    "Calling one gradient step the maximum likelihood estimate. The step from $(0,0)$ to $(3/2,\\ 0)$ is one update. The gradient at the origin was not zero."
+  ],
+  "python": "import math\n\ndef sig(z):\n    return 1 / (1 + math.exp(-z))\n\nxs, ys = [2, -1], [1, 0]\nps = [sig(0.0) for _ in xs]\nd_w = sum((p - y) * x for p, y, x in zip(ps, ys, xs))\nd_b = sum(p - y for p, y in zip(ps, ys))\nassert abs(d_w + 1.5) < 1e-12 and abs(d_b) < 1e-12\nw, b = 0.0 - d_w, 0.0 - d_b\nassert abs(w - 1.5) < 1e-12 and abs(b) < 1e-12\nassert abs(w * 2 + b - 3) < 1e-12\nnll = -sum(y * math.log(p) + (1 - y) * math.log(1 - p) for y, p in zip(ys, ps))\nassert abs(nll - 2 * math.log(2)) < 1e-12\nassert abs(2 * 3 - 6) < 1e-12\nassert sig(2 * 4 - 6) > 0.5 and sig(2 * 1 - 6) < 0.5\nprint(w * 2 + b)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "From $w=0$, $b=0$, one gradient step of size 1 on the sum of log losses for $(x,y)=(2,1)$ and $(-1,0)$ produces",
+      "options": [
+        "$w=3/2$ and $b=0$",
+        "$w=0$ and $b=3/2$",
+        "$w=0$ and $b=0$, because the origin is already a closed-form solution",
+        "$w=-3/2$ and $b=0$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. At the origin, $p=1/2$. Then $\\partial L/\\partial w=(1/2-1)\\cdot 2+(1/2-0)\\cdot(-1)=-3/2$ and $\\partial L/\\partial b=0$. A step of size 1 gives $w=3/2$ and $b=0$. Option D steps in the wrong direction."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For a decision threshold of $1/2$, the boundary of a logistic model is",
+      "options": [
+        "the plane $w\\cdot x+b=0$",
+        "the plane $w\\cdot x+b=1/2$",
+        "the set where $\\sigma(w\\cdot x+b)=0$",
+        "a quadratic curve, because $\\sigma$ is nonlinear"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. $\\sigma(z)\\ge 1/2$ if and only if $z\\ge 0$, so the boundary is $w\\cdot x+b=0$. The nonlinearity of $\\sigma$ changes the probability, not the shape of this particular level set. Option C is impossible: $\\sigma$ never returns 0."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of logistic regression?",
+      "options": [
+        "$\\sigma(z)=1/(1+e^{-z})$ and $\\sigma(0)=1/2$.",
+        "The log-odds equal $w\\cdot x+b$.",
+        "The coefficients are chosen by minimising squared error $(y-p)^2$.",
+        "In general the log-loss minimiser has no closed form like the normal equations."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The logistic function is $1/2$ at 0, the linear score is the log-odds, and the likelihood equation is nonlinear, so there is no normal-equation formula. C is the objective this lesson does not use. The fit minimises log loss."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "After the worked update $w=3/2$, $b=0$, which of the following are true?",
+      "options": [
+        "The log-odds at $x=2$ equal 3.",
+        "A point with $x>0$ is classified as class 1 at threshold $1/2$.",
+        "The negative log-likelihood at the initial $(w,b)=(0,0)$ equals $2\\ln 2$.",
+        "The gradient at $(0,0)$ is already zero, so the step does nothing."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The updated score at $x=2$ is $(3/2)\\cdot 2=3$. The boundary is $x=0$, so positive $x$ is class 1. Both initial probabilities are $1/2$, and the negative log-likelihood is $2\\ln 2$. D is false: the partial derivative in $w$ equals $-3/2$, which is why $w$ moved."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "After the update $w=3/2$, $b=0$, the log-odds at $x=2$ are an integer. Enter that integer.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**. The log-odds are $w x+b=(3/2)\\cdot 2+0=3$. The probability at that point is $\\sigma(3)$, which is not the integer being entered."
+    }
+  ]
+}

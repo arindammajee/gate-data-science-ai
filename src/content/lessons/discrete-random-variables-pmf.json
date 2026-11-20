@@ -1,0 +1,159 @@
+{
+  "slug": "discrete-random-variables-pmf",
+  "section": "probability",
+  "title": "Discrete random variables and pmfs",
+  "syllabus": "Discrete random variables and probability mass functions.",
+  "minutes": 30,
+  "summary": "A pmf gives the probability at each value of a discrete random variable. The masses are nonnegative and sum to 1, and expectation and variance are sums against that pmf.",
+  "keywords": [
+    "pmf",
+    "discrete",
+    "expectation",
+    "variance",
+    "support"
+  ],
+  "intuition": "A discrete random variable takes values in a countable set, and each of those values can carry positive probability. The probability mass function is the list of those probabilities: $p(x)=P(X=x)$. Unlike a continuous density, $p(x)$ is an actual probability. It may be positive, and the probability of a set of values is the sum of the masses on that set, not an area under a curve.\n\nTwo constraints make a list a pmf. Every mass is nonnegative, and the masses over the whole support sum to 1. A function that is negative somewhere, or that sums to $5/6$, is not a distribution, however neatly it is written. The support is the set where $p(x)>0$. Values off the support are still real numbers; they just have probability 0.\n\nMeans and variances are computed from the pmf and from nothing else. The expectation is $\\sum x\\,p(x)$. The variance is $\\sum (x-\\mu)^2 p(x)$, which equals $E[X^2]-(E[X])^2$. The second form is usually shorter, and it is not $(E[X])^2$ by itself. For the masses $1/6$, $1/2$, and $1/3$ on the values 0, 1, and 3, the mean is $3/2$ and the variance is $5/4$.",
+  "definitions": [
+    {
+      "term": "Discrete random variable",
+      "body": "A random variable whose distribution is supported on a finite or countably infinite set. The probability of any set of values is a sum of point masses."
+    },
+    {
+      "term": "Probability mass function",
+      "body": "The function $p(x)=P(X=x)$. It satisfies $p(x)\\ge 0$ for every $x$ and $\\sum_x p(x)=1$. For $x$ outside the support, $p(x)=0$."
+    },
+    {
+      "term": "Probability of a set",
+      "body": "For a discrete random variable, $P(X\\in A)=\\sum_{x\\in A} p(x)$. The sum is over the support points that lie in $A$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Mass and total probability",
+      "latex": "p(x)\\ge 0,\\qquad \\sum_x p(x)=1",
+      "note": "These two conditions are what a pmf has to satisfy. A density is not required to be at most 1; a pmf is, because it is a probability."
+    },
+    {
+      "name": "Expectation and variance",
+      "latex": "E[X]=\\sum_x x\\,p(x),\\qquad \\mathrm{Var}(X)=E[X^2]-(E[X])^2",
+      "note": "The variance sum $\\sum_x (x-\\mu)^2 p(x)$ is the same number. Do not replace $E[X^2]$ by $(E[X])^2$."
+    },
+    {
+      "name": "Subset probability",
+      "latex": "P(X\\in A)=\\sum_{x\\in A} p(x)",
+      "note": "For a discrete random variable this sum is the probability. It is not an integral, and the terms $p(x)$ need not be zero."
+    }
+  ],
+  "properties": [
+    "A pmf value is a probability, so $0\\le p(x)\\le 1$. A continuous density may exceed 1; a pmf may not.",
+    "The support masses sum to 1. If a proposed list sums to less than 1, some outcome has been left out of the model.",
+    "$P(X=x)=0$ is the continuous rule. A discrete atom can have $P(X=x)>0$, and that positive number is $p(x)$.",
+    "Expectation is linear, and the variance formula $E[X^2]-(E[X])^2$ needs both terms. For the pmf below, $E[X^2]=7/2$ and $(E[X])^2=9/4$, and neither one is the variance.",
+    "A function of a discrete random variable is discrete. Its pmf is obtained by grouping the preimages: $P(g(X)=y)=\\sum_{x:g(x)=y} p(x)$."
+  ],
+  "examples": [
+    {
+      "title": "Masses, a subset, and the mean",
+      "prompt": "Suppose $P(X=0)=1/6$, $P(X=1)=1/2$, and $P(X=3)=1/3$. Check that this is a pmf, compute $P(X\\in\\{0,3\\})$, and compute $E[X]$.",
+      "steps": [
+        "The three masses are nonnegative. On the denominator 6 they are $1/6$, $3/6$, and $2/6$, which sum to $6/6=1$. The list is a pmf, with support $\\{0,1,3\\}$.",
+        "The subset probability adds the masses it contains: $P(X\\in\\{0,3\\})=1/6+1/3=1/6+2/6=1/2$. The value 1 is left out of this event.",
+        "The mean weights values by masses: $E[X]=0\\cdot(1/6)+1\\cdot(1/2)+3\\cdot(1/3)=1/2+1=3/2$. The unweighted average $(0+1+3)/3=4/3$ is not the mean."
+      ],
+      "answer": "The list is a pmf, $P(X\\in\\{0,3\\})=1/2$, and $E[X]=3/2$."
+    },
+    {
+      "title": "Variance from the same pmf",
+      "prompt": "For $P(X=0)=1/6$, $P(X=1)=1/2$, and $P(X=3)=1/3$, compute $\\mathrm{Var}(X)$ from $E[X^2]-(E[X])^2$ and from the squared deviations.",
+      "steps": [
+        "The second moment uses the squares of the values: $E[X^2]=0^2\\cdot(1/6)+1^2\\cdot(1/2)+3^2\\cdot(1/3)=1/2+3=7/2$.",
+        "The square of the mean is $(3/2)^2=9/4$. Subtract: $\\mathrm{Var}(X)=7/2-9/4=14/4-9/4=5/4$.",
+        "The long form agrees. The deviations from $3/2$ contribute $(9/4)(1/6)=3/8$, $(1/4)(1/2)=1/8$, and $(9/4)(1/3)=3/4$. The sum is $3/8+1/8+6/8=10/8=5/4$."
+      ],
+      "answer": "$\\mathrm{Var}(X)=5/4$. The pieces $E[X^2]=7/2$ and $(E[X])^2=9/4$ are not themselves the variance."
+    }
+  ],
+  "traps": [
+    "Treating a discrete mass as a density and concluding $P(X=x)=0$. Here $P(X=1)=1/2$, which is the pmf at 1.",
+    "Accepting a list that does not sum to 1. Masses $1/6$, $1/2$, and $1/6$ on 0, 1, and 3 sum to $5/6$ and are not a pmf.",
+    "Reporting $E[X^2]$ or $(E[X])^2$ as the variance. For this pmf those numbers are $7/2$ and $9/4$, and the variance is their difference $5/4$.",
+    "Averaging the support without the masses. The values 0, 1, and 3 have unweighted mean $4/3$ and probability-weighted mean $3/2$."
+  ],
+  "python": "from fractions import Fraction\np = {0: Fraction(1, 6), 1: Fraction(1, 2), 3: Fraction(1, 3)}\nassert sum(p.values()) == 1\nassert all(v >= 0 for v in p.values())\nex = sum(x * px for x, px in p.items())\nex2 = sum(x * x * px for x, px in p.items())\nvar = ex2 - ex ** 2\nassert ex == Fraction(3, 2)\nassert ex2 == Fraction(7, 2)\nassert var == Fraction(5, 4)\nlong = sum((x - ex) ** 2 * px for x, px in p.items())\nassert long == var\nassert p[0] + p[3] == Fraction(1, 2)\nprint(float(ex), float(var))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Suppose $P(X=0)=1/6$, $P(X=1)=1/2$, and $P(X=3)=1/3$. The mean $E[X]$ is",
+      "options": [
+        "$3/2$",
+        "$4/3$",
+        "$5/4$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3/2$.\n\n$E[X]=0\\cdot(1/6)+1\\cdot(1/2)+3\\cdot(1/3)=1/2+1=3/2$. The masses sum to 1, so this is a pmf. Option B is the unweighted average $(0+1+3)/3=4/3$. Option C is the variance $5/4$, computed in a different question from the same pmf."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Suppose $P(X=0)=1/6$, $P(X=1)=1/2$, and $P(X=3)=1/3$. The variance $\\mathrm{Var}(X)$ is",
+      "options": [
+        "$5/4$",
+        "$7/2$",
+        "$9/4$",
+        "$3/2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $5/4$.\n\n$E[X]=3/2$ and $E[X^2]=0+1/2+9\\cdot(1/3)=7/2$. Then $\\mathrm{Var}(X)=7/2-(3/2)^2=7/2-9/4=5/4$. Option B is $E[X^2]$. Option C is $(E[X])^2$. Option D is the mean. The variance is the difference of B and C, not either term alone."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true for a discrete random variable with pmf $p$?",
+      "options": [
+        "The values $p(x)$ are nonnegative and sum to 1 over the support.",
+        "$P(X\\in A)=\\sum_{x\\in A} p(x)$.",
+        "$P(X=x)=0$ for every $x$, because only continuous random variables have point probabilities.",
+        "$\\mathrm{Var}(X)=E[X^2]-(E[X])^2$ when the second moment is finite."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA is the definition of a pmf, and each $p(x)$ is at most 1 because it is a probability. B is how a discrete distribution assigns probability to a set. D is the computational formula for the variance; for the masses $1/6$, $1/2$, and $1/3$ on 0, 1, and 3 it produces $7/2-9/4=5/4$. C is the continuous singleton rule, and it is false here: $P(X=1)=1/2$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Suppose $P(X=0)=1/6$, $P(X=1)=1/2$, and $P(X=3)=1/3$. Let $m=E[X]$. Enter $2m$.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **3**.\n\n$m=0\\cdot(1/6)+1\\cdot(1/2)+3\\cdot(1/3)=1/2+1=3/2$, so $2m=3$. The three probabilities sum to 1, and the value 0 contributes nothing to the mean."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Suppose $P(X=0)=1/6$, $P(X=1)=1/2$, and $P(X=3)=1/3$. Let $v=\\mathrm{Var}(X)$. Enter $4v$.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**.\n\n$E[X]=3/2$ and $E[X^2]=1/2+3=7/2$, so $v=7/2-9/4=5/4$. Therefore $4v=5$. Reporting $4E[X^2]=14$ or $4(E[X])^2=9$ would be using only one term of the variance formula."
+    }
+  ]
+}

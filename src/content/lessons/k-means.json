@@ -1,0 +1,166 @@
+{
+  "slug": "k-means",
+  "section": "machine-learning",
+  "title": "k-means",
+  "syllabus": "k-means",
+  "minutes": 35,
+  "summary": "k-means minimises the sum of squared distances to cluster means. Lloyd's iteration assigns each point to the nearest mean and then replaces each mean by the average of its points. It stops at a local minimum and is sensitive to the start, to scale, and to outliers.",
+  "keywords": [
+    "k-means",
+    "Lloyd",
+    "within-cluster sum of squares",
+    "local minimum",
+    "initialisation"
+  ],
+  "intuition": "$k$-means looks for $k$ centres that are means, and for an assignment of every point to one centre, so that the sum of squared Euclidean distances from points to their centres is small. The objective is $\\sum_i\\|x_i-\\mu_{c(i)}\\|^2$. Squared Euclidean distance treats every coordinate equally and draws spherical level sets, so the criterion likes clusters that are roughly spherical and not wildly different in size. A long thin cloud, or one dense clump beside a huge loose one, is a poor match.\n\nLloyd's algorithm alternates two exact steps. Given the means, assign each point to the nearest mean; ties in this lesson go to the lower index, and the six-point run below has none. Given the assignment, replace each mean by the coordinate-wise average of its points, which is the unique minimiser of the sum of squares inside that cluster. Each step cuts the objective or leaves it unchanged. On a finite set the assignment cannot descend forever, so the iteration reaches a fixed point: a local minimum. It does not certify that another initialisation would not finish lower.\n\nThe start matters, because a different seed can fall into a different basin. Scale matters, because a feature in a large unit dominates every squared distance. Outliers matter, because a mean is an average: one point at $12$ among three points at $0$ pulls the mean from $0$ to $3$. An empty cluster is possible. With points $0$, $1$, and $10$ and initial means $0$, $8$, and $9$, the mean that started at $8$ receives no points, and the average of the empty set is undefined.",
+  "definitions": [
+    {
+      "term": "$k$-means objective",
+      "body": "$\\sum_{i=1}^{n}\\|x_i-\\mu_{c(i)}\\|^2$, with $c(i)$ the cluster assigned to point $i$ and $\\mu_c$ the mean of that cluster. The centres are averages, not data points."
+    },
+    {
+      "term": "Lloyd assignment",
+      "body": "Given the current means, give each point to a nearest mean. This lesson breaks a distance tie by choosing the smaller index. The assignment cannot raise the objective."
+    },
+    {
+      "term": "Lloyd update",
+      "body": "Replace each mean by the average of the points assigned to it. For squared Euclidean distance the mean is the minimiser. If a cluster is empty, that average is undefined."
+    },
+    {
+      "term": "Local minimum",
+      "body": "A fixed point of the two steps. The objective has stopped falling. A different initialisation can stop at a different value. The iteration does not promise the global minimum."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Objective",
+      "latex": "\\sum_{i=1}^{n}\\|x_i-\\mu_{c(i)}\\|^2",
+      "note": "Squared Euclidean distance to the mean of the assigned cluster. Assign, then replace each centre by its cluster mean. The result is a local minimum."
+    },
+    {
+      "name": "Mean update",
+      "latex": "\\mu_c=\\frac{1}{|C_c|}\\sum_{i\\in C_c} x_i",
+      "note": "Defined only when $C_c$ is nonempty. An outlier enters this average with the same weight as every other point in the cluster."
+    }
+  ],
+  "properties": [
+    "The assignment step sends each point to a nearest mean. The update step sets each centre to the average of its points. Together they are Lloyd's algorithm.",
+    "On a finite dataset, with a fixed tie-break, the objective cannot descend forever, so the iteration reaches a local minimum. That value need not be the global minimum.",
+    "Different initial means can produce different partitions. The six-point run starts at means $0$ and $1$ and finishes at $1$ and $9$; a different seed is not guaranteed to trace the same path.",
+    "The criterion is isotropic squared Euclidean distance, so it favours clusters that are roughly spherical and of similar size. Elongated or very unequal clusters are a mismatch.",
+    "A feature on a much larger scale dominates the squared distance. Standardise coordinates when the units differ, or the large-unit coordinate decides the neighbours.",
+    "Outliers pull means. The mean of $\\{0,0,0,12\\}$ is $3$, not $0$. An empty cluster can occur: points $0,1,10$ with initial means $0,8,9$ leave the mean at $8$ with no points."
+  ],
+  "examples": [
+    {
+      "title": "Two Lloyd iterations on six points",
+      "prompt": "Points $0,1,2,8,9,10$ on the line, $k=2$, initial means $0$ and $1$. Run two iterations. On a distance tie, choose the smaller index. Report the objective after each update.",
+      "steps": [
+        "With means $0$ and $1$, the point $0$ is closer to $0$, and $1,2,8,9,10$ are closer to $1$. The new means are $0$ and $(1+2+8+9+10)/5=6$. The objective of this partition is $(1-6)^2+(2-6)^2+(8-6)^2+(9-6)^2+(10-6)^2=25+16+4+9+16=70$.",
+        "With means $0$ and $6$, the points $0,1,2$ are closer to $0$ (distances $0,1,2$ against $6,5,4$) and $8,9,10$ are closer to $6$. The new means are $(0+1+2)/3=1$ and $(8+9+10)/3=9$.",
+        "The objective is $(0-1)^2+(1-1)^2+(2-1)^2+(8-9)^2+(9-9)^2+(10-9)^2=1+0+1+1+0+1=4$. A third assignment with means $1$ and $9$ does not move any point, so the iteration has reached a fixed point. The guarantee is that this fixed point is a local minimum, not that every initialisation would have matched it."
+      ],
+      "answer": "After one iteration the objective is $70$, with means $0$ and $6$. After two iterations the objective is $4$, with means $1$ and $9$."
+    },
+    {
+      "title": "An outlier pulls the mean",
+      "prompt": "One cluster contains $0,0,0,12$. Where does the mean update put the centre, and how does that compare with the average of the three zeros?",
+      "steps": [
+        "The mean of the three zeros alone is $0$. Every one of those points would then contribute squared distance $0$, and the point $12$ would contribute $144$.",
+        "The mean of all four points is $(0+0+0+12)/4=3$.",
+        "At this mean the sum of squares is $3\\cdot(0-3)^2+(12-3)^2=3\\cdot 9+81=108$, which is smaller than $144$. The update accepts the pull: the centre moves from the clump at $0$ to $3$."
+      ],
+      "answer": "The mean is $3$. One distant point moves the centre off the three points that agree."
+    }
+  ],
+  "traps": [
+    "Reading a finished Lloyd run as the global minimum. The six-point run reaches objective $4$ and stops. Stopping means a local minimum. Another seed on another point set can stop higher.",
+    "Replacing the mean by a data point. That is $k$-medoids. The update here is the average. On $\\{0,0,0,12\\}$ the average is $3$, which is not one of the observations.",
+    "Ignoring an empty cluster. Points $0$, $1$, and $10$ with initial means $0$, $8$, and $9$ assign both $0$ and $1$ to the mean at $0$, and assign $10$ to the mean at $9$ (distance $1$, against distance $2$ to the mean at $8$). The mean at $8$ is empty, and its update has no average to compute.",
+    "Leaving features on incomparable scales. Squared distance between $(0,0)$ and $(0,1)$ is $1$. After the second coordinate is multiplied by $100$, that squared distance is $10000$, while $(0,0)$ and $(3,0)$ stay at squared distance $9$. The nearest neighbour can flip.",
+    "Expecting $k$-means to recover elongated or very unequal clusters. The objective is isotropic and charges every point's squared distance, so a large spread moves the mean and can steal points from a neighbouring small cluster."
+  ],
+  "python": "pts = [0, 1, 2, 8, 9, 10]\nmeans = [0.0, 1.0]\nobjective = None\nfor _ in range(2):\n    assign = []\n    for p in pts:\n        d0 = abs(p - means[0])\n        d1 = abs(p - means[1])\n        assign.append(0 if d0 <= d1 else 1)\n    new = []\n    for c in (0, 1):\n        mem = [p for p, a in zip(pts, assign) if a == c]\n        new.append(sum(mem) / len(mem))\n    objective = sum((p - new[a]) ** 2 for p, a in zip(pts, assign))\n    means = new\nassert abs(objective - 4) < 1e-12\nassert abs(means[0] - 1) < 1e-12 and abs(means[1] - 9) < 1e-12\noutlier_mean = (0 + 0 + 0 + 12) / 4\nassert abs(outlier_mean - 3) < 1e-12\nprint(objective)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Points $0,1,2,8,9,10$ start with means $0$ and $1$. After one Lloyd assignment and the matching mean update, the objective is",
+      "options": [
+        "$70$",
+        "$4$",
+        "$0$",
+        "$30$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $70$.\n\nThe point $0$ stays with the first mean. The other five points go to the second mean, which moves to $6$. Squared distances to $6$ are $25,16,4,9,16$, and they sum to $70$. The value $4$ is the objective after the second iteration, not the first."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "What does a finished run of Lloyd's algorithm guarantee about the $k$-means objective?",
+      "options": [
+        "It has reached a local minimum. A different initialisation may stop at a different value.",
+        "It has reached the unique global minimum from every initialisation.",
+        "Each centre has been replaced by a data point of its cluster.",
+        "The objective being minimised is a sum of absolute deviations."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nAssignment and averaging do not raise the sum of squared distances, and a finite set of assignments cannot descend forever, so the run stops at a local minimum. The objective uses squares, not absolute deviations, and the centre is a mean, not a medoid. Global optimality is not part of the guarantee."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of Lloyd's $k$-means iteration?",
+      "options": [
+        "The assignment step gives each point to a nearest mean.",
+        "The update step replaces each nonempty cluster's centre by the average of its points.",
+        "The mean of $\\{0,0,0,12\\}$ is $3$, so an outlier pulls the centre.",
+        "An empty cluster cannot occur, because every mean receives at least one point."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe two steps are nearest-mean assignment and the average update. Four points $0,0,0,12$ average to $3$, which is the pull. D is false: points $0,1,10$ with initial means $0,8,9$ leave the mean at $8$ empty, since $10$ is closer to $9$ than to $8$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Different initial means can lead to different finished partitions.",
+        "A coordinate on a much larger scale can dominate squared Euclidean distance.",
+        "With points $0,1,10$ and initial means $0,8,9$, the mean at $8$ is given no points.",
+        "Every initialisation of Lloyd's algorithm finishes at the same objective value."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe iteration is only locally minimising, so the seed matters. Squared distance grows with the square of a large-unit coordinate, which can reorder neighbours. Distances from $10$ to the means $8$ and $9$ are $2$ and $1$, so $10$ joins $9$, while $0$ and $1$ join $0$, and $8$ is empty. D contradicts the local-minimum fact."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Points $0,1,2,8,9,10$ start with means $0$ and $1$. Enter the $k$-means objective after two Lloyd iterations.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**.\n\nThe first update produces means $0$ and $6$. The second assignment groups $\\{0,1,2\\}$ and $\\{8,9,10\\}$, with means $1$ and $9$. The six squared distances are $1,0,1,1,0,1$, and they sum to $4$."
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "slug": "vocabulary-idioms",
+  "section": "aptitude",
+  "title": "Vocabulary and idioms",
+  "syllabus": "Vocabulary in context and idioms",
+  "minutes": 25,
+  "summary": "Choose a word from the sentence around it, refusing near-misses such as imminent and inevitable, and use only idioms whose meanings are fixed: once in a blue moon, and hit the nail on the head.",
+  "keywords": [
+    "context",
+    "near-miss",
+    "once in a blue moon",
+    "hit the nail on the head",
+    "idiom"
+  ],
+  "intuition": "Vocabulary items here are not a list to recite. The sentence around the word tells you which meaning is doing the work, and the wrong options are usually real neighbours: a word you have seen in the same topic, or a word that shares a shape and not a meaning. Imminent and inevitable both concern what comes later, but imminent means soon and inevitable means unavoidable. Ambiguous describes a sentence or a label with more than one reading. Ambivalent describes a person with mixed feelings. A lucid explanation is clearly expressed. A lurid story is sensational. The neighbour is the trap, and it is a real word.\n\nIdioms are frozen. You do not rebuild them, and you do not invent one to fill a blank. Once in a blue moon means very rarely. It does not mean once under a coloured moon, and it does not mean once a week. Hit the nail on the head means to be exactly right. It does not mean to work hard, and it does not mean to use a hammer. If a sentence says the audits happen once in a blue moon and then says they happen every Friday, the sentence contradicts the idiom. If a sentence says a diagnosis hit the nail on the head and then says the diagnosis was wrong, it contradicts the idiom in the same way.",
+  "definitions": [
+    {
+      "term": "Word in context",
+      "body": "The meaning required by the sentence, not the most exciting meaning of a similar word. The surrounding clue has to support the choice."
+    },
+    {
+      "term": "Near-miss",
+      "body": "A real word close in topic or in spelling and different in meaning. Imminent is not inevitable. Ambiguous is not ambivalent. Lucid is not lurid."
+    },
+    {
+      "term": "Once in a blue moon",
+      "body": "Very rarely. A gap of years fits the idiom. A weekly or hourly habit contradicts it."
+    },
+    {
+      "term": "Hit the nail on the head",
+      "body": "To be exactly right about a cause, an answer, or a description. A wrong guess contradicts it."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Once in a blue moon",
+      "latex": "\\text{once in a blue moon}=\\text{very rarely}",
+      "note": "Not once a month, and not a claim about the colour of the sky."
+    },
+    {
+      "name": "Hit the nail on the head",
+      "latex": "\\text{hit the nail on the head}=\\text{be exactly right}",
+      "note": "Not a literal hammer blow, and not a near miss that was mostly wrong."
+    }
+  ],
+  "properties": [
+    "Read the whole sentence before choosing. A time clue such as 'one minute to go' supports imminent, meaning soon.",
+    "Inevitable means unavoidable. It does not mean soon, and it does not mean loud.",
+    "Ambiguous applies to a wording with two or more readings. Ambivalent applies to a person with mixed feelings.",
+    "Lucid means clearly expressed, so a first-year student can restate it. Lurid means sensational. Loud is only a sound neighbour.",
+    "Once in a blue moon means very rarely. A sentence that then says 'every Friday' or 'every hour' misuses the idiom.",
+    "Hit the nail on the head means exactly right. A sentence that then says the speaker was wrong misuses the idiom. Do not invent a variant such as 'once in a red moon'."
+  ],
+  "examples": [
+    {
+      "title": "Imminent against inevitable",
+      "prompt": "The shutdown is due in one minute. A later failure from wear cannot be prevented, whenever the grit has had a month to collect. Which word fits which sentence?",
+      "steps": [
+        "Imminent means about to happen. The one-minute clock is a clue for soon, so the shutdown is imminent.",
+        "Inevitable means unavoidable. The wear that cannot be prevented, without a claim that it happens in the next minute, takes inevitable.",
+        "Swapping them would make the clock sentence claim that the shutdown is unavoidable because of the clock, which is the wrong clue, and would make the wear sentence claim only that the failure is soon."
+      ],
+      "answer": "The one-minute shutdown is imminent. The unavoidable failure from wear is inevitable."
+    },
+    {
+      "title": "Two idioms in original sentences",
+      "prompt": "Paraphrase: 'A full lunar eclipse is visible from this terrace once in a blue moon, so the lab does not plan observations around it. When Meera said the offset was a loose earth wire, she hit the nail on the head.'",
+      "steps": [
+        "Once in a blue moon means very rarely. That is why the lab does not build the schedule around the eclipse.",
+        "Hit the nail on the head means her diagnosis was exactly right. The loose earth wire was the fault.",
+        "Neither sentence is about a coloured moon as an object of study, and neither sentence is about striking a nail with a hammer."
+      ],
+      "answer": "The eclipse is visible very rarely. Meera's diagnosis was exactly right."
+    }
+  ],
+  "traps": [
+    "Treating imminent and inevitable as synonyms. Soon is not the same claim as unavoidable.",
+    "Calling a two-reading warning ambivalent. Ambivalent is for mixed feelings. The warning is ambiguous.",
+    "Reading once in a blue moon as once a month, every Friday, or every hour.",
+    "Reading hit the nail on the head as 'tried hard' or as a literal use of a tool.",
+    "Inventing an idiom. 'Once in a red moon' is not an idiom and does not mean rarely."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In 'Her summary was lucid, so the first-year students could restate it', the word lucid means",
+      "options": [
+        "clearly expressed",
+        "sensational and shocking",
+        "very loud",
+        "slightly late"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, clearly expressed. The clue is that the students could restate the summary, which a clear explanation allows. Sensational is the meaning of lurid, a near-miss. Loud is only a sound neighbour, and slightly late is a different word entirely."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which sentence uses the idiom in the sense fixed in this lesson?",
+      "options": [
+        "Full audits happen once in a blue moon, so most months we only spot-check.",
+        "Full audits happen once in a blue moon, so we do them every Friday.",
+        "She hit the nail on the head, which means she missed the cause.",
+        "She hit the nail on the head with a hammer, and that made the diagnosis exact."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Once in a blue moon means very rarely, so a habit of spot-checks in most months fits, and a full audit is the rare event. Option B puts the same idiom next to every Friday, which contradicts rarely. Option C defines hit the nail on the head as missing the cause, which is the opposite of exactly right. Option D turns the idiom into a hammer blow."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The notice is ambiguous, so two readings are possible.",
+        "She was ambivalent about the transfer and could see reasons on both sides.",
+        "We recalibrate once in a blue moon, which is why the sticker is replaced every hour.",
+        "His one-line diagnosis hit the nail on the head: the loose wire was exactly the fault."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. Ambiguous is the right word for two readings of a notice. Ambivalent is the right word for a person who can see reasons on both sides. The diagnosis that names the loose wire exactly uses hit the nail on the head. Option C says a rare recalibration happens every hour, which contradicts once in a blue moon."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In 'A jam at this valve is inevitable once a month of that grit has passed', the word inevitable means the jam is",
+      "options": [
+        "unavoidable",
+        "due in the next minute and nothing more",
+        "imaginary",
+        "rare"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, unavoidable. Inevitable means the jam cannot be prevented. It does not mean merely that the jam is due in the next minute; that near-miss is imminent. Imaginary and rare are unrelated meanings and contradict the sentence."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many of the following five sentences are correct uses or definitions? (1) She visits the archive once in a blue moon; the last visit was three years ago. (2) He hits the nail on the head whenever he guesses at random and is usually wrong. (3) The instruction is lucid enough for a new trainee to follow. (4) An ambiguous label leaves two possible settings. (5) Imminent means the event cannot be avoided, whenever it happens. Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**. Sentence 1 matches once in a blue moon with a three-year gap. Sentence 2 says a random wrong guess hits the nail on the head, which contradicts exactly right. Sentence 3 uses lucid for an instruction a trainee can follow. Sentence 4 uses ambiguous for two settings. Sentence 5 defines imminent as unavoidable, which is the meaning of inevitable, not of imminent. The correct sentences are 1, 3, and 4.",
+      "tolerance": 0
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "slug": "conditional-probability",
+  "section": "probability",
+  "title": "Conditional probability",
+  "syllabus": "Conditional probability.",
+  "minutes": 30,
+  "summary": "Conditioning divides a joint probability by the probability of the condition. The chain rule multiplies along one order, and swapping the condition changes the value.",
+  "keywords": [
+    "conditional probability",
+    "chain rule",
+    "multiplication rule",
+    "not commutative"
+  ],
+  "intuition": "A conditional probability is a probability recomputed inside a smaller world. If $P(B)>0$, the definition is $P(A\\mid B)=P(A\\cap B)/P(B)$. The denominator is the condition you were told. The numerator is the joint event 'both'. Swapping the letters swaps which of those jobs is which, and the two numbers $P(A\\mid B)$ and $P(B\\mid A)$ are not the same function.\n\nThe chain rule is the definition used in reverse, more than once. From $P(B\\mid A)=P(A\\cap B)/P(A)$ you get $P(A\\cap B)=P(A)P(B\\mid A)$, provided $P(A)>0$. One more event gives $P(A\\cap B\\cap C)=P(A)P(B\\mid A)P(C\\mid A\\cap B)$, provided the conditions that appear have positive probability. You may expand in another order, but each factor must condition on the events already taken. The factors themselves are not commutative.\n\nDraws without replacement are the clean numerical case. After a red chip is removed, the probability of blue on the next draw is not the probability of red on the first draw given that the second was blue. Both numbers refer to the same two colours, and they live on different denominators.",
+  "definitions": [
+    {
+      "term": "Conditional probability",
+      "body": "If $P(B)>0$, then $P(A\\mid B)=P(A\\cap B)/P(B)$. It is undefined when $P(B)=0$. The bar is read as 'given'."
+    },
+    {
+      "term": "Chain rule",
+      "body": "The factorisation $P(A\\cap B\\cap C)=P(A)P(B\\mid A)P(C\\mid A\\cap B)$, valid when $P(A)>0$ and $P(A\\cap B)>0$. Any order is allowed if each conditional uses the events that precede it."
+    },
+    {
+      "term": "Multiplication rule",
+      "body": "The two-event case of the chain rule: $P(A\\cap B)=P(B)P(A\\mid B)=P(A)P(B\\mid A)$, when the relevant condition has positive probability."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Definition",
+      "latex": "P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}",
+      "note": "Requires $P(B)>0$. The denominator is the conditioning event, not the event whose probability you want."
+    },
+    {
+      "name": "Chain rule for three events",
+      "latex": "P(A\\cap B\\cap C)=P(A)\\,P(B\\mid A)\\,P(C\\mid A\\cap B)",
+      "note": "Requires $P(A)>0$ and $P(A\\cap B)>0$. The same intersection equals $P(C)P(B\\mid C)P(A\\mid B\\cap C)$ when that order is defined."
+    }
+  ],
+  "properties": [
+    "Conditioning is not commutative. $P(A\\mid B)$ and $P(B\\mid A)$ have different denominators and are equal only in special cases.",
+    "For a fixed condition $B$ with $P(B)>0$, the map $A\\mapsto P(A\\mid B)$ is itself a probability: it is nonnegative, $P(B\\mid B)=1$, and it is countably additive.",
+    "If $A$ and $B$ are independent and $P(B)>0$, then $P(A\\mid B)=P(A)$. The converse, when $P(B)>0$, is the product rule.",
+    "$P(A\\mid B)+P(A^c\\mid B)=1$. Complements are taken in the event being measured, not in the condition: $P(A\\mid B^c)$ is a different number.",
+    "A false-positive rate is a conditional probability $P(+\\mid \\text{absent})$. It is not $1$ minus the true-positive rate, because those two condition on different events."
+  ],
+  "examples": [
+    {
+      "title": "The two conditionals on one overlap",
+      "prompt": "In a group of 50 students, 20 play chess, 15 play music, and 8 play both. Compute $P(\\text{chess}\\mid \\text{music})$ and $P(\\text{music}\\mid \\text{chess})$.",
+      "steps": [
+        "The counts already give the joints and the marginals. $P(\\text{chess}\\cap\\text{music})=8/50$, $P(\\text{music})=15/50$, and $P(\\text{chess})=20/50$.",
+        "Divide by the music marginal: $P(\\text{chess}\\mid \\text{music})=(8/50)/(15/50)=8/15$.",
+        "Divide the same joint by the chess marginal: $P(\\text{music}\\mid \\text{chess})=(8/50)/(20/50)=8/20=2/5$. Since $8/15\\neq 2/5$, the two conditionals are not equal."
+      ],
+      "answer": "$P(\\text{chess}\\mid \\text{music})=8/15$ and $P(\\text{music}\\mid \\text{chess})=2/5$. Conditioning is not commutative on these events."
+    },
+    {
+      "title": "Three draws, in one order",
+      "prompt": "An urn holds 6 red chips and 4 blue chips. Three chips are drawn one at a time, without replacement. Find the probability that the colours come out red, then blue, then red.",
+      "steps": [
+        "The first factor is unconditional: $P(R_1)=6/10$.",
+        "Given a red chip was removed, 4 blue chips remain among 9, so $P(B_2\\mid R_1)=4/9$.",
+        "Given red then blue, 5 red chips remain among 8, so $P(R_3\\mid R_1\\cap B_2)=5/8$. The chain rule multiplies $(6/10)(4/9)(5/8)=120/720=1/6$."
+      ],
+      "answer": "The probability of red, then blue, then red is $1/6$."
+    }
+  ],
+  "traps": [
+    "Swapping the condition: $P(A\\mid B)$ is not $P(B\\mid A)$. The student counts give $8/15$ in one order and $2/5$ in the other.",
+    "Dividing the joint by $P(A)$ when the condition was $B$. The denominator is the event behind the bar.",
+    "Writing the chain rule with the conditionals in an order that does not match the factors, such as $P(C\\mid A)$ in place of $P(C\\mid A\\cap B)$ when the third event still depends on $B$.",
+    "Using $1-P(A\\mid B)$ as $P(A\\mid B^c)$. The complement of the conditional probability $P(A\\mid B)$ is $P(A^c\\mid B)$, which keeps the same condition."
+  ],
+  "python": "from fractions import Fraction\nassert Fraction(8, 50) / Fraction(15, 50) == Fraction(8, 15)\nassert Fraction(8, 50) / Fraction(20, 50) == Fraction(2, 5)\nassert Fraction(8, 15) != Fraction(2, 5)\nchain = Fraction(6, 10) * Fraction(4, 9) * Fraction(5, 8)\nassert chain == Fraction(1, 6)\ndraw = Fraction(5, 8) * Fraction(3, 7)\nassert draw == Fraction(15, 56)\nprint(float(chain), float(draw))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Suppose $P(A\\cap B)=9/50$ and $P(B)=3/10$. Then $P(A\\mid B)$ equals",
+      "options": [
+        "$3/5$",
+        "$9/50$",
+        "$27/500$",
+        "$3/10$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3/5$.\n\nDivide the joint by the conditioning probability: $(9/50)/(3/10)=(9/50)\\times(10/3)=3/5$. Option B is the joint itself. Option C is the product of the two given numbers, which goes in the wrong direction."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Suppose $P(A)=1/2$, $P(B\\mid A)=2/5$, and $P(C\\mid A\\cap B)=1/2$. Then $P(A\\cap B\\cap C)$ equals",
+      "options": [
+        "$1/10$",
+        "$1/2$",
+        "$2/5$",
+        "$1/5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/10$.\n\nThe chain rule multiplies in the given order: $(1/2)(2/5)(1/2)=2/20=1/10$. Option B is only the first factor. Option D multiplies the first two factors and stops, which is $P(A\\cap B)$ rather than the triple intersection."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A$ and $B$ be events with $P(A)>0$ and $P(B)>0$. Which of the following are true?",
+      "options": [
+        "$P(A\\mid B)=P(A\\cap B)/P(B)$.",
+        "$P(A\\mid B)=P(B\\mid A)$ for every such pair.",
+        "$P(A\\cap B\\cap C)=P(A)P(B\\mid A)P(C\\mid A\\cap B)$ whenever $P(A\\cap B)>0$.",
+        "If $P(A\\mid B)=P(A)$, then $P(A\\cap B)=P(A)P(B)$."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nA is the definition. C is the chain rule in the stated order; the hypothesis $P(A\\cap B)>0$ makes the last conditional defined, and it also forces $P(A)>0$. D multiplies the hypothesis by $P(B)$. B is false: the chess and music counts give $8/15$ and $2/5$ for the two orders."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "In a group of 50 students, 20 play chess, 15 play music, and 8 play both. Let $p=P(\\text{chess}\\mid \\text{music})$. Enter $15p$.",
+      "options": [],
+      "answer": [
+        "8"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **8**.\n\n$P(\\text{chess}\\mid \\text{music})=(8/50)/(15/50)=8/15$, so $15p=8$. The other order is $P(\\text{music}\\mid \\text{chess})=8/20=2/5$, and $15$ times that number is not the integer asked for."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "An urn holds 5 green chips and 3 yellow chips. Two chips are drawn in order, without replacement. Let $p$ be the probability that the first is green and the second is yellow. Enter $56p$.",
+      "options": [],
+      "answer": [
+        "15"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **15**.\n\nThe chain rule gives $p=(5/8)(3/7)=15/56$. Therefore $56p=15$. The second factor is 3 yellow chips out of the 7 that remain after a green chip is removed."
+    }
+  ]
+}

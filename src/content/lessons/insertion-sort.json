@@ -1,0 +1,164 @@
+{
+  "slug": "insertion-sort",
+  "section": "programming",
+  "title": "Insertion sort",
+  "syllabus": "Insertion sort",
+  "minutes": 25,
+  "summary": "Insertion sort slides each new key left into a sorted prefix. Sorted input is linear, the worst and average cases are quadratic, and the usual shift rule is stable, in place, and online.",
+  "keywords": [
+    "insertion sort",
+    "online",
+    "stability",
+    "sorted prefix",
+    "inversions"
+  ],
+  "intuition": "Insertion sort keeps a sorted prefix and grows it by one key at a time. The key at index $i$ is removed, every strictly greater key to its left is shifted one place right, and the removed key is written into the hole. When the loop meets a key that is smaller or equal, it stops, so an equal key already in the prefix stays to the left. That is the stable rule.\n\nThe cost follows the inversions, plus one comparison for each inserted key that stops early. A sorted array shifts nothing: each new key is compared once with its left neighbour and left where it is, for $n-1$ comparisons, which is $\\Theta(n)$. A reversed array shifts the new key all the way to the front. Inserting the key at index $i$ then costs $i$ comparisons, and the total is $1+2+\\cdots+(n-1)=n(n-1)/2$, which is $\\Theta(n^2)$. A random permutation has $n(n-1)/4$ inversions in expectation, so the average case is $\\Theta(n^2)$ as well.\n\nThe shifts happen inside the input array, so the sort is in place. It is also online. The prefix of the $k$ keys seen so far is sorted as soon as the $k$th key has been inserted, and placing that key did not require any later key. Selection sort cannot make that claim, because its first output is the minimum of the entire input.",
+  "definitions": [
+    {
+      "term": "Sorted prefix",
+      "body": "After the key originally at index $i$ has been inserted, indexes $0$ through $i$ hold those $i+1$ keys in sorted order. The suffix to the right is still untouched."
+    },
+    {
+      "term": "Shift",
+      "body": "A move of a prefix key one index to the right, used to open the hole for the key being inserted. The number of shifts equals the number of inversions in the input."
+    },
+    {
+      "term": "Online",
+      "body": "An online sort places each arriving key without reading future keys. Insertion sort is online: the sorted prefix depends only on the keys that have already arrived."
+    },
+    {
+      "term": "Stable insertion",
+      "body": "The inner loop shifts while the preceding key is strictly greater than the key being inserted. On an equal key it stops, so the new equal key is placed to the right and the original order is kept."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Worst-case comparisons",
+      "latex": "C_{\\mathrm{worst}}(n)=\\frac{n(n-1)}{2}=\\Theta(n^2)",
+      "note": "A reversed array. The average case is also $\\Theta(n^2)$, about half as many inversions plus $n-1$ stopping comparisons."
+    },
+    {
+      "name": "Best case on sorted input",
+      "latex": "C_{\\mathrm{best}}(n)=n-1=\\Theta(n)",
+      "note": "Each inserted key loses one comparison with its left neighbour and shifts nothing."
+    }
+  ],
+  "properties": [
+    "Worst case and average case are $\\Theta(n^2)$. Best case, a sorted array, is $\\Theta(n)$.",
+    "The usual strict-greater shift is stable and in place.",
+    "The algorithm is online: a sorted prefix of the keys seen so far is ready before the next key arrives.",
+    "Each shift removes one inversion. A reversed array of length $n$ causes $n(n-1)/2$ shifts.",
+    "Shifting while the comparison is $\\ge$, rather than $>$, moves equal keys and the sort stops being stable."
+  ],
+  "examples": [
+    {
+      "title": "Inserting five keys, including a repeated 4",
+      "prompt": "Insertion-sort $(4,a), (2,b), (4,c), (1,d), (3,e)$. Shift a prefix key only while it is strictly greater than the key in hand. Count comparisons and shifts, and record the order of the two $4$s.",
+      "steps": [
+        "Insert $(2,b)$: one comparison, $4>2$, one shift. The prefix becomes $(2,b), (4,a)$.",
+        "Insert $(4,c)$: one comparison, and the preceding 4 is not strictly greater, so there is no shift. Label $c$ stays to the right of label $a$. The prefix is $(2,b), (4,a), (4,c)$.",
+        "Insert $(1,d)$: three comparisons and three shifts, producing $(1,d), (2,b), (4,a), (4,c)$. Insert $(3,e)$: $4>3$, $4>3$, and the preceding 2 is not greater than 3, so two shifts and three comparisons. The array finishes $(1,d), (2,b), (3,e), (4,a), (4,c)$."
+      ],
+      "answer": "Comparisons are $1+1+3+3=8$ and shifts are $1+0+3+2=6$. The equal keys finish $a$ then $c$, the input order, so the run is stable."
+    },
+    {
+      "title": "Sorted and reversed prefixes of length 5",
+      "prompt": "How many comparisons does the same insertion sort use on $1, 2, 3, 4, 5$ and on $5, 4, 3, 2, 1$?",
+      "steps": [
+        "On the sorted array each of the $4$ inserted keys is compared once with a smaller or equal left neighbour and not shifted. The total is $n-1=4$.",
+        "On the reversed array the inserted keys travel to the front. The comparison counts are $1+2+3+4=10$, and $n(n-1)/2=10$. Every one of those comparisons also shifts.",
+        "The gap between $4$ and $10$ is the best-case versus worst-case gap for this $n$. Both runs use only a constant amount of extra memory, and both preserve equals because this input has no equals to reorder."
+      ],
+      "answer": "Sorted input: $4$ comparisons and $0$ shifts, which is $\\Theta(n)$. Reversed input: $10$ comparisons and $10$ shifts, which is the $\\Theta(n^2)$ worst case."
+    }
+  ],
+  "traps": [
+    "Calling the best case $\\Theta(n^2)$. Sorted input really is $\\Theta(n)$ for insertion sort; that linear bound is the one selection sort does not have.",
+    "Shifting on $\\ge$ and still calling the result stable. An equal key already in the prefix must stop the scan, not be moved.",
+    "Forgetting that the algorithm is online. The prefix is sorted using only the keys already read.",
+    "Counting only shifts and ignoring the comparison that discovers the stopping key. On a sorted array the shift count is $0$ but the comparison count is $n-1$, not $0$."
+  ],
+  "python": "items = [(4, \"a\"), (2, \"b\"), (4, \"c\"), (1, \"d\"), (3, \"e\")]\ncomps = shifts = 0\nfor i in range(1, len(items)):\n    key = items[i]\n    j = i - 1\n    while j >= 0:\n        comps += 1\n        if items[j][0] > key[0]:\n            items[j + 1] = items[j]\n            shifts += 1\n            j -= 1\n        else:\n            break\n    items[j + 1] = key\nassert comps == 8 and shifts == 6\nassert [label for _, label in items] == list(\"dbeac\")\nassert [label for value, label in items if value == 4] == [\"a\", \"c\"]\nprobe = [6, 5, 1, 2]\nprobe_comps = 0\nfor i in range(1, len(probe)):\n    key = probe[i]\n    j = i - 1\n    while j >= 0:\n        probe_comps += 1\n        if probe[j] > key:\n            probe[j + 1] = probe[j]\n            j -= 1\n        else:\n            break\n    probe[j + 1] = key\nassert probe == [1, 2, 5, 6] and probe_comps == 6\nprint(comps, shifts, probe_comps)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Insertion sort runs on a sorted array of $10$ distinct keys. The inner loop stops as soon as the preceding key is not strictly greater. How many comparisons are performed?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $9$.\n\nEach of the $n-1=9$ inserted keys is compared once, with the neighbour on its left, and then left in place. Option B is the worst-case triangle $10\\times 9/2=45$. The sorted input does not pay that triangle.",
+      "options": [
+        "$9$",
+        "$45$",
+        "$10$",
+        "$1$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which statement describes the usual insertion sort, the one that shifts only while the preceding key is strictly greater?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe shifts stay inside the input array, equal keys are not moved, and each new key is placed using only the sorted prefix, so the algorithm is stable, in place, and online. Option B reverses the stability rule. Option C is selection sort's comparison bound, not insertion sort on sorted input. Option D is the extra buffer used by the usual mergesort.",
+      "options": [
+        "It is stable, in place, and online.",
+        "It is stable only when equal keys are shifted past each other.",
+        "Sorted input costs $\\Theta(n^2)$ comparisons.",
+        "It allocates an auxiliary array of length $n$."
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Insertion sort runs on $(4,a), (2,b), (4,c), (1,d), (3,e)$, shifting only while the preceding key is strictly greater. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe four insertions cost $1$, $1$, $3$, and $3$ comparisons, totalling $8$, and $1+0+3+2=6$ shifts. The second $4$ stops on the first $4$ and stays to its right, so the labels finish $a$ then $c$. Option D is false: the best case for five keys is $n-1=4$ comparisons, not $8$.",
+      "options": [
+        "The algorithm performs $8$ comparisons.",
+        "The algorithm performs $6$ shifts.",
+        "The two keys equal to $4$ finish in the order $a$ then $c$.",
+        "The best-case comparison count for five keys is $8$."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the usual insertion sort?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nA reversed array produces $n(n-1)/2$ comparisons, the worst case. A random permutation has $\\Theta(n^2)$ expected inversions, so the average case is $\\Theta(n^2)$ too. The reversed array forces every inserted key to the front, which is that worst case. Option D is false: shifting only on a strict greater-than leaves equal keys in their original order, so the sort is stable.",
+      "options": [
+        "The worst-case comparison count is $n(n-1)/2$.",
+        "The average-case comparison count is $\\Theta(n^2)$.",
+        "A reversed array is a worst case for the shifting implementation.",
+        "The algorithm is not stable."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Insertion sort runs on $[6, 5, 1, 2]$, shifting only while the preceding key is strictly greater. How many comparisons does it perform?",
+      "answer": [
+        "6"
+      ],
+      "solution": "The answer is **6**.\n\nInserting $5$ costs $1$ comparison. Inserting $1$ costs $2$, against $6$ and then $5$. Inserting $2$ costs $3$: it shifts $6$ and $5$, then stops because 1 is not greater than 2. The total is $1+2+3=6$, and the array finishes $[1, 2, 5, 6]$.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

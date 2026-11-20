@@ -1,0 +1,169 @@
+{
+  "slug": "cumulative-distribution-function",
+  "section": "probability",
+  "title": "Cumulative distribution function",
+  "syllabus": "Cumulative distribution function",
+  "minutes": 30,
+  "summary": "The cdf is F(x)=P(X≤x). It is nondecreasing and right-continuous, with limits 0 and 1. Discrete cdfs jump by the point mass. Continuous cdfs have derivative equal to the density where the derivative exists. The quantile function inverts F.",
+  "keywords": [
+    "cdf",
+    "right-continuous",
+    "jump",
+    "quantile",
+    "density"
+  ],
+  "intuition": "The cumulative distribution function records the probability sitting at or to the left of a point: $F(x)=P(X\\le x)$. Every random variable has one, discrete or continuous. It starts near 0 far to the left and finishes near 1 far to the right. It never decreases. When it is flat, the variable puts no new probability there. When it jumps, the variable has an atom at that point.\n\nFor a discrete variable the jump at $x$ equals the point mass $P(X=x)$. The function is right-continuous: at a jump, $F(x)$ includes the atom, and the limit from the left does not. Reading the left limit as $F(x)$ drops the mass at $x$ and answers $P(X<x)$ instead of $P(X\\le x)$.\n\nFor a continuous variable with a density, $F$ is continuous, so there are no jumps, and where the derivative exists\n\n$$\nf(x)=F'(x).\n$$\n\nThe quantile of order $p$ runs this backwards. It is the left-inverse $F^{-1}(p)=\\inf\\{x:F(x)\\ge p\\}$. When $F$ is continuous and strictly increasing, that is the ordinary inverse: the point $q$ with $F(q)=p$. A median is the quantile of order $1/2$.",
+  "definitions": [
+    {
+      "term": "CDF",
+      "body": "The function $F(x)=P(X\\le x)$. The inequality is $\\le$, so an atom at $x$ is included in $F(x)$."
+    },
+    {
+      "term": "Right-continuity",
+      "body": "The limit of $F$ from the right equals $F(x)$. For a discrete variable, the jump at $x$ is $F(x)$ minus the limit from the left, and that jump equals $P(X=x)$."
+    },
+    {
+      "term": "Density as a derivative",
+      "body": "If $X$ is continuous with density $f$, then $f(x)=F'(x)$ at every $x$ where the derivative exists."
+    },
+    {
+      "term": "Quantile function",
+      "body": "The quantile of order $p\\in(0,1)$ is $F^{-1}(p)=\\inf\\{x:F(x)\\ge p\\}$. For a continuous strictly increasing cdf it is the ordinary inverse."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Definition and limits",
+      "latex": "F(x)=P(X\\le x),\\qquad \\lim_{x\\to-\\infty}F(x)=0,\\ \\lim_{x\\to\\infty}F(x)=1",
+      "note": "The function is nondecreasing and right-continuous."
+    },
+    {
+      "name": "Jump and derivative",
+      "latex": "P(X=x)=F(x)-\\lim_{y\\uparrow x}F(y),\\qquad f(x)=F'(x)",
+      "note": "The jump formula is the discrete case. The derivative formula holds for a continuous law where $F'$ exists."
+    },
+    {
+      "name": "Quantile",
+      "latex": "F^{-1}(p)=\\inf\\{x:F(x)\\ge p\\}",
+      "note": "When $F$ is continuous and strictly increasing, $F(F^{-1}(p))=p$."
+    }
+  ],
+  "properties": [
+    "Every cdf satisfies $F(x)=P(X\\le x)$, is nondecreasing and right-continuous, and has limits 0 at $-\\infty$ and 1 at $+\\infty$.",
+    "For a discrete variable, $F$ is a step function. The jump at $x$ equals the probability mass at $x$. Between atoms, $F$ is flat.",
+    "Right-continuity means $F(x)$ includes the mass at $x$. The left-hand limit equals $P(X<x)$.",
+    "For a continuous variable with density $f$, $F$ is continuous and $f=F'$ where the derivative exists. A corner, such as the endpoint of a uniform density, is a point where the derivative formula is not claimed.",
+    "The quantile function inverts $F$ from the left. The median is a 0.5-quantile. For a continuous strictly increasing $F$, it is the unique solution of $F(q)=1/2$."
+  ],
+  "examples": [
+    {
+      "title": "A discrete cdf with three atoms",
+      "prompt": "Suppose $P(X=1)=0.2$, $P(X=2)=0.5$, and $P(X=4)=0.3$. Find $F(1)$, $F(2)$, $F(3)$, and the jump at 2.",
+      "steps": [
+        "The cdf adds masses at or to the left of the argument. So $F(1)=0.2$ and $F(2)=0.2+0.5=0.7$.",
+        "There is no atom at 3, and nothing new between 2 and 4, so $F(3)=0.7$. Then $F(4)=0.7+0.3=1$.",
+        "The left limit at 2 is $F(1)=0.2$, because the function is flat on $[1,2)$. The jump is $0.7-0.2=0.5$, which equals $P(X=2)$. Right-continuity puts the value 0.7 at $x=2$ itself."
+      ],
+      "answer": "The values are $F(1)=0.2$, $F(2)=0.7$, $F(3)=0.7$, and the jump at 2 is $0.5$."
+    },
+    {
+      "title": "A linear cdf and its quantile",
+      "prompt": "Let $F(x)=0$ for $x<1$, $F(x)=(x-1)/4$ for $1\\le x\\le 5$, and $F(x)=1$ for $x>5$. Find the density on $(1,5)$, the median, and the 0.75-quantile.",
+      "steps": [
+        "On $(1,5)$ the derivative is $F'(x)=1/4$, so the density is the continuous uniform density of length 4. The derivative is not needed at the endpoints to identify the density in the open interval.",
+        "The median solves $(m-1)/4=1/2$, so $m-1=2$ and $m=3$. Check: $F(3)=(3-1)/4=1/2$.",
+        "The 0.75-quantile solves $(q-1)/4=3/4$, so $q-1=3$ and $q=4$. Check: $F(4)=3/4$."
+      ],
+      "answer": "The density on $(1,5)$ is $1/4$, the median is 3, and the 0.75-quantile is 4."
+    }
+  ],
+  "traps": [
+    "Using a left-continuous step function. The cdf includes the atom: $F(x)=P(X\\le x)$, so the value at a jump is the higher value. The left limit is $P(X<x)$.",
+    "Taking the jump to be something other than the point mass. In the three-atom example the jump at 2 is 0.5, not 0.7 and not 0.2.",
+    "Differentiating a discrete cdf and calling the result a density. A step function has derivative 0 away from the jumps and no ordinary derivative at a jump. The masses are the jumps, not a density.",
+    "Solving $F(q)=p$ from the wrong piece of a piecewise cdf, or reporting a negative root when the support is positive. For $F(x)=x^2$ on $[0,1]$, the median is $1/\\sqrt{2}$, not $-1/\\sqrt{2}$ and not $1/2$."
+  ],
+  "python": "from fractions import Fraction\nf2 = Fraction(1, 5) + Fraction(1, 2)\nassert f2 == Fraction(7, 10)\nassert f2 + Fraction(3, 10) == 1\nassert f2 - Fraction(1, 5) == Fraction(1, 2)\nassert Fraction(3 - 1, 4) == Fraction(1, 2)\nassert Fraction(4 - 1, 4) == Fraction(3, 4)\nassert Fraction(1, 10) + Fraction(2, 5) == Fraction(1, 2)\nprint(float(f2), 3, 4)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A discrete random variable satisfies $P(X=0)=0.1$, $P(X=1)=0.4$, and $P(X=2)=0.5$. The cdf value $F(1)$ is",
+      "options": [
+        "$0.5$",
+        "$0.4$",
+        "$0.1$",
+        "$0.9$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $0.5$.\n\nThe cdf adds every mass at or to the left of 1, so $F(1)=0.1+0.4=0.5$. Option B is only the jump at 1. Option C is $F(0)$. Option D is $F(1)+P(X=2)-0.1$, a scrambled total. Right-continuity includes the atom at 1."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The cdf is $F(x)=0$ for $x<0$, $F(x)=x^2$ for $0\\le x\\le 1$, and $F(x)=1$ for $x>1$. The median is",
+      "options": [
+        "$1/\\sqrt{2}$",
+        "$1/2$",
+        "$1/4$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/\\sqrt{2}$.\n\nSolve $F(m)=1/2$ on $[0,1]$: $m^2=1/2$, and the nonnegative root is $1/\\sqrt{2}$. Option B would be right for a uniform cdf on $[0,1]$, but here $F(1/2)=1/4$, which is option C and is not $1/2$. Option D is the right endpoint, where $F=1$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of every cumulative distribution function $F$?",
+      "options": [
+        "$F$ is nondecreasing.",
+        "The limit as $x\\to -\\infty$ is 0 and the limit as $x\\to \\infty$ is 1.",
+        "$F$ is right-continuous.",
+        "$F$ is continuous at every real $x$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThose three properties are part of the definition of a cdf, together with $F(x)=P(X\\le x)$. Option D is false. A discrete cdf jumps, and the jump equals the point mass. Continuity of $F$ is the special case with no atoms."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "The cdf is $F(x)=0$ for $x<1$, $F(x)=(x-1)/4$ for $1\\le x\\le 5$, and $F(x)=1$ for $x>5$. Which of the following are true?",
+      "options": [
+        "The value $F(3)$ equals $1/2$.",
+        "The quantile of order $3/4$ equals 4.",
+        "The derivative $F'(x)$ equals $1/4$ for $x$ in $(1,5)$.",
+        "The value $F(1)$ equals $1/4$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nSubstitute: $F(3)=(3-1)/4=1/2$. The equation $(q-1)/4=3/4$ gives $q=4$. Differentiating the linear piece gives the density $1/4$ on the open interval. Option D is false because $F(1)=(1-1)/4=0$. The line starts at 0 when $x=1$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The cdf is $F(x)=0$ for $x<1$, $F(x)=(x-1)/4$ for $1\\le x\\le 5$, and $F(x)=1$ for $x>5$. Enter the quantile of order $0.75$.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**.\n\nSolve $(q-1)/4=0.75=3/4$. Then $q-1=3$ and $q=4$. The check is $F(4)=(4-1)/4=3/4$. The median of the same cdf is 3, which is the quantile of order $1/2$ and not the number asked for."
+    }
+  ]
+}

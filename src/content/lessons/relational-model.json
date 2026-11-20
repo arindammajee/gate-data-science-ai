@@ -1,0 +1,168 @@
+{
+  "slug": "relational-model",
+  "section": "databases",
+  "title": "The relational model",
+  "syllabus": "Relational model",
+  "minutes": 30,
+  "summary": "A relation is a set of tuples over named attributes, each drawn from a domain. Superkeys contain candidate keys, one candidate key is chosen as the primary key, and a foreign key is the link that referential integrity checks.",
+  "keywords": [
+    "relation",
+    "candidate key",
+    "superkey",
+    "foreign key",
+    "schema"
+  ],
+  "intuition": "A relation schema is a name, a list of attributes, a domain for each attribute, and the constraints the designer declared. An instance is a set of tuples that currently satisfy that schema. The schema can stay fixed while the instance changes: inserting a student adds a tuple and does not add an attribute. Adding an attribute, or a key, changes the schema.\n\nThe words are easy to slide past. The relation is the whole set. A tuple is one row. An attribute is one column name. The domain is the set of atomic values that attribute is allowed to take. Degree is the number of attributes. Cardinality, in this model, is the number of tuples, and it is not the $1$-$N$ cardinality of an ER diagram.\n\nKeys are constraints on every legal instance, not accidents of the rows in front of you. A superkey is a set of attributes that identifies a tuple: no legal instance has two tuples that agree on those attributes. A candidate key is a minimal superkey. A primary key is the one candidate key the designer chose to be the identifier, and its values may not be null. Every candidate key is a superkey, and a proper superset of a candidate key is a superkey that is no longer a candidate. A foreign key is a set of attributes that must match a candidate key of the referenced relation, or be null where nulls are allowed. One more distinction belongs in the same breath. The relational model is a set of tuples, so a duplicate tuple is the same tuple. SQL tables are multisets unless a key or DISTINCT removes the copies.",
+  "definitions": [
+    {
+      "term": "Schema and instance",
+      "body": "The schema is the relation name, the attributes, their domains, and the declared constraints. The instance is the set of tuples stored at the moment. Updates change the instance. Adding an attribute changes the schema."
+    },
+    {
+      "term": "Superkey and candidate key",
+      "body": "A superkey uniquely identifies a tuple. A candidate key is a superkey with no proper subset that is still a superkey. $\\mathrm{superkey}\\supseteq\\mathrm{candidate\\ key}\\supseteq\\mathrm{primary\\ key}$, as sets of keys ordered by how they are chosen, and every primary key is a candidate key."
+    },
+    {
+      "term": "Primary key",
+      "body": "The candidate key designated as the identifier of the relation. Entity integrity requires it to be unique and not null."
+    },
+    {
+      "term": "Foreign key",
+      "body": "Attributes of one relation that reference a candidate key of another, or of the same, relation. Every non-null foreign-key value must equal the referenced key of some existing tuple."
+    },
+    {
+      "term": "Set of tuples",
+      "body": "A relation instance contains each tuple at most once. An SQL table is a multiset: without a key or DISTINCT, two identical rows can both be present and both come back."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Keys, from large to chosen",
+      "latex": "\\mathrm{superkey}\\supseteq\\mathrm{candidate\\ key}\\supseteq\\mathrm{primary\\ key}",
+      "note": "The inclusions compare the families of keys. A superkey need not be minimal. The primary key is one chosen candidate key."
+    },
+    {
+      "name": "Degree and cardinality",
+      "latex": "\\mathrm{degree}=|\\mathrm{attributes}|,\\quad \\mathrm{cardinality}=|\\mathrm{tuples}|",
+      "note": "Cardinality here counts tuples. It is not ER cardinality."
+    }
+  ],
+  "properties": [
+    "A relation instance is a set. Storing the same tuple twice does not change the instance. SQL, without a key or DISTINCT, keeps both copies.",
+    "Every candidate key is a superkey. A superkey that properly contains a candidate key is not itself a candidate key.",
+    "The primary key is unique and not null. Another candidate key, an alternate key, is unique as well.",
+    "Uniqueness observed in one instance does not create a key. A key has to hold in every legal instance.",
+    "A foreign key references a candidate key. A value that matches nothing in the referenced relation is illegal unless the foreign key is null and nulls were allowed."
+  ],
+  "examples": [
+    {
+      "title": "Three tuples, and a duplicate SQL would keep",
+      "prompt": "Schema Student(sid, name, dept) with candidate key sid. The bag of rows written by a loader is $(1,\\mathrm{Ada},\\mathrm{CS})$, $(1,\\mathrm{Ada},\\mathrm{CS})$, $(2,\\mathrm{Bo},\\mathrm{EE})$. What does the relational instance contain, and what does an SQL table with no key contain?",
+      "steps": [
+        "The relation is a set, so the repeated tuple $(1,\\mathrm{Ada},\\mathrm{CS})$ occurs once. The instance has cardinality $2$, not $3$. The degree is $3$, one per attribute.",
+        "An SQL table with no primary key and no DISTINCT is a multiset. The loader's three rows can all sit in the table, and a query can return three.",
+        "The schema did not change when the duplicate was collapsed or kept. Declaring sid to be the primary key would make the second copy of sid $1$ illegal in SQL as well, which is the key constraint and not a property of bags."
+      ],
+      "answer": "The relation instance has $2$ tuples. The unconstrained SQL table has $3$ rows. Degree is $3$ in either reading of the schema."
+    },
+    {
+      "title": "Count the superkeys",
+      "prompt": "$R(A,B,C,D)$ has exactly two candidate keys, $\\{A\\}$ and $\\{B,C\\}$. How many superkeys are there?",
+      "steps": [
+        "Any set that contains $A$ is a superkey, because it contains a candidate key. The other three attributes may be present or absent, so there are $2^3=8$ such sets, including $\\{A\\}$ itself.",
+        "Any set that contains both $B$ and $C$ is also a superkey. The sets among them that do not contain $A$ are $\\{B,C\\}$ and $\\{B,C,D\\}$: the attribute $D$ is free and $A$ is fixed absent, so there are $2$ of them.",
+        "No set was counted twice, because the second family excludes $A$. Sets such as $\\{B\\}$ or $\\{C,D\\}$ contain neither candidate key. The total is $8+2=10$."
+      ],
+      "answer": "There are $10$ superkeys. Only $2$ of them are candidate keys. $\\{A,B\\}$ is a superkey and is not a candidate key, because $\\{A\\}$ is already one."
+    }
+  ],
+  "traps": [
+    "Calling every superkey a candidate key. $\\{A,B\\}$ uniquely identifies a tuple when $\\{A\\}$ does, and it is not minimal.",
+    "Treating a relation as a multiset because SQL is a multiset. In the relational model a duplicate tuple is the same tuple.",
+    "Promoting an attribute to a key because the current rows happen to be unique on it. A key is a constraint on every instance, not a coincidence in one of them.",
+    "Confusing degree with cardinality. Degree counts attributes. Cardinality of an instance counts tuples."
+  ],
+  "python": "from itertools import chain, combinations\n\ndef subsets(names):\n    return chain.from_iterable(combinations(names, r) for r in range(len(names) + 1))\n\nfour = list(\"ABCD\")\nsuperkeys = [s for s in subsets(four) if \"A\" in s or {\"B\", \"C\"} <= set(s)]\nassert len(superkeys) == 10\nfive = list(\"ABCDE\")\nonly_ab = [s for s in subsets(five) if {\"A\", \"B\"} <= set(s)]\nassert len(only_ab) == 8\nrows = [(1, \"Ada\", \"CS\"), (1, \"Ada\", \"CS\"), (2, \"Bo\", \"EE\")]\nassert len(rows) == 3 and len(set(rows)) == 2\nprint(len(superkeys), len(only_ab))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In the relational model, a relation instance is",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, a set of tuples.\n\nDuplicate tuples are not distinguished, so the instance is a set. Option B is an SQL table with no key and no DISTINCT, which is a multiset. Tuple order is not part of the relation. A single tuple is an element of the instance, not the instance.",
+      "options": [
+        "a set of tuples",
+        "a multiset of tuples, as in SQL with no key and no DISTINCT",
+        "a list, because row order is part of the data",
+        "one tuple"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The candidate keys of $R(A,B,C,D)$ are $\\{A\\}$ and $\\{B,C\\}$. Which set is a superkey and not a candidate key?",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $\\{A,B\\}$.\n\n$\\{A,B\\}$ contains the candidate key $\\{A\\}$, so it identifies a tuple, and it is not minimal. $\\{A\\}$ and $\\{B,C\\}$ are the candidate keys themselves. $\\{B\\}$ contains neither candidate key, so two tuples may agree on $B$ and differ on $C$.",
+      "options": [
+        "$\\{A,B\\}$",
+        "$\\{A\\}$",
+        "$\\{B,C\\}$",
+        "$\\{B\\}$"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nA candidate key is minimal among superkeys, so it is a superkey. The primary key is one of the candidate keys, and entity integrity forbids nulls in it. A foreign key is required to match a candidate key of the referenced relation. Option B reverses the definition: a superkey may contain extra attributes and then it is not a candidate key.",
+      "options": [
+        "Every candidate key is a superkey.",
+        "Every superkey is a candidate key.",
+        "The primary key is one chosen candidate key, and it may not be null.",
+        "A foreign key references a candidate key of the referenced relation."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe schema records attributes, domains, and constraints. The instance is the set of tuples that satisfy them right now. If sid is a candidate key, then any superset, including $\\{\\mathrm{sid}, \\mathrm{name}\\}$, is a superkey. Option C is false in the relational model: a set cannot contain two copies of one tuple. That is an SQL multiset behaviour.",
+      "options": [
+        "The schema names the attributes, the domains, and the constraints.",
+        "The instance is the current set of tuples.",
+        "A relation instance may contain two copies of the same tuple.",
+        "If sid is a candidate key, then $\\{\\mathrm{sid}, \\mathrm{name}\\}$ is a superkey."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "$R(A,B,C,D,E)$ has exactly one candidate key, $\\{A,B\\}$. How many superkeys does $R$ have?",
+      "answer": [
+        "8"
+      ],
+      "solution": "The answer is **8**.\n\nThe superkeys are exactly the supersets of $\\{A,B\\}$. Attributes $C$, $D$, and $E$ may each be in or out, and $A$ and $B$ are fixed in, so there are $2^{5-2}=2^3=8$ superkeys. One of them is the candidate key itself.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

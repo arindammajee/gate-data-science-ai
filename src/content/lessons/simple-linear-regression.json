@@ -1,0 +1,166 @@
+{
+  "slug": "simple-linear-regression",
+  "section": "machine-learning",
+  "title": "Simple linear regression",
+  "syllabus": "Simple linear regression",
+  "minutes": 35,
+  "summary": "The least-squares line is $\\hat y=\\hat\\beta_0+\\hat\\beta_1 x$, with slope $S_{xy}/S_{xx}$. Residuals sum to 0 when the intercept is present, and $R^2=1-\\mathrm{RSS}/\\mathrm{TSS}$.",
+  "keywords": [
+    "least squares",
+    "intercept",
+    "slope",
+    "RSS",
+    "R-squared"
+  ],
+  "intuition": "Simple linear regression fits one line, $\\hat y=\\hat\\beta_0+\\hat\\beta_1 x$, to pairs $(x_i,y_i)$. The errors in the model $y=\\beta_0+\\beta_1 x+\\varepsilon$ are what the line does not explain. Least squares chooses the intercept and the slope to minimise the residual sum of squares, the sum of squared vertical gaps.\n\nThe slope is a ratio of sums that have not been divided by $n$. $S_{xy}$ adds $(x_i-\\bar x)(y_i-\\bar y)$. $S_{xx}$ adds $(x_i-\\bar x)^2$. Then $\\hat\\beta_1=S_{xy}/S_{xx}$, and the intercept is $\\hat\\beta_0=\\bar y-\\hat\\beta_1\\bar x$, which is exactly the statement that the fitted line passes through the point of means. Dividing both sums by the same positive constant would not change the slope. Dividing only $S_{xx}$ would.\n\nWith an intercept in the fit, the residuals sum to 0. That is the normal equation for the column of ones, not a lucky cancellation on one dataset. Drop the intercept and the sum need not be 0. $R^2=1-\\mathrm{RSS}/\\mathrm{TSS}$ compares the residual sum of squares with the total sum of squares around $\\bar y$. For a least-squares line that has an intercept, and for $\\mathrm{TSS}>0$, this number lies between 0 and 1.",
+  "definitions": [
+    {
+      "term": "Simple linear model",
+      "body": "One response and one predictor: $y=\\beta_0+\\beta_1 x+\\varepsilon$. The fitted line is $\\hat y=\\hat\\beta_0+\\hat\\beta_1 x$."
+    },
+    {
+      "term": "Residual",
+      "body": "The vertical gap $y_i-\\hat y_i$. With an intercept in the least-squares fit, the residuals sum to 0."
+    },
+    {
+      "term": "RSS and TSS",
+      "body": "RSS is $\\sum_i(y_i-\\hat y_i)^2$. TSS is $\\sum_i(y_i-\\bar y)^2$, the sum of squared deviations from the mean response. $S_{xx}$ is a sum of squares in $x$, not RSS."
+    },
+    {
+      "term": "$R^2$",
+      "body": "The number $1-\\mathrm{RSS}/\\mathrm{TSS}$, defined when TSS is positive. It is 1 when the line fits perfectly and 0 when the least-squares slope is 0 and RSS equals TSS."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Slope and intercept",
+      "latex": "\\hat\\beta_1=\\frac{S_{xy}}{S_{xx}},\\quad \\hat\\beta_0=\\bar{y}-\\hat\\beta_1\\bar{x}",
+      "note": "$S_{xy}=\\sum_i(x_i-\\bar x)(y_i-\\bar y)$ and $S_{xx}=\\sum_i(x_i-\\bar x)^2$. Both are raw sums. The slope needs $S_{xx}>0$."
+    },
+    {
+      "name": "$R^2$",
+      "latex": "R^{2}=1-\\frac{\\mathrm{RSS}}{\\mathrm{TSS}}",
+      "note": "$\\mathrm{RSS}=\\sum_i(y_i-\\hat y_i)^2$ and $\\mathrm{TSS}=\\sum_i(y_i-\\bar y)^2$. With an intercept and $\\mathrm{TSS}>0$, $0\\le R^2\\le 1$."
+    }
+  ],
+  "properties": [
+    "With an intercept, the residuals sum to 0, and the fitted line passes through $(\\bar x,\\bar y)$.",
+    "$\\hat\\beta_1=S_{xy}/S_{xx}$ uses the raw sums. Dividing the numerator and the denominator by $n$ or by $n-1$ does not change the slope. Dividing only one of them does.",
+    "For least squares with an intercept and $\\mathrm{TSS}>0$, $R^2$ is between 0 and 1 inclusive. $R^2=1$ means RSS is 0. If TSS is 0, every $y_i$ equals $\\bar y$ and the ratio is undefined.",
+    "If every $x_i$ is equal, then $S_{xx}=0$ and the slope formula does not apply. A vertical cloud has no least-squares slope.",
+    "Without an intercept, residuals need not sum to 0. On $(1,1)$ and $(2,3)$, the no-intercept slope $\\sum xy/\\sum x^2=7/5$, and the residuals sum to $-1/5$.",
+    "The four-point fit below has $\\hat\\beta_1=7/5$ and $R^2=49/50$. Those are different numbers. A high $R^2$ is not the slope."
+  ],
+  "examples": [
+    {
+      "title": "Four points, fitted by hand",
+      "prompt": "Fit $y=\\beta_0+\\beta_1 x+\\varepsilon$ by least squares to the points $(1,2)$, $(2,3)$, $(3,5)$, and $(4,6)$. Report $\\hat\\beta_0$, $\\hat\\beta_1$, the residuals, RSS, TSS, and $R^2$.",
+      "steps": [
+        "$\\bar x=5/2$ and $\\bar y=4$. The $x$ deviations are $-3/2$, $-1/2$, $1/2$, $3/2$, so $S_{xx}=9/4+1/4+1/4+9/4=5$. The $y$ deviations are $-2$, $-1$, $1$, $2$, so $S_{xy}=(-3/2)(-2)+(-1/2)(-1)+(1/2)(1)+(3/2)(2)=3+1/2+1/2+3=7$.",
+        "$\\hat\\beta_1=7/5$ and $\\hat\\beta_0=4-(7/5)(5/2)=4-7/2=1/2$. The fitted values are $19/10$, $33/10$, $47/10$, and $61/10$. The residuals are $1/10$, $-3/10$, $3/10$, and $-1/10$, and they sum to 0.",
+        "RSS is $1/100+9/100+9/100+1/100=1/5$. TSS is $(-2)^2+(-1)^2+1^2+2^2=10$. Then $R^2=1-(1/5)/10=1-1/50=49/50$."
+      ],
+      "answer": "$\\hat\\beta_0=1/2$, $\\hat\\beta_1=7/5$, residuals $1/10,-3/10,3/10,-1/10$ summing to 0, RSS $=1/5$, TSS $=10$, and $R^2=49/50$."
+    },
+    {
+      "title": "A perfect line",
+      "prompt": "Fit the same model to $(0,1)$, $(1,3)$, $(2,5)$, and $(3,7)$. These points lie on a straight line. Find the coefficients, RSS, and $R^2$.",
+      "steps": [
+        "$\\bar x=3/2$ and $\\bar y=4$. $S_{xx}=(-3/2)^2+(-1/2)^2+(1/2)^2+(3/2)^2=5$. $S_{xy}=(-3/2)(-3)+(-1/2)(-1)+(1/2)(1)+(3/2)(3)=9/2+1/2+1/2+9/2=10$.",
+        "$\\hat\\beta_1=10/5=2$ and $\\hat\\beta_0=4-2\\cdot 3/2=1$. The line is $\\hat y=1+2x$, which passes through all four points, so every residual is 0 and the residual sum is 0.",
+        "RSS is 0. TSS is $(-3)^2+(-1)^2+1^2+3^2=20$. Then $R^2=1-0/20=1$."
+      ],
+      "answer": "$\\hat\\beta_0=1$, $\\hat\\beta_1=2$, every residual is 0, RSS is 0, and $R^2=1$."
+    }
+  ],
+  "traps": [
+    "Reading $R^2$ as RSS/TSS. On the first dataset that mistake gives $1/50$. The formula is $1-\\mathrm{RSS}/\\mathrm{TSS}=49/50$.",
+    "Quoting $\\hat\\beta_0=\\bar y-\\bar x$. The intercept subtracts $\\hat\\beta_1\\bar x$, and $\\hat\\beta_1$ is $7/5$, not 1. The intercept on the first dataset is $1/2$, not $4-5/2$.",
+    "Dropping the intercept and still expecting the residuals to sum to 0. On $(1,1)$ and $(2,3)$, $\\sum xy/\\sum x^2=(1+6)/(1+4)=7/5$. The residuals are $-2/5$ and $1/5$, and they sum to $-1/5$.",
+    "Dividing only $S_{xx}$ by $n$ and leaving $S_{xy}$ as a raw sum. The slope moves. Dividing both sums by the same positive constant does not.",
+    "Reporting $R^2$ when every $y_i$ is equal. TSS is 0 and the ratio is undefined. Do not fill the hole with 1 or with 0."
+  ],
+  "python": "pts = [(1, 2), (2, 3), (3, 5), (4, 6)]\nn = len(pts)\nxb = sum(x for x, _ in pts) / n\nyb = sum(y for _, y in pts) / n\nsxx = sum((x - xb) ** 2 for x, _ in pts)\nsxy = sum((x - xb) * (y - yb) for x, y in pts)\nb1 = sxy / sxx\nb0 = yb - b1 * xb\nresid = [y - (b0 + b1 * x) for x, y in pts]\nrss = sum(r * r for r in resid)\ntss = sum((y - yb) ** 2 for _, y in pts)\nr2 = 1 - rss / tss\nassert abs(b0 - 0.5) < 1e-12 and abs(b1 - 7 / 5) < 1e-12\nassert abs(sum(resid)) < 1e-12\nassert abs(rss - 0.2) < 1e-12 and tss == 10\nassert abs(r2 - 0.98) < 1e-12 and abs(100 * r2 - 98) < 1e-9\nperfect = [(0, 1), (1, 3), (2, 5), (3, 7)]\nassert all(abs(y - (1 + 2 * x)) < 1e-12 for x, y in perfect)\nprint(b0, b1)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For the points $(1,2)$, $(2,3)$, $(3,5)$, and $(4,6)$, the least-squares slope $\\hat\\beta_1$ is",
+      "options": [
+        "$7/5$",
+        "$1/2$",
+        "$49/50$",
+        "$2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $7/5$. Here $\\bar x=5/2$, $\\bar y=4$, $S_{xx}=5$, and $S_{xy}=7$, so the slope is $7/5$. Option B is the intercept. Option C is $R^2$, which is not the slope."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For those same four points, $R^2=1-\\mathrm{RSS}/\\mathrm{TSS}$ equals",
+      "options": [
+        "$49/50$",
+        "$1/5$",
+        "$7/5$",
+        "$1/50$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $49/50$. RSS is $1/5$ and TSS is 10, so $\\mathrm{RSS}/\\mathrm{TSS}=1/50$ and $R^2=1-1/50=49/50$. Option B is RSS. Option D stops before subtracting from 1."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For the least-squares fit to $(1,2)$, $(2,3)$, $(3,5)$, and $(4,6)$, which of the following are true?",
+      "options": [
+        "$\\hat\\beta_0=1/2$.",
+        "The residuals are $1/10$, $-3/10$, $3/10$, $-1/10$, and they sum to 0.",
+        "RSS $=1/5$ and TSS $=10$.",
+        "$R^2=\\mathrm{RSS}/\\mathrm{TSS}$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The intercept is $4-(7/5)(5/2)=1/2$, the four residuals are the tenths listed and cancel, and RSS and TSS are $1/5$ and 10. D drops the subtraction in $R^2=1-\\mathrm{RSS}/\\mathrm{TSS}$. That ratio of RSS to TSS is $1/50$, not $R^2$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of simple least squares?",
+      "options": [
+        "The least-squares line with an intercept passes through $(\\bar x,\\bar y)$.",
+        "On $(1,1)$ and $(2,3)$, the no-intercept slope $\\sum xy/\\sum x^2$ equals $7/5$, and the residuals sum to $-1/5$.",
+        "If every $x$ value is equal, then $S_{xx}=0$ and the slope formula does not apply.",
+        "When TSS $=0$, the definition $R^2=1-\\mathrm{RSS}/\\mathrm{TSS}$ still returns 1."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The intercept formula forces the line through the point of means. For the no-intercept fit, $\\sum xy=7$ and $\\sum x^2=5$, the slope is $7/5$, and the residuals $-2/5$ and $1/5$ sum to $-1/5$. A constant $x$ makes $S_{xx}=0$. D is false: TSS $=0$ makes the ratio undefined."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "For the four-point fit with $R^2=49/50$, the value of $100R^2$ is an integer. Enter it.",
+      "options": [],
+      "answer": [
+        "98"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **98**. The four-point fit has $R^2=49/50$, and $100R^2=100\\cdot 49/50=2\\cdot 49=98$."
+    }
+  ]
+}

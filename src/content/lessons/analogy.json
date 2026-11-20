@@ -1,0 +1,158 @@
+{
+  "slug": "analogy",
+  "section": "aptitude",
+  "title": "Analogy",
+  "syllabus": "Analogy",
+  "minutes": 20,
+  "summary": "Name the relation in the first pair before you look at the options. The right completion is the pair that uses that same relation, not a pair that merely shares a topic.",
+  "keywords": [
+    "analogy",
+    "relation",
+    "tool",
+    "part-whole",
+    "degree"
+  ],
+  "intuition": "An analogy question is a relation with a blank. Scalpel is to surgeon as chisel is to carpenter, because the relation is \"the tool that person uses for the cut.\" Scalpel is also related to steel, to hospitals, and to sharpness. Those are real associations, and they are the wrong job. The first pair has already chosen which association counts.\n\nName that relation in a short phrase before you read the choices. \"Tool used by,\" \"part of,\" \"measures,\" \"becomes more intense,\" \"worker and workplace.\" Then test each option against the phrase, not against the general topic. A thermometer measures temperature and an odometer measures distance. A speedometer is about the same machines and is the trap, because it measures speed rather than the quantity named by the first pair's pattern.\n\nIf two options both fit the phrase, the phrase was too vague. Tighten it. \"Used by a person\" fits too many pairs. \"Cutting tool used by that tradesperson\" fits one. ",
+  "definitions": [
+    {
+      "term": "Analogy item",
+      "body": "A stem A : B :: C : ? whose correct completion D makes the relation from C to D the same relation as from A to B."
+    },
+    {
+      "term": "Relation",
+      "body": "The specific link the first pair uses: tool and user, part and whole, object and what it measures, cause and effect, or a degree."
+    },
+    {
+      "term": "Near miss",
+      "body": "An option in the same topic as C that uses a different relation. It is the usual distractor."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Same relation",
+      "latex": "A:B :: C:D \\iff R(A,B)\\ \\text{and}\\ R(C,D)",
+      "note": "R is fixed by the first pair. Topic similarity is not R."
+    },
+    {
+      "name": "Order",
+      "latex": "A:B :: C:D \\not\\equiv B:A :: C:D",
+      "note": "Tool : user is not the same item as user : tool unless the stem is reversed too."
+    }
+  ],
+  "properties": [
+    "Decide the relation from A and B alone. If you need the options to discover it, any familiar pair will look acceptable.",
+    "The direction matters. If A is the tool and B is the user, C must be the tool and the answer the user.",
+    "A part-whole pair is not a creator-creation pair. Page is to book as petal is to flower. Author is to book is a different relation.",
+    "Degree analogies step up or down the same scale. Warm is to hot as cool is to cold, not as cool is to weather.",
+    "Two options can share a word with the stem and still both be wrong. The relation is the test, not the shared word."
+  ],
+  "examples": [
+    {
+      "title": "Tool and the person who uses it",
+      "prompt": "Scalpel : surgeon :: chisel : ?",
+      "steps": [
+        "Name the relation from the first pair only: a cutting tool used by that person in their trade.",
+        "A chisel is the cutting tool. The person whose trade uses it for that cut is a carpenter, not the wood and not the workshop.",
+        "Check the direction. The stem goes tool to user, so the answer is the user, not another tool."
+      ],
+      "answer": "Carpenter."
+    },
+    {
+      "title": "Instrument and the quantity it measures",
+      "prompt": "Thermometer : temperature :: odometer : ?",
+      "steps": [
+        "The first pair is an instrument and the quantity it measures, not the place it is found.",
+        "An odometer measures distance travelled. A speedometer measures speed, which is the near miss.",
+        "The answer has to be the quantity, because \"temperature\" is a quantity and not a machine."
+      ],
+      "answer": "Distance."
+    }
+  ],
+  "traps": [
+    "Picking the option from the same room as C. Hospital is related to surgeon and is not the relation the scalpel pair used.",
+    "Reversing the direction. Surgeon : scalpel is user to tool. Completing a tool-to-user stem with a tool repeats the word class and breaks the relation.",
+    "Accepting a vague relation that fits two options. If both \"wood\" and \"carpenter\" feel possible, the phrase \"related to carpentry\" is too loose.",
+    "Importing an outside fact the stem did not use. A chisel can also shape stone. The stem's relation was fixed by scalpel and surgeon, which picks the tradesperson, not every material."
+  ],
+  "python": "# triangle has 3 sides, octagon has 8; the analogy is the count.\nassert 8 - 3 == 5\nprint(8)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Scalpel : surgeon :: chisel :",
+      "options": [
+        "wood",
+        "carpenter",
+        "blade",
+        "workshop"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. The relation is cutting tool to the tradesperson who uses it. Wood is the material, blade is part of the tool, and workshop is the place."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Thermometer : temperature :: odometer :",
+      "options": [
+        "speed",
+        "distance",
+        "car",
+        "fuel"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. The instrument measures that quantity. Speed is what a speedometer measures. Car and fuel are where an odometer sits, not what the first pair's relation names."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which pairs use the relation \"tool used by that person\"?",
+      "options": [
+        "stethoscope : physician",
+        "keyboard : typist",
+        "novel : reader",
+        "oven : bread"
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. A physician uses a stethoscope and a typist uses a keyboard as the tool of the task. A reader is not using a novel as a trade tool in that sense, and bread is what an oven acts on, not a person using the oven."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which pairs use the relation \"part of that whole\"?",
+      "options": [
+        "petal : flower",
+        "page : book",
+        "author : book",
+        "rain : cloud"
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. A petal is part of a flower and a page is part of a book. An author creates a book. Rain may come from a cloud, but it is not a part in the same structural sense the first two pairs use."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "The analogy triangle : 3 :: octagon : n uses the number of sides. Enter n.",
+      "options": [],
+      "answer": [
+        "8"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **8**. The relation is the number of sides of the polygon. A triangle has 3 and an octagon has 8."
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "slug": "stacks",
+  "section": "programming",
+  "title": "Stacks",
+  "syllabus": "Stacks",
+  "minutes": 25,
+  "summary": "A stack is last-in first-out. Push, pop, and peek at the end of a Python list are O(1), and the same structure checks parentheses, drives DFS, and implements undo.",
+  "keywords": [
+    "stack",
+    "LIFO",
+    "push",
+    "pop",
+    "parentheses",
+    "peek"
+  ],
+  "intuition": "A stack returns the newest item first. Push places an item on top. Pop removes that same item. Peek reads it without removing it. The older items stay buried until everything above them has been popped. That last-in first-out order is the whole definition. A structure that returns the oldest item is a queue, not a stack.\n\nIn Python the end of a list is the top. `append` pushes, `pop()` with no argument pops, and `stack[-1]` peeks. All three are amortised $O(1)$. Pushing or popping at index $0$ would also be a stack in theory, and it would cost $O(n)$ per operation because the list has to slide. The end is the implementation that matches the bound.\n\nThe same order shows up in three standard jobs. A parentheses checker pushes each opener and pops it when the matching closer arrives; a closer that does not match the current top is an error, and a nonempty stack at the end means an opener was never closed. Depth-first search keeps the frontier in a stack, so the most recently discovered neighbour is expanded next. An undo command pops the most recent edit.\n\n$$\\text{push, pop, and peek are }O(1).$$",
+  "definitions": [
+    {
+      "term": "Stack",
+      "body": "A stack is a last-in first-out sequence. The item removed by pop is the item most recently pushed. It is not a queue: a queue would remove the oldest item."
+    },
+    {
+      "term": "Push, pop, and peek",
+      "body": "Push adds an item on top. Pop removes and returns the top item. Peek returns the top item and leaves it on the stack. Pop and peek on an empty stack are errors."
+    },
+    {
+      "term": "List-end implementation",
+      "body": "A Python list represents the stack with the top at the last index. `append` is push, `pop()` is pop, and `stack[-1]` is peek. Each is amortised $O(1)$."
+    },
+    {
+      "term": "Balanced brackets",
+      "body": "Scan left to right. Push `(`, `[`, and `{`. On a closer, pop and check that it is the matching opener. The string is balanced when every closer matches and the stack is empty at the end."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Stack operations",
+      "latex": "\\text{push, pop, peek}=O(1)",
+      "note": "Implemented at the end of a Python list, or at the head of a linked list. Not at index $0$ of a list."
+    },
+    {
+      "name": "LIFO order",
+      "latex": "\\text{pop}(\\text{push}(S, x))=x",
+      "note": "The item that comes out is the item that just went in, not the item at the bottom."
+    },
+    {
+      "name": "Reversal",
+      "latex": "\\text{push }x_1,\\ldots,x_n\\text{ then pop }n\\text{ times yields }x_n,\\ldots,x_1",
+      "note": "A stack reverses a sequence. That is the opposite of a queue, which would preserve the order."
+    }
+  ],
+  "properties": [
+    "Push, pop, and peek at the end of a Python list are amortised $O(1)$. `insert(0)` and `pop(0)` are $O(n)$ and are the wrong end.",
+    "A stack is LIFO. After pushing $3$, then $1$, then $4$, the successive pops are $4$, $1$, $3$. A queue would have dequeued $3$ first.",
+    "Parentheses, depth-first search, and undo all use a stack. The parentheses stack stores unmatched openers. DFS stores the frontier. Undo stores edits from newest to oldest.",
+    "A string is balanced when the scan never pops an empty stack, every closer matches the popped opener, and the stack is empty after the last character. `([])` is balanced. `([)]` is not, because `)` arrives while `[` is on top.",
+    "Peek does not change the stack. Using pop to read the top, and then forgetting to push it back, loses the item."
+  ],
+  "examples": [
+    {
+      "title": "Parentheses on a stack",
+      "prompt": "Scan `([])` and `([)]` with a stack of openers. Decide which string is balanced.",
+      "steps": [
+        "On `([])`, push `(`, then push `[`. The stack is `['(', '[']`, with `[` on top. The next character `]` matches `[`, so pop. The next character `)` matches `(`, so pop. The stack is empty, so the string is balanced.",
+        "On `([)]`, push `(`, then push `[`. The next character is `)`. The top is `[`, and `)` does not match `[`, so the scan rejects the string immediately.",
+        "The same algorithm rejects `(((` because the three openers are still on the stack at the end. It accepts `()[]`: each pair pushes one opener and pops it before the next pair.",
+        "Each push and pop touches only the end of the Python list, so every one of these steps is $O(1)$. The whole scan is $O(n)$ in the length of the string."
+      ],
+      "answer": "`([])` is balanced and `([)]` is not. The stack, not a queue, is what makes the most recent opener the one that must close first."
+    },
+    {
+      "title": "Push three values and pop them all",
+      "prompt": "Start with an empty stack. Push $3$, then $1$, then $4$. Peek, then pop until the stack is empty. Also compute the sum of two pops after pushing $6, 1, 8, 3$.",
+      "steps": [
+        "After the three pushes the list is `[3, 1, 4]` and the top is $4$. Peek returns $4$ and the list is unchanged.",
+        "The first pop returns $4$, the second returns $1$, and the third returns $3$. The output sequence is `[4, 1, 3]`.",
+        "Separately, push $6$, $1$, $8$, $3$. The top is $3$. Pop returns $3$. The new top is $8$. Pop returns $8$. The sum of the two popped values is $3+8=11$, and the new top is $1$."
+      ],
+      "answer": "The three pops reverse $3, 1, 4$ into $4, 1, 3$. The two pops of $6, 1, 8, 3$ sum to $11$."
+    }
+  ],
+  "traps": [
+    "Calling a stack FIFO. FIFO is a queue. After pushing $4$ then $1$ then $7$, a stack pop returns $7$, not $4$.",
+    "Implementing pop with `list.pop(0)` or push with `insert(0)`. Both are $O(n)$. The $O(1)$ end is `append` and `pop()`.",
+    "Accepting `([)]` because the counts of each bracket match. Counts do not enforce order. The stack rejects it because `)` arrives while `[` is on top.",
+    "Forgetting the final empty-stack test. `(((` never fails a match, and it is still unbalanced because three openers remain."
+  ],
+  "python": "def balanced(text):\n    pair = {\")\": \"(\", \"]\": \"[\", \"}\": \"{\"}\n    stack = []\n    for ch in text:\n        if ch in \"([{\":\n            stack.append(ch)\n        elif ch in \")]}\":\n            if not stack or stack.pop() != pair[ch]:\n                return False\n    return not stack\n\nassert balanced(\"([])\") and balanced(\"()[]\")\nassert not balanced(\"([)]\") and not balanced(\"(((\")\n\nstack = []\nfor value in (6, 1, 8, 3):\n    stack.append(value)\npopped = [stack.pop(), stack.pop()]\nassert popped == [3, 8] and sum(popped) == 11\n\nout = []\nfor value in (3, 1, 4):\n    out.append(value)\nrev = []\nwhile out:\n    rev.append(out.pop())\nassert rev == [4, 1, 3]\nprint(rev, sum(popped))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "An empty stack receives push $4$, push $1$, push $7$, pop, push $2$. The value then returned by peek is",
+      "options": [
+        "$2$",
+        "$7$",
+        "$4$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nAfter the three pushes the top is $7$. Pop removes $7$. Push $2$ puts $2$ on top of the remaining items $4$ and $1$. Peek returns that top, $2$, and does not remove it. A queue would have been holding $4$ at the front, which is the oldest item, not the newest."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Unmatched opening parentheses are stored, while scanning a string, in which structure?",
+      "options": [
+        "a stack",
+        "a queue",
+        "a binary search tree of the characters",
+        "a circular buffer of fixed capacity $2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, a stack.\n\nThe closer must match the most recent unmatched opener, which is LIFO order. A queue would match the oldest opener and would accept the unbalanced string `([)]`. A binary search tree orders by character code, not by arrival. A circular buffer of capacity $2$ is a queue with a size limit, and it still serves the oldest item first."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Push and pop at the end of a Python list are amortised $O(1)$.",
+        "A stack returns the oldest inserted item first.",
+        "Depth-first search can keep its frontier in a stack.",
+        "Undo of the most recent edit matches stack order."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\n`append` and `pop()` touch one end of the underlying array and are amortised constant time. DFS expands the most recently discovered vertex, so the frontier is a stack. Undo applies the latest edit first, which is the same order.\n\nReturning the oldest item is FIFO, the queue rule. A stack returns the newest item."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of a stack scan for brackets?",
+      "options": [
+        "The string `([])` is balanced.",
+        "The string `([)]` is balanced.",
+        "After reading `((` the stack holds two openers.",
+        "The string `()[]` is balanced."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\n`([])` pushes `(`, pushes `[`, pops on `]`, and pops on `)`. The stack ends empty. `()[]` does the same one pair at a time. After two openers and no closers, both openers are still on the stack.\n\n`([)]` pushes `(`, pushes `[`, and then sees `)`. The top is `[`, which does not match `)`, so the string is not balanced even though each bracket type appears once as an opener and once as a closer."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Push $6$, $1$, $8$, and $3$ onto an empty stack, in that order. Pop twice. Enter the sum of the two popped values.",
+      "options": [],
+      "answer": [
+        "11"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **11**.\n\nThe stack from bottom to top is $6, 1, 8, 3$. The first pop returns the top, $3$. The second pop returns the new top, $8$. The sum is $3+8=11$. The items $6$ and $1$ are still on the stack, and a queue would have removed $6$ and $1$ instead."
+    }
+  ]
+}

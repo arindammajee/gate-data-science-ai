@@ -1,0 +1,164 @@
+{
+  "slug": "chi-squared-test",
+  "section": "probability",
+  "title": "Chi-squared test",
+  "syllabus": "Chi-square test",
+  "minutes": 35,
+  "summary": "A chi-squared test compares observed counts with expected counts through the sum of (O−E) squared over E. Goodness-of-fit degrees of freedom start at k−1 and drop by one for each estimated parameter. Independence in an r by c table has (r−1)(c−1) degrees of freedom. The test is about counts, not about a difference of means.",
+  "keywords": [
+    "chi-squared test",
+    "goodness of fit",
+    "independence",
+    "expected count",
+    "degrees of freedom"
+  ],
+  "intuition": "A chi-squared test looks at counts. You have observed frequencies $O$ and expected frequencies $E$ from a model or from a hypothesis of independence. The statistic is\n\n$$\n\\sum \\frac{(O-E)^2}{E}.\n$$\n\nLarge pieces come from cells where the observed count is far from the expected count, relative to the size of $E$. The reference distribution is chi-squared, with degrees of freedom that depend on what was free in the expected counts. This is not the sum of squares of normal observations from the distribution lesson, and it is not a test for comparing two means. A difference of means is a z-test or a t-test. A chi-squared test asks whether a table of counts matches a prescribed pattern, or whether two classifications are independent.\n\nFor goodness of fit with $k$ categories, if every expected proportion was stated in advance, the degrees of freedom are $k-1$. The missing one is the constraint that the counts add to $n$. Each parameter estimated from the same counts, typically by maximum likelihood, costs one further degree of freedom. For independence in an $r\\times c$ table, the expected count in a cell is the row total times the column total, divided by $n$, and the degrees of freedom are $(r-1)(c-1)$.\n\nThe chi-squared reference is an approximation. A usual classroom warning asks for expected counts that are not tiny, often at least 5 in each cell. That warning is a rule of thumb about the approximation. It is not a theorem, and it is not a hypothesis you accept or reject. The hypothesis is about the probabilities or about independence. Tiny expected counts are a reason to distrust the chi-squared tail probability, not a different null.",
+  "definitions": [
+    {
+      "term": "Goodness-of-fit statistic",
+      "body": "For observed counts $O$ and expected counts $E$, the statistic is $\\sum (O-E)^2/E$. The expected counts for a fully specified model are $n$ times the stated probabilities."
+    },
+    {
+      "term": "Goodness-of-fit degrees of freedom",
+      "body": "With $k$ categories and the probabilities fully specified, the degrees of freedom are $k-1$. Subtract one more for each parameter estimated from the data."
+    },
+    {
+      "term": "Independence",
+      "body": "In an $r\\times c$ table, the expected count is $(\\text{row total})(\\text{column total})/n$, and the degrees of freedom are $(r-1)(c-1)$."
+    },
+    {
+      "term": "Expected-count caveat",
+      "body": "A usual rule of thumb asks that expected counts be at least 5. It is a warning about the chi-squared approximation, not a theorem and not a null hypothesis."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Statistic",
+      "latex": "\\sum \\frac{(O-E)^2}{E}",
+      "note": "A sum over cells. This is a function of counts."
+    },
+    {
+      "name": "Degrees of freedom",
+      "latex": "k-1-m,\\qquad (r-1)(c-1)",
+      "note": "Goodness of fit: $k$ categories and $m$ estimated parameters. Independence: an $r\\times c$ table. Expected count $E_{ij}=(\\text{row }i)(\\text{column }j)/n$."
+    }
+  ],
+  "properties": [
+    "The statistic is $\\sum (O-E)^2/E$. It measures disagreement between observed counts and expected counts. It does not compare two sample means.",
+    "If $k$ category probabilities are fully specified, the goodness-of-fit degrees of freedom are $k-1$. Each parameter estimated from the counts reduces the degrees of freedom by one more.",
+    "Under independence, the expected count in a cell is the product of its row total and its column total, divided by the grand total. The degrees of freedom of an $r\\times c$ table are $(r-1)(c-1)$.",
+    "The usual warning that expected counts should be at least 5 is a rule of thumb about the approximation. It is not a theorem. A cell with expected count 20 does not trigger it.",
+    "The chi-squared distribution lesson describes sums of squares of normals and the scaled sample variance. The statistic in this lesson is a different function. It is only approximately chi-squared, under the null, when the expected counts are not tiny."
+  ],
+  "examples": [
+    {
+      "title": "Goodness of fit with three stated probabilities",
+      "prompt": "Three categories have fully specified probabilities $1/3$, $1/3$, and $1/3$. In $n=30$ observations the counts are 20, 5, and 5. Compute the statistic and the degrees of freedom.",
+      "steps": [
+        "The probabilities were given, so the expected counts are $30/3=10$ in each category. No parameter was estimated.",
+        "The statistic is $(20-10)^2/10+(5-10)^2/10+(5-10)^2/10=100/10+25/10+25/10=10+2.5+2.5=15$.",
+        "The degrees of freedom are $k-1=3-1=2$. The expected counts are 10, which meets the usual 'at least 5' rule of thumb. That rule is a caveat about the approximation, not a second hypothesis. The observed count 5 is allowed. The warning is about expected counts."
+      ],
+      "answer": "The statistic is 15 on 2 degrees of freedom."
+    },
+    {
+      "title": "Independence in a 2 by 2 table",
+      "prompt": "A $2\\times 2$ table has rows $(30, 10)$ and $(10, 30)$. Test independence by computing the expected counts, the statistic, and the degrees of freedom.",
+      "steps": [
+        "Each row totals 40, each column totals 40, and the grand total is 80. Under independence every expected count is $40\\times 40/80=20$.",
+        "Each of the four cells contributes $(10)^2/20=5$, because the absolute residuals are all 10. The statistic is $4\\times 5=20$.",
+        "The degrees of freedom are $(2-1)(2-1)=1$. The expected counts are 20, so the 'at least 5' rule of thumb is not a concern. The hypothesis is independence of the two classifications, not equality of two means."
+      ],
+      "answer": "Each expected count is 20, the statistic is 20, and the degrees of freedom are 1."
+    }
+  ],
+  "traps": [
+    "Using a chi-squared statistic to compare two means. Means are a z-test or a t-test. This statistic is a sum over counts of $(O-E)^2/E$.",
+    "Forgetting an estimated parameter. Fully specified probabilities give $k-1$ degrees of freedom. Estimating one parameter from the counts gives $k-2$.",
+    "Using $rc-1$, or $r+c$, as the degrees of freedom of an independence table. The independence degrees of freedom are $(r-1)(c-1)$. A $3\\times 4$ table has $2\\times 3=6$, not 12 and not 11.",
+    "Treating the 'expected counts at least 5' warning as a theorem or as the null hypothesis. It is a rule of thumb about when the chi-squared approximation is comfortable. Expected counts of 10 or 20 do not violate it. Observed counts are not the input to that warning."
+  ],
+  "python": "observed = [20, 5, 5]\nexpected = [10, 10, 10]\nstat = sum((o - e) ** 2 / e for o, e in zip(observed, expected))\nassert stat == 15 and sum(observed) == sum(expected) == 30\ntable = [[30, 10], [10, 30]]\nrows = [sum(row) for row in table]\ncols = [table[0][j] + table[1][j] for j in range(2)]\ntotal = sum(rows)\nchisq = 0\nfor i in range(2):\n    for j in range(2):\n        cell = rows[i] * cols[j] / total\n        chisq += (table[i][j] - cell) ** 2 / cell\nassert rows == [40, 40] and cols == [40, 40] and total == 80\nassert chisq == 20\nassert (3 - 1) * (4 - 1) == 6\nassert (4 - 1 - 1) == 2\nprint(stat, chisq)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A goodness-of-fit test has 5 categories and the category probabilities are fully specified. The degrees of freedom are",
+      "options": [
+        "$4$",
+        "$5$",
+        "$3$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4$.\n\nFully specified probabilities leave only the constraint that the counts sum to $n$, so the degrees of freedom are $k-1=4$. Option B is the number of categories. Option C would be right if one parameter had also been estimated, because then the degrees of freedom would be $5-1-1=3$. Option D is the degrees of freedom of a $2\\times 2$ independence test, which is a different problem."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "An independence test is performed on a $3\\times 4$ contingency table. The degrees of freedom are",
+      "options": [
+        "$6$",
+        "$12$",
+        "$7$",
+        "$11$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $6$.\n\nIndependence degrees of freedom are $(r-1)(c-1)=(3-1)(4-1)=2\\times 3=6$. Option B is the number of cells $rc$. Option D is $rc-1$, the goodness-of-fit count for 12 cells with no estimated parameters beyond the total. Option C does not match $(r-1)(c-1)$. The expected counts, if they were needed, would be row total times column total divided by $n$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of a chi-squared goodness-of-fit test?",
+      "options": [
+        "The statistic is $\\sum (O-E)^2/E$.",
+        "If the category probabilities are fully specified, the degrees of freedom are $k-1$.",
+        "Each parameter estimated from the data reduces the degrees of freedom by one, beyond the $k-1$.",
+        "The test compares the means of two normal samples."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe statistic is the sum of squared residuals of counts, scaled by the expected counts. Fully specified probabilities give $k-1$ degrees of freedom, and each estimated parameter costs one more. Option D is a t-test or a z-test. A chi-squared goodness-of-fit test does not compare two means."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A $2\\times 2$ table has rows $(30, 10)$ and $(10, 30)$. Row totals are 40 and 40, column totals are 40 and 40, and the grand total is 80. Which of the following are true?",
+      "options": [
+        "Under independence, each expected count is 20.",
+        "The chi-squared statistic equals 20.",
+        "The degrees of freedom are 1.",
+        "The usual warning about tiny expected counts applies here, because an expected count of 20 is below 30."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nEach expected count is $40\\times 40/80=20$. The four squared residuals are $10^2$, and $4\\times 100/20=20$, so the statistic is 20. The degrees of freedom are $(2-1)(2-1)=1$. Option D misstates the rule of thumb. The usual caveat asks for expected counts around 5 or larger. An expected count of 20 does not trigger it, and 30 is not the threshold. The warning is not a theorem."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A goodness-of-fit statistic uses observed counts 20, 5, and 5 and expected counts 10, 10, and 10. Enter the value of $\\sum (O-E)^2/E$.",
+      "options": [],
+      "answer": [
+        "15"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **15**.\n\nCompute $(20-10)^2/10+(5-10)^2/10+(5-10)^2/10=100/10+25/10+25/10=15$. The probabilities here were translated into expected counts already, so this number is the statistic. With three fully specified categories the degrees of freedom would be 2, which is not the value requested."
+    }
+  ]
+}

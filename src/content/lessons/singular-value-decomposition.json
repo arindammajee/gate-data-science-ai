@@ -1,0 +1,159 @@
+{
+  "slug": "singular-value-decomposition",
+  "section": "linear-algebra",
+  "title": "Singular value decomposition",
+  "syllabus": "Singular value decomposition",
+  "minutes": 35,
+  "summary": "Every real m by n matrix factors as A=U Sigma V^T with U and V orthogonal and Sigma rectangular diagonal. The diagonal entries are nonnegative singular values, square roots of eigenvalues of A^T A, and the rank counts how many are nonzero. SVD is not the eigenvalue decomposition.",
+  "keywords": [
+    "singular value decomposition",
+    "singular values",
+    "orthogonal",
+    "rectangular matrix",
+    "rank"
+  ],
+  "intuition": "The singular value decomposition is the factorization that exists for every real matrix, square or not. For $A$ of shape $m\\times n$ it reads $A=U\\Sigma V^\\top$. The factor $U$ is an $m\\times m$ orthogonal matrix, $V$ is an $n\\times n$ orthogonal matrix, and $\\Sigma$ is $m\\times n$ and diagonal in the rectangular sense: the only nonzero entries sit at positions $(i,i)$, and those entries $\\sigma_i$ are nonnegative. They are the singular values, usually written in nonincreasing order.\n\nThey come from an ordinary eigenvalue problem on a symmetric matrix. The product $A^\\top A$ is $n\\times n$, symmetric, and positive semidefinite, so its eigenvalues are real and nonnegative. The singular values are the square roots of those eigenvalues. The columns of $V$ are orthonormal eigenvectors of $A^\\top A$. For each positive $\\sigma_i$ the corresponding column of $U$ is $Av_i/\\sigma_i$, and the remaining columns of $U$ complete an orthonormal basis of $\\mathbb{R}^m$. The rank of $A$ is exactly the number of nonzero singular values, because that is the number of positive eigenvalues of $A^\\top A$, which has the same rank as $A$.\n\nThis is not the eigenvalue decomposition. Eigenvalues solve $Av=\\lambda v$, so $A$ has to be square: $Av$ and $v$ live in the same space. A $3\\times 2$ matrix has an SVD and does not have eigenvalues in that sense. Even for a square matrix the two diagonals differ. Singular values are nonnegative. Eigenvalues of a symmetric matrix can be negative, and the singular values are then the absolute values, not the eigenvalues themselves. A non-symmetric matrix can have all eigenvalues zero and still have a positive singular value, which is another way to see that $\\Sigma$ is not $\\Lambda$.",
+  "definitions": [
+    {
+      "term": "Singular value decomposition",
+      "body": "For any real $m\\times n$ matrix $A$, an SVD is $A=U\\Sigma V^\\top$ with $U$ an $m\\times m$ orthogonal matrix, $V$ an $n\\times n$ orthogonal matrix, and $\\Sigma$ an $m\\times n$ rectangular diagonal matrix with nonnegative diagonal entries."
+    },
+    {
+      "term": "Singular values",
+      "body": "The singular values $\\sigma_i$ are the nonnegative square roots of the eigenvalues of $A^\\top A$. There are $n$ of them, counting multiplicity, and $\\Sigma$ places them on its main diagonal, with extra zero rows if $m>n$ or extra zero columns if $n>m$."
+    },
+    {
+      "term": "Rank from singular values",
+      "body": "The rank of $A$ equals the number of nonzero singular values. A zero singular value means a direction $v$ with $Av=0$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "SVD",
+      "latex": "A=U\\Sigma V^\\top",
+      "note": "$U$ and $V$ are orthogonal and $\\Sigma$ is rectangular diagonal. The factorization exists for every real $m\\times n$ matrix."
+    },
+    {
+      "name": "Singular values from $A^\\top A$",
+      "latex": "\\sigma_i=\\sqrt{\\lambda_i(A^\\top A)}",
+      "note": "The eigenvalues of $A^\\top A$ are nonnegative. The rank equals the number of nonzero singular values. These are not the eigenvalues of a non-square $A$, and they are not the eigenvalues of a square $A$ either unless that identification is justified."
+    }
+  ],
+  "properties": [
+    "Every real $m\\times n$ matrix has an SVD $A=U\\Sigma V^\\top$, with $U$ and $V$ orthogonal and $\\Sigma$ rectangular diagonal and nonnegative on the diagonal.",
+    "Each singular value is the square root of an eigenvalue of the symmetric positive semidefinite matrix $A^\\top A$.",
+    "$\\mathrm{rank}(A)$ equals the number of nonzero singular values.",
+    "A rectangular matrix has an SVD. It does not have eigenvalues in the square-matrix sense, because $Av$ and $v$ live in spaces of different dimension.",
+    "SVD is not the eigenvalue decomposition. For a symmetric matrix the singular values are the absolute values of the eigenvalues. A negative eigenvalue does not appear as a negative singular value."
+  ],
+  "examples": [
+    {
+      "title": "SVD of a $3\\times 2$ matrix",
+      "prompt": "Let $A=\\begin{pmatrix}1&1\\\\1&1\\\\0&0\\end{pmatrix}$. Find the singular values from $A^\\top A$, and check a full SVD by multiplying $U\\Sigma V^\\top$ back to $A$.",
+      "steps": [
+        "$A^\\top A=\\begin{pmatrix}2&2\\\\2&2\\end{pmatrix}$. Its characteristic polynomial is $\\lambda(\\lambda-4)$, so the eigenvalues are $4$ and $0$. The singular values are $\\sigma_1=\\sqrt{4}=2$ and $\\sigma_2=0$. One of them is nonzero, so $\\mathrm{rank}(A)=1$.",
+        "An orthonormal eigenbasis of $A^\\top A$ is $v_1=\\tfrac{1}{\\sqrt{2}}(1,1)^\\top$ for eigenvalue $4$ and $v_2=\\tfrac{1}{\\sqrt{2}}(-1,1)^\\top$ for eigenvalue $0$. Then $Av_1=\\sqrt{2}\\,(1,1,0)^\\top$, so $u_1=Av_1/\\sigma_1=\\tfrac{1}{\\sqrt{2}}(1,1,0)^\\top$. Extend by $u_2=\\tfrac{1}{\\sqrt{2}}(-1,1,0)^\\top$ and $u_3=(0,0,1)^\\top$.",
+        "With these columns, $\\Sigma=\\begin{pmatrix}2&0\\\\0&0\\\\0&0\\end{pmatrix}$. The product $U\\Sigma$ is $\\bigl(\\sqrt{2}\\,(1,1,0)^\\top,\\ 0\\bigr)$, and right-multiplication by $V^\\top$ spreads that first column into the two equal columns of $A$. Numerically, $U\\Sigma V^\\top=A$. The sum of the squares of the singular values is $4+0=4$, which equals the sum of the squares of the entries of $A$."
+      ],
+      "answer": "The singular values are $2$ and $0$, the rank is $1$, and one SVD is the $U$, $\\Sigma$, and $V$ above. The product $U\\Sigma V^\\top$ returns $A$."
+    },
+    {
+      "title": "Singular values are not the eigenvalues",
+      "prompt": "Let $A=\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$. Find its eigenvalues and its singular values, and explain why a $3\\times 2$ matrix can have one list and not the other.",
+      "steps": [
+        "$A$ is symmetric and $A\\begin{pmatrix}1\\\\1\\end{pmatrix}=\\begin{pmatrix}1\\\\1\\end{pmatrix}$, while $A\\begin{pmatrix}1\\\\-1\\end{pmatrix}=\\begin{pmatrix}-1\\\\1\\end{pmatrix}=-\\begin{pmatrix}1\\\\-1\\end{pmatrix}$. The eigenvalues are $1$ and $-1$.",
+        "$A^\\top A=A^2=I$, whose eigenvalues are $1$ and $1$. The singular values are $\\sqrt{1}$ and $\\sqrt{1}$, that is $1$ and $1$. The negative eigenvalue became a positive singular value. An SVD can use $\\Sigma=I$, which is not $\\mathrm{diag}(1,-1)$.",
+        "A $3\\times 2$ matrix maps $\\mathbb{R}^2$ to $\\mathbb{R}^3$. There is no scalar $\\lambda$ and nonzero $v\\in\\mathbb{R}^2$ with $Av=\\lambda v$, because the two sides have different shapes. The same matrix still has a $3\\times 3$ orthogonal $U$, a $2\\times 2$ orthogonal $V$, and a $3\\times 2$ matrix $\\Sigma$."
+      ],
+      "answer": "The eigenvalues are $1$ and $-1$. The singular values are $1$ and $1$. Rectangular matrices have an SVD and do not have eigenvalues in the square sense."
+    }
+  ],
+  "traps": [
+    "Calling the SVD the eigenvalue decomposition. For $\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$ the eigenvalues are $1,-1$ and the singular values are $1,1$. The diagonal factor $\\Sigma$ is not allowed to carry a negative entry.",
+    "Asking for the eigenvalues of a rectangular matrix. A $3\\times 2$ matrix has two singular values and no square-matrix eigenvalues, because $Av$ and $v$ have different lengths.",
+    "Taking signed square roots. Singular values are nonnegative. The square root of an eigenvalue of $A^\\top A$ means the nonnegative one.",
+    "Counting the rank as the number of singular values, including zeros. The rank is the number of nonzero singular values. A $3\\times 2$ matrix of rank $1$ has singular values such as $2$ and $0$, and the zero still occupies a diagonal slot of $\\Sigma$."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\ndef T(A):\n    return [list(row) for row in zip(*A)]\n\nA = [[1, 1], [1, 1], [0, 0]]\nATA = mul(T(A), A)\nassert ATA == [[2, 2], [2, 2]]\n# eigenvalues 4 and 0; singular values 2 and 0; rank 1\nassert ATA[0][0] + ATA[1][1] == 4\nassert ATA[0][0] * ATA[1][1] - ATA[0][1] * ATA[1][0] == 0\ns = 2 ** 0.5\nV = [[1 / s, -1 / s], [1 / s, 1 / s]]\nU = [[1 / s, -1 / s, 0], [1 / s, 1 / s, 0], [0, 0, 1]]\nSigma = [[2, 0], [0, 0], [0, 0]]\nrecon = mul(mul(U, Sigma), T(V))\nassert all(abs(recon[i][j] - A[i][j]) < 1e-9 for i in range(3) for j in range(2))\nSym = [[0, 1], [1, 0]]\nassert mul(Sym, Sym) == [[1, 0], [0, 1]]\nprint(2)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Every real $m\\times n$ matrix $A$ has a factorization of which form?",
+      "options": [
+        "$A=U\\Sigma V^\\top$ with $U$ and $V$ orthogonal and $\\Sigma$ rectangular diagonal",
+        "$A=Q\\Lambda Q^\\top$ with $\\Lambda$ the eigenvalues, for every shape",
+        "$A=LU$ with no row swaps, for every invertible square $A$",
+        "$Av=\\lambda v$ for a nonzero $v$, even when $m\\neq n$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The SVD exists for every real matrix, rectangular included: $U$ is $m\\times m$ orthogonal, $V$ is $n\\times n$ orthogonal, and $\\Sigma$ is $m\\times n$ with nonnegative diagonal entries. The symmetric eigenvalue factorization needs a real symmetric matrix. Unpermuted LU can fail for an invertible matrix. Eigenvalues need a square matrix."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The singular values of a real matrix $A$ are",
+      "options": [
+        "the eigenvalues of $A$, for a matrix of any shape",
+        "the nonnegative square roots of the eigenvalues of $A^\\top A$",
+        "the diagonal entries of $A$, whether or not $A$ was factored",
+        "allowed to be negative"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. The matrix $A^\\top A$ is symmetric and positive semidefinite, its eigenvalues are nonnegative, and the singular values are their nonnegative square roots. They are not the eigenvalues of a rectangular $A$, they are not read off the entries of $A$ before a factorization, and the convention keeps them nonnegative. A negative eigenvalue of a symmetric $A$ contributes its absolute value."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A rectangular real matrix has a singular value decomposition.",
+        "A rectangular real matrix has eigenvalues in the square-matrix sense.",
+        "The rank equals the number of nonzero singular values.",
+        "The singular value decomposition is the same factorization as $A=Q\\Lambda Q^\\top$."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**. Every real $m\\times n$ matrix has an SVD, and the number of positive diagonal entries of $\\Sigma$ is the rank. A rectangular matrix has no eigenvalues via $Av=\\lambda v$, because the two sides have different shapes. The factorization $Q\\Lambda Q^\\top$ is the spectral theorem for a real symmetric matrix, and its diagonal can contain negative eigenvalues. That is not $\\Sigma$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "The eigenvalues of $A$ are $1$ and $-1$.",
+        "The singular values of $A$ are $1$ and $1$.",
+        "$A^\\top A=I$.",
+        "The singular values of $A$ are $1$ and $-1$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The matrix swaps the two coordinates, with eigenvectors $(1,1)^\\top$ and $(1,-1)^\\top$ for eigenvalues $1$ and $-1$. Also $A^\\top=A$ and $A^2=I$, so $A^\\top A=I$ and both eigenvalues of $A^\\top A$ are $1$. The singular values are the nonnegative square roots, $1$ and $1$. A singular value is not negative, so D is false."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&1\\\\1&1\\\\0&0\\end{pmatrix}$. The eigenvalues of $A^\\top A$ are $4$ and $0$. Enter the sum of the singular values of $A$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. Singular values are nonnegative square roots of the eigenvalues of $A^\\top A$, so they are $\\sqrt{4}=2$ and $\\sqrt{0}=0$. Their sum is $2$. The rank, which is the number of nonzero singular values, is $1$ rather than this sum."
+    }
+  ]
+}

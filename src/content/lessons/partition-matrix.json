@@ -1,0 +1,160 @@
+{
+  "slug": "partition-matrix",
+  "section": "linear-algebra",
+  "title": "Partition matrices",
+  "syllabus": "Partition matrix and their properties",
+  "minutes": 30,
+  "summary": "A partition matrix is a block matrix. Block products must be conformable, and the determinant of a block-triangular matrix is the product of the determinants of the diagonal blocks.",
+  "keywords": [
+    "partition matrix",
+    "block matrix",
+    "block triangular",
+    "determinant",
+    "conformable blocks"
+  ],
+  "intuition": "A partition matrix, or block matrix, is an ordinary matrix whose entries have been grouped into rectangular blocks. The grouping is a bookkeeping device. Addition and multiplication are still the old operations, and they are legal only when the blocks line up. For a product of $2\\times 2$ arrays of blocks, the formula looks like the scalar one, with words in place of numbers:\n$$\n\\begin{pmatrix}A&B\\\\C&D\\end{pmatrix}\\begin{pmatrix}E&F\\\\G&H\\end{pmatrix}\n=\\begin{pmatrix}AE+BG&AF+BH\\\\CE+DG&CF+DH\\end{pmatrix}.\n$$\nEach product $AE$, $BG$, and so on has to be a defined matrix product, and each sum has to add matrices of the same shape. Cutting the factors in incompatible places makes the block formula meaningless even when the big product exists.\n\nDeterminants factor on block-triangular matrices whose diagonal blocks are square. If $A$ and $D$ are square, then\n$$\n\\det\\begin{pmatrix}A&B\\\\0&D\\end{pmatrix}=\\det(A)\\det(D)=\\det\\begin{pmatrix}A&0\\\\C&D\\end{pmatrix}.\n$$\nThe off-diagonal block does not appear. This is the block version of \"a triangular matrix has determinant equal to the product of its diagonal entries.\" It is not the scalar $2\\times 2$ formula $\\det(A)\\det(D)-\\det(B)\\det(C)$ applied to blocks. That expression is already the wrong shape when the blocks do not commute, and a permutation built as $\\begin{pmatrix}0&I\\\\I&0\\end{pmatrix}$ has determinant $1$ while the naive expression equals $-1$.\n\nA general inverse formula needs a hypothesis on a Schur complement, namely that one diagonal block and the corresponding complement are invertible. This lesson checks inverses by multiplication instead of quoting that formula. The safe identity is $\\begin{pmatrix}I&B\\\\0&I\\end{pmatrix}^{-1}=\\begin{pmatrix}I&-B\\\\0&I\\end{pmatrix}$, confirmed because the product of those two block matrices is $I$.",
+  "definitions": [
+    {
+      "term": "Partition matrix",
+      "body": "A partition, or block, matrix is a matrix divided into smaller matrices by a choice of row cuts and column cuts. The blocks are the submatrices between those cuts."
+    },
+    {
+      "term": "Conformable block product",
+      "body": "A block product is conformable when every block product that the pattern asks for is a defined matrix product and every block sum adds matrices of one common shape. The result equals the ordinary product of the big matrices."
+    },
+    {
+      "term": "Block-triangular matrix",
+      "body": "A block matrix $\\begin{pmatrix}A&B\\\\0&D\\end{pmatrix}$ or $\\begin{pmatrix}A&0\\\\C&D\\end{pmatrix}$, with $A$ and $D$ square, is block triangular. Its determinant is $\\det(A)\\det(D)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Block-triangular determinant",
+      "latex": "\\det\\begin{pmatrix}A&B\\\\0&D\\end{pmatrix}=\\det(A)\\det(D)",
+      "note": "The diagonal blocks $A$ and $D$ are square. The same identity holds for a lower block-triangular matrix. The off-diagonal block does not enter."
+    },
+    {
+      "name": "A block inverse checked by multiplication",
+      "latex": "\\begin{pmatrix}I&B\\\\0&I\\end{pmatrix}\\begin{pmatrix}I&-B\\\\0&I\\end{pmatrix}=I",
+      "note": "This is one inverse, verified by the product. A general $2\\times 2$ block inverse needs a Schur-complement hypothesis and is not used here."
+    }
+  ],
+  "properties": [
+    "Block multiplication follows the scalar pattern only when the blocks are conformable. The block product then equals the ordinary product.",
+    "If the diagonal blocks are square, the determinant of a block-triangular matrix is the product of the determinants of the diagonal blocks.",
+    "The identity $\\det\\begin{pmatrix}A&B\\\\C&D\\end{pmatrix}=\\det(A)\\det(D)-\\det(B)\\det(C)$ is not true for general blocks.",
+    "A block-triangular matrix with invertible diagonal blocks is invertible. For $\\begin{pmatrix}I&B\\\\0&I\\end{pmatrix}$ the inverse is $\\begin{pmatrix}I&-B\\\\0&I\\end{pmatrix}$, which multiplication confirms.",
+    "Partitioning does not change the matrix. It only changes which products you are willing to write as single symbols."
+  ],
+  "examples": [
+    {
+      "title": "A conformable block product, multiplied both ways",
+      "prompt": "Take $P=\\begin{pmatrix}1&0&2\\\\0&1&3\\\\0&0&1\\end{pmatrix}$ and $Q=\\begin{pmatrix}1&0&0\\\\0&1&0\\\\4&5&1\\end{pmatrix}$. Split each after the second row and column, multiply the blocks, and check against the ordinary product.",
+      "steps": [
+        "The cuts give $P=\\begin{pmatrix}I&b\\\\0&1\\end{pmatrix}$ with $b=\\begin{pmatrix}2\\\\3\\end{pmatrix}$, and $Q=\\begin{pmatrix}I&0\\\\g&1\\end{pmatrix}$ with $g=\\begin{pmatrix}4&5\\end{pmatrix}$. The products $Ib$, $bg$, and $gI$ are all defined.",
+        "The block formula produces top-left $I+bg=\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}+\\begin{pmatrix}8&10\\\\12&15\\end{pmatrix}=\\begin{pmatrix}9&10\\\\12&16\\end{pmatrix}$, top-right $b$, bottom-left $g$, and bottom-right $1$.",
+        "So the block product is $\\begin{pmatrix}9&10&2\\\\12&16&3\\\\4&5&1\\end{pmatrix}$. Ordinary multiplication of the $3\\times 3$ matrices gives the same nine entries, including $1\\cdot 1+0\\cdot 0+2\\cdot 4=9$ in position $(1,1)$."
+      ],
+      "answer": "$PQ=\\begin{pmatrix}9&10&2\\\\12&16&3\\\\4&5&1\\end{pmatrix}$, whether computed by blocks or by entries."
+    },
+    {
+      "title": "Determinant of a block-triangular matrix",
+      "prompt": "Let $M=\\begin{pmatrix}2&1&5\\\\0&3&6\\\\0&0&4\\end{pmatrix}$. Compute $\\det M$ from the diagonal blocks, and check the inverse identity on $P$ from the previous example.",
+      "steps": [
+        "Split $M$ as $\\begin{pmatrix}A&B\\\\0&D\\end{pmatrix}$ with $A=\\begin{pmatrix}2&1\\\\0&3\\end{pmatrix}$ and $D=\\begin{pmatrix}4\\end{pmatrix}$. Then $\\det A=6$ and $\\det D=4$, so $\\det M=6\\cdot 4=24$.",
+        "The same number is the product of the three diagonal entries of this triangular matrix: $2\\cdot 3\\cdot 4=24$. The off-diagonal entries $1$, $5$, and $6$ do not appear.",
+        "For $P=\\begin{pmatrix}I&b\\\\0&1\\end{pmatrix}$ with $b=\\begin{pmatrix}2\\\\3\\end{pmatrix}$, the candidate inverse is $\\begin{pmatrix}I&-b\\\\0&1\\end{pmatrix}=\\begin{pmatrix}1&0&-2\\\\0&1&-3\\\\0&0&1\\end{pmatrix}$. Their product is $I_3$, so the inverse is correct for this matrix. The determinant of $P$ is $\\det(I)\\cdot 1=1$."
+      ],
+      "answer": "$\\det M=24=\\det(A)\\det(D)$. The block factor $\\begin{pmatrix}I&b\\\\0&1\\end{pmatrix}$ has inverse $\\begin{pmatrix}I&-b\\\\0&1\\end{pmatrix}$, checked by multiplication."
+    }
+  ],
+  "traps": [
+    "Applying the $2\\times 2$ scalar formula to blocks. For $M=\\begin{pmatrix}0&I_2\\\\I_2&0\\end{pmatrix}$, two transpositions give $\\det M=1$, while $\\det(0)\\det(0)-\\det(I)\\det(I)=-1$.",
+    "Cutting rows and columns so that $AE$ or $BG$ is an illegal product, then treating the block symbols as if they were numbers. Conformability is part of the hypothesis.",
+    "Forgetting that the diagonal blocks in the determinant identity have to be square. A non-square block does not have a determinant.",
+    "Quoting a general inverse of $\\begin{pmatrix}A&B\\\\C&D\\end{pmatrix}$ without a Schur-complement hypothesis. Multiply a concrete inverse and check, as with $\\begin{pmatrix}I&B\\\\0&I\\end{pmatrix}$."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\ndef det(A):\n    n = len(A)\n    if n == 1:\n        return A[0][0]\n    total = 0\n    for j in range(n):\n        minor = [[A[i][k] for k in range(n) if k != j] for i in range(1, n)]\n        total += (1 if j % 2 == 0 else -1) * A[0][j] * det(minor)\n    return total\n\nP = [[1, 0, 2], [0, 1, 3], [0, 0, 1]]\nQ = [[1, 0, 0], [0, 1, 0], [4, 5, 1]]\nassert mul(P, Q) == [[9, 10, 2], [12, 16, 3], [4, 5, 1]]\nPinv = [[1, 0, -2], [0, 1, -3], [0, 0, 1]]\nassert mul(P, Pinv) == [[1, 0, 0], [0, 1, 0], [0, 0, 1]]\nM = [[2, 1, 5], [0, 3, 6], [0, 0, 4]]\nassert det(M) == 24\nBig = [[0, 0, 1, 0], [0, 0, 0, 1], [1, 0, 0, 0], [0, 1, 0, 0]]\nassert det(Big) == 1\nprint(24)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The diagonal blocks $A$ and $D$ are square. Then $\\det\\begin{pmatrix}A&B\\\\0&D\\end{pmatrix}$ equals",
+      "options": [
+        "$\\det(A)+\\det(D)$",
+        "$\\det(A)\\det(D)$",
+        "$\\det(A)\\det(D)-\\det(B)$",
+        "$\\det(AD-B)$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. For square diagonal blocks, a block-triangular determinant is the product of the determinants of the diagonal blocks. The off-diagonal block $B$ does not appear. Option D is a Schur-complement expression that is not the determinant identity being used, and it is not even defined unless the shapes match."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The block product $\\begin{pmatrix}A&B\\\\C&D\\end{pmatrix}\\begin{pmatrix}E&F\\\\G&H\\end{pmatrix}$ is defined precisely when",
+      "options": [
+        "the big matrices are square, with no further condition",
+        "each block product in $AE+BG$, $AF+BH$, $CE+DG$, and $CF+DH$ is defined and each sum adds equal shapes",
+        "$A=E$ and $D=H$",
+        "$B$ and $C$ are symmetric"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Conformability means every multiplied pair has matching inner dimensions and every added pair has the same shape. Squareness of the big matrix is not the condition, and symmetry of the off-diagonal blocks is irrelevant. When the blocks are conformable, the block product equals the ordinary product."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The determinant of a block-triangular matrix with square diagonal blocks is the product of the determinants of those diagonal blocks.",
+        "$\\det\\begin{pmatrix}A&B\\\\C&D\\end{pmatrix}=\\det(A)\\det(D)-\\det(B)\\det(C)$ for all square blocks of the same size.",
+        "$\\begin{pmatrix}I&B\\\\0&I\\end{pmatrix}\\begin{pmatrix}I&-B\\\\0&I\\end{pmatrix}=I$ whenever the product is defined.",
+        "A conformable block product equals the ordinary product of the underlying matrices."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**. Block-triangular determinants factor, and the displayed block matrices multiply to $I$ by the same cancellation as $(I)(I)+B\\cdot 0$ and $B+(-B)$. A conformable block product is just the ordinary product, regrouped. B is false: $\\begin{pmatrix}0&I_2\\\\I_2&0\\end{pmatrix}$ has determinant $1$, while the naive expression equals $-1$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $M=\\begin{pmatrix}2&1&5\\\\0&3&6\\\\0&0&4\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$\\det M=24$.",
+        "$\\det M=\\det\\begin{pmatrix}2&1\\\\0&3\\end{pmatrix}\\cdot 4$.",
+        "$\\det M=2\\cdot 3\\cdot 4$.",
+        "$M$ is singular."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The matrix is upper triangular, so the determinant is the product of the diagonal entries, $2\\cdot 3\\cdot 4=24$. The same number is the block factorization $\\det\\begin{pmatrix}2&1\\\\0&3\\end{pmatrix}\\cdot\\det(4)=6\\cdot 4$. A nonzero determinant means $M$ is not singular."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Enter $\\det\\begin{pmatrix}2&1&5\\\\0&3&6\\\\0&0&4\\end{pmatrix}$.",
+      "options": [],
+      "answer": [
+        "24"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **24**. The matrix is block upper triangular with diagonal blocks $\\begin{pmatrix}2&1\\\\0&3\\end{pmatrix}$ and $\\begin{pmatrix}4\\end{pmatrix}$. Their determinants are $6$ and $4$, and $6\\cdot 4=24$. The same value is the product of the three diagonal entries."
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "slug": "plots-2d-3d",
+  "section": "aptitude",
+  "title": "Plots in two and three dimensions",
+  "syllabus": "Reading points, slope, and distance in two- and three-dimensional plots",
+  "minutes": 25,
+  "summary": "Read a point from the axes, compute slope as rise over run, write the line through two points, and find a three-dimensional distance and midpoint.",
+  "keywords": [
+    "slope",
+    "rise over run",
+    "line through two points",
+    "distance in 3-D",
+    "midpoint"
+  ],
+  "intuition": "A plotted point is an ordered pair you can read off the axes. The first coordinate is the horizontal position, the second is the vertical one. Slope is how much the line climbs for one unit of horizontal travel: rise over run, $(y_2-y_1)/(x_2-x_1)$, provided the run is not zero. A positive slope climbs as you move right. A negative slope falls.\n\nTwo points fix a straight line. Put the slope into the point-slope equation $y-y_1=m(x-x_1)$ and simplify. Then a new $x$ gives a $y$ you can check by substitution. This is still the equation of a line. Nothing here asks for a partial derivative or a tangent plane.\n\nIn three dimensions a point has a third coordinate. The distance between two points is the ordinary Pythagoras formula with one extra square: $\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}$. The midpoint averages each coordinate separately. Both are arithmetic. They are not the start of multivariable calculus.",
+  "definitions": [
+    {
+      "term": "Slope",
+      "body": "For two points with $x_2\\neq x_1$, the slope is the rise divided by the run, $m=(y_2-y_1)/(x_2-x_1)$."
+    },
+    {
+      "term": "Line through two points",
+      "body": "The unique straight line $y-y_1=m(x-x_1)$ with that slope. Every point on the line satisfies the simplified equation."
+    },
+    {
+      "term": "Distance in three dimensions",
+      "body": "The length of the segment joining $(x_1,y_1,z_1)$ and $(x_2,y_2,z_2)$, the square root of the sum of the three squared differences."
+    },
+    {
+      "term": "Midpoint",
+      "body": "The point halfway along the segment. Each coordinate is the average of the two endpoints' coordinates."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Slope",
+      "latex": "m=\\frac{y_2-y_1}{x_2-x_1}",
+      "note": "Rise over run. The formula needs $x_2\\neq x_1$. A vertical line has undefined slope."
+    },
+    {
+      "name": "Point-slope line",
+      "latex": "y-y_1=m(x-x_1)",
+      "note": "Use either of the two given points as $(x_1,y_1)$."
+    },
+    {
+      "name": "Distance in 3-D",
+      "latex": "d=\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}",
+      "note": "Three squared differences, then the square root. Do not stop at the sum of squares."
+    },
+    {
+      "name": "Midpoint in 3-D",
+      "latex": "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2},\\frac{z_1+z_2}{2}\\right)",
+      "note": "Average each coordinate. Do not average all six numbers into one."
+    }
+  ],
+  "properties": [
+    "The point $(x,y)$ lies on the line only if its coordinates satisfy the line's equation.",
+    "Slope is a ratio of changes, not the value of $y$ at a single point.",
+    "Swapping the two points does not change the slope: both differences change sign, and the ratio does not.",
+    "The squared distance is not the distance. Take the square root at the end.",
+    "The midpoint is not found by adding the two position vectors and stopping. Divide by 2."
+  ],
+  "examples": [
+    {
+      "title": "Slope and a point on the line",
+      "prompt": "A line passes through $(1,3)$ and $(5,11)$. Find the slope, the equation, and the $y$-coordinate at $x=4$.",
+      "steps": [
+        "The slope is $(11-3)/(5-1)=8/4=2$.",
+        "Using $(1,3)$: $y-3=2(x-1)$, so $y=2x+1$. The other point checks: $2\\cdot 5+1=11$.",
+        "At $x=4$, $y=2\\cdot 4+1=9$. The point on the line is $(4,9)$."
+      ],
+      "answer": "The slope is 2, the line is $y=2x+1$, and the point at $x=4$ is $(4,9)$."
+    },
+    {
+      "title": "Distance and midpoint in three dimensions",
+      "prompt": "Find the distance and the midpoint between $A(1,2,3)$ and $B(7,6,15)$.",
+      "steps": [
+        "The differences are $7-1=6$, $6-2=4$, and $15-3=12$.",
+        "The sum of squares is $6^2+4^2+12^2=36+16+144=196$, and $\\sqrt{196}=14$. The distance is 14.",
+        "The midpoint averages each coordinate: $((1+7)/2,\\ (2+6)/2,\\ (3+15)/2)=(4,4,9)$."
+      ],
+      "answer": "The distance $AB$ is 14, and the midpoint is $(4,4,9)$."
+    }
+  ],
+  "traps": [
+    "Using run over rise, so $(5-1)/(11-3)=1/2$, which is the reciprocal of the slope.",
+    "Reporting the sum of squares, 196, as the distance. The distance is $\\sqrt{196}=14$.",
+    "Forgetting to divide by 2 in a midpoint coordinate, which would give $(8,8,18)$ instead of $(4,4,9)$.",
+    "Checking a point against only one coordinate. $(4,8)$ has the right $x$ for the question's $x=4$ and the wrong $y$."
+  ],
+  "python": "slope = (11 - 3) / (5 - 1)\nassert slope == 2\nassert 2 * 1 + 1 == 3\nassert 2 * 5 + 1 == 11\nassert 2 * 4 + 1 == 9\ndx, dy, dz = 7 - 1, 6 - 2, 15 - 3\nassert dx * dx + dy * dy + dz * dz == 196\nassert (dx * dx + dy * dy + dz * dz) ** 0.5 == 14\nmidpoint = ((1 + 7) / 2, (2 + 6) / 2, (3 + 15) / 2)\nassert midpoint == (4, 4, 9)\nprint(14)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A line passes through $(1,3)$ and $(5,11)$. The slope of the line is",
+      "options": [
+        "$2$",
+        "$1/2$",
+        "$4$",
+        "$8$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 2. The rise is $11-3=8$ and the run is $5-1=4$, so the slope is $8/4=2$. Option B is the run divided by the rise. Option D is the rise with no division."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The line through $(1,3)$ and $(5,11)$ has equation $y=2x+1$. Which point lies on the line?",
+      "options": [
+        "$(4,9)$",
+        "$(4,8)$",
+        "$(3,8)$",
+        "$(2,3)$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $(4,9)$. Substituting $x=4$ gives $y=8+1=9$. For option B, $x=4$ does not give 8. For option C, $x=3$ gives $y=7$, not 8. For option D, $x=2$ gives $y=5$, not 3."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A line passes through $(1,3)$ and $(5,11)$. In three dimensions, $A$ is $(1,2,3)$ and $B$ is $(7,6,15)$. Which of the following are true?",
+      "options": [
+        "The slope of the line is 2.",
+        "The midpoint of $A$ and $B$ is $(4,4,9)$.",
+        "The distance $AB$ is 196.",
+        "The point $(4,9)$ lies on the line."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. The slope is $(11-3)/(5-1)=2$. The midpoint is $((1+7)/2,(2+6)/2,(3+15)/2)=(4,4,9)$. The sum of squared differences is $36+16+144=196$, and the distance is $\\sqrt{196}=14$, not 196. The point $(4,9)$ satisfies $y=2x+1$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 2,
+      "stem": "The distance between $A(1,2,3)$ and $B(7,6,15)$ is an integer. Enter that distance.",
+      "options": [],
+      "answer": [
+        "14"
+      ],
+      "solution": "The answer is **14**. The coordinate differences are 6, 4, and 12. Then $6^2+4^2+12^2=36+16+144=196$, and $\\sqrt{196}=14$. Enter the root, not 196.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The line through $(1,3)$ and $(5,11)$ has slope 2. Its equation is",
+      "options": [
+        "$y=2x+1$",
+        "$y=2x-1$",
+        "$y=x+2$",
+        "$y=2x+3$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $y=2x+1$. From $y-3=2(x-1)$ you get $y=2x-2+3=2x+1$. Option B drops the constant with the wrong sign. Option D uses the slope correctly at $x=1$ only if the constant is 1, since $2\\cdot 1+1=3$, whereas $2\\cdot 1+3=5$."
+    }
+  ]
+}

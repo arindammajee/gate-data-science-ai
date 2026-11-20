@@ -1,0 +1,165 @@
+{
+  "slug": "shape-transformations",
+  "section": "aptitude",
+  "title": "Translation, rotation, scaling, and mirroring",
+  "syllabus": "Transformation of shapes: translation, rotation, scaling, mirroring",
+  "minutes": 30,
+  "summary": "About the origin, a quarter turn and a reflection are coordinate rules. Apply the rule to the vertices; do not redraw the shape from memory.",
+  "keywords": [
+    "rotation",
+    "reflection",
+    "translation",
+    "scaling",
+    "coordinates"
+  ],
+  "intuition": "Spatial questions become ordinary arithmetic once each vertex has coordinates. A translation adds the same vector to every point, so lengths and directions are unchanged. A rotation about the origin by a quarter turn is a swap of the coordinates with one sign change. Clockwise sends (x, y) to (y, −x). Counterclockwise sends (x, y) to (−y, x). A half turn sends (x, y) to (−x, −y), which is one quarter turn done twice.\n\nA mirror is also a sign change. Reflection in the x-axis sends (x, y) to (x, −y). Reflection in the y-axis sends (x, y) to (−x, y). Scaling about the origin multiplies both coordinates, or each by its own factor if the stretch is not uniform. Order matters: translate-then-rotate is not rotate-then-translate.\n\nThe worked figures below are small on purpose. If you can move three vertices correctly, you can move a letter or an arrow. The picture, when there is one, is only a check on the coordinates already written in the question. ",
+  "definitions": [
+    {
+      "term": "Translation",
+      "body": "The map $(x,y)\\mapsto(x+a,\\ y+b)$. Every point moves by the same vector. Shape and size are unchanged."
+    },
+    {
+      "term": "Rotation about the origin",
+      "body": "A turn that fixes (0, 0). The quarter-turn rules are $(x,y)\\mapsto(y,-x)$ clockwise and $(x,y)\\mapsto(-y,x)$ counterclockwise."
+    },
+    {
+      "term": "Reflection",
+      "body": "A mirror. In the x-axis, $(x,y)\\mapsto(x,-y)$. In the y-axis, $(x,y)\\mapsto(-x,y)$."
+    },
+    {
+      "term": "Scaling about the origin",
+      "body": "The map $(x,y)\\mapsto(sx,\\ ty)$. Uniform scaling has $s=t$ and preserves angles."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Quarter turns",
+      "latex": "(x,y)\\mapsto(y,-x)\\ \\text{clockwise},\\quad (x,y)\\mapsto(-y,x)\\ \\text{counterclockwise}",
+      "note": "Both are about the origin. A half turn is $(x,y)\\mapsto(-x,-y)$."
+    },
+    {
+      "name": "Mirrors and shift",
+      "latex": "(x,y)\\mapsto(x,-y),\\quad (x,y)\\mapsto(-x,y),\\quad (x,y)\\mapsto(x+a,y+b)",
+      "note": "Reflection in the x-axis, reflection in the y-axis, then a translation."
+    }
+  ],
+  "properties": [
+    "A translation does not change the vector between two points. A rotation about the origin does not change the distance from the origin.",
+    "Two clockwise quarter turns are a half turn. Four clockwise quarter turns are the identity.",
+    "Reflecting in the x-axis and then in the y-axis is the half turn $(x,y)\\mapsto(-x,-y)$. The order of those two mirrors does not matter.",
+    "A clockwise quarter turn and a counterclockwise quarter turn are inverses.",
+    "Scaling by a negative factor includes a half turn. Scaling by −1 is exactly the half turn."
+  ],
+  "examples": [
+    {
+      "title": "One point, four maps",
+      "prompt": "Apply a clockwise quarter turn, a counterclockwise quarter turn, a half turn, and a reflection in the x-axis to the point (3, 1). All turns are about the origin.",
+      "steps": [
+        "Clockwise quarter turn: (x, y) goes to (y, −x), so (3, 1) goes to (1, −3).",
+        "Counterclockwise quarter turn: (x, y) goes to (−y, x), so (3, 1) goes to (−1, 3).",
+        "Half turn: (3, 1) goes to (−3, −1). Reflection in the x-axis keeps x and flips y, so (3, 1) goes to (3, −1)."
+      ],
+      "answer": "(1, −3), (−1, 3), (−3, −1), and (3, −1).",
+      "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8' width='180' height='180'><line x1='-3.5' y1='0' x2='3.5' y2='0' stroke='#8f8678'/><line x1='0' y1='-3.5' x2='0' y2='3.5' stroke='#8f8678'/><circle cx='3' cy='-1' r='0.18' fill='#e2a24a'/></svg>"
+    },
+    {
+      "title": "A triangle rotated a quarter turn clockwise",
+      "prompt": "The triangle has vertices (0, 0), (2, 0), and (2, 1). Rotate it 90 degrees clockwise about the origin and list the images.",
+      "steps": [
+        "The origin stays (0, 0).",
+        "(2, 0) goes to (0, −2) by the rule (x, y) → (y, −x).",
+        "(2, 1) goes to (1, −2). The right angle that was at (2, 0) is now at (0, −2), still a right angle, and the size is unchanged."
+      ],
+      "answer": "The image has vertices (0, 0), (0, −2), and (1, −2)."
+    }
+  ],
+  "traps": [
+    "Using (y, x) for a quarter turn and forgetting the sign. (3, 1) clockwise is (1, −3), not (1, 3).",
+    "Rotating about a corner as if it were the origin. The rules on this page fix (0, 0). A different centre needs a translation to the origin, the turn, and a translation back.",
+    "Reflecting in the wrong axis. The x-axis flips the second coordinate. The y-axis flips the first.",
+    "Adding the translation before the rotation and expecting the same result as the other order. (x+a, y+b) rotated is not (x, y) rotated and then shifted by (a, b)."
+  ],
+  "python": "def cw(p):\n    x, y = p\n    return (y, -x)\ndef ccw(p):\n    x, y = p\n    return (-y, x)\nassert cw((3, 1)) == (1, -3)\nassert ccw((3, 1)) == (-1, 3)\nassert cw(cw((3, 1))) == (-3, -1)\nassert cw((2, 0)) == (0, -2)\nassert cw((2, 1)) == (1, -2)\nprint(cw((4, 2)))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The point (4, 2) is rotated 90 degrees clockwise about the origin. Its image is",
+      "options": [
+        "(2, −4)",
+        "(−2, 4)",
+        "(−4, −2)",
+        "(4, −2)"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. The clockwise rule is (x, y) → (y, −x), so (4, 2) → (2, −4). Option B is the counterclockwise image. Option C is the half turn. Option D is the reflection in the x-axis."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The point (4, 2) is reflected in the y-axis and the image is then translated by (1, −3). The final point is",
+      "options": [
+        "(−3, −1)",
+        "(5, −1)",
+        "(−5, −1)",
+        "(−3, 5)"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Reflection in the y-axis sends (4, 2) to (−4, 2). Adding (1, −3) gives (−3, −1). Option B translates before reflecting. Option C adds the translation in the wrong direction on x."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following maps send (3, 1) to (−3, −1)?",
+      "options": [
+        "A half turn about the origin.",
+        "Reflection in the x-axis followed by reflection in the y-axis.",
+        "One clockwise quarter turn about the origin.",
+        "Scaling about the origin by −1."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**. A half turn sends (x, y) to (−x, −y). Reflecting in both axes does the same, and scaling by −1 is that map. One clockwise quarter turn sends (3, 1) to (1, −3)."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A triangle has vertices (0, 0), (2, 0), and (2, 1). After a 90 degree clockwise rotation about the origin, which of the following are vertices of the image?",
+      "options": [
+        "(0, 0)",
+        "(0, −2)",
+        "(1, −2)",
+        "(−2, 0)"
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The images are (0, 0), (0, −2), and (1, −2). The point (−2, 0) would be the image of (0, 2), which is not a vertex of this triangle."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "The point (5, −2) is rotated 180 degrees about the origin. Enter the x-coordinate of the image.",
+      "options": [],
+      "answer": [
+        "-5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **−5**. A half turn sends (x, y) to (−x, −y), so the image is (−5, 2) and the x-coordinate is −5."
+    }
+  ]
+}

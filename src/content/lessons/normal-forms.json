@@ -1,0 +1,164 @@
+{
+  "slug": "normal-forms",
+  "section": "databases",
+  "title": "Normal forms",
+  "syllabus": "Normal forms",
+  "minutes": 35,
+  "summary": "Normal forms are constraints on functional dependencies. Second normal form bans partial dependencies of non-prime attributes. Third normal form allows a prime attribute on the right of a non-superkey; BCNF does not. BCNF implies 3NF.",
+  "keywords": [
+    "functional dependency",
+    "2NF",
+    "3NF",
+    "BCNF",
+    "candidate key"
+  ],
+  "intuition": "A functional dependency $X\\to A$ says that any two legal tuples which agree on $X$ also agree on $A$. It is a constraint on the schema, not a coincidence in one table. $A$ is prime when $A$ belongs to some candidate key, and non-prime otherwise. The dependency is trivial when $A$ is already one of the attributes in $X$. Normal forms are restrictions on the nontrivial dependencies. They are not feature scaling: subtracting a minimum and dividing by a range is a different lesson, about numeric columns, and it does not put a relation into 3NF.\n\nFirst normal form requires every attribute value to be atomic. A cell that holds a list of skills is not in 1NF; the multivalued attribute has to become its own relation before the later forms apply. Second normal form requires 1NF and forbids a partial dependency of a non-prime attribute: no non-prime $A$ is determined by a proper subset of a candidate key. If every candidate key is a single attribute, there is no proper subset that could cause this, and 2NF holds automatically. A composite key $\\{\\mathrm{sid},\\mathrm{cid}\\}$ with $\\mathrm{sid}\\to \\mathrm{sname}$, and sname non-prime, is the violation.\n\nThird normal form uses the definition that covers every nontrivial dependency, not only the transitive slogan. For every nontrivial $X\\to A$, either $X$ is a superkey or $A$ is prime. Boyce-Codd normal form drops the second option: $X$ must be a superkey. Every dependency that satisfies BCNF therefore satisfies 3NF, so BCNF implies 3NF. The converse is false on a small pattern. Let the attributes be student, topic, and tutor, with $\\{\\mathrm{student},\\mathrm{topic}\\}\\to \\mathrm{tutor}$ and $\\mathrm{tutor}\\to \\mathrm{topic}$. Both $\\{\\mathrm{student},\\mathrm{topic}\\}$ and $\\{\\mathrm{student},\\mathrm{tutor}\\}$ are candidate keys, so every attribute is prime. The dependency $\\mathrm{tutor}\\to \\mathrm{topic}$ has a prime attribute determining another prime attribute, and topic depends on the key $\\{\\mathrm{student},\\mathrm{tutor}\\}$ through tutor. The left side is not a superkey and the right side is prime, so 3NF holds and BCNF does not.",
+  "definitions": [
+    {
+      "term": "Functional dependency",
+      "body": "$X\\to A$ means that whenever two tuples agree on all attributes in $X$, they agree on $A$. The dependency is trivial when $A\\in X$. The closure of $X$ is the set of attributes determined by $X$ through the declared dependencies."
+    },
+    {
+      "term": "Prime attribute",
+      "body": "An attribute that belongs to at least one candidate key. A non-prime attribute belongs to none. 2NF and the second clause of 3NF are statements about this distinction."
+    },
+    {
+      "term": "Second normal form",
+      "body": "The relation is in 1NF, and no non-prime attribute depends on a proper subset of a candidate key. A dependency of a prime attribute on a proper subset does not, by itself, violate 2NF."
+    },
+    {
+      "term": "3NF and BCNF",
+      "body": "3NF: for every nontrivial $X\\to A$, $X$ is a superkey or $A$ is prime. BCNF: for every nontrivial $X\\to A$, $X$ is a superkey. BCNF implies 3NF. A prime attribute determined by a non-superkey is the gap between them."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Third normal form",
+      "latex": "X\\to A\\ \\mathrm{nontrivial}\\Rightarrow X\\ \\mathrm{superkey\\ or\\ }A\\ \\mathrm{prime}",
+      "note": "This is the definition to test. It is not $(x-\\min)/(\\max-\\min)$."
+    },
+    {
+      "name": "Boyce-Codd normal form",
+      "latex": "X\\to A\\ \\mathrm{nontrivial}\\Rightarrow X\\ \\mathrm{is\\ a\\ superkey}",
+      "note": "Stricter than 3NF. The prime-attribute exception is gone, so BCNF implies 3NF."
+    }
+  ],
+  "properties": [
+    "1NF: every attribute value is atomic. A list stored in one cell is not in 1NF.",
+    "2NF: 1NF, and no non-prime attribute depends on a proper subset of a candidate key. Single-attribute candidate keys cannot violate 2NF.",
+    "3NF: for every nontrivial $X\\to A$, $X$ is a superkey or $A$ is prime.",
+    "BCNF: for every nontrivial $X\\to A$, $X$ is a superkey. BCNF implies 3NF. The converse fails when a prime attribute determines another prime attribute and the determinant is not a superkey.",
+    "Rescaling a number, by a minimum and a maximum or by a mean and a standard deviation, is feature scaling. It is not a normal form."
+  ],
+  "examples": [
+    {
+      "title": "A partial dependency",
+      "prompt": "Enroll(sid, cid, sname, grade) has only the nontrivial dependencies $\\mathrm{sid}\\to \\mathrm{sname}$ and $\\{\\mathrm{sid},\\mathrm{cid}\\}\\to \\mathrm{grade}$. Which normal form fails?",
+      "steps": [
+        "The closure of $\\{\\mathrm{sid},\\mathrm{cid}\\}$ contains sname, by the first dependency, and grade, by the second, so it contains every attribute. The closure of sid is $\\{\\mathrm{sid},\\mathrm{sname}\\}$, missing cid and grade. The closure of cid is $\\{\\mathrm{cid}\\}$. The only candidate key is $\\{\\mathrm{sid},\\mathrm{cid}\\}$.",
+        "sname is not in that key, so sname is non-prime. sid is a proper subset of the key and sid determines sname. That is a partial dependency of a non-prime attribute.",
+        "The cells are atomic, so 1NF holds. 2NF does not. A relation that is not in 2NF is not in 3NF or BCNF either. Splitting into Student(sid, sname) and Mark(sid, cid, grade) gives each dependency a key on its left."
+      ],
+      "answer": "The only candidate key is $\\{\\mathrm{sid},\\mathrm{cid}\\}$. The dependency $\\mathrm{sid}\\to \\mathrm{sname}$ violates 2NF. This is a partial dependency, not a scaling of sname."
+    },
+    {
+      "title": "In 3NF, and not in BCNF",
+      "prompt": "Teaches(student, topic, tutor) has $\\{\\mathrm{student},\\mathrm{topic}\\}\\to \\mathrm{tutor}$ and $\\mathrm{tutor}\\to \\mathrm{topic}$. Test 3NF and BCNF from the closures.",
+      "steps": [
+        "The closure of tutor is $\\{\\mathrm{tutor},\\mathrm{topic}\\}$. Student is missing, so tutor is not a superkey. The closure of $\\{\\mathrm{student},\\mathrm{topic}\\}$ is all three attributes, and neither attribute alone determines the others, so that pair is a candidate key.",
+        "The closure of $\\{\\mathrm{student},\\mathrm{tutor}\\}$ is also all three, because tutor determines topic, and neither student nor tutor alone is a key. So $\\{\\mathrm{student},\\mathrm{tutor}\\}$ is a second candidate key. Every attribute sits in some candidate key, and every attribute is prime.",
+        "The nontrivial dependency $\\mathrm{tutor}\\to \\mathrm{topic}$ has a left side that is not a superkey, so BCNF fails. The right side topic is prime, so the 3NF exception applies and 3NF holds. Topic depends on the candidate key $\\{\\mathrm{student},\\mathrm{tutor}\\}$ through the prime attribute tutor. There is no non-prime attribute, so the 2NF ban has nothing to reject."
+      ],
+      "answer": "The relation is in 3NF and not in BCNF. tutor is not a superkey, topic is prime, and both $\\{\\mathrm{student},\\mathrm{topic}\\}$ and $\\{\\mathrm{student},\\mathrm{tutor}\\}$ are candidate keys. BCNF would have required tutor to be a superkey."
+    }
+  ],
+  "traps": [
+    "Using $(x-\\min)/(\\max-\\min)$ as 3NF. That is min-max feature scaling. 3NF is a condition on functional dependencies.",
+    "Thinking 3NF implies BCNF. The tutor dependency is the counterexample: the right side is prime, the left side is not a superkey, and 3NF allows what BCNF forbids.",
+    "Calling tutor $\\to$ topic a 2NF violation. 2NF restricts non-prime attributes, and in that relation every attribute is prime.",
+    "Testing a key on one table of rows. A candidate key is read off the closures of the declared dependencies. A column that happens to be unique today may not be a key."
+  ],
+  "python": "def closure(start, fds):\n    found = set(start)\n    changed = True\n    while changed:\n        changed = False\n        for left, right in fds:\n            if set(left) <= found and not set(right) <= found:\n                found |= set(right)\n                changed = True\n    return found\n\nfds = [((\"student\", \"topic\"), (\"tutor\",)), ((\"tutor\",), (\"topic\",))]\nassert closure((\"tutor\",), fds) == {\"tutor\", \"topic\"}\nassert closure((\"student\", \"topic\"), fds) == {\"student\", \"topic\", \"tutor\"}\nassert closure((\"student\", \"tutor\"), fds) == {\"student\", \"topic\", \"tutor\"}\nassert closure((\"student\",), fds) == {\"student\"}\nassert closure((\"topic\",), fds) == {\"topic\"}\nassert len(closure((\"student\", \"topic\"), fds)) == 3\nprint(sorted(closure((\"tutor\",), fds)))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Enroll(sid, cid, sname, grade) has candidate key $\\{\\mathrm{sid},\\mathrm{cid}\\}$ and the dependency $\\mathrm{sid}\\to \\mathrm{sname}$, with sname in no candidate key. The relation",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nsname is non-prime, and sid is a proper subset of the only candidate key, so sid $\\to$ sname is a partial dependency. That violates 2NF. The attributes are atomic, so this is not a 1NF failure. A relation that fails 2NF is not in BCNF. Option D is feature scaling, which does not mention a key.",
+      "options": [
+        "violates 2NF because of a partial dependency",
+        "is in BCNF",
+        "violates 1NF",
+        "is an instance of min-max scaling"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Teaches(student, topic, tutor) has $\\{\\mathrm{student},\\mathrm{topic}\\}\\to \\mathrm{tutor}$ and $\\mathrm{tutor}\\to \\mathrm{topic}$. The relation",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe candidate keys are $\\{\\mathrm{student},\\mathrm{topic}\\}$ and $\\{\\mathrm{student},\\mathrm{tutor}\\}$, so topic is prime and tutor is not a superkey. 3NF allows $\\mathrm{tutor}\\to \\mathrm{topic}$ because the right side is prime. BCNF does not, because the left side must be a superkey. Option C would require a non-prime attribute, and there is none.",
+      "options": [
+        "is in 3NF and not in BCNF",
+        "is in BCNF",
+        "violates 2NF, because a non-prime attribute depends on part of a key",
+        "violates 1NF"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\n1NF is atomic attribute values. The 3NF test is exactly the superkey-or-prime condition, and the BCNF test keeps only the superkey half. Option D reverses the implication. Every BCNF dependency already satisfies 3NF, so BCNF implies 3NF; Teaches shows a relation that is in 3NF and not in BCNF, so 3NF does not imply BCNF.",
+      "options": [
+        "1NF requires every attribute value to be atomic.",
+        "3NF says that for every nontrivial $X\\to A$, $X$ is a superkey or $A$ is prime.",
+        "BCNF says that for every nontrivial $X\\to A$, $X$ is a superkey.",
+        "3NF implies BCNF."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "For Teaches(student, topic, tutor) with $\\{\\mathrm{student},\\mathrm{topic}\\}\\to \\mathrm{tutor}$ and $\\mathrm{tutor}\\to \\mathrm{topic}$, which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nStarting from tutor and applying $\\mathrm{tutor}\\to \\mathrm{topic}$ produces $\\{\\mathrm{tutor},\\mathrm{topic}\\}$, not the student. Adding student to tutor produces topic as well, and the set is minimal, so $\\{\\mathrm{student},\\mathrm{tutor}\\}$ is a candidate key. Option C is false: tutor's closure misses student, so tutor is not a superkey and the dependency is exactly the BCNF violation. All three attributes are prime, which is why 3NF still holds.",
+      "options": [
+        "The closure of $\\{\\mathrm{tutor}\\}$ is $\\{\\mathrm{tutor},\\mathrm{topic}\\}$.",
+        "$\\{\\mathrm{student},\\mathrm{tutor}\\}$ is a candidate key.",
+        "$\\mathrm{tutor}\\to \\mathrm{topic}$ has a superkey on the left, so it satisfies BCNF.",
+        "Every attribute is prime, which is why $\\mathrm{tutor}\\to \\mathrm{topic}$ can satisfy 3NF while failing BCNF."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Using the dependencies $\\{\\mathrm{student},\\mathrm{topic}\\}\\to \\mathrm{tutor}$ and $\\mathrm{tutor}\\to \\mathrm{topic}$, how many attributes are in the closure of $\\{\\mathrm{student},\\mathrm{topic}\\}$?",
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**.\n\nThe set already contains student and topic. The first dependency adds tutor. No fourth attribute exists. The closure is $\\{\\mathrm{student},\\mathrm{topic},\\mathrm{tutor}\\}$, which has size $3$, and that is why the pair is a superkey.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

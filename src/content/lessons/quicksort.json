@@ -1,0 +1,164 @@
+{
+  "slug": "quicksort",
+  "section": "programming",
+  "title": "Quicksort",
+  "syllabus": "Quicksort",
+  "minutes": 30,
+  "summary": "Quicksort partitions around a pivot and recurses on the two sides. With a fixed end pivot the average case is linearithmic, the already-sorted input is quadratic, and the sort is not stable.",
+  "keywords": [
+    "quicksort",
+    "Lomuto partition",
+    "pivot",
+    "stability",
+    "worst case"
+  ],
+  "intuition": "Quicksort chooses a pivot, partitions the subarray so that keys at most the pivot sit to its left and keys greater than the pivot sit to its right, then sorts the two sides. This lesson uses Lomuto's partition. The pivot is the last key of the subarray. A scan walks every earlier key, and whenever a key is less than or equal to the pivot it is swapped into the growing left region. One final swap seats the pivot between the two regions. Hoare's partition, with a pointer moving inward from each end, is a different procedure with the same average and worst-case bounds; the trace below is Lomuto, not Hoare.\n\nOn a random permutation the last key is equally likely to be any rank, and the average split is balanced enough that the recurrence solves to $\\Theta(n\\log n)$. That is an average over inputs, not a promise about every input. If the pivot is always the last key and the array is already sorted, the pivot is the maximum of the subarray every time. The split is $n-1$ keys on the left and none on the right. The recurrence becomes $T(n)=T(n-1)+\\Theta(n)$, which is $\\Theta(n^2)$. The worst case is $\\Theta(n^2)$. It is not $\\Theta(n\\log n)$.\n\nThe partition rewrites the input array and uses only a constant amount of extra memory of its own, which is the sense in which quicksort is typically in place. The recursion stack is additional: $O(\\log n)$ frames when splits are balanced, and $\\Theta(n)$ frames on the sorted input if each call waits on the side of length $n-1$. The sort is not stable. Lomuto's swaps move equal keys past one another; a three-key array is enough to see it.",
+  "definitions": [
+    {
+      "term": "Lomuto partition",
+      "body": "Pivot = the last key. Scan the earlier keys from left to right. On each key that is $\\le$ the pivot, extend the left region by one swap. After the scan, swap the pivot into the cell just after that region. Keys to the left are $\\le$ the pivot; keys to the right are $>$ the pivot."
+    },
+    {
+      "term": "Fixed end pivot",
+      "body": "The pivot is always the key at the right end of the current subarray. No random index and no median-of-three. On a sorted array this pivot is the maximum."
+    },
+    {
+      "term": "Average case",
+      "body": "The expected running time when every rank is equally likely to land at the pivot, as it is for the last key of a random permutation of distinct keys. That expectation is $\\Theta(n\\log n)$."
+    },
+    {
+      "term": "Typical in-place behaviour",
+      "body": "Partition swaps keys inside the input array. Extra memory beyond the array is the recursion stack, logarithmic on ordinary splits. This is not the $\\Theta(n)$ merge buffer of mergesort."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Average recurrence",
+      "latex": "T(n)=\\frac{2}{n}\\sum_{q=0}^{n-1} T(q)+\\Theta(n)",
+      "note": "The pivot rank $q$ is uniform. The solution is $T(n)=\\Theta(n\\log n)$."
+    },
+    {
+      "name": "Sorted input, fixed end pivot",
+      "latex": "T(n)=T(n-1)+\\Theta(n)=\\Theta(n^2)",
+      "note": "The worst case. It is not $\\Theta(n\\log n)$. A reversed array with the same pivot rule is quadratic as well."
+    }
+  ],
+  "properties": [
+    "Average time on random distinct keys is $\\Theta(n\\log n)$. Worst time is $\\Theta(n^2)$.",
+    "An already sorted array with a fixed end pivot is a worst case, because every partition peels off one pivot and leaves $n-1$ keys on one side.",
+    "The sort is not stable. Equal keys can change order during the partition swaps.",
+    "Partition itself uses $\\Theta(1)$ extra memory. The call stack is $O(\\log n)$ on balanced splits and $\\Theta(n)$ on the sorted worst case.",
+    "A partition of a subarray of length $k$ performs $k-1$ comparisons, one against the pivot for every other key."
+  ],
+  "examples": [
+    {
+      "title": "Lomuto on five keys",
+      "prompt": "Run Lomuto quicksort on $(3,a), (1,b), (4,c), (5,d), (2,e)$. The pivot of a subarray is its last key, and a key joins the left region when it is $\\le$ the pivot. Count comparisons.",
+      "steps": [
+        "The first pivot is $(2,e)$. The scan compares $4$ keys. Only $(1,b)$ is $\\le 2$, so it is swapped into the left region and the pivot is then swapped into place. The array is $(1,b), (2,e), (4,c), (5,d), (3,a)$, with one key to the left of the pivot.",
+        "The right subarray is $(4,c), (5,d), (3,a)$, pivot $(3,a)$. Neither $4$ nor $5$ is $\\le 3$, so $2$ comparisons and a final swap produce $(3,a), (5,d), (4,c)$ in that region.",
+        "The last pair has pivot $(4,c)$. One comparison swaps $5$ with $4$. The array is $(1,b), (2,e), (3,a), (4,c), (5,d)$. No further subarray has length greater than $1$."
+      ],
+      "answer": "The sort performs $4+2+1=7$ comparisons and finishes $1, 2, 3, 4, 5$. The first partition did not split in half: one key on the left, two on the right."
+    },
+    {
+      "title": "Sorted input is quadratic, and equals move",
+      "prompt": "With the same Lomuto rule, how many comparisons does the sorted array $1, 2, 3, 4, 5$ cost, and what happens to the labels in $(2,a), (2,b), (1,c)$?",
+      "steps": [
+        "On $1, 2, 3, 4, 5$ the pivot $5$ is the maximum. The partition compares the other $4$ keys, all of them join the left, and the pivot stays at the end. The recursive call is on $4$ keys.",
+        "The same thing happens at every size. Comparisons are $4+3+2+1=10$, and $n(n-1)/2=10$. The recurrence $T(n)=T(n-1)+\\Theta(n)$ is $\\Theta(n^2)$, not $\\Theta(n\\log n)$.",
+        "On $(2,a), (2,b), (1,c)$ the pivot is $(1,c)$. Neither $2$ is $\\le 1$, so the final swap exchanges $(2,a)$ with $(1,c)$. The result is $(1,c), (2,b), (2,a)$. Labels $b$ and $a$ have changed order."
+      ],
+      "answer": "The sorted five-key array costs $10$ comparisons, a worst-case pattern. The three-key array finishes with the equal $2$s in the order $b$ then $a$, so Lomuto quicksort is not stable."
+    }
+  ],
+  "traps": [
+    "Stating the worst case as $\\Theta(n\\log n)$. That is the average. The sorted input with a fixed end pivot is $\\Theta(n^2)$.",
+    "Calling quicksort stable because the partition test uses $\\le$. The swaps that build the left region, and the final swap of the pivot, can reorder equal keys.",
+    "Promising $O(1)$ extra memory on every input. Partition is in place, but the recursion stack is $\\Theta(n)$ on the sorted worst case.",
+    "Using the mergesort recurrence $T(n)=2T(n/2)+\\Theta(n)$ as if quicksort split in half on every input. Quicksort's split depends on the pivot rank."
+  ],
+  "python": "def lomuto_count(values):\n    items = list(values)\n    comps = [0]\n\n    def partition(lo, hi):\n        pivot = items[hi]\n        i = lo - 1\n        for j in range(lo, hi):\n            comps[0] += 1\n            key = items[j][0] if isinstance(items[j], tuple) else items[j]\n            bound = pivot[0] if isinstance(pivot, tuple) else pivot\n            if key <= bound:\n                i += 1\n                items[i], items[j] = items[j], items[i]\n        items[i + 1], items[hi] = items[hi], items[i + 1]\n        return i + 1\n\n    def sort(lo, hi):\n        if lo < hi:\n            pivot_at = partition(lo, hi)\n            sort(lo, pivot_at - 1)\n            sort(pivot_at + 1, hi)\n\n    sort(0, len(items) - 1)\n    return comps[0], items\n\n\ncount, result = lomuto_count([(3, \"a\"), (1, \"b\"), (4, \"c\"), (5, \"d\"), (2, \"e\")])\nassert count == 7 and [value for value, _ in result] == [1, 2, 3, 4, 5]\n_, unstable = lomuto_count([(2, \"a\"), (2, \"b\"), (1, \"c\")])\nassert [label for _, label in unstable] == [\"c\", \"b\", \"a\"]\nsorted_count, _ = lomuto_count(list(range(1, 9)))\nassert sorted_count == 8 * 7 // 2 == 28\nprint(count, sorted_count, \"\".join(label for _, label in unstable))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Lomuto quicksort always pivots on the last key of the subarray. On an already sorted array its running time is",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $\\Theta(n^2)$.\n\nThe last key of a sorted subarray is its maximum, so each partition leaves $n-1$ keys on one side and does $\\Theta(n)$ work. The recurrence $T(n)=T(n-1)+\\Theta(n)$ sums to $\\Theta(n^2)$. Option B names the average bound and then calls it the worst case, which is the swap this question is testing.",
+      "options": [
+        "$\\Theta(n^2)$",
+        "$\\Theta(n\\log n)$ in the worst case",
+        "$\\Theta(n)$",
+        "$\\Theta(\\log n)$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Lomuto partition is applied to $(2,a), (2,b), (1,c)$, with the last key as pivot and with $\\le$ sending a key to the left. The two keys equal to $2$ finish as",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $b$ then $a$.\n\nThe pivot is $(1,c)$. Neither $2$ compares $\\le 1$, so the scan does not move them, and the final swap exchanges index $0$ with the pivot. The array becomes $(1,c), (2,b), (2,a)$. Equal keys changed order, which is why this quicksort is not stable.",
+      "options": [
+        "$b$ then $a$",
+        "$a$ then $b$",
+        "$a$ then $b$, because quicksort is stable",
+        "label $a$ is discarded"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of quicksort with a fixed end pivot?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nWhen the pivot rank is uniform, the average running time is $\\Theta(n\\log n)$. The sorted input makes every split one-sided, so the worst case is $\\Theta(n^2)$. Partition rewrites the input array; the extra memory of the partition step is a few indexes, with the recursion stack accounted separately. Option C is false, as the three-key trace shows: equal keys can finish out of their input order.",
+      "options": [
+        "The average case on random distinct keys is $\\Theta(n\\log n)$.",
+        "The worst case is $\\Theta(n^2)$.",
+        "The sort is stable.",
+        "Partition rewrites the input array using only a constant amount of extra memory of its own."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Lomuto quicksort runs on $[3, 1, 4, 5, 2]$, pivoting on the last key of each subarray. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe first scan compares $3, 1, 4, 5$ with the pivot $2$, four comparisons, and the pivot ends with one key on its left. The remaining partitions compare $2$ keys and then $1$ key, so the sort uses $4+2+1=7$ comparisons and finishes $[1, 2, 3, 4, 5]$. Option D is false: $7$ is an exact count on one array of length $5$, and a single short input is not required to display the asymptotic average.",
+      "options": [
+        "The first partition performs $4$ comparisons and leaves one key to the left of the pivot.",
+        "The whole sort performs $7$ comparisons.",
+        "The final array is $[1, 2, 3, 4, 5]$.",
+        "A five-key input cannot perform $7$ comparisons, because the average case is $\\Theta(n\\log n)$."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Lomuto quicksort, always pivoting on the last key, runs on a sorted array of $8$ distinct numbers. How many comparisons does it perform?",
+      "answer": [
+        "28"
+      ],
+      "solution": "The answer is **28**.\n\nEach partition of a sorted subarray of length $k$ compares $k-1$ keys and then recurses on $k-1$ keys. The comparison counts are $7+6+5+4+3+2+1=28$, which is $8\\times 7/2$. This is the quadratic worst-case pattern, not an $n\\log n$ count.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

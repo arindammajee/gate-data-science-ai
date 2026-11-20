@@ -1,0 +1,171 @@
+{
+  "slug": "feedforward-neural-network",
+  "section": "machine-learning",
+  "title": "Feed-forward neural networks",
+  "syllabus": "Feed-forward neural network",
+  "minutes": 35,
+  "summary": "A feed-forward net is an acyclic stack of layers. Each layer applies an affine map and an activation. On a two-input, two-hidden, one-output ReLU net the forward value and one backpropagated partial are small integers. A recurrent net would close a cycle; this one does not.",
+  "keywords": [
+    "feed-forward",
+    "ReLU",
+    "backpropagation",
+    "chain rule",
+    "hidden layer"
+  ],
+  "intuition": "A feed-forward network arranges units in layers and allows edges only from one layer to a later one. The computation graph is a directed acyclic graph. There is nothing to iterate: one input vector produces one output in a single pass. Layer $\\ell$ reads the previous activation vector $a^{(\\ell-1)}$, applies a weight matrix and a bias, and then an activation $\\varphi$:\n$$a^{(\\ell)}=\\varphi\\!\\left(W^{(\\ell)} a^{(\\ell-1)}+b^{(\\ell)}\\right).$$\nEach row of $W^{(\\ell)}$ is one unit. The bias is added after the weighted sum, not multiplied by an input.\n\nThe forward pass on the tiny net below is four arithmetic operations and two ReLUs. Both pre-activations come out positive, so ReLU leaves them unchanged and the output is the integer $4$. Backpropagation does not introduce a new derivative. It is the chain rule, organised from the loss backward through the layers. With squared loss $\\tfrac12(y-0)^2$, the factor $\\partial L/\\partial y$ equals $y$. It multiplies the output weight, the ReLU derivative, and the input that touches the weight being differentiated. Because the first pre-activation is positive, the ReLU derivative is $1$, and the partial with respect to the matching input weight is $8$.\n\nIf a pre-activation had been negative, that ReLU derivative would have been $0$ and the path through that unit would have contributed nothing. The sigmoid derivative $\\sigma(z)(1-\\sigma(z))$ is a different function and does not belong on a ReLU unit; its largest value is $\\tfrac14$, at $z=0$. A recurrent network would send an activation back along a cycle and reuse the weights on a sequence. This network has no cycle, so that construction is not in play.",
+  "definitions": [
+    {
+      "term": "Feed-forward network",
+      "body": "A layered network whose computation graph is acyclic. Activations move from the input layer toward the output. One input vector yields one output in one pass."
+    },
+    {
+      "term": "Layer map",
+      "body": "The rule $a^{(\\ell)}=\\varphi(W^{(\\ell)} a^{(\\ell-1)}+b^{(\\ell)})$. Row $i$ of $W^{(\\ell)}$ holds the incoming weights of unit $i$. The bias $b^{(\\ell)}$ is added inside the activation, coordinate by coordinate."
+    },
+    {
+      "term": "ReLU",
+      "body": "$\\varphi(z)=\\max(z,0)$. The derivative is $1$ for $z>0$ and $0$ for $z<0$. The two hidden pre-activations in the worked net are $1$ and $2$, so both derivatives are $1$."
+    },
+    {
+      "term": "Backpropagation",
+      "body": "The chain rule applied from the loss back to the weights. On the worked net, $\\partial L/\\partial w_{11}$ multiplies $\\partial L/\\partial y$, the output weight, the ReLU derivative, and the input $x_1$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Forward layer",
+      "latex": "a^{(\\ell)}=\\varphi\\!\\left(W^{(\\ell)} a^{(\\ell-1)}+b^{(\\ell)}\\right)",
+      "note": "Acyclic stack. $\\varphi$ acts coordinatewise. A recurrent net would feed an activation back along a cycle; this update does not."
+    },
+    {
+      "name": "Squared loss and a ReLU partial",
+      "latex": "L=\\frac12(y-t)^2, \\qquad \\frac{\\partial L}{\\partial w_{11}}=\\frac{\\partial L}{\\partial y}\\cdot v_1\\cdot \\varphi'(z_1)\\cdot x_1",
+      "note": "Here $t=0$, $v_1=1$ is the output weight on the first hidden unit, and $\\varphi$ is ReLU. For $z_1>0$, $\\varphi'(z_1)=1$."
+    },
+    {
+      "name": "Sigmoid derivative, for contrast",
+      "latex": "\\sigma(z)=\\frac{1}{1+e^{-z}}, \\qquad \\sigma'(z)=\\sigma(z)\\bigl(1-\\sigma(z)\\bigr)",
+      "note": "At $z=0$, $\\sigma(0)=\\tfrac12$ and $\\sigma'(0)=\\tfrac14$. Do not use this factor on a ReLU unit."
+    }
+  ],
+  "properties": [
+    "The graph has no directed cycles, so the forward pass visits each layer once. A recurrent net reuses a hidden state across a sequence by a cycle; that is a different architecture.",
+    "If $z>0$, ReLU contributes a factor $1$ to the chain rule. If $z<0$, it contributes a factor $0$ and blocks every weight that is upstream of that unit only.",
+    "The bias has no multiplying input. Its partial is the same chain as the weight partial, with the factor $x_j$ replaced by $1$.",
+    "On the worked numbers, $y=4$ and $\\partial L/\\partial w_{11}=8$ when $L=\\tfrac12(y-0)^2$. Differentiating $(y-0)^2$ without the $\\tfrac12$ doubles that partial to $16$.",
+    "A sigmoid unit at pre-activation $0$ outputs $\\tfrac12$, and the local derivative is $\\tfrac14$. That identity is not the derivative of ReLU.",
+    "Matrix orientation matters: with one row per unit, $W^{(\\ell)}$ is $(\\text{units in layer }\\ell)\\times(\\text{units in layer }\\ell-1)$."
+  ],
+  "examples": [
+    {
+      "title": "Forward pass, two hidden ReLUs",
+      "prompt": "Inputs $(x_1,x_2)=(2,1)$. Hidden pre-activations $z_1=1\\cdot x_1+(-1)\\cdot x_2+0$ and $z_2=1\\cdot x_1+1\\cdot x_2-1$, then ReLU. The output is linear: $y=1\\cdot h_1+2\\cdot h_2-1$. Compute $y$.",
+      "steps": [
+        "First pre-activation: $z_1=1\\cdot 2+(-1)\\cdot 1+0=1$. Second: $z_2=1\\cdot 2+1\\cdot 1-1=2$. Both are positive.",
+        "ReLU leaves them unchanged: $h_1=1$ and $h_2=2$.",
+        "The output is $1\\cdot 1+2\\cdot 2-1=4$."
+      ],
+      "answer": "The forward pass returns $y=4$."
+    },
+    {
+      "title": "One partial, by the chain rule",
+      "prompt": "Keep the same net and set $L=\\tfrac12(y-0)^2$. Compute $\\partial L/\\partial w_{11}$, where $w_{11}$ is the coefficient of $x_1$ in $z_1$.",
+      "steps": [
+        "From the forward pass, $y=4$, so $\\partial L/\\partial y=y-0=4$. The output multiplies $h_1$ by $1$, so $\\partial y/\\partial h_1=1$.",
+        "Since $z_1=1>0$, the ReLU derivative $\\partial h_1/\\partial z_1$ is $1$. The pre-activation is linear in the weight, so $\\partial z_1/\\partial w_{11}=x_1=2$.",
+        "Multiply the factors: $\\partial L/\\partial w_{11}=4\\cdot 1\\cdot 1\\cdot 2=8$. If $z_1$ had been negative, the ReLU factor would have been $0$ and this partial would have been $0$."
+      ],
+      "answer": "The partial is $8$. Backpropagation is this product, not a separate numerical rule."
+    }
+  ],
+  "traps": [
+    "Putting the sigmoid derivative $\\sigma(1-\\sigma)$ on a ReLU unit. At the positive pre-activation $z_1=1$ the ReLU factor is $1$. The sigmoid factor at $1$ is not $1$.",
+    "Dropping the $\\tfrac12$ in the loss but differentiating as if it were still there, or the reverse. For $L=\\tfrac12(y-0)^2$ and $y=4$, $\\partial L/\\partial y=4$ and $\\partial L/\\partial w_{11}=8$. For $L=(y-0)^2$ the partial in $w_{11}$ is $16$.",
+    "Multiplying the bias by $x_1$ inside $z_1$. The bias is added. Only the weight $w_{11}$ is multiplied by $x_1$, which is why that input appears in $\\partial z_1/\\partial w_{11}$.",
+    "Treating backpropagation as something other than the chain rule. The product $4\\cdot 1\\cdot 1\\cdot 2$ is the chain rule written along one path.",
+    "Adding a cycle and still calling the net feed-forward. A state sent back to an earlier layer is a recurrent step. This syllabus's feed-forward pass is acyclic."
+  ],
+  "python": "def relu(z):\n    return z if z > 0 else 0\n\nx1, x2 = 2, 1\nz1 = 1 * x1 + (-1) * x2 + 0\nz2 = 1 * x1 + 1 * x2 - 1\nh1, h2 = relu(z1), relu(z2)\ny = 1 * h1 + 2 * h2 - 1\n# L = (1/2) * (y - 0)^2, ReLU derivative 1 at z1 > 0.\npartial = (y - 0) * 1 * 1 * x1\nassert (z1, z2, h1, h2, y, partial) == (1, 2, 1, 2, 4, 8)\nprint(y)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Inputs $(2,1)$, hidden pre-activations $z_1=x_1-x_2$ and $z_2=x_1+x_2-1$, ReLU activations, and linear output $y=h_1+2h_2-1$. The output is",
+      "options": [
+        "$4$",
+        "$2$",
+        "$8$",
+        "$-1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4$.\n\n$z_1=2-1=1$ and $z_2=2+1-1=2$, both kept by ReLU. Then $y=1+2\\cdot 2-1=4$. Option D is what the output bias alone would give if both ReLUs had blocked."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Backpropagation of a feed-forward net computes partial derivatives of the loss with respect to the weights by",
+      "options": [
+        "the chain rule, applied from the loss back through the layers",
+        "refitting the network from scratch once per weight",
+        "replacing every activation by a hard step before differentiating",
+        "building a minimum spanning tree on the units"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nBackpropagation is the chain rule in layer order, from the output backward. On the worked net it is the product $\\partial L/\\partial y\\cdot \\partial y/\\partial h_1\\cdot \\partial h_1/\\partial z_1\\cdot \\partial z_1/\\partial w_{11}$. It is not a fresh fit for each weight, and it does not replace ReLU by a step or invoke a spanning tree."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "On the net with $z_1=1>0$, $z_2=2>0$, ReLU hidden units, and $y=4$, which of the following are true?",
+      "options": [
+        "The layer update is $a^{(\\ell)}=\\varphi(W^{(\\ell)} a^{(\\ell-1)}+b^{(\\ell)})$.",
+        "The ReLU derivative at $z_1$ is $1$.",
+        "A recurrent net would send an activation back along a cycle; this net does not.",
+        "Replacing both ReLUs by the zero function would leave $y=4$ unchanged."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe forward layer is an affine map followed by $\\varphi$, the graph is acyclic, and a positive ReLU has derivative $1$. The zero function would send both hidden units to $0$, and the output would be $-1$ rather than $4$, so D is false."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Take $L=\\tfrac12(y-0)^2$ with $y=4$, and let $w_{11}$ multiply $x_1=2$ inside $z_1$. Which of the following are true?",
+      "options": [
+        "$\\partial L/\\partial y=4$.",
+        "$\\partial z_1/\\partial w_{11}=x_1=2$.",
+        "If $z_1$ had been negative, the ReLU factor in $\\partial L/\\partial w_{11}$ would be $0$.",
+        "The feed-forward layer equation contains a cycle through time."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nDifferentiating $\\tfrac12(y-0)^2$ gives $y$ itself, which is $4$. The weight $w_{11}$ is multiplied by $x_1$ and by nothing else in $z_1$, so that partial is $2$. A negative ReLU input has derivative $0$ and shuts this path. D is false: the layer equation is acyclic. The product of the three factors with the output weight $1$ is the partial $8$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "On this net $y=4$, $L=\\tfrac12(y-0)^2$, the output weight on $h_1$ is $1$, $z_1>0$, and $w_{11}$ multiplies $x_1=2$. Enter $\\partial L/\\partial w_{11}$.",
+      "options": [],
+      "answer": [
+        "8"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **8**.\n\n$\\partial L/\\partial y=4$, $\\partial y/\\partial h_1=1$, the ReLU derivative is $1$, and $\\partial z_1/\\partial w_{11}=2$. The product is $4\\cdot 1\\cdot 1\\cdot 2=8$."
+    }
+  ]
+}

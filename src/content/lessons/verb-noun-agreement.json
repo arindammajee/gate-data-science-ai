@@ -1,0 +1,169 @@
+{
+  "slug": "verb-noun-agreement",
+  "section": "aptitude",
+  "title": "Verb-noun agreement",
+  "syllabus": "Subject-verb agreement, including number, fractions, collectives, and none",
+  "minutes": 25,
+  "summary": "Match the verb to the real subject: singular after each, every, either, and neither, singular after 'the number of', plural after 'a number of', and either number after none.",
+  "keywords": [
+    "agreement",
+    "the number of",
+    "a number of",
+    "collective noun",
+    "none"
+  ],
+  "intuition": "Agreement is a match between the verb and the subject the verb actually belongs to. The noun sitting nearest the verb is often a distraction. Each, every, either, and neither, used as subjects, take a singular verb, and so does 'the number of'. 'A number of' means several and takes a plural verb. The two phrases sit next to each other in a sentence and take opposite verbs. 'The number of complaints is five' names one count. 'A number of complaints are still open' names several complaints.\n\nA fraction or a percentage is not automatically singular. It agrees with the noun in the of-phrase. Half of the solvent is gone, because solvent is a mass. Half of the samples are gone, because samples is plural. Twenty percent of the bottles are chipped for the same reason. The word percent does not set the verb; the noun after of does.\n\nA collective noun such as committee, team, or jury takes a singular verb when the sentence treats the group as one unit: 'The committee has published its report.' None is the case the options try to freeze. None may take a singular verb or a plural verb. 'None of the information is public' fits a mass noun, and both 'None of the samples is damaged' and 'None of the samples are damaged' are acceptable. Do not reject a sentence only because none is paired with one of those two numbers.\n\nWhen either...or, neither...nor, or not only...but also joins two subjects, use the proximity rule, the same rule as in the conjunctions lesson: the verb agrees with the nearer subject. 'Either of the plans is ready' remains singular, because there the subject is either, not a pair of nouns.",
+  "definitions": [
+    {
+      "term": "Singular pronouns as subjects",
+      "body": "Each, every, either, and neither, used as the subject, take a singular verb. 'Each of the samples is labelled.' 'Neither of the plans is ready.' 'Either of the methods is acceptable.'"
+    },
+    {
+      "term": "The number of and a number of",
+      "body": "'The number of' plus a plural noun takes a singular verb, because the subject is the number. 'A number of' plus a plural noun takes a plural verb, because it means several."
+    },
+    {
+      "term": "Fraction and percent agreement",
+      "body": "A fraction or a percentage takes the number of the noun in the of-phrase. A singular or mass noun takes a singular verb. A plural noun takes a plural verb."
+    },
+    {
+      "term": "None",
+      "body": "None may be singular or plural. Both 'None of the files is missing' and 'None of the bottles are labelled' are acceptable. This lesson does not forbid either."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "The number and a number",
+      "latex": "\\text{the number of}+\\text{plural noun}+\\text{singular verb}",
+      "note": "The contrasting pattern is 'a number of' plus a plural noun plus a plural verb."
+    },
+    {
+      "name": "Of-phrase agreement",
+      "latex": "\\text{fraction or percent of}+\\text{noun}+\\text{verb of that noun}",
+      "note": "Half of the solvent is. Half of the bottles are. The same split applies to twenty percent."
+    },
+    {
+      "name": "Proximity",
+      "latex": "\\text{nearer subject decides the verb}",
+      "note": "For either...or, neither...nor, and not only...but also. Identical to the conjunctions lesson. Either of stays singular."
+    }
+  ],
+  "properties": [
+    "Each of the students is present. Every sample is barcoded. Either of the answers is acceptable. Neither of the plans is ready.",
+    "The number of errors is small. A number of errors are visible. The plural noun errors does not set the first verb.",
+    "Half of the water is contaminated. Half of the bottles are cracked. Twenty percent of the bottles are chipped.",
+    "A collective noun takes a singular verb when the group is one unit: 'The committee has published its report.'",
+    "None may take a singular or a plural verb. Rejecting one of them on principle is not the rule.",
+    "Neither the chart nor the readings are complete, because readings is nearer. Neither the readings nor the chart is complete, because chart is nearer. Either of the plans is ready."
+  ],
+  "examples": [
+    {
+      "title": "The number of, and a number of",
+      "prompt": "Choose the verbs: 'The number of complaints ___ five. A number of complaints ___ still open.'",
+      "steps": [
+        "In the first sentence the subject is the number, a singular count, so the verb is is. The plural complaints does not override it.",
+        "A number of means several. The verb is plural: are.",
+        "The two sentences can stand side by side. They are not contradictory, because the subjects are different."
+      ],
+      "answer": "The number of complaints is five. A number of complaints are still open."
+    },
+    {
+      "title": "A fraction, and the nearer subject",
+      "prompt": "Choose the verbs: 'One third of the solution ___ saline. Neither the chart nor the readings ___ complete.'",
+      "steps": [
+        "Solution in the of-phrase is singular, so the fraction takes is.",
+        "Neither...nor joins two subjects. This is the proximity rule from the conjunctions lesson.",
+        "The nearer subject is readings, which is plural, so the verb is are. If the nouns were swapped, the nearer noun chart would take is."
+      ],
+      "answer": "One third of the solution is saline. Neither the chart nor the readings are complete."
+    }
+  ],
+  "traps": [
+    "'The number of students are' uses the plural noun instead of the singular subject the number.",
+    "'A number of students is' treats several as a single count. A number of takes a plural verb.",
+    "'Each of the students are' agrees with students. Each is the subject and takes is.",
+    "Forbidding a plural verb after none, or forbidding a singular verb after none. Both are allowed.",
+    "Agreeing with the farther subject in neither...nor. The nearer subject wins, exactly as in the conjunctions lesson."
+  ],
+  "python": null,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The number of cracked vials ___ small, but a number of labels ___ missing. Which pair of verbs is correct?",
+      "options": [
+        "is, are",
+        "are, is",
+        "are, are",
+        "is, is"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, is and are. 'The number of' takes a singular verb because the subject is the number. 'A number of' means several and takes a plural verb. The other pairs swap one or both of those rules."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Either of the methods ___ acceptable, and neither the method nor the trials ___ finished. Which pair follows the two agreement rules?",
+      "options": [
+        "is, are",
+        "are, is",
+        "is, is",
+        "are, are"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, is and are. Either of is the subject of the first clause and takes a singular verb, the same rule as neither of. Neither...nor then joins two subjects, and the nearer subject is trials, which is plural, so the second verb is are. That second step is the proximity rule."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Half of the solvent is recovered.",
+        "Half of the specimens are recovered.",
+        "None of the files is missing.",
+        "Each of the files are signed."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Half agrees with the noun in the of-phrase: solvent is singular, specimens is plural. None may take a singular verb, so 'none of the files is missing' is acceptable; a plural verb would also have been acceptable, and this option does not forbid it. Each of takes a singular verb, so 'each of the files are signed' is the one that fails."
+    },
+    {
+      "id": "q4",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The committee is being treated as one unit. Which sentence follows that agreement rule?",
+      "options": [
+        "The committee has published its report.",
+        "The committee have published its report.",
+        "The committee are published its report.",
+        "The committee have publish its report."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. A collective noun takes a singular verb when the group is one unit, and its matches that unit reading. Have published does not agree with the unit. The other two options are not grammatical verb phrases with the object its report."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "How many of the following five sentences are correct? (1) Every sample is barcoded. (2) The number of barcodes are fifty. (3) Twenty percent of the bottles are chipped. (4) None of the bottles are labelled. (5) Neither the bottles nor the cap are labelled. Enter the count.",
+      "options": [],
+      "answer": [
+        "3"
+      ],
+      "solution": "The answer is **3**. Every takes a singular verb, so sentence 1 is correct. 'The number of' takes a singular verb, so sentence 2 is wrong. Twenty percent agrees with bottles, which is plural, so sentence 3 is correct. None may be plural, so sentence 4 is acceptable; a singular verb would also have been acceptable. Sentence 5 fails the proximity rule: the nearer subject is cap, so the verb should be is, not are. The correct sentences are 1, 3, and 4.",
+      "tolerance": 0
+    }
+  ]
+}

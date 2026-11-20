@@ -1,0 +1,161 @@
+{
+  "slug": "projection-matrix",
+  "section": "linear-algebra",
+  "title": "Projection matrices",
+  "syllabus": "Projection matrix",
+  "minutes": 30,
+  "summary": "The orthogonal projection onto the column space of a full-column-rank matrix A is P=A(A^T A)^{-1}A^T. It is symmetric and idempotent, with eigenvalues 0 and 1 only, and trace equal to rank.",
+  "keywords": [
+    "projection matrix",
+    "orthogonal projection",
+    "idempotent",
+    "column space",
+    "trace"
+  ],
+  "intuition": "This lesson is about the matrix of an orthogonal projection, not about the picture of dropping a perpendicular. The picture, the formula $\\mathrm{proj}_u v$, and the normal equations live in the projections lesson. What belongs here is the single matrix $P$ that carries every vector in $\\mathbb{R}^m$ onto a chosen subspace.\n\nIf the subspace is the column space of a real $m\\times n$ matrix $A$ with independent columns, that matrix is $P=A(A^\\top A)^{-1}A^\\top$. Full column rank is the hypothesis that makes $A^\\top A$ square and invertible. The product is an $m\\times m$ matrix. Applying $P$ to a vector $b$ returns the point of the column space closest to $b$. Computing that vector for one $b$ is geometry; the projections lesson does it from the normal equations. The two routes agree.\n\nThree algebraic facts follow from the formula, and they are the ones a question asks you to recognise. First, $P$ is symmetric: $P^\\top=P$. Second, $P$ is idempotent: $P^2=P$. Projecting a vector that is already in the subspace does nothing. Third, the only eigenvalues are $0$ and $1$, because $P^2-P=0$ leaves no room for any other root, and $P$ is diagonalizable. The trace counts the eigenvalues equal to $1$, which is the dimension of the column space, so $\\mathrm{trace}(P)=\\mathrm{rank}(P)$. Symmetry is part of the definition of an orthogonal projection. An idempotent matrix that is not symmetric projects along a slanted direction; that object is the idempotent-matrix lesson, and it is not this $P$.",
+  "definitions": [
+    {
+      "term": "Orthogonal projection matrix",
+      "body": "A square real matrix $P$ is the matrix of an orthogonal projection when $P^\\top=P$ and $P^2=P$. Equivalently, $P$ is symmetric and idempotent. The image of $P$ is the subspace being projected onto."
+    },
+    {
+      "term": "Formula from a basis matrix",
+      "body": "If the columns of $A$ are linearly independent, $P=A(A^\\top A)^{-1}A^\\top$ is the orthogonal projection onto the column space of $A$. The hypothesis is full column rank, so that $A^\\top A$ is invertible."
+    },
+    {
+      "term": "Eigenvalues and trace",
+      "body": "Every eigenvalue of an orthogonal projection matrix is $0$ or $1$. Counting multiplicity, $\\mathrm{trace}(P)$ equals the number of eigenvalues equal to $1$, which equals $\\mathrm{rank}(P)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Orthogonal projection",
+      "latex": "P=A(A^\\top A)^{-1}A^\\top",
+      "note": "$A$ has full column rank. Then $P^2=P=P^\\top$. Eigenvalues are $0$ or $1$, and $\\mathrm{trace}(P)=\\mathrm{rank}(P)$."
+    },
+    {
+      "name": "Orthonormal columns",
+      "latex": "P=AA^\\top\\quad\\text{when}\\quad A^\\top A=I",
+      "note": "The inverse in the general formula is the identity precisely when the columns are already orthonormal."
+    }
+  ],
+  "properties": [
+    "$P^2=P=P^\\top$ for the orthogonal projection onto the column space of a full-column-rank matrix.",
+    "The only possible eigenvalues are $0$ and $1$. A vector in the column space has eigenvalue $1$; a vector orthogonal to every column has eigenvalue $0$.",
+    "$\\mathrm{trace}(P)=\\mathrm{rank}(P)$. For a projection onto a $k$-dimensional subspace of $\\mathbb{R}^m$, the trace is $k$ and the nullity is $m-k$.",
+    "$I-P$ is the orthogonal projection onto the orthogonal complement of the column space. It is also symmetric and idempotent.",
+    "If the columns of $A$ are orthonormal, the formula collapses to $P=AA^\\top$. It does not collapse that far for a general full-rank $A$.",
+    "Symmetry is required. Idempotence alone does not make an orthogonal projection; the idempotent-matrix lesson has a non-symmetric example."
+  ],
+  "examples": [
+    {
+      "title": "Projection onto the line through $(1,1,0)$",
+      "prompt": "Let $A=\\begin{pmatrix}1\\\\1\\\\0\\end{pmatrix}$. Build $P=A(A^\\top A)^{-1}A^\\top$ and check $P^2=P=P^\\top$, the trace, and the eigenvalues.",
+      "steps": [
+        "$A^\\top A=\\begin{pmatrix}1&1&0\\end{pmatrix}\\begin{pmatrix}1\\\\1\\\\0\\end{pmatrix}=2$, so $(A^\\top A)^{-1}=\\tfrac12$. Then $P=\\tfrac12\\begin{pmatrix}1\\\\1\\\\0\\end{pmatrix}\\begin{pmatrix}1&1&0\\end{pmatrix}=\\tfrac12\\begin{pmatrix}1&1&0\\\\1&1&0\\\\0&0&0\\end{pmatrix}$.",
+        "The product of the integer matrix $M=\\begin{pmatrix}1&1&0\\\\1&1&0\\\\0&0&0\\end{pmatrix}$ with itself is $2M$, so $P^2=(M/2)^2=M/2=P$. Also $M$ is symmetric, so $P^\\top=P$. The trace is $\\tfrac12+\\tfrac12+0=1$, and the single column of $A$ is independent, so the rank is $1$.",
+        "Directly, $P(1,1,0)^\\top=(1,1,0)^\\top$, while $P(1,-1,0)^\\top=0$ and $P(0,0,1)^\\top=0$. The eigenvalues are $1,0,0$. Their sum is the trace."
+      ],
+      "answer": "$P=\\tfrac12\\begin{pmatrix}1&1&0\\\\1&1&0\\\\0&0&0\\end{pmatrix}$. It satisfies $P^2=P=P^\\top$, its eigenvalues are $1,0,0$, and $\\mathrm{trace}(P)=\\mathrm{rank}(P)=1$."
+    },
+    {
+      "title": "A rank-$2$ projection in $\\mathbb{R}^3$",
+      "prompt": "Let $A=\\begin{pmatrix}1&0\\\\0&1\\\\1&1\\end{pmatrix}$, which has full column rank. The formula produces $P=\\tfrac13\\begin{pmatrix}2&-1&1\\\\-1&2&1\\\\1&1&2\\end{pmatrix}$. Verify $P^2=P=P^\\top$ and $\\mathrm{trace}(P)=\\mathrm{rank}(P)$. For $b=(1,1,0)^\\top$, name $Pb$ and leave the geometry to the projections lesson.",
+      "steps": [
+        "Let $M=\\begin{pmatrix}2&-1&1\\\\-1&2&1\\\\1&1&2\\end{pmatrix}$, so $P=M/3$. Matrix multiplication gives $M^2=3M$. Therefore $P^2=M^2/9=3M/9=M/3=P$.",
+        "$M$ is symmetric, so $P^\\top=P$. The diagonal sum of $M$ is $2+2+2=6$, hence $\\mathrm{trace}(P)=2$. The two columns of $A$ are independent, so $\\mathrm{rank}(P)=2$.",
+        "Apply $P$ to $b=(1,1,0)^\\top$: $Mb=(1,1,2)^\\top$ and $Pb=\\bigl(\\tfrac13,\\tfrac13,\\tfrac23\\bigr)^\\top$. That vector is the orthogonal projection of $b$ onto the column space. The projections lesson derives the same point from the normal equations; the identities $P^2=P=P^\\top$ stay here."
+      ],
+      "answer": "$P^2=P=P^\\top$, $\\mathrm{trace}(P)=\\mathrm{rank}(P)=2$, and $Pb=\\bigl(\\tfrac13,\\tfrac13,\\tfrac23\\bigr)^\\top$."
+    }
+  ],
+  "traps": [
+    "Using $P=A(AA^\\top)^{-1}A^\\top$. The Gram matrix in the middle is $A^\\top A$, which is $n\\times n$ when $A$ is $m\\times n$ with independent columns. Swapping the order asks a different matrix to be invertible.",
+    "Dropping the inverse and writing $P=AA^\\top$ when the columns are not orthonormal. For $A=\\begin{pmatrix}1\\\\1\\\\0\\end{pmatrix}$, $AA^\\top$ is twice the correct $P$.",
+    "Quoting $P^2=P$ and forgetting symmetry. A non-symmetric idempotent matrix has eigenvalues $0$ and $1$ and trace equal to rank, and it is still not an orthogonal projection.",
+    "Thinking every eigenvalue of a projection has absolute value $1$. That is the orthogonal-matrix fact. A projection of rank less than the ambient dimension has $0$ as an eigenvalue."
+  ],
+  "python": "def mul(A, B):\n    n = len(B)\n    return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(len(B[0]))] for i in range(len(A))]\n\nM = [[1, 1, 0], [1, 1, 0], [0, 0, 0]]\nassert mul(M, M) == [[2, 2, 0], [2, 2, 0], [0, 0, 0]]\nN = [[2, -1, 1], [-1, 2, 1], [1, 1, 2]]\nassert mul(N, N) == [[3 * x for x in row] for row in N]\nassert all(N[i][j] == N[j][i] for i in range(3) for j in range(3))\nassert sum(N[i][i] for i in range(3)) == 6\nb = [1, 1, 0]\nNb = [sum(N[i][j] * b[j] for j in range(3)) for i in range(3)]\nassert Nb == [1, 1, 2]\nprint(2)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "The columns of $A$ are linearly independent. The orthogonal projection matrix onto the column space of $A$ is",
+      "options": [
+        "$A(A^\\top A)^{-1}A^\\top$",
+        "$A(AA^\\top)^{-1}A^\\top$",
+        "$(A^\\top A)^{-1}$",
+        "$AA^\\top$, whether or not the columns are orthonormal"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. Full column rank makes $A^\\top A$ invertible, and $P=A(A^\\top A)^{-1}A^\\top$ is symmetric and idempotent with image equal to the column space. Option B puts the factors in an order that need not even be defined as an inverse of an $n\\times n$ Gram matrix. Option D is the special case $A^\\top A=I$ only."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "An orthogonal projection matrix $P$ satisfies",
+      "options": [
+        "$P^2=I$",
+        "$P^2=P=P^\\top$",
+        "$P^\\top P=I$ and nothing more",
+        "every eigenvalue has absolute value $1$"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Orthogonal projection means symmetric and idempotent, written $P^2=P=P^\\top$. Option A is a reflection or a rotation-type equation, not a projection. Option C is the orthogonal-matrix equation $Q^\\top Q=I$. Eigenvalues of $P$ are $0$ or $1$, so a proper projection has an eigenvalue whose absolute value is not $1$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of every orthogonal projection matrix $P$?",
+      "options": [
+        "Every eigenvalue is $0$ or $1$.",
+        "$\\mathrm{trace}(P)=\\mathrm{rank}(P)$.",
+        "$P$ is symmetric.",
+        "$P$ is an orthogonal matrix whenever $\\mathrm{rank}(P)\\ge 1$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The polynomial $x(x-1)$ annihilates $P$, so the only eigenvalues are $0$ and $1$, and the trace equals the multiplicity of $1$, which is the rank. Symmetry is part of $P^2=P=P^\\top$. D fails as soon as $0$ is an eigenvalue: then $\\det P=0$, so $P$ cannot satisfy $P^\\top P=I$ unless $P=I$."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $P=\\tfrac12\\begin{pmatrix}1&1&0\\\\1&1&0\\\\0&0&0\\end{pmatrix}$. Which of the following are true?",
+      "options": [
+        "$P^2=P$.",
+        "$P^\\top=P$.",
+        "$\\mathrm{trace}(P)=1$.",
+        "$3$ is an eigenvalue of $P$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. If $M$ is the integer matrix inside $P$, then $M^2=2M$, so $P^2=P$. The matrix is symmetric and its diagonal sums to $\\tfrac12+\\tfrac12+0=1$. The eigenvalues are $1,0,0$: explicitly $P(1,1,0)^\\top=(1,1,0)^\\top$ and $P$ kills $(1,-1,0)^\\top$ and $(0,0,1)^\\top$. The value $3$ is not among them."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Let $A=\\begin{pmatrix}1&0\\\\0&1\\\\1&1\\end{pmatrix}$. Enter $\\mathrm{trace}(P)$, where $P$ is the orthogonal projection onto the column space of $A$.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. The two columns of $A$ are linearly independent, so $\\mathrm{rank}(A)=2$ and the projection onto the column space has the same rank. For an orthogonal projection, $\\mathrm{trace}(P)=\\mathrm{rank}(P)$, hence the trace is $2$. The explicit matrix is $\\tfrac13\\begin{pmatrix}2&-1&1\\\\-1&2&1\\\\1&1&2\\end{pmatrix}$, whose diagonal sums to $2$."
+    }
+  ]
+}

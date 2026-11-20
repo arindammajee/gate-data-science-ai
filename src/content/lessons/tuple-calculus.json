@@ -1,0 +1,164 @@
+{
+  "slug": "tuple-calculus",
+  "section": "databases",
+  "title": "Tuple relational calculus",
+  "syllabus": "Tuple calculus",
+  "minutes": 30,
+  "summary": "A tuple-calculus query is a set $\\{t\\mid \\psi(t)\\}$ defined by a formula with quantifiers. A safe query takes every result value from the active domain. The formula says what qualifies; algebra says which operator runs next.",
+  "keywords": [
+    "tuple calculus",
+    "quantifier",
+    "safe query",
+    "active domain",
+    "declarative"
+  ],
+  "intuition": "Tuple calculus describes the result instead of building it. A query is $\\{t\\mid \\psi(t)\\}$: the set of tuples $t$ for which the formula $\\psi$ is true. The formula may say that some tuple $s$ is in a relation, written $\\mathrm{Student}(s)$, that a component equals a constant, or that a component equals a component of another tuple. The connectives are the logical ones, and the quantifiers are $\\exists$ and $\\forall$. There is no $\\sigma$ and no $\\pi$ in the formula. Those symbols belong to relational algebra.\n\nThe calculus is declarative and the algebra is procedural. $\\psi$ says which tuples qualify. An algebra expression says to select, then project, then join, in an order. On safe queries the two languages have the same power: a safe calculus query can be rewritten as an algebra expression, and every algebra expression can be written as a safe calculus query. The lesson's contrast is the shape of the answer, not a difference in which questions can be asked.\n\nSafety is what keeps the set finite and independent of unused values. A safe, domain-independent query draws every value in its result from the active domain: values that appear in the stored tuples, together with constants written in the query. The formula $\\{t\\mid \\neg\\mathrm{Student}(t)\\}$ fails that test. Its result grows whenever the surrounding universe gains a tuple that is not a student. A safe formula never invents such a tuple. The practical pattern is a positive occurrence of a relation that supplies the value, followed by conditions and quantifiers that only compare, restrict, or require those values.",
+  "definitions": [
+    {
+      "term": "Tuple-calculus query",
+      "body": "An expression $\\{t\\mid \\psi(t)\\}$, where $t$ is a tuple variable and $\\psi$ is a first-order formula. Membership of a tuple variable $s$ in a relation $R$ is written $R(s)$, not as an algebra operator."
+    },
+    {
+      "term": "Active domain",
+      "body": "The set of values that occur in the current instance, plus the constants that appear in the query. A result component of a safe query is copied from this set, not taken from a larger universe."
+    },
+    {
+      "term": "Safe query",
+      "body": "A query whose every result value comes from the active domain, so the answer does not change when unused values are added outside that domain. This is the domain-independent fragment used here. $\\{t\\mid \\neg R(t)\\}$ is not safe."
+    },
+    {
+      "term": "Declarative and procedural",
+      "body": "Calculus is declarative: $\\psi$ is the definition of the result. Algebra is procedural: the expression is an order of selections, projections, products, and set operations. $\\sigma$ and $\\pi$ are algebra. $\\exists$ and $\\forall$ are calculus."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Query form",
+      "latex": "\\{t\\mid \\psi(t)\\}",
+      "note": "$\\psi$ uses $\\wedge$, $\\vee$, $\\neg$, $\\exists$, and $\\forall$. It does not use $\\sigma$ or $\\pi$."
+    },
+    {
+      "name": "A value supplied by a tuple",
+      "latex": "\\{t\\mid \\exists s\\,(R(s)\\wedge t.A=s.A\\wedge \\theta(s))\\}",
+      "note": "The equality $t.A=s.A$ copies $A$ out of a stored tuple, which is what makes this shape safe."
+    }
+  ],
+  "properties": [
+    "A safe query takes every result value from the active domain. Adding a value that appears nowhere in the instance and nowhere in the query does not change the result.",
+    "The negation $\\{t\\mid \\neg R(t)\\}$ is not safe. Its answer depends on which tuples the universe contains beyond $R$.",
+    "Calculus is declarative. Algebra is procedural. Safe calculus and relational algebra express the same queries.",
+    "$\\exists$ and $\\forall$ quantify tuple variables. They are not selection and projection, and selection and projection are not quantifiers.",
+    "A universal query \"for every course there is an enrollment\" is safe when the course and the enrollment are both required to be tuples of stored relations."
+  ],
+  "examples": [
+    {
+      "title": "Names of CS students, as a formula",
+      "prompt": "Student contains $(1,\\mathrm{Ada},\\mathrm{CS})$, $(2,\\mathrm{Bo},\\mathrm{EE})$, and $(3,\\mathrm{Cy},\\mathrm{CS})$. Write the safe calculus query for the names of CS students and say what it returns. Name the algebra expression only as a translation.",
+      "steps": [
+        "The formula is $\\{t\\mid \\exists s\\,(\\mathrm{Student}(s)\\wedge s.\\mathrm{dept}=\\mathrm{CS}\\wedge t.\\mathrm{name}=s.\\mathrm{name})\\}$. The quantifier supplies $s$ from the stored relation, and $t.\\mathrm{name}$ is copied from $s.\\mathrm{name}$.",
+        "Ada's tuple satisfies $\\mathrm{dept}=\\mathrm{CS}$, and so does Cy's. Bo's department is EE, so Bo is not copied. The result names are Ada and Cy.",
+        "The algebra translation is $\\pi_{\\mathrm{name}}(\\sigma_{\\mathrm{dept}=\\mathrm{CS}}(\\mathrm{Student}))$, and it returns the same two names. The translation is procedural. The formula did not say which operator to run first."
+      ],
+      "answer": "The safe query returns Ada and Cy, two tuples. Bo is not in the result. The algebra expression is a translation, not part of the calculus formula."
+    },
+    {
+      "title": "Students who take every course",
+      "prompt": "Courses are DB and OS. Enrollments are $(1,\\mathrm{DB})$, $(1,\\mathrm{OS})$, $(2,\\mathrm{DB})$, and $(3,\\mathrm{OS})$. Which of the three students take every course, and why is $\\{t\\mid \\neg\\mathrm{Student}(t)\\}$ a different kind of expression?",
+      "steps": [
+        "The formula says: $t$ is a student, and for every course tuple $c$ there exists an enrollment $e$ with $e.\\mathrm{sid}=t.\\mathrm{sid}$ and $e.\\mathrm{cid}=c.\\mathrm{cid}$. Both quantifiers range over stored tuples.",
+        "Student $1$ has both DB and OS. Student $2$ has no OS tuple. Student $3$ has no DB tuple. Only sid $1$ satisfies the universal condition.",
+        "The names in the result of the earlier query come from the active domain $\\{\\mathrm{Ada},\\mathrm{Bo},\\mathrm{Cy}\\}$. A formula that returns a name such as Dee, who is stored nowhere and written in no constant, is not safe. $\\{t\\mid \\neg\\mathrm{Student}(t)\\}$ does exactly that as soon as the universe contains any non-student."
+      ],
+      "answer": "One student, sid $1$, takes every course. The negated membership formula is not safe, because its values need not come from the active domain."
+    }
+  ],
+  "traps": [
+    "Writing $\\sigma$ or $\\pi$ inside a calculus formula. Those are algebra operators. Calculus uses $\\exists$, $\\forall$, and relation membership.",
+    "Accepting $\\{t\\mid \\neg R(t)\\}$ as a query. It is not safe: result values do not have to come from the active domain.",
+    "Reading $\\forall$ as \"there exists one\". A student who takes a single course fails \"takes every course\" as soon as a second course exists.",
+    "Treating the calculus answer as a procedure. $\\psi$ defines the set. The order of algebra operators is a translation, not part of $\\psi$."
+  ],
+  "python": "students = [\n    {\"sid\": 1, \"name\": \"Ada\", \"dept\": \"CS\"},\n    {\"sid\": 2, \"name\": \"Bo\", \"dept\": \"EE\"},\n    {\"sid\": 3, \"name\": \"Cy\", \"dept\": \"CS\"},\n]\nnames = sorted(s[\"name\"] for s in students if s[\"dept\"] == \"CS\")\nassert names == [\"Ada\", \"Cy\"]\ncourses = {\"DB\", \"OS\"}\nenroll = {(1, \"DB\"), (1, \"OS\"), (2, \"DB\"), (3, \"OS\")}\n\ndef takes_all(sid):\n    return all(any(pair == (sid, course) for pair in enroll) for course in courses)\n\ngot = [s[\"sid\"] for s in students if takes_all(s[\"sid\"])]\nassert got == [1]\nactive = {s[\"name\"] for s in students} | {s[\"dept\"] for s in students}\nassert \"Dee\" not in active\nprint(names, got)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Student contains $(1,\\mathrm{Ada},\\mathrm{CS})$, $(2,\\mathrm{Bo},\\mathrm{EE})$, and $(3,\\mathrm{Cy},\\mathrm{CS})$. The safe query $\\{t\\mid \\exists s\\,(\\mathrm{Student}(s)\\wedge s.\\mathrm{dept}=\\mathrm{CS}\\wedge t.\\mathrm{name}=s.\\mathrm{name})\\}$ returns",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, Ada and Cy.\n\nThe existential quantifier ranges over the three stored tuples. The department test keeps Ada and Cy, and each result name is copied from one of those tuples, which is why the query is safe. Bo fails the test. Option D is the unsafe negation, which this formula is not.",
+      "options": [
+        "Ada and Cy",
+        "Ada, Bo, and Cy",
+        "Ada only",
+        "every name in a larger universe that is not a CS student"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The expression $\\{t\\mid \\neg\\mathrm{Student}(t)\\}$ is rejected as a query because",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nA safe query takes every result value from the active domain. The negated formula is true of tuples that appear in neither the instance nor the query, so its answer changes if the surrounding universe grows. Negation itself is a legal connective inside a larger safe formula. The expression is declarative, and it does not contain $\\sigma$ or $\\pi$.",
+      "options": [
+        "it is not safe: result values need not come from the active domain",
+        "tuple calculus has no negation symbol",
+        "it is procedural rather than declarative",
+        "it uses the algebra operators $\\sigma$ and $\\pi$"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nSafety means every value in the result is taken from the active domain, the values present in the instance or written as constants in the query. The calculus formula defines the set and does not prescribe an operator order, so it is declarative. An algebra expression is an order of operators, so it is procedural. Option D swaps the languages: $\\sigma$ and $\\pi$ are algebra operators, not calculus quantifiers.",
+      "options": [
+        "A safe query takes every result value from the active domain.",
+        "Tuple calculus is declarative: the formula defines which tuples qualify.",
+        "Relational algebra is procedural: the expression orders the operations.",
+        "The symbols $\\sigma$ and $\\pi$ are the tuple-calculus quantifiers."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Courses are DB and OS. Enrollments are $(1,\\mathrm{DB})$, $(1,\\mathrm{OS})$, $(2,\\mathrm{DB})$, and $(3,\\mathrm{OS})$. The query \"students who take every course\" uses $\\forall$ over courses and $\\exists$ over enrollments. Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nStudent $1$ has an enrollment for both courses, so the universal condition holds. Student $2$ has no OS enrollment, so it fails. Student $3$ likewise fails DB; a universal quantifier is not satisfied by a single witness when two courses exist. The same question has an algebra form, while the calculus formula still does not name an operator order.",
+      "options": [
+        "Student $1$ qualifies.",
+        "Student $2$ does not qualify.",
+        "Student $3$ qualifies, because a universal quantifier only needs one course.",
+        "The question has an algebra translation, and the calculus formula still does not name the operator order."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Of the three students in the previous question, how many take every course in $\\{\\mathrm{DB},\\mathrm{OS}\\}$?",
+      "answer": [
+        "1"
+      ],
+      "solution": "The answer is **1**.\n\nOnly student $1$ has both $(1,\\mathrm{DB})$ and $(1,\\mathrm{OS})$. Student $2$ is missing OS and student $3$ is missing DB. The universal quantifier keeps one sid.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

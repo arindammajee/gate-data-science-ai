@@ -1,0 +1,178 @@
+{
+  "slug": "counting-permutations-combinations",
+  "section": "probability",
+  "title": "Counting: permutations and combinations",
+  "syllabus": "Counting (permutations and combinations).",
+  "minutes": 30,
+  "summary": "Count ordered selections with nPr, unordered selections with nCr, words with repeated letters, and combinations that allow repetition.",
+  "keywords": [
+    "permutations",
+    "combinations",
+    "multiset",
+    "repetition",
+    "factorial"
+  ],
+  "intuition": "A permutation counts ordered selections. If nine distinct sensors are available and three different ones must be assigned to the morning, afternoon, and evening checks, the morning slot has 9 choices, the afternoon slot has 8 left, and the evening slot has 7. The product $9\\times 8\\times 7$ is ${}^9P_3$. Order is part of the outcome: sensor A in the morning is not the same roster as sensor A in the evening.\n\nA combination forgets that order. The same three sensors can be lined up in $3!$ ways, so the number of unordered teams is ${}^9P_3/3!=\\binom{9}{3}$. The two symbols are the same count read at different resolutions. Use $nPr$ when the seats are labelled. Use $nCr$ when only the set of chosen objects matters.\n\nRepetition changes the formula, and it changes it in two different ways. If a word contains identical letters, the $n!$ strings formed by shuffling positions overcount the distinct strings by the internal rearrangements of each repeated letter, so divide by $n_1!\\,n_2!\\cdots$. If types may be reused and only the counts matter, as when $r$ scoops are chosen from $n$ flavours, the count is $\\binom{n+r-1}{r}$. That is not $n^r$, which counts ordered lists that allow repeats.",
+  "definitions": [
+    {
+      "term": "Permutation",
+      "body": "The number of ways to choose $r$ objects from $n$ distinct objects and arrange them in order, with no object repeated. It is written ${}^nP_r$ or $P(n,r)$."
+    },
+    {
+      "term": "Combination",
+      "body": "The number of unordered subsets of size $r$ from $n$ distinct objects. It is written $\\binom{n}{r}$ or ${}^nC_r$. Order inside the subset is not an outcome."
+    },
+    {
+      "term": "Multiset permutation",
+      "body": "The number of distinct sequences of length $n$ made from letters with specified repetitions $n_1,n_2,\\ldots,n_k$, where $n_1+\\cdots+n_k=n$. Identical letters are not distinguished."
+    },
+    {
+      "term": "Combination with repetition",
+      "body": "The number of ways to choose $r$ items from $n$ types when a type may be chosen more than once and the order of the choices is ignored. Equivalently, the number of nonnegative integer solutions of $x_1+\\cdots+x_n=r$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Permutations",
+      "latex": "{}^nP_r=\\frac{n!}{(n-r)!}",
+      "note": "Order matters and repetition is not allowed. Requires integers $n\\ge r\\ge 0$. The case $r=0$ is 1 because $0!=1$."
+    },
+    {
+      "name": "Combinations",
+      "latex": "\\binom{n}{r}=\\frac{n!}{r!(n-r)!}=\\frac{{}^nP_r}{r!}",
+      "note": "Order does not matter. Dividing by $r!$ removes the orders of each chosen group."
+    },
+    {
+      "name": "Multiset permutations",
+      "latex": "\\frac{n!}{n_1!\\,n_2!\\cdots n_k!}",
+      "note": "Use this for a word with repeated letters. The $n_i$ are the repetition counts."
+    },
+    {
+      "name": "Combinations with repetition",
+      "latex": "\\binom{n+r-1}{r}",
+      "note": "Combinations from $n$ types, $r$ draws, with replacement of types. This is not $n^r$."
+    }
+  ],
+  "properties": [
+    "$\\binom{n}{r}=\\binom{n}{n-r}$. Choosing who is in the group is the same count as choosing who is left out.",
+    "${}^nP_r=n(n-1)\\cdots(n-r+1)$, a product of $r$ descending factors. In particular ${}^nP_n=n!$ and ${}^nP_1=n$.",
+    "If $r>n$, then $\\binom{n}{r}=0$ when repetition is forbidden, but $\\binom{n+r-1}{r}$ can still be positive.",
+    "Ordered lists that allow repetition are counted by $n^r$. Do not use that formula for an unordered multiset of counts.",
+    "Pascal's identity $\\binom{n}{r}=\\binom{n-1}{r}+\\binom{n-1}{r-1}$ is the same split as 'a fixed object is out' versus 'that object is in'."
+  ],
+  "examples": [
+    {
+      "title": "Labelled shifts versus an unordered team",
+      "prompt": "Nine distinct sensors are available. In how many ways can three different sensors be assigned to the morning, afternoon, and evening checks? How many unordered teams of three sensors can be chosen from the same nine?",
+      "steps": [
+        "The checks are labelled, so order matters and a sensor is used at most once: ${}^9P_3=9\\times 8\\times 7=504$.",
+        "An unordered team does not distinguish the $3!$ orders of the same three sensors, so $\\binom{9}{3}=504/6=84$.",
+        "The ratio of the two counts is $504/84=6$, which is $3!$. Each combination corresponds to six permutations."
+      ],
+      "answer": "$504$ ordered assignments, and $84$ unordered teams."
+    },
+    {
+      "title": "A word with repeated letters",
+      "prompt": "How many distinct strings can be formed by rearranging the letters of BALLOON?",
+      "steps": [
+        "BALLOON has 7 letters: B once, A once, L twice, O twice, and N once.",
+        "If all seven letters were distinct there would be $7!=5040$ strings.",
+        "The two L's are interchangeable and the two O's are interchangeable, so divide by $2!\\,2!$: $5040/(2\\times 2)=1260$."
+      ],
+      "answer": "$1260$ distinct strings."
+    },
+    {
+      "title": "Scoops, where only the counts matter",
+      "prompt": "A shop offers 5 ice-cream flavours. A cup holds 4 scoops. A flavour may be used more than once, and the order of scoops in the cup is not recorded. How many different cups are there?",
+      "steps": [
+        "Let $x_i$ be the number of scoops of flavour $i$. The problem is the number of nonnegative integer solutions of $x_1+\\cdots+x_5=4$.",
+        "That count is the combination-with-repetition number $\\binom{5+4-1}{4}=\\binom{8}{4}$.",
+        "Compute $\\binom{8}{4}=(8\\times 7\\times 6\\times 5)/(4\\times 3\\times 2\\times 1)=70$."
+      ],
+      "answer": "$70$ cups. The ordered-with-repetition count $5^4=625$ answers a different question."
+    }
+  ],
+  "traps": [
+    "Using $\\binom{n}{r}$ when the seats are labelled. A president and a treasurer are a permutation, not a combination.",
+    "Leaving the $n!$ arrangements of a word uncorrected when a letter repeats. BALLOON is not $5040$ distinct strings.",
+    "Using $n^r$ for an unordered selection that allows repetition. $n^r$ counts ordered lists; the unordered count is $\\binom{n+r-1}{r}$.",
+    "Using $\\binom{n}{r}$ when repetition is allowed and $r>n$. That binomial coefficient is 0, but the multiset count is not."
+  ],
+  "python": "import math\nassert math.perm(9, 3) == 504\nassert math.comb(9, 3) == 84\nassert math.factorial(7) // (2 * 2) == 1260\nassert math.comb(5 + 4 - 1, 4) == 70\nassert math.comb(3 + 6 - 1, 6) == 28\nassert math.comb(12, 4) == 495\nassert math.perm(11, 3) == 990\nprint(504, 1260, 70, 28, 495)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A club has 11 distinct members. The number of ways to choose a president, a secretary, and a treasurer, with nobody holding two offices, is",
+      "options": [
+        "$990$",
+        "$165$",
+        "$1331$",
+        "$33$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $990$.\n\nThe three offices are different, so order matters and repetition is forbidden: ${}^{11}P_3=11\\times 10\\times 9=990$. Option B is $\\binom{11}{3}=165$, the unordered committee. Option C is $11^3$, which would allow one person to hold every office. Option D is $11\\times 3$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The number of distinct strings formed by rearranging the letters of ARRANGE is",
+      "options": [
+        "$1260$",
+        "$5040$",
+        "$2520$",
+        "$630$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1260$.\n\nARRANGE has 7 letters, with A repeated twice and R repeated twice. The count is $7!/(2!\\,2!)=5040/4=1260$. Option B forgets both divisions. Option C divides by only one $2!$. Option D divides by an extra $2!$, as if a third letter were also repeated."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true for integers $n\\ge r\\ge 0$?",
+      "options": [
+        "${}^nP_r=n!/(n-r)!$.",
+        "$\\binom{n}{r}={}^nP_r/r!$.",
+        "The number of unordered selections of $r$ items from $n$ types, with repetition allowed, is $n^r$.",
+        "$\\binom{n}{r}=\\binom{n}{n-r}$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA is the definition of a permutation without repetition. B removes the $r!$ orders inside each combination. D is the symmetry of binomial coefficients, including the endpoints $\\binom{n}{0}=\\binom{n}{n}=1$. C is false: $n^r$ counts ordered lists that allow repetition. The unordered count is $\\binom{n+r-1}{r}$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Three pastry varieties are on sale. A box contains 6 pastries. A variety may be chosen more than once, and only the number of each variety matters. The number of different boxes is $N$. Enter $N$.",
+      "options": [],
+      "answer": [
+        "28"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **28**.\n\nThis is the number of nonnegative integer solutions of $x_1+x_2+x_3=6$, which is $\\binom{3+6-1}{6}=\\binom{8}{6}=\\binom{8}{2}=(8\\times 7)/2=28$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "From 12 distinct problems, the number of ways to choose 4 of them for a quiz, where the order of the four problems does not matter, is $N$. Enter $N$.",
+      "options": [],
+      "answer": [
+        "495"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **495**.\n\nOrder does not matter, so the count is $\\binom{12}{4}=(12\\times 11\\times 10\\times 9)/(4\\times 3\\times 2\\times 1)=11880/24=495$. The permutation ${}^{12}P_4=11880$ would be the answer only if the four slots were labelled."
+    }
+  ]
+}

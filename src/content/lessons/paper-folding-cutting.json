@@ -1,0 +1,160 @@
+{
+  "slug": "paper-folding-cutting",
+  "section": "aptitude",
+  "title": "Paper folding and cutting",
+  "syllabus": "Paper folding and cutting",
+  "minutes": 30,
+  "summary": "Each fold reflects the paper across the crease. A punch through the packet becomes one hole per layer, and unfolding applies those reflections in reverse.",
+  "keywords": [
+    "fold",
+    "punch",
+    "reflection",
+    "crease",
+    "holes"
+  ],
+  "intuition": "A fold does not invent a new hole. It stacks layers, and a punch goes through every layer in the stack. Unfolding is reflection across the crease you just made. If the crease is the line x = 2 on a square that runs from x = 0 to x = 4, the reflection of a point is x' = 4 − x, and y is unchanged. The same rule with the axes swapped handles a horizontal crease y = 2: y' = 4 − y.\n\nOne fold and one punch therefore produce two holes, unless the punch sits on the crease and the two images coincide. Two folds that halve the square each way produce four layers. A punch at (1, 1) in the final packet hits (1, 1), its reflection across x = 2, its reflection across y = 2, and the reflection across both creases. Those four points are (1, 1), (3, 1), (1, 3), and (3, 3).\n\nWork backwards from the punch. The last fold is the first reflection you undo. Writing the coordinates at each stage is more reliable than trying to see the paper. ",
+  "definitions": [
+    {
+      "term": "Crease",
+      "body": "The line the paper is folded along. Unfolding reflects holes across that line."
+    },
+    {
+      "term": "Packet",
+      "body": "The folded paper. A punch at one point of the packet passes through every layer stacked there."
+    },
+    {
+      "term": "Preimage of a punch",
+      "body": "The points on the original sheet that land on the punched point after the folds. Each preimage becomes a hole when the sheet is opened."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Reflect across x = 2",
+      "latex": "(x,y)\\mapsto(4-x,\\ y)",
+      "note": "On a sheet from x = 0 to x = 4, the midline is x = 2, and this is reflection across it."
+    },
+    {
+      "name": "Reflect across y = 2",
+      "latex": "(x,y)\\mapsto(x,\\ 4-y)",
+      "note": "The matching rule for a horizontal midline. Apply one rule per fold."
+    }
+  ],
+  "properties": [
+    "A single fold doubles the number of holes from one punch, unless the punch is on the crease.",
+    "Two successive midline folds, one vertical and one horizontal, give four holes from one punch in the interior of the packet.",
+    "The order of two reflections in perpendicular midlines does not change the final set of holes. Both orders produce the same four-point set.",
+    "Holes are reflections of the punch. They are not rotations, unless the fold itself was a rotation, which a simple fold is not.",
+    "Unfold in the reverse order of folding. The last crease is the first reflection."
+  ],
+  "examples": [
+    {
+      "title": "One vertical fold",
+      "prompt": "A square runs from (0, 0) to (4, 4). Fold the right half over the left along x = 2, then punch the packet at (1, 2). Where are the holes when the sheet is opened?",
+      "steps": [
+        "The punch hits the layer that was already on the left, at (1, 2).",
+        "The right half was folded across x = 2, so the other layer at that point came from (4−1, 2) = (3, 2).",
+        "Opening the sheet reflects the punch back across the crease. The holes are (1, 2) and (3, 2). The y-coordinate never changed."
+      ],
+      "answer": "Holes at (1, 2) and (3, 2).",
+      "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='-0.4 -0.4 4.8 4.8' width='200' height='200'><rect x='0' y='0' width='4' height='4' fill='none' stroke='#c3b9a8'/><line x1='2' y1='0' x2='2' y2='4' stroke='#e2a24a' stroke-dasharray='0.15 0.1'/><circle cx='1' cy='2' r='0.12' fill='#e2a24a'/><circle cx='3' cy='2' r='0.12' fill='#9dcc8a'/></svg>"
+    },
+    {
+      "title": "Two folds and four holes",
+      "prompt": "Start with the same square. Fold across x = 2 so the packet is the left half, then fold across y = 2 so the packet is the bottom-left quarter. Punch (1, 1). List the holes on the opened sheet.",
+      "steps": [
+        "The final packet has four layers. The punch at (1, 1) has one preimage with no reflection: (1, 1).",
+        "Reflect across x = 2 to get (3, 1). Reflect across y = 2 to get (1, 3). Reflect across both to get (3, 3).",
+        "Those are the four holes. Doing the horizontal fold first and the vertical fold second produces the same four points."
+      ],
+      "answer": "Holes at (1, 1), (3, 1), (1, 3), and (3, 3)."
+    }
+  ],
+  "traps": [
+    "Reflecting across the wrong line. On this sheet the vertical midline sends x to 4−x, not to −x. The origin is a corner of the paper, not the centre.",
+    "Counting the punch once. One punch through two layers is two holes after the sheet is opened.",
+    "Rotating the hole instead of reflecting it. A fold across x = 2 keeps y the same.",
+    "Undoing the folds in the order they were made. Undo the last fold first. For the two midline folds the final set happens to be the same either way, which is not a reason to skip the order on a longer sequence."
+  ],
+  "python": "def reflect_x(p):\n    x, y = p\n    return (4 - x, y)\ndef reflect_y(p):\n    x, y = p\n    return (x, 4 - y)\npunch = (1, 1)\nholes = {punch, reflect_x(punch), reflect_y(punch), reflect_x(reflect_y(punch))}\nassert holes == {(1, 1), (3, 1), (1, 3), (3, 3)}\nassert reflect_x((1, 2)) == (3, 2)\nprint(len(holes))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A square from (0, 0) to (4, 4) is folded along x = 2, right over left, and the packet is punched at (1, 3). The opened sheet has holes at",
+      "options": [
+        "(1, 3) only",
+        "(1, 3) and (3, 3)",
+        "(1, 3) and (1, 1)",
+        "(3, 1) and (1, 3)"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. Reflection across x = 2 sends (1, 3) to (3, 3) and leaves y unchanged. Option C is the reflection of a horizontal fold. Option A forgets the second layer."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The same square is folded across x = 2 and then across y = 2, leaving the bottom-left quarter as the packet. A punch at (1, 1) produces which set of holes?",
+      "options": [
+        "(1, 1) and (3, 1)",
+        "(1, 1), (3, 1), (1, 3), and (3, 3)",
+        "(1, 1) and (3, 3) only",
+        "(0, 0), (4, 0), (0, 4), and (4, 4)"
+      ],
+      "answer": [
+        "B"
+      ],
+      "solution": "The answer is **B**. The four layer-preimages are (1, 1), (4−1, 1) = (3, 1), (1, 4−1) = (1, 3), and (3, 3). The corners of the sheet would be the images of a punch at (0, 0), which is not the punch in the question."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "A sheet from (0, 0) to (4, 4) is folded once, along x = 2. Which of the following are true?",
+      "options": [
+        "A punch at (1, 2) also produces a hole at (3, 2).",
+        "A punch at (2, 1), on the crease, produces two distinct holes.",
+        "The reflection rule for this crease is (x, y) → (4−x, y).",
+        "This fold reflects y and leaves x unchanged."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**. (1, 2) reflects to (3, 2). The rule changes x and keeps y. A punch on the crease x = 2 reflects to itself, so it does not create a second distinct hole."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "After the two midline folds described above, a punch at (1, 1) leaves holes at which of these points?",
+      "options": [
+        "(1, 1)",
+        "(3, 1)",
+        "(1, 3)",
+        "(2, 2)"
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The fourth hole is (3, 3), which is not listed, and (2, 2) is the centre of the sheet, the intersection of the creases, not an image of (1, 1). The three listed points are three of the four holes. The question asks which of these points are holes, and those three are."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "A square sheet is folded in half vertically and then in half horizontally, and the resulting packet is punched once in its interior, off both creases. Enter the number of holes on the opened sheet.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**. Each fold doubles the layers, so two folds give four layers. An interior punch off the creases meets four distinct preimages."
+    }
+  ]
+}

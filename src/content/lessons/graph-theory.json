@@ -1,0 +1,173 @@
+{
+  "slug": "graph-theory",
+  "section": "programming",
+  "title": "Graphs, degrees, and trees",
+  "syllabus": "Basic graph theory",
+  "minutes": 30,
+  "summary": "A simple graph has no loops and no parallel edges. The sum of the degrees is twice the number of edges, and a tree is a connected acyclic graph, equivalently a connected graph with one fewer edge than vertices.",
+  "keywords": [
+    "degree",
+    "handshaking",
+    "tree",
+    "adjacency list",
+    "simple graph"
+  ],
+  "intuition": "An undirected simple graph is a finite set of vertices and a set of edges, each edge a pair of distinct vertices, with at most one edge per pair. A directed graph uses ordered pairs instead, so the edge from $u$ to $v$ is not the edge from $v$ to $u$. A loop, an edge from a vertex to itself, and a second edge on a pair that already has one, both take the graph outside the simple case. A weighted edge is the same pair with a number attached. The number is the cost or the length that a later shortest-path algorithm will add up; the representation just has to store it.\n\nThe handshaking lemma is the first numerical check. In an undirected graph each edge contributes to two degrees, so $\\sum_v \\deg(v)=2|E|$. The sum is even, and therefore the number of odd-degree vertices is even. An even sum is necessary and not sufficient: a sequence can pass the parity test and still be impossible to draw. In a directed graph the matching identity is different. Each edge leaves one vertex and enters one vertex, so the sum of the out-degrees equals $|E|$, and the sum of the in-degrees equals $|E|$ as well.\n\nA path is a walk that does not repeat a vertex. A cycle in a simple undirected graph is a closed path of length at least $3$. A graph is connected when every pair of vertices is joined by a path. For a finite undirected graph the following are equivalent: the graph is a tree, meaning connected and acyclic; the graph is connected and $|E|=|V|-1$. A connected graph with a cycle has at least $|V|$ edges. Two representations matter for the algorithms that follow. An adjacency matrix uses $\\Theta(|V|^2)$ cells and answers \"is there an edge?\" in constant time. An adjacency list uses $\\Theta(|V|+|E|)$ space and lists the neighbours of a vertex in time proportional to its degree.",
+  "definitions": [
+    {
+      "term": "Simple graph",
+      "body": "Undirected, no loops, and no two edges on the same pair of vertices. The maximum number of edges on $n$ vertices is $n(n-1)/2$."
+    },
+    {
+      "term": "Degree",
+      "body": "In an undirected graph, the number of edges incident to a vertex. In a directed graph, the out-degree is the number of edges leaving the vertex and the in-degree is the number entering it."
+    },
+    {
+      "term": "Path, cycle, connected",
+      "body": "A path does not repeat a vertex. A cycle is a closed path; in a simple undirected graph its length is at least $3$. The graph is connected when a path joins every pair of vertices."
+    },
+    {
+      "term": "Tree",
+      "body": "A finite undirected graph that is connected and acyclic. Equivalently, it is connected and $|E|=|V|-1$. Adding any missing edge creates exactly one cycle."
+    },
+    {
+      "term": "Weighted edge",
+      "body": "An edge stored with a number. An adjacency matrix stores that number in the corresponding cell, using a sentinel for a missing edge. An adjacency list stores the neighbour together with the weight."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Handshaking",
+      "latex": "\\sum_v \\deg(v)=2|E|",
+      "note": "Undirected graphs. The directed form is $\\sum_v \\mathrm{out}(v)=\\sum_v \\mathrm{in}(v)=|E|$."
+    },
+    {
+      "name": "Tree edge count",
+      "latex": "|E|=|V|-1",
+      "note": "Together with connectedness, this is equivalent to being connected and acyclic."
+    },
+    {
+      "name": "Space of the two representations",
+      "latex": "\\Theta(|V|+|E|)\\quad\\text{versus}\\quad\\Theta(|V|^2)",
+      "note": "Adjacency lists versus an adjacency matrix. A weighted list stores a weight beside each neighbour."
+    }
+  ],
+  "properties": [
+    "The number of odd-degree vertices in an undirected graph is even, because the degree sum is $2|E|$.",
+    "A finite undirected graph is a tree if and only if it is connected and acyclic, if and only if it is connected and $|E|=|V|-1$.",
+    "A connected undirected graph with $|E|\\ge |V|$ contains a cycle. A tree on $n\\ge 2$ vertices has a vertex of degree $1$.",
+    "An adjacency list is the representation on which BFS and DFS run in $\\Theta(|V|+|E|)$ time. A matrix forces a $\\Theta(|V|^2)$ scan to find every neighbour.",
+    "Between any two vertices of a tree there is exactly one path. The same graph with one extra edge has exactly one cycle."
+  ],
+  "examples": [
+    {
+      "title": "A path on six vertices is a tree",
+      "prompt": "Vertices $A,B,C,D,E,F$ and edges $AB, BC, CD, DE, EF$. Check the degree sum, the edge count, and whether the graph is a tree.",
+      "steps": [
+        "The degrees are $1, 2, 2, 2, 2, 1$. Their sum is $10$, so $|E|=10/2=5$. There are two odd-degree vertices, and $2$ is even.",
+        "The drawing is a single path, so it is connected, and a path does not repeat a vertex, so it has no cycle.",
+        "Also $|V|-1=5=|E|$. Connectedness together with this edge count is the tree test, and it agrees with connectedness together with the absence of a cycle."
+      ],
+      "answer": "The graph is a tree: $5$ edges on $6$ vertices, connected and acyclic. The degree sum $10$ matches $2|E|$."
+    },
+    {
+      "title": "Parity is not enough, and the matrix is quadratic",
+      "prompt": "The sequence $3, 3, 3, 1$ has even sum. Does a simple undirected graph realise it? Separately, how large are the two representations of a graph with $100$ vertices and $200$ edges?",
+      "steps": [
+        "The sum is $3+3+3+1=10$, which is even, so handshaking would require $|E|=5$ if a graph existed. The parity test does not reject the sequence.",
+        "Suppose the three degree-$3$ vertices exist on four vertices. Each of them is adjacent to all three others, including the remaining vertex. That remaining vertex would then have degree at least $3$, not $1$. The sequence is not graphic.",
+        "For $|V|=100$ and $|E|=200$, the matrix has $100^2=10000$ cells. The undirected adjacency lists store $2\\times 200=400$ neighbour references. The list bound is $\\Theta(|V|+|E|)$; the matrix bound is $\\Theta(|V|^2)$."
+      ],
+      "answer": "No simple graph has degrees $3, 3, 3, 1$. A $100$-vertex, $200$-edge graph uses $10000$ matrix cells and $400$ list references."
+    }
+  ],
+  "traps": [
+    "Using $\\sum \\deg(v)=2|E|$ for the out-degrees of a directed graph. The sum of the out-degrees equals $|E|$, not $2|E|$.",
+    "Treating an even degree sum as a guarantee that the sequence is graphic. $3, 3, 3, 1$ sums to $10$ and is not the degree sequence of any simple graph.",
+    "Calling a connected graph a tree because it has $n$ vertices, without checking $|E|=n-1$ or the absence of a cycle. One extra edge creates a cycle.",
+    "Quoting $\\Theta(|V|+|E|)$ space for an adjacency matrix. That bound is the list. The matrix is $\\Theta(|V|^2)$ even when the graph is a tree."
+  ],
+  "python": "degrees = [1, 2, 2, 2, 2, 1]\nassert sum(degrees) == 10 and sum(degrees) // 2 == 5 == 6 - 1\nassert sum(d % 2 for d in degrees) % 2 == 0\ntarget = [3, 3, 3, 1]\nassert sum(target) % 2 == 0\nfrom itertools import combinations\npossible = list(combinations(range(4), 2))\nfound = False\nfor mask in range(1 << len(possible)):\n    got = [0, 0, 0, 0]\n    for bit, (u, v) in enumerate(possible):\n        if mask & (1 << bit):\n            got[u] += 1\n            got[v] += 1\n    found = found or sorted(got) == sorted(target)\nassert not found\nassert 100 * 100 == 10000 and 2 * 200 == 400\nprint(sum(degrees) // 2, 10000)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "An undirected graph has degree sequence $2, 2, 2, 2, 2, 2$. The handshaking lemma gives $|E|$ equal to",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $6$.\n\nThe degrees sum to $12$, and $|E|$ is half of that sum, so $|E|=6$. Option B is the degree sum itself, which is $2|E|$, not $|E|$. This sequence is a disjoint union of cycles, or one $6$-cycle, and both have $6$ edges.",
+      "options": [
+        "$6$",
+        "$12$",
+        "$2$",
+        "$7$"
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A finite undirected graph is connected and has $15$ vertices and $14$ edges. The graph is",
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, a tree.\n\nA finite undirected graph is a tree exactly when it is connected and $|E|=|V|-1$. Here $14=15-1$, and the graph is connected, so it is acyclic as well. Option C has the equivalence backwards: this pair of conditions rules a cycle out. It does not leave the question open.",
+      "options": [
+        "a tree",
+        "disconnected",
+        "forced to contain a cycle by the count $|E|=|V|-1$",
+        "the complete graph on $15$ vertices"
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of finite undirected graphs?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nEach undirected edge contributes $1$ to two degrees, so the degree sum is $2|E|$, and an even sum forces an even number of odd degrees. An adjacency matrix stores $\\Theta(|V|^2)$ cells whether or not the edges are sparse; an adjacency list stores $\\Theta(|V|+|E|)$. Option C is false: a tree on $n$ vertices has $n-1$ edges, not $n$.",
+      "options": [
+        "The sum of the degrees equals twice the number of edges.",
+        "The number of odd-degree vertices is even.",
+        "A tree on $n$ vertices has $n$ edges.",
+        "An adjacency matrix uses $\\Theta(|V|^2)$ cells, and an adjacency list uses $\\Theta(|V|+|E|)$ space."
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA simple undirected graph has at most one edge per pair, and there are $n(n-1)/2$ pairs. In a directed graph each edge contributes to exactly one out-degree, so the out-degrees sum to $|E|$. Adding an edge to a tree joins two vertices that already had one path, and the new edge plus that path is the only new cycle. Option C is false: a connected graph with a cycle has at least $|V|$ edges.",
+      "options": [
+        "A simple undirected graph on $n$ vertices has at most $n(n-1)/2$ edges.",
+        "In a directed graph, the sum of the out-degrees equals the number of edges.",
+        "A connected undirected graph that contains a cycle satisfies $|E|=|V|-1$.",
+        "Adding one edge to a tree creates exactly one cycle."
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A connected acyclic undirected graph has $18$ vertices. How many edges does it have?",
+      "answer": [
+        "17"
+      ],
+      "solution": "The answer is **17**.\n\nA finite undirected graph that is connected and acyclic is a tree, and a tree satisfies $|E|=|V|-1$. With $18$ vertices the edge count is $17$.",
+      "options": [],
+      "tolerance": 0
+    }
+  ]
+}

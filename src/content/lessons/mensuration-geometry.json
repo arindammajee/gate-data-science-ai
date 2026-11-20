@@ -1,0 +1,173 @@
+{
+  "slug": "mensuration-geometry",
+  "section": "aptitude",
+  "title": "Mensuration and geometry",
+  "syllabus": "Areas and volumes of plane figures and solids",
+  "minutes": 30,
+  "summary": "Use the stated formulas for a rectangle, a triangle, a circle, a cylinder, a sphere, and a cube, keep the units straight, and add the volumes of a cylinder and a hemisphere.",
+  "keywords": [
+    "area",
+    "volume",
+    "Heron",
+    "Pythagoras",
+    "cylinder",
+    "sphere"
+  ],
+  "intuition": "Mensuration questions are a match between a shape and a formula you have already written down. This lesson uses a rectangle of length $l$ and width $w$, with area $lw$ and perimeter $2(l+w)$; a triangle, with area $\\tfrac12 ab\\sin C$ and also Heron's formula once the semi-perimeter $s=(a+b+c)/2$ is defined; a circle, with area $\\pi r^2$ and circumference $2\\pi r$; a cylinder, with volume $\\pi r^2 h$ and curved surface area $2\\pi r h$; a sphere, with volume $\\tfrac43\\pi r^3$ and surface area $4\\pi r^2$; and a cube of side $a$, with volume $a^3$ and surface area $6a^2$. A right angle also brings Pythagoras: if the legs are $a$ and $b$ and the hypotenuse is $c$, then $a^2+b^2=c^2$.\n\nUnits travel with the quantity. Lengths add to a length. An area is in square centimetres. A volume is in cubic centimetres. Multiplying three lengths produces a volume, and it does not produce an area.\n\nA solid made of two pieces has the volume of the first piece plus the volume of the second, provided you do not count the shared face as a third solid. The worked solid is a cylinder with a hemisphere of the same radius on one end. The hemisphere is half a sphere, so its volume is half of $\\tfrac43\\pi r^3$, which is $\\tfrac23\\pi r^3$. That half is stated here because it is used. No formula is used before it is stated.",
+  "definitions": [
+    {
+      "term": "Semi-perimeter",
+      "body": "For a triangle with sides $a$, $b$, and $c$, $s=(a+b+c)/2$. Heron's formula is $\\sqrt{s(s-a)(s-b)(s-c)}$."
+    },
+    {
+      "term": "Curved surface of a cylinder",
+      "body": "The lateral area $2\\pi r h$, not including the two circular ends. The volume $\\pi r^2 h$ is a different quantity."
+    },
+    {
+      "term": "Hemisphere as half a sphere",
+      "body": "A hemisphere of radius $r$ has volume half of $\\tfrac43\\pi r^3$, that is $\\tfrac23\\pi r^3$. The sphere formulas are $V=\\tfrac43\\pi r^3$ and $S=4\\pi r^2$."
+    },
+    {
+      "term": "Right triangle",
+      "body": "A triangle with a right angle. The legs $a$ and $b$ and hypotenuse $c$ satisfy $a^2+b^2=c^2$, and the area is $\\tfrac12 ab$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Triangle",
+      "latex": "\\text{area}=\\tfrac12 ab\\sin C=\\sqrt{s(s-a)(s-b)(s-c)}",
+      "note": "$s=(a+b+c)/2$. For a right angle between sides $a$ and $b$, $\\sin C=1$ and the area is $\\tfrac12 ab$."
+    },
+    {
+      "name": "Circle and sphere",
+      "latex": "A=\\pi r^2,\\ C=2\\pi r,\\quad V=\\tfrac43\\pi r^3,\\ S=4\\pi r^2",
+      "note": "The sphere surface is $4\\pi r^2$. The factor $\\tfrac43\\pi r^3$ is the volume, not the surface."
+    },
+    {
+      "name": "Cylinder",
+      "latex": "V=\\pi r^2 h,\\quad \\text{curved area}=2\\pi r h",
+      "note": "Curved area excludes the two bases."
+    },
+    {
+      "name": "Rectangle, cube, Pythagoras",
+      "latex": "lw,\\ 2(l+w),\\quad a^3,\\ 6a^2,\\quad a^2+b^2=c^2",
+      "note": "Rectangle area and perimeter, cube volume and surface area, then the right-triangle relation."
+    }
+  ],
+  "properties": [
+    "Area is measured in square units and volume in cubic units. A radius in centimetres gives an area in $\\text{cm}^2$ and a volume in $\\text{cm}^3$.",
+    "For sides 8, 15, and 17, $8^2+15^2=64+225=289=17^2$, so the triangle is right-angled and the area is $\\tfrac12\\times 8\\times 15=60$.",
+    "Heron's formula on the same triangle, with $s=20$, returns $\\sqrt{20\\times 3\\times 5\\times 12}=\\sqrt{3600}=60$. The two area formulas agree.",
+    "A cylinder of radius 3 cm and height 4 cm has volume $36\\pi\\ \\text{cm}^3$ and curved surface $24\\pi\\ \\text{cm}^2$.",
+    "Half of the sphere volume $\\tfrac43\\pi r^3$ at $r=3$ is $18\\pi$. Adding that hemisphere to the cylinder gives $36\\pi+18\\pi=54\\pi\\ \\text{cm}^3$."
+  ],
+  "examples": [
+    {
+      "title": "The same triangle by Pythagoras and by Heron",
+      "prompt": "A triangle has sides 8 cm, 15 cm, and 17 cm. Show that it is right-angled, and find its area in two ways. Also record the area and perimeter of a 12 cm by 5 cm rectangle, for the unit contrast.",
+      "steps": [
+        "Check Pythagoras: $8^2+15^2=64+225=289=17^2$. The angle between the sides of 8 cm and 15 cm is a right angle, so one area formula gives $\\tfrac12\\times 8\\times 15=60\\ \\text{cm}^2$.",
+        "The semi-perimeter is $(8+15+17)/2=20$. Heron's formula gives $\\sqrt{20(20-17)(20-15)(20-8)}=\\sqrt{20\\times 3\\times 5\\times 12}=\\sqrt{3600}=60\\ \\text{cm}^2$.",
+        "The rectangle has area $12\\times 5=60\\ \\text{cm}^2$ and perimeter $2(12+5)=34$ cm. Same number of area units as the triangle, different shape, and the perimeter is a length, not an area."
+      ],
+      "answer": "The triangle is right-angled with area $60\\ \\text{cm}^2$ by both formulas. The rectangle has area $60\\ \\text{cm}^2$ and perimeter 34 cm."
+    },
+    {
+      "title": "A cylinder with a hemisphere on one end",
+      "prompt": "A solid is a cylinder of radius 3 cm and height 4 cm with a hemisphere of radius 3 cm attached at one end. Find the volume. Also state the cube of side 5 cm for comparison.",
+      "steps": [
+        "The cylinder volume is $\\pi r^2 h=\\pi\\times 9\\times 4=36\\pi\\ \\text{cm}^3$.",
+        "The sphere of radius 3 cm has volume $\\tfrac43\\pi\\times 27=36\\pi\\ \\text{cm}^3$. The hemisphere is half of that, $18\\pi\\ \\text{cm}^3$.",
+        "The solid's volume is $36\\pi+18\\pi=54\\pi\\ \\text{cm}^3$. A cube of side 5 cm has volume $5^3=125\\ \\text{cm}^3$ and surface area $6\\times 25=150\\ \\text{cm}^2$, which are not multiples of $\\pi$ because the cube is not round."
+      ],
+      "answer": "The combined volume is $54\\pi\\ \\text{cm}^3$. The cube has volume $125\\ \\text{cm}^3$."
+    }
+  ],
+  "traps": [
+    "Using $\\tfrac43\\pi r^3$ as the surface area of a sphere. That is the volume. The surface area is $4\\pi r^2$.",
+    "Calling $2\\pi r h$ the volume of a cylinder. That is the curved surface. The volume is $\\pi r^2 h$.",
+    "Adding a hemisphere of radius 3 cm as a full sphere, which would give $36\\pi+36\\pi=72\\pi$ instead of $54\\pi$.",
+    "Reporting an area in cm or a volume in $\\text{cm}^2$. The rectangle perimeter is 34 cm; its area is $60\\ \\text{cm}^2$."
+  ],
+  "python": "assert 12 * 5 == 60\nassert 2 * (12 + 5) == 34\nassert 8 ** 2 + 15 ** 2 == 17 ** 2 == 289\ns = (8 + 15 + 17) // 2\nassert s == 20\nheron_sq = s * (s - 17) * (s - 15) * (s - 8)\nassert heron_sq == 3600\nassert heron_sq ** 0.5 == 60\nassert (8 * 15) // 2 == 60\nassert 3 ** 2 * 4 == 36\nassert 2 * 3 * 4 == 24\nsphere_coeff = (4 * 3 ** 3) // 3\nassert sphere_coeff == 36\nhemi = sphere_coeff // 2\nassert hemi == 18\nassert 36 + 18 == 54\nassert 5 ** 3 == 125\nassert 6 * 5 ** 2 == 150\nprint(54)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A triangle has sides 8 cm, 15 cm, and 17 cm, and $8^2+15^2=17^2$. Its area is",
+      "options": [
+        "$60\\ \\text{cm}^2$",
+        "$120\\ \\text{cm}^2$",
+        "$17$ cm",
+        "$40\\ \\text{cm}^2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $60\\ \\text{cm}^2$. The right angle gives $\\tfrac12\\times 8\\times 15=60$. Heron agrees: $s=20$ and $\\sqrt{20\\times 3\\times 5\\times 12}=\\sqrt{3600}=60$. Option B is the product $8\\times 15$ without the factor $\\tfrac12$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "A cylinder of radius 3 cm and height 4 cm has a hemisphere of the same radius attached at one end. The volume of the solid is",
+      "options": [
+        "$54\\pi\\ \\text{cm}^3$",
+        "$36\\pi\\ \\text{cm}^3$",
+        "$18\\pi\\ \\text{cm}^3$",
+        "$72\\pi\\ \\text{cm}^3$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $54\\pi\\ \\text{cm}^3$. The cylinder is $\\pi r^2 h=36\\pi$. The full sphere is $\\tfrac43\\pi r^3=36\\pi$, so the hemisphere is $18\\pi$. The sum is $54\\pi$. Option B is the cylinder alone, and option D is what you would get by adding a full sphere."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "A rectangle is 12 cm by 5 cm, and a cube has side 5 cm. A sphere has radius $r$. Which of the following are true?",
+      "options": [
+        "The rectangle has area $60\\ \\text{cm}^2$.",
+        "The rectangle has perimeter 34 cm.",
+        "The cube has volume $125\\ \\text{cm}^3$.",
+        "The surface area of the sphere is $\\tfrac43\\pi r^3$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The rectangle area is $12\\times 5=60\\ \\text{cm}^2$ and the perimeter is $2(12+5)=34$ cm. The cube volume is $5^3=125\\ \\text{cm}^3$. Option D quotes the sphere volume formula as if it were the surface area. The surface area is $4\\pi r^2$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "A right triangle has legs 8 cm and 15 cm. Enter the hypotenuse in centimetres.",
+      "options": [],
+      "answer": [
+        "17"
+      ],
+      "solution": "The answer is **17**. Pythagoras gives $c^2=8^2+15^2=64+225=289$, and $c=\\sqrt{289}=17$ since a length is positive. The area $60$ is not the hypotenuse.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A cylinder has radius 3 cm and height 4 cm. Its curved surface area, excluding the two bases, is",
+      "options": [
+        "$24\\pi\\ \\text{cm}^2$",
+        "$36\\pi\\ \\text{cm}^2$",
+        "$12\\pi\\ \\text{cm}^2$",
+        "$6\\pi\\ \\text{cm}^2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $24\\pi\\ \\text{cm}^2$. The curved area is $2\\pi r h=2\\pi\\times 3\\times 4=24\\pi$. Option B, $36\\pi$, is the volume coefficient $\\pi r^2 h$, which is a volume in $\\text{cm}^3$, not the curved area."
+    }
+  ]
+}

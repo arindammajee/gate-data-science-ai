@@ -1,0 +1,302 @@
+{
+  "weeks": [
+    {
+      "id": "1",
+      "title": "Counting through joint probability",
+      "blurb": "Get the language of events straight before any distribution appears. Independence and mutual exclusion are different claims.",
+      "section": "probability",
+      "slugs": [
+        "counting-permutations-combinations",
+        "probability-axioms",
+        "sample-space",
+        "events",
+        "independent-events",
+        "mutually-exclusive-events",
+        "marginal-probability",
+        "conditional-probability",
+        "joint-probability",
+        "bayes-theorem"
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Expectation, summaries, random variables",
+      "blurb": "Bayes is in the previous week; this week is how random quantities are summarised and how conditional expectation pays the law of total probability forward.",
+      "section": "probability",
+      "slugs": [
+        "conditional-expectation",
+        "conditional-variance",
+        "mean",
+        "median",
+        "mode",
+        "standard-deviation",
+        "correlation",
+        "covariance",
+        "random-variables",
+        "discrete-random-variables-pmf"
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Named distributions, discrete and continuous",
+      "blurb": "Know the support, the parameter, the mean, and the variance before you memorise the density. Poisson is discrete.",
+      "section": "probability",
+      "slugs": [
+        "discrete-uniform-distribution",
+        "bernoulli-distribution",
+        "binomial-distribution",
+        "continuous-random-variables-pdf",
+        "continuous-uniform-distribution",
+        "exponential-distribution",
+        "poisson-distribution",
+        "normal-distribution",
+        "standard-normal-distribution"
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Sampling, intervals, and tests",
+      "blurb": "The distribution of a statistic is not the distribution of one observation. Degrees of freedom are part of the answer.",
+      "section": "probability",
+      "slugs": [
+        "t-distribution",
+        "chi-squared-distribution",
+        "cumulative-distribution-function",
+        "conditional-pdf",
+        "central-limit-theorem",
+        "confidence-interval",
+        "z-test",
+        "t-test",
+        "chi-squared-test"
+      ]
+    },
+    {
+      "id": "5",
+      "title": "Spaces, matrices, and quadratic forms",
+      "blurb": "Vector spaces first, then the special matrices GATE likes to define in one line: projection, orthogonal, idempotent, block.",
+      "section": "linear-algebra",
+      "slugs": [
+        "vector-space",
+        "subspaces",
+        "linear-dependence-independence",
+        "matrices",
+        "projection-matrix",
+        "orthogonal-matrix",
+        "idempotent-matrix",
+        "partition-matrix",
+        "quadratic-forms"
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Elimination, eigenstructure, decompositions",
+      "blurb": "Rank, nullity, LU, and SVD are computational. Eigenvalues of a projection are only 0 and 1.",
+      "section": "linear-algebra",
+      "slugs": [
+        "systems-of-linear-equations",
+        "gaussian-elimination",
+        "eigenvalues-eigenvectors",
+        "determinant",
+        "rank",
+        "nullity",
+        "projections",
+        "lu-decomposition",
+        "singular-value-decomposition"
+      ]
+    },
+    {
+      "id": "7",
+      "title": "Single-variable calculus and optimization",
+      "blurb": "The syllabus stops at one variable. Taylor, the second-derivative test, and endpoints on a closed interval cover it.",
+      "section": "calculus",
+      "slugs": [
+        "functions-single-variable",
+        "limits",
+        "continuity",
+        "differentiability",
+        "taylor-series",
+        "maxima-minima",
+        "single-variable-optimization"
+      ]
+    },
+    {
+      "id": "8",
+      "title": "Python and the basic structures",
+      "blurb": "Trace small snippets by hand. Know what is O(1) and what only looks like it.",
+      "section": "programming",
+      "slugs": [
+        "programming-in-python",
+        "stacks",
+        "queues",
+        "linked-lists",
+        "trees",
+        "hash-tables",
+        "linear-search",
+        "binary-search"
+      ]
+    },
+    {
+      "id": "9",
+      "title": "Sorting, graphs, and shortest paths",
+      "blurb": "Stability and the worst case matter as much as the average. Dijkstra needs nonnegative weights.",
+      "section": "programming",
+      "slugs": [
+        "selection-sort",
+        "bubble-sort",
+        "insertion-sort",
+        "mergesort",
+        "quicksort",
+        "graph-theory",
+        "graph-traversals",
+        "shortest-paths-dijkstra"
+      ]
+    },
+    {
+      "id": "10",
+      "title": "Relational design and query languages",
+      "blurb": "Algebra, tuple calculus, and SQL are three views of one question: which rows come back, and under which constraints.",
+      "section": "databases",
+      "slugs": [
+        "er-model",
+        "relational-model",
+        "relational-algebra",
+        "tuple-calculus",
+        "sql",
+        "integrity-constraints",
+        "normal-forms",
+        "file-organization"
+      ]
+    },
+    {
+      "id": "11",
+      "title": "Storage, preprocessing, and the warehouse",
+      "blurb": "Database normal forms and feature normalisation are different words. Star and snowflake are the warehouse half.",
+      "section": "databases",
+      "slugs": [
+        "indexing",
+        "data-types",
+        "normalization-transformation",
+        "discretization",
+        "sampling-data",
+        "compression",
+        "multidimensional-schemas",
+        "concept-hierarchies",
+        "measures"
+      ]
+    },
+    {
+      "id": "12",
+      "title": "Linear models and simple classifiers",
+      "blurb": "Closed forms for least squares and ridge; iterative losses for logistic regression. Scaling is part of k-NN and LDA.",
+      "section": "machine-learning",
+      "slugs": [
+        "regression-classification",
+        "simple-linear-regression",
+        "multiple-linear-regression",
+        "ridge-regression",
+        "logistic-regression",
+        "knn",
+        "naive-bayes",
+        "lda"
+      ]
+    },
+    {
+      "id": "13",
+      "title": "Margins, trees, validation, networks",
+      "blurb": "Bias and variance explain why the validation lessons exist. A feed-forward net without a nonlinearity collapses.",
+      "section": "machine-learning",
+      "slugs": [
+        "svm",
+        "decision-trees",
+        "bias-variance",
+        "loocv",
+        "k-fold-cv",
+        "multilayer-perceptron",
+        "feedforward-neural-network",
+        "clustering-overview"
+      ]
+    },
+    {
+      "id": "14",
+      "title": "Clustering, linkage, and PCA",
+      "blurb": "k-means moves means; k-medoids stays on data points. Single linkage chains. PCA maximises variance, not class separation.",
+      "section": "machine-learning",
+      "slugs": [
+        "k-means",
+        "k-medoids",
+        "hierarchical-clustering",
+        "single-linkage",
+        "multiple-linkage",
+        "dimensionality-reduction",
+        "pca"
+      ]
+    },
+    {
+      "id": "15",
+      "title": "Search, logic, and uncertain inference",
+      "blurb": "A* is optimal only with the right heuristic. Variable elimination is exact; sampling is approximate.",
+      "section": "artificial-intelligence",
+      "slugs": [
+        "uninformed-search",
+        "informed-search",
+        "adversarial-search",
+        "propositional-logic",
+        "predicate-logic",
+        "conditional-independence",
+        "variable-elimination",
+        "sampling-inference"
+      ]
+    },
+    {
+      "id": "16",
+      "title": "Verbal aptitude",
+      "blurb": "Grammar and reading are part of the 15 common marks. The questions are short; the rules are not optional.",
+      "section": "aptitude",
+      "slugs": [
+        "tenses",
+        "articles",
+        "adjectives",
+        "prepositions",
+        "conjunctions",
+        "verb-noun-agreement",
+        "parts-of-speech",
+        "vocabulary-idioms",
+        "reading-comprehension",
+        "narrative-sequencing"
+      ]
+    },
+    {
+      "id": "17",
+      "title": "Quantitative aptitude",
+      "blurb": "Ratios, logs, series, and reading a table under time pressure. This is not the probability section; keep the tools elementary.",
+      "section": "aptitude",
+      "slugs": [
+        "data-interpretation-graphs",
+        "plots-2d-3d",
+        "maps-and-tables",
+        "ratios",
+        "percentages",
+        "powers-exponents-logarithms",
+        "permutations-combinations-quant",
+        "series",
+        "mensuration-geometry",
+        "elementary-statistics-probability"
+      ]
+    },
+    {
+      "id": "18",
+      "title": "Analytical and spatial aptitude",
+      "blurb": "Syllogisms, analogies, and shape rules you can apply without a figure in front of you \u2014 then with one.",
+      "section": "aptitude",
+      "slugs": [
+        "deduction-induction",
+        "analogy",
+        "numerical-relations",
+        "shape-transformations",
+        "assembling-grouping",
+        "paper-folding-cutting",
+        "patterns-2d-3d"
+      ]
+    }
+  ]
+}

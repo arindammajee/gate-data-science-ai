@@ -1,0 +1,169 @@
+{
+  "slug": "normal-distribution",
+  "section": "probability",
+  "title": "Normal distribution",
+  "syllabus": "Normal distribution",
+  "minutes": 30,
+  "summary": "A normal law is determined by its mean μ and variance σ squared. Standardize by subtracting μ and dividing by σ. Independent normal variables have normal linear combinations. The 68-95-99.7 rule is an approximation.",
+  "keywords": [
+    "normal",
+    "standardize",
+    "variance",
+    "linear combination",
+    "empirical rule"
+  ],
+  "intuition": "A normal random variable is a continuous law on the whole real line, fixed once you know the mean $\\mu$ and the variance $\\sigma^2$. The standard deviation is $\\sigma$, the positive square root of the variance, and it is the scale you divide by. The density is the familiar bell\n\n$$\nf(x)=\\frac{1}{\\sigma\\sqrt{2\\pi}}\\exp\\Big(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\Big).\n$$\n\nYou rarely integrate that expression by hand. You standardize. The variable $Z=(X-\\mu)/\\sigma$ has the standard normal distribution, mean 0 and variance 1. A probability statement about $X$ becomes a probability statement about $Z$, and from there you use symmetry or a supplied value of the standard cdf. Dividing by $\\sigma^2$ instead of by $\\sigma$ is a different, and wrong, standardization.\n\nIndependent normal random variables stay normal under linear combinations. If $X$ and $Y$ are independent and normal, then $aX+bY$ is normal. Its mean is $a\\mathbb{E}[X]+b\\mathbb{E}[Y]$, and its variance is $a^2\\mathrm{Var}(X)+b^2\\mathrm{Var}(Y)$. The variances add after the coefficients are squared. They do not add as standard deviations.\n\nThe empirical rule says that about 68%, 95%, and 99.7% of the mass lies within 1, 2, and 3 standard deviations of the mean. Those percents are rounded memory aids. They are not exact identities, and a question that asks for an exact probability wants a standardized value, not the slogan.",
+  "definitions": [
+    {
+      "term": "Normal parameters",
+      "body": "Write $X\\sim N(\\mu,\\sigma^2)$ for a normal random variable with mean $\\mu$ and variance $\\sigma^2$. The second parameter is the variance, so the standard deviation is $\\sigma$, not $\\sigma^2$."
+    },
+    {
+      "term": "Standardization",
+      "body": "The standardized variable is $Z=(X-\\mu)/\\sigma$. It is standard normal: mean 0, variance 1."
+    },
+    {
+      "term": "Independent linear combination",
+      "body": "If $X$ and $Y$ are independent and normal, then $aX+bY$ is normal, for any constants $a$ and $b$ that are not both zero. The mean and variance follow the usual linear rules."
+    },
+    {
+      "term": "Empirical rule",
+      "body": "About 68%, 95%, and 99.7% of a normal population lies within 1, 2, and 3 standard deviations of the mean. The percents are approximate, not exact."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Density",
+      "latex": "f(x)=\\frac{1}{\\sigma\\sqrt{2\\pi}}\\exp\\Big(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\Big)",
+      "note": "Mean $\\mu$, variance $\\sigma^2$, support the whole real line."
+    },
+    {
+      "name": "Standardization",
+      "latex": "Z=\\frac{X-\\mu}{\\sigma}",
+      "note": "Divide by the standard deviation, not by the variance."
+    },
+    {
+      "name": "Independent sum",
+      "latex": "aX+bY\\sim N(a\\mu_X+b\\mu_Y,\\ a^2\\sigma_X^2+b^2\\sigma_Y^2)",
+      "note": "Requires independence of the normal variables $X$ and $Y$. Coefficients on the variance are squared."
+    }
+  ],
+  "properties": [
+    "The density is determined by $\\mu$ and $\\sigma^2$. Shifting $X$ by $c$ shifts the mean by $c$ and leaves the variance unchanged. Scaling $X$ by $a\\neq 0$ multiplies the variance by $a^2$.",
+    "Standardization uses $Z=(X-\\mu)/\\sigma$. The point one standard deviation above the mean has z-score 1, not $1/\\sigma^2$.",
+    "A linear combination of independent normal random variables is normal. The variance of $aX+bY$ is $a^2\\mathrm{Var}(X)+b^2\\mathrm{Var}(Y)$ when $X$ and $Y$ are independent.",
+    "The rule 68-95-99.7 is an approximation. It is not an exact theorem about the percentages, and 'within one standard deviation' is the roughly 68% statement, not the roughly 95% statement.",
+    "For a normal variable, probabilities of single points are 0. Statements about $X$ are converted to statements about intervals for $Z$."
+  ],
+  "examples": [
+    {
+      "title": "Standardizing N(8, 9)",
+      "prompt": "Let $X\\sim N(8, 9)$. Find the z-scores of $x=14$ and of $x=2$, and describe the approximate 95% band.",
+      "steps": [
+        "The variance is 9, so the standard deviation is $\\sigma=3$, not 9. The z-score of 14 is $(14-8)/3=2$.",
+        "The z-score of 2 is $(2-8)/3=-2$.",
+        "The empirical rule says that about 95% of the mass lies within two standard deviations of the mean, that is roughly in the interval $(2, 14)$. The word is 'about'. The exact probability is $2\\Phi(2)-1$, which is not exactly 0.95."
+      ],
+      "answer": "The z-scores are $2$ and $-2$. The approximate 95% band is $(2, 14)$, and the percentage is not an exact identity."
+    },
+    {
+      "title": "An independent linear combination",
+      "prompt": "Let $X\\sim N(1, 4)$ and $Y\\sim N(-2, 9)$ be independent. Find the distribution of $2X-Y$.",
+      "steps": [
+        "Independence and normality give that $2X-Y$ is normal. The mean is $2\\cdot 1-(-2)=4$.",
+        "The variance is $2^2\\cdot 4+(-1)^2\\cdot 9=16+9=25$. The coefficient is squared, including the minus sign, which disappears.",
+        "Therefore $2X-Y\\sim N(4, 25)$. The standard deviation of this combination is 5, not 25, and not $2\\cdot 2+3$."
+      ],
+      "answer": "The combination $2X-Y$ is $N(4, 25)$."
+    }
+  ],
+  "traps": [
+    "Dividing by the variance in the z-score. The denominator is $\\sigma$. For $N(5, 16)$ the z-score of 13 is $(13-5)/4=2$, not $(13-5)/16$.",
+    "Adding standard deviations to get the standard deviation of a sum. Independent variances add, after coefficients are squared. Two independent $N(0,1)$ variables sum to $N(0,2)$, not to $N(0,4)$ and not to $N(0,1)$.",
+    "Quoting 68%, 95%, or 99.7% as exact. They are rounded descriptions of normal areas. A two-standard-deviation interval is not exactly 95% of the mass.",
+    "Reading $N(\\mu,\\sigma^2)$ as if the second parameter were the standard deviation. In $N(8,9)$ the standard deviation is 3."
+  ],
+  "python": "assert (14 - 8) / 3 == 2\nassert (2 - 8) / 3 == -2\nassert 2 * 1 - (-2) == 4\nassert 2 ** 2 * 4 + 9 == 25\nassert 4 + 4 * 5 == 24\nassert (13 - 5) / 4 == 2\nprint(2, 4, 25)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "X is normal with mean 5 and variance 16. The z-score of the point 13 is",
+      "options": [
+        "$2$",
+        "$8$",
+        "$1/2$",
+        "$4$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2$.\n\nThe standard deviation is $\\sqrt{16}=4$, so the z-score is $(13-5)/4=2$. Option B is the raw distance $13-5$, with no division. Option C divides by the variance 16 instead of by $\\sigma$. Option D is $\\sigma$ itself, not the z-score."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "X and Y are independent, and each is $N(0,1)$. The distribution of $X+Y$ is",
+      "options": [
+        "$N(0,2)$",
+        "$N(0,1)$",
+        "$N(0,4)$",
+        "$N(1,2)$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $N(0,2)$.\n\nThe sum of independent normals is normal. The mean is $0+0=0$. The variance is $1+1=2$. Option C squares the sum of the standard deviations, $(1+1)^2=4$, which double-counts the cross term that independence removes. Option B forgets to add the variances. Option D invents a mean of 1."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "If $a\\neq 0$ and $X$ is normal, then $aX+b$ is normal.",
+        "If $X$ and $Y$ are independent and normal, then $aX+bY$ is normal.",
+        "The rule 68-95-99.7 is an approximation.",
+        "Exactly 95% of a normal population lies within one standard deviation of the mean."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nAn affine image of a normal variable is normal, and an independent linear combination of normals is normal. The empirical rule rounds the normal areas and is not an exact identity. Option D is false on two counts: one standard deviation is the roughly 68% statement, and even that percentage is not exact."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "X is $N(10, 4)$, Y is $N(3, 5)$, and $X$ and $Y$ are independent. Which of the following are true?",
+      "options": [
+        "The mean of $X-Y$ is 7.",
+        "The variance of $X-Y$ is 9.",
+        "$(X-10)/2$ is standard normal.",
+        "The variance of $X+Y$ equals $\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2$, because the variables are normal."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe mean of $X-Y$ is $10-3=7$. Independence gives $\\mathrm{Var}(X-Y)=4+5=9$. The standard deviation of $X$ is 2, so $(X-10)/2$ is standard normal. Option D adds a covariance term that independence does not contribute. The variance of the sum is $4+5=9$, with no extra 2."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "X is $N(1, 4)$, Y is $N(2, 5)$, and $X$ and $Y$ are independent. Enter $\\mathrm{Var}(X-2Y)$.",
+      "options": [],
+      "answer": [
+        "24"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **24**.\n\nIndependence gives $\\mathrm{Var}(X-2Y)=\\mathrm{Var}(X)+(-2)^2\\mathrm{Var}(Y)=4+4\\cdot 5=4+20=24$. The mean of the combination is $1-2\\cdot 2=-3$, which is not asked. Forgetting to square the coefficient $-2$ would leave $4+5=9$."
+    }
+  ]
+}

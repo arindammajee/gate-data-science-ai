@@ -1,0 +1,173 @@
+{
+  "slug": "probability-axioms",
+  "section": "probability",
+  "title": "Probability axioms",
+  "syllabus": "Probability axioms.",
+  "minutes": 30,
+  "summary": "Kolmogorov's three axioms fix nonnegativity, total mass one, and countable additivity, and the complement and inclusion-exclusion rules fall out of them.",
+  "keywords": [
+    "Kolmogorov",
+    "additivity",
+    "complement",
+    "inclusion-exclusion",
+    "monotonicity"
+  ],
+  "intuition": "A probability model is a sample space together with a rule $P$ that assigns a number to events. Kolmogorov's axioms are the whole of that rule's job description. Every event gets a nonnegative number, the sample space itself gets the number 1, and the probability of a countable union of pairwise disjoint events is the sum of their probabilities. Everything else in a first course is a consequence, not a fourth axiom.\n\nThe complement rule is the first consequence. The event $A$ and its complement are disjoint and their union is the sample space, so $P(A)+P(A^c)=1$. Monotonicity is the next one: if $A$ sits inside $B$, then $B$ is $A$ plus a disjoint remainder, and that remainder cannot contribute a negative probability, so $P(A)\\le P(B)$.\n\nInclusion-exclusion is what you use when the events are not disjoint. Adding $P(A)$ and $P(B)$ counts the overlap twice, so subtract $P(A\\cap B)$ once. For three events the pairwise overlaps are each subtracted, and the triple overlap, which was subtracted too often, is added back. The sign of the triple term is plus, not minus.",
+  "definitions": [
+    {
+      "term": "Nonnegativity",
+      "body": "The first Kolmogorov axiom: $P(A)\\ge 0$ for every event $A$. A probability is not a signed measure."
+    },
+    {
+      "term": "Normalisation",
+      "body": "The second axiom: $P(S)=1$, where $S$ is the sample space. The model accounts for every outcome."
+    },
+    {
+      "term": "Countable additivity",
+      "body": "The third axiom: if $A_1,A_2,A_3,\\ldots$ are pairwise disjoint events, then $P\\!\\left(\\bigcup_{i=1}^{\\infty} A_i\\right)=\\sum_{i=1}^{\\infty} P(A_i)$. Finite additivity is the special case in which all but finitely many of the sets are empty."
+    },
+    {
+      "term": "Inclusion-exclusion",
+      "body": "The identity that recovers $P(A\\cup B)$ and $P(A\\cup B\\cup C)$ from the probabilities of the events and of their intersections, without assuming the events are disjoint."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Complement",
+      "latex": "P(A^c)=1-P(A)",
+      "note": "Follows from $A$ and $A^c$ being disjoint with union $S$. In particular $P(\\emptyset)=0$."
+    },
+    {
+      "name": "Two-event union",
+      "latex": "P(A\\cup B)=P(A)+P(B)-P(A\\cap B)",
+      "note": "The intersection is subtracted because it was counted in both $P(A)$ and $P(B)$."
+    },
+    {
+      "name": "Three-event union",
+      "latex": "P(A\\cup B\\cup C)=P(A)+P(B)+P(C)-P(A\\cap B)-P(A\\cap C)-P(B\\cap C)+P(A\\cap B\\cap C)",
+      "note": "The triple intersection is added. Dropping it, or giving it a minus sign, is a different number."
+    }
+  ],
+  "properties": [
+    "If $A\\subset B$, then $P(A)\\le P(B)$. In particular $0\\le P(A)\\le 1$ for every event $A$.",
+    "For pairwise disjoint events, the intersection terms in inclusion-exclusion are zero, so the union probability is the plain sum.",
+    "$P(A\\cup B)\\le P(A)+P(B)$, the union bound. Equality holds exactly when $P(A\\cap B)=0$.",
+    "A countable sum of probabilities of disjoint events cannot exceed 1, because it equals the probability of their union.",
+    "The empty set has probability 0, but a nonempty event may also have probability 0. Probability 0 does not mean the set is empty."
+  ],
+  "examples": [
+    {
+      "title": "Complement, overlap, and a two-event union",
+      "prompt": "Events $A$ and $B$ satisfy $P(A)=2/5$, $P(B)=1/2$, and $P(A\\cap B)=1/5$. Find $P(A^c)$, $P(A\\cap B^c)$, and $P(A\\cup B)$.",
+      "steps": [
+        "The complement is immediate from normalisation: $P(A^c)=1-2/5=3/5$.",
+        "The part of $A$ that lies outside $B$ is $P(A\\cap B^c)=P(A)-P(A\\cap B)=2/5-1/5=1/5$. Monotonicity is visible here: the intersection $1/5$ does not exceed $P(A)$.",
+        "Inclusion-exclusion puts the overlap back once: $P(A\\cup B)=2/5+1/2-1/5=4/10+5/10-2/10=7/10$."
+      ],
+      "answer": "$P(A^c)=3/5$, $P(A\\cap B^c)=1/5$, and $P(A\\cup B)=7/10$."
+    },
+    {
+      "title": "Three events, with the triple term put back",
+      "prompt": "Suppose $P(A)=1/2$, $P(B)=1/3$, $P(C)=1/4$, $P(A\\cap B)=1/8$, $P(A\\cap C)=1/10$, $P(B\\cap C)=1/12$, and $P(A\\cap B\\cap C)=1/24$. Find $P(A\\cup B\\cup C)$.",
+      "steps": [
+        "Add the three single probabilities on the common denominator 120: $60/120+40/120+30/120=130/120$.",
+        "Subtract the three pairwise intersections: $15/120+12/120+10/120=37/120$, leaving $130/120-37/120=93/120$.",
+        "Add the triple intersection back: $93/120+5/120=98/120=49/60$. The plus sign is required; stopping at $93/120$ would drop the outcomes that sit in all three events."
+      ],
+      "answer": "$P(A\\cup B\\cup C)=49/60$."
+    },
+    {
+      "title": "A countable family of disjoint tosses",
+      "prompt": "A fair coin is tossed until the first head. Let $A_n$ be the event that the first head occurs on toss $n$, so $P(A_n)=(1/2)^n$ for $n=1,2,3,\\ldots$. The events are pairwise disjoint. What is the probability that a head eventually occurs?",
+      "steps": [
+        "Finite additivity gives the partial union: $P(A_1\\cup\\cdots\\cup A_N)=\\sum_{n=1}^{N}(1/2)^n=1-(1/2)^N$. For $N=4$ this is $15/16$.",
+        "The event that a head eventually occurs is the countable union $\\bigcup_{n=1}^{\\infty} A_n$.",
+        "Countable additivity converts the union into the infinite sum. The partial sums increase to 1, so the probability is $\\lim_{N\\to\\infty}\\big(1-(1/2)^N\\big)=1$."
+      ],
+      "answer": "The probability that a head eventually occurs is 1. Finite additivity alone names the partial sums; countable additivity passes to the limit."
+    }
+  ],
+  "traps": [
+    "Writing $P(A\\cup B)=P(A)+P(B)$ when the events overlap. That identity needs $P(A\\cap B)=0$.",
+    "Giving the triple intersection a minus sign in the three-event formula. It is added, because the pairwise subtractions removed it too many times.",
+    "Treating finite additivity as a licence to sum a countably infinite family. The axiom that covers infinitely many disjoint events is countable additivity.",
+    "Concluding that an event with probability 0 cannot occur. The axioms force $P(\\emptyset)=0$, not the converse."
+  ],
+  "python": "from fractions import Fraction\nunion2 = Fraction(2, 5) + Fraction(1, 2) - Fraction(1, 5)\nassert union2 == Fraction(7, 10)\nunion3 = (\n    Fraction(1, 2) + Fraction(1, 3) + Fraction(1, 4)\n    - Fraction(1, 8) - Fraction(1, 10) - Fraction(1, 12)\n    + Fraction(1, 24)\n)\nassert union3 == Fraction(49, 60)\npartial = sum(Fraction(1, 2) ** n for n in range(1, 5))\nassert partial == Fraction(15, 16)\nprint(union2, union3, partial)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Suppose $P(A)=3/10$, $P(A\\cup B)=7/10$, and $P(A\\cap B)=1/10$. Then $P(B)$ equals",
+      "options": [
+        "$1/2$",
+        "$2/5$",
+        "$3/5$",
+        "$9/10$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $1/2$.\n\nSolve inclusion-exclusion for the unknown: $7/10=3/10+P(B)-1/10$, so $P(B)=7/10-3/10+1/10=5/10=1/2$. Option B forgets to add the intersection back. Option D adds the three given numbers."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "If $P(A)=3/5$, which value equals $P(A^c)$?",
+      "options": [
+        "$2/5$",
+        "$3/5$",
+        "$0$",
+        "$8/5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2/5$.\n\nThe complement axiom-consequence is $P(A^c)=1-P(A)=1-3/5=2/5$. Option B repeats the given probability. Option D adds 1 instead of subtracting from 1, and it is larger than 1, which monotonicity forbids."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true for events in a probability space?",
+      "options": [
+        "If $A\\subset B$, then $P(A)\\le P(B)$.",
+        "$P(A\\cup B)=P(A)+P(B)$ for every pair of events $A$ and $B$.",
+        "$P(\\emptyset)=0$.",
+        "$P(A\\cup B\\cup C)=P(A)+P(B)+P(C)-P(A\\cap B)-P(A\\cap C)-P(B\\cap C)+P(A\\cap B\\cap C)$."
+      ],
+      "answer": [
+        "A",
+        "C",
+        "D"
+      ],
+      "solution": "The correct options are **A, C, and D**.\n\nA is monotonicity, from writing $B$ as the disjoint union of $A$ and $B\\setminus A$. C follows from $P(S)=P(S\\cup\\emptyset)=P(S)+P(\\emptyset)$. D is the three-event inclusion-exclusion formula, with a plus on the triple intersection. B is true only when $P(A\\cap B)=0$, not for every pair."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "Events satisfy $P(A)=1/2$, $P(B)=1/3$, $P(C)=1/4$, $P(A\\cap B)=1/8$, $P(A\\cap C)=1/10$, $P(B\\cap C)=1/12$, and $P(A\\cap B\\cap C)=1/24$. Let $p=P(A\\cup B\\cup C)$. Enter $60p$.",
+      "options": [],
+      "answer": [
+        "49"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **49**.\n\nOn the denominator 120 the union is $60/120+40/120+30/120-15/120-12/120-10/120+5/120=98/120=49/60$. Therefore $60p=49$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Events satisfy $P(A)=2/5$, $P(B)=1/2$, and $P(A\\cap B)=1/5$. Let $p=P(A\\cup B)$. Enter $10p$.",
+      "options": [],
+      "answer": [
+        "7"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **7**.\n\n$P(A\\cup B)=2/5+1/2-1/5=4/10+5/10-2/10=7/10$, so $10p=7$. Adding the two probabilities without the intersection would give $9/10$ and the wrong integer 9."
+    }
+  ]
+}

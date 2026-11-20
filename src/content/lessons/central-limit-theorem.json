@@ -1,0 +1,164 @@
+{
+  "slug": "central-limit-theorem",
+  "section": "probability",
+  "title": "Central limit theorem",
+  "syllabus": "Central limit theorem",
+  "minutes": 30,
+  "summary": "For i.i.d. observations with finite variance, the standardized sample mean converges in distribution to N(0, 1). A large sample size is a rule of thumb for using the approximation, not a hypothesis of the theorem. Finite variance is required.",
+  "keywords": [
+    "central limit theorem",
+    "sample mean",
+    "finite variance",
+    "standard error",
+    "normal approximation"
+  ],
+  "intuition": "The central limit theorem is a statement about the sample mean, not about one observation. Let $X_1,\\ldots,X_n$ be i.i.d. with mean $\\mu$ and finite variance $\\sigma^2>0$. The sample mean $\\bar X$ has exact mean $\\mu$ and exact variance $\\sigma^2/n$. Those two moments do not need a limit. What needs a limit is the shape. The standardized mean\n\n$$\n\\frac{\\sqrt{n}(\\bar X-\\mu)}{\\sigma}\n$$\n\nconverges in distribution to $N(0,1)$ as $n\\to\\infty$. Equivalently, $\\bar X$ is approximately $N(\\mu, \\sigma^2/n)$ when $n$ is large. The denominator of the standardized mean is $\\sigma$, and the standard deviation of $\\bar X$ itself is $\\sigma/\\sqrt{n}$.\n\nFinite variance is part of the hypothesis. If the variance is infinite, this normal limit need not hold. The phrase 'n at least 30' is a classroom rule of thumb for when the approximation is often usable. It is not a line in the theorem, and it is not a switch that makes $\\bar X$ exactly normal. If the observations are themselves normal, the sample mean is exactly normal for every $n$, and the theorem is not needed.\n\nA continuity correction is a small shift, often by half a unit, used when a normal curve approximates a lattice distribution such as a binomial count. It can improve a numerical approximation. It is not the content of the central limit theorem, and this lesson does not turn on it.",
+  "definitions": [
+    {
+      "term": "Classical CLT",
+      "body": "If $X_i$ are i.i.d. with mean $\\mu$ and finite positive variance $\\sigma^2$, then $\\sqrt{n}(\\bar X-\\mu)/\\sigma$ converges in distribution to $N(0,1)$."
+    },
+    {
+      "term": "Standard error",
+      "body": "The exact standard deviation of $\\bar X$ is $\\sigma/\\sqrt{n}$. It is the scale used in the normal approximation, not $\\sigma$ and not $\\sigma/n$."
+    },
+    {
+      "term": "Rule of thumb",
+      "body": "Advice such as '$n$ at least 30' is a rough guide to the approximation. It is not a hypothesis and not a conclusion of the theorem."
+    },
+    {
+      "term": "Continuity correction",
+      "body": "An optional half-unit shift when a normal approximation is applied to a count. Mention it as a refinement. It is not a substitute for the limit statement."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Limit",
+      "latex": "\\sqrt{n}\\,(\\bar X-\\mu)/\\sigma \\xrightarrow{d} N(0,1)",
+      "note": "i.i.d. observations with finite variance $\\sigma^2$. The limit is standard normal."
+    },
+    {
+      "name": "Approximate sampling law",
+      "latex": "\\bar X \\approx N\\left(\\mu,\\ \\sigma^2/n\\right)",
+      "note": "The variance $\\sigma^2/n$ is exact for i.i.d. data. The normal shape is the approximation, unless the data are already normal."
+    }
+  ],
+  "properties": [
+    "The theorem assumes i.i.d. observations with finite variance. Without a finite variance, the same normal limit is not guaranteed.",
+    "The standardized sample mean $\\sqrt{n}(\\bar X-\\mu)/\\sigma$ is the object that converges to $N(0,1)$. The sample mean itself converges to a point mass at $\\mu$ by the law of large numbers.",
+    "For any n, i.i.d. data with finite variance satisfy $\\mathbb{E}[\\bar X]=\\mu$ and $\\mathrm{Var}(\\bar X)=\\sigma^2/n$ exactly. The CLT adds the approximate shape.",
+    "A threshold such as $n\\ge 30$ is a rule of thumb, not a theorem. Normal data have an exactly normal sample mean at every sample size.",
+    "A continuity correction may be used when approximating a discrete count by a normal curve. It is an optional refinement of the approximation, not the statement of the CLT."
+  ],
+  "examples": [
+    {
+      "title": "Mean 50, variance 16, sample of 64",
+      "prompt": "Observations are i.i.d. with mean 50 and variance 16. The sample size is $n=64$. Find the mean and standard deviation of $\\bar X$, and the CLT z-score of the value 51.",
+      "steps": [
+        "The variance is finite, so the theorem applies. The sample mean has exact mean 50 and exact variance $16/64=1/4$, hence standard deviation $1/2$.",
+        "The standardized value at 51 is $(51-50)/(1/2)=2$. Under the CLT, $P(\\bar X>51)$ is approximately $1-\\Phi(2)$.",
+        "The number 64 is large enough that the rule of thumb is comfortable, but '64 is at least 30' is not what makes the variance equal to $1/4$. That equality is exact."
+      ],
+      "answer": "The sample mean has mean 50 and standard deviation $1/2$. The z-score of 51 is 2."
+    },
+    {
+      "title": "A fair-coin proportion",
+      "prompt": "Let $\\bar X$ be the proportion of heads in 100 independent fair coin tosses. Approximate the z-score of the event $\\bar X>0.6$.",
+      "steps": [
+        "Each toss is Bernoulli($1/2$), with mean $1/2$ and finite variance $1/4$. The sample size is 100.",
+        "The standard deviation of $\\bar X$ is $\\sqrt{(1/4)/100}=1/20=0.05$. This is exact.",
+        "The z-score of 0.6 is $(0.6-0.5)/0.05=2$. The CLT says $P(\\bar X>0.6)\\approx 1-\\Phi(2)$. A continuity correction would shift a count by half a toss before standardizing. It is available and it is not required to see that the standardized distance is about 2."
+      ],
+      "answer": "The z-score is 2. The normal approximation uses mean $0.5$ and standard deviation $0.05$."
+    }
+  ],
+  "traps": [
+    "Dropping the finite-variance hypothesis. The classical normal limit is for i.i.d. data with finite $\\sigma^2$. Infinite variance can produce a different limit.",
+    "Treating '$n\\ge 30$' as a theorem. It is a rule of thumb. It does not make a non-normal sample mean exactly normal, and normal data do not need it.",
+    "Using $\\sigma/n$ as the standard deviation of the sample mean. The exact standard deviation is $\\sigma/\\sqrt{n}$. For $\\sigma=8$ and $n=100$ that is $0.8$, not $0.08$.",
+    "Making a continuity correction the whole method. It is an optional half-unit adjustment for lattice distributions. The theorem is the normal limit for the standardized sample mean."
+  ],
+  "python": "from fractions import Fraction\nassert Fraction(16, 64) == Fraction(1, 4)\nassert (51 - 50) / Fraction(1, 2) == 2\nassert (Fraction(3, 5) - Fraction(1, 2)) / Fraction(1, 20) == 2\nassert Fraction(8, 10) == Fraction(4, 5)\nassert (Fraction(11, 2) - 4) / Fraction(1, 2) == 3\nassert (Fraction(10, 2)) ** 2 == 25\nprint(2, float(Fraction(4, 5)), 25)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Observations are i.i.d. with standard deviation $\\sigma=8$. For a sample of size $n=100$, the standard deviation of the sample mean is",
+      "options": [
+        "$0.8$",
+        "$8$",
+        "$0.08$",
+        "$80$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $0.8$.\n\nThe standard deviation of $\\bar X$ is $\\sigma/\\sqrt{n}=8/\\sqrt{100}=8/10=0.8$. This identity is exact when the variance is finite. It is not an output of the large-sample limit. Option C divides by $n$ instead of by $\\sqrt{n}$. Option B forgets to scale. Option D multiplies."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Observations are i.i.d. with mean 4 and variance 25. The sample size is $n=100$. The CLT z-score of $\\bar X=5.5$ is",
+      "options": [
+        "$3$",
+        "$1.5$",
+        "$0.3$",
+        "$15$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3$.\n\nThe standard deviation of the sample mean is $\\sigma/\\sqrt{n}=5/10=0.5$. The z-score is $(5.5-4)/0.5=3$. Finite variance 25 is what lets the classical theorem apply. Option B is the raw difference $1.5$. Option C divides $1.5$ by $\\sigma=5$ instead of by the standard error. Option D multiplies the difference by $\\sqrt{n}$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true of the classical central limit theorem for a sample mean?",
+      "options": [
+        "It assumes i.i.d. observations with finite variance.",
+        "The limit of $\\sqrt{n}(\\bar X-\\mu)/\\sigma$ is $N(0,1)$.",
+        "A cutoff such as $n\\ge 30$ is a rule of thumb, not part of the theorem.",
+        "The same $N(0,1)$ limit holds for every i.i.d. sequence, including sequences with infinite variance."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe classical statement needs a finite variance, and the standardized sample mean is what converges to standard normal. Sample-size cutoffs are rules of thumb. Option D is false: infinite variance is outside the hypothesis, and the normal limit can fail."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "For i.i.d. data with finite variance, $\\mathrm{Var}(\\bar X)=\\sigma^2/n$ holds exactly, not only in the limit.",
+        "A continuity correction is an optional refinement when a normal curve approximates a count.",
+        "The sample mean of i.i.d. normal observations is exactly normal for every sample size.",
+        "The central limit theorem says that a single observation is approximately normal whenever the population is not."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nThe variance formula for the sample mean is exact under independence and finite variance. A continuity correction is optional and is not the theorem. Normal observations have a normal sample mean at every $n$, with variance $\\sigma^2/n$. Option D reverses the theorem: the CLT is about averages, and it does not make one draw from a non-normal population normal."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Observations are i.i.d. with standard deviation $\\sigma=10$. The standard deviation of the sample mean equals 2. Enter the sample size $n$.",
+      "options": [],
+      "answer": [
+        "25"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **25**.\n\nSolve $10/\\sqrt{n}=2$. Then $\\sqrt{n}=5$ and $n=25$. The variance of the sample mean is $\\sigma^2/n=100/25=4$, whose square root is 2. This uses the exact standard-error formula. It does not use a normal table."
+    }
+  ]
+}

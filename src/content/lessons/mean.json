@@ -1,0 +1,168 @@
+{
+  "slug": "mean",
+  "section": "probability",
+  "title": "Mean",
+  "syllabus": "Mean.",
+  "minutes": 25,
+  "summary": "The mean is the expectation, a probability-weighted average for a discrete variable and an integral against the density for a continuous one. It is linear even when the variables are dependent.",
+  "keywords": [
+    "mean",
+    "expectation",
+    "linearity",
+    "discrete",
+    "continuous"
+  ],
+  "intuition": "The mean is the centre that expectation uses: each value is weighted by how much probability sits on it. For a discrete random variable that is the sum $\\sum x\\,p(x)$. For a continuous random variable with density $f$, the sum becomes the integral $\\int x f(x)\\,dx$. The unweighted average of the listed values is a different number, because it pretends every listed value has the same probability.\n\nLinearity is the structural fact. For constants $a$ and $b$, and for random variables with finite expectations, $E[aX+bY]=aE[X]+bE[Y]$. The identity does not ask whether $X$ and $Y$ are independent. Dependence changes the joint distribution and can change $E[XY]$, but the cross term never appears in a sum. You may compute $E[3X-2Y]$ from the two means alone.\n\nVariance does not inherit this rule. If $Y=1-X$ and $X$ is 0 or 1 with probability $1/2$ each, then $X+Y$ is the constant 1, so its variance is 0, while $\\mathrm{Var}(X)+\\mathrm{Var}(Y)=1/4+1/4=1/2$. The means still add: $E[X+Y]=1=E[X]+E[Y]$. Linearity of expectation and additivity of variance are different claims, and only the first one is unconditional.",
+  "definitions": [
+    {
+      "term": "Mean of a discrete random variable",
+      "body": "The expectation $E[X]=\\sum_x x\\,p(x)$, summed over the support, when the sum converges absolutely. It is also called the mean of the distribution."
+    },
+    {
+      "term": "Mean of a continuous random variable",
+      "body": "The integral $E[X]=\\int_{-\\infty}^{\\infty} x f(x)\\,dx$, when $X$ has density $f$ and the integral converges absolutely."
+    },
+    {
+      "term": "Linearity of expectation",
+      "body": "The identity $E[aX+bY]=aE[X]+bE[Y]$ for finite constants $a,b$ and random variables with finite expectations. Independence is not a hypothesis."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Discrete mean",
+      "latex": "E[X]=\\sum_x x\\,p(x)",
+      "note": "Weight each value by its pmf. The unweighted average of the support is not this sum."
+    },
+    {
+      "name": "Continuous mean",
+      "latex": "E[X]=\\int_{-\\infty}^{\\infty} x f(x)\\,dx",
+      "note": "The density must integrate to 1. For the uniform distribution on $[a,b]$ this integral equals $(a+b)/2$."
+    },
+    {
+      "name": "Linearity",
+      "latex": "E[aX+bY]=aE[X]+bE[Y]",
+      "note": "Holds whether or not $X$ and $Y$ are independent. The same claim for variance is false."
+    }
+  ],
+  "properties": [
+    "$E[c]=c$ for a constant $c$, and $E[aX+c]=aE[X]+c$. Adding a constant shifts the mean by that constant.",
+    "Linearity extends to any finite sum: $E[X_1+\\cdots+X_n]=E[X_1]+\\cdots+E[X_n]$, with no independence assumption.",
+    "The mean of an indicator of an event $A$ is $P(A)$. This is why a probability can be computed by taking an expectation.",
+    "Variance is not linear. In particular $\\mathrm{Var}(X+Y)$ is not $\\mathrm{Var}(X)+\\mathrm{Var}(Y)$ for every pair, and $\\mathrm{Var}(aX)=a^2\\mathrm{Var}(X)$, not $a\\mathrm{Var}(X)$.",
+    "A symmetric distribution on a symmetric set has its mean at the centre of symmetry, when the mean exists. A skewed distribution can put the mean far from a typical point."
+  ],
+  "examples": [
+    {
+      "title": "A three-point discrete mean",
+      "prompt": "The random variable $X$ takes the values 0, 2, and 5 with probabilities $1/5$, $2/5$, and $2/5$. Find $E[X]$.",
+      "steps": [
+        "Multiply each value by its probability: $0\\cdot(1/5)=0$, $2\\cdot(2/5)=4/5$, and $5\\cdot(2/5)=10/5=2$.",
+        "Add the three contributions: $0+4/5+2=14/5$.",
+        "The unweighted average of the three listed values is $(0+2+5)/3=7/3$, which is not $14/5$. The value 0 carries only probability $1/5$, so it must not be weighted like 2 and 5."
+      ],
+      "answer": "$E[X]=14/5$."
+    },
+    {
+      "title": "A density on the unit interval",
+      "prompt": "The density $f(x)=3x^2$ on $[0,1]$, and $f(x)=0$ elsewhere, is a probability density. Find $E[X]$.",
+      "steps": [
+        "Check the total mass: $\\int_0^1 3x^2\\,dx=\\big[x^3\\big]_0^1=1$.",
+        "The mean puts an extra factor of $x$ under the integral: $E[X]=\\int_0^1 x\\cdot 3x^2\\,dx=\\int_0^1 3x^3\\,dx$.",
+        "The antiderivative is $(3/4)x^4$, evaluated from 0 to 1, which equals $3/4$."
+      ],
+      "answer": "$E[X]=3/4$."
+    },
+    {
+      "title": "Linearity without independence",
+      "prompt": "Let $X$ be 0 or 1 with probability $1/2$ each, and let $Y=1-X$. Compute $E[3X+3Y]$, and compare $\\mathrm{Var}(X+Y)$ with $\\mathrm{Var}(X)+\\mathrm{Var}(Y)$.",
+      "steps": [
+        "The means are $E[X]=1/2$ and $E[Y]=1/2$. Linearity gives $E[3X+3Y]=3/2+3/2=3$, with no look at the joint distribution.",
+        "In fact $X+Y=1$, so $3X+3Y=3$ and the expectation of a constant is 3. The variables are dependent: $P(X=1,Y=1)=0\\neq (1/2)(1/2)$.",
+        "The variance comparison goes the other way. $\\mathrm{Var}(X)=\\mathrm{Var}(Y)=1/4$, so the sum of the variances is $1/2$. But $X+Y$ is constant, so $\\mathrm{Var}(X+Y)=0$. Variance does not add for this dependent pair."
+      ],
+      "answer": "$E[3X+3Y]=3$. The variances do not add: $\\mathrm{Var}(X+Y)=0$ while $\\mathrm{Var}(X)+\\mathrm{Var}(Y)=1/2$."
+    }
+  ],
+  "traps": [
+    "Averaging the support without the probabilities. For the values 0, 2, and 5 the unweighted mean is $7/3$, while $E[X]=14/5$.",
+    "Refusing to add expectations unless the variables are independent. Linearity holds for $Y=1-X$, which is a deterministic function of $X$.",
+    "Claiming the same linearity for variance. The pair $X$ and $1-X$ has $\\mathrm{Var}(X+Y)=0\\neq 1/2=\\mathrm{Var}(X)+\\mathrm{Var}(Y)$.",
+    "Forgetting the factor $x$ in the continuous formula and integrating the density alone. That integral equals 1, not the mean. For $f(x)=3x^2$ the mean is $3/4$, not 1."
+  ],
+  "python": "from fractions import Fraction\nex = 0 * Fraction(1, 5) + 2 * Fraction(2, 5) + 5 * Fraction(2, 5)\nassert ex == Fraction(14, 5)\n# int_0^1 3 x^3 dx = 3/4\nassert Fraction(3, 4) == Fraction(3, 1) * Fraction(1, 4)\nassert 3 * Fraction(1, 2) + 3 * Fraction(1, 2) == 3\nassert (1 / 4 + 1 / 4) != 0\nassert 3 * 4 + 2 * 7 == 26\nprint(float(ex), 0.75, 26)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A random variable takes the values 0, 2, and 5 with probabilities $1/5$, $2/5$, and $2/5$. Its mean is",
+      "options": [
+        "$14/5$",
+        "$7/3$",
+        "$2$",
+        "$5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $14/5$.\n\n$E[X]=0\\cdot(1/5)+2\\cdot(2/5)+5\\cdot(2/5)=4/5+2=14/5$. Option B is the unweighted average $(0+2+5)/3=7/3$, which ignores the probabilities. Option C is the middle listed value, not the mean."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The density $f(x)=3x^2$ on $[0,1]$ integrates to 1. The mean of this distribution is",
+      "options": [
+        "$3/4$",
+        "$1/2$",
+        "$1$",
+        "$3/2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3/4$.\n\n$E[X]=\\int_0^1 x\\cdot 3x^2\\,dx=\\int_0^1 3x^3\\,dx=3/4$. Option C is the integral of the density, which is the total probability and not the mean. Option B would be the mean of the uniform density on $[0,1]$."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Let $X$ be 0 or 1 with probability $1/2$ each, and let $Y=1-X$. Which of the following are true?",
+      "options": [
+        "$E[aX+bY]=aE[X]+bE[Y]$ whenever the expectations exist, whether or not $X$ and $Y$ are independent.",
+        "$E[X+Y]=E[X]+E[Y]$ requires $X$ and $Y$ to be independent.",
+        "For this pair, $E[X+Y]=1$.",
+        "$\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)$ for every pair of random variables."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nA is linearity of expectation, and independence is not among its hypotheses. For this pair $X+Y=1$, so $E[X+Y]=1$, which equals $E[X]+E[Y]=1/2+1/2$ even though $P(X=1,Y=1)=0$. B is therefore false. D is false because $\\mathrm{Var}(X+Y)=\\mathrm{Var}(1)=0$ while $\\mathrm{Var}(X)+\\mathrm{Var}(Y)=1/2$."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "A random variable takes the values 0, 2, and 5 with probabilities $1/5$, $2/5$, and $2/5$. Let $m$ be its mean. Enter $5m$.",
+      "options": [],
+      "answer": [
+        "14"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **14**.\n\n$m=0\\cdot(1/5)+2\\cdot(2/5)+5\\cdot(2/5)=4/5+10/5=14/5$, so $5m=14$. The unweighted average $7/3$ would not clear the denominator 5."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Random variables $X$ and $Y$, which may be dependent, have $E[X]=4$ and $E[Y]=7$. Enter $E[3X+2Y]$.",
+      "options": [],
+      "answer": [
+        "26"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **26**.\n\nLinearity does not need independence: $E[3X+2Y]=3E[X]+2E[Y]=12+14=26$. The joint distribution is not supplied because the mean of a sum does not use it."
+    }
+  ]
+}

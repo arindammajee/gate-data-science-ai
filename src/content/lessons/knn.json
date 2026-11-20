@@ -1,0 +1,166 @@
+{
+  "slug": "knn",
+  "section": "machine-learning",
+  "title": "k-nearest neighbours",
+  "syllabus": "k-nearest neighbour classification",
+  "minutes": 30,
+  "summary": "k-nearest neighbours classifies by a majority vote of the k closest training points and regresses by their average. Distance is Euclidean unless a question says otherwise, and the features need scaling.",
+  "keywords": [
+    "k-NN",
+    "majority vote",
+    "Euclidean distance",
+    "curse of dimensionality",
+    "scaling"
+  ],
+  "intuition": "k-nearest neighbours stores the training rows and, for a new point, finds the k training rows closest to it. Classification predicts the majority label among those k. Regression predicts the average of their numeric labels. Unless a question names another metric, the distance is Euclidean. Ordering by squared Euclidean distance is the same ordering, and the squares keep the arithmetic integral.\n\nThe distance is only as honest as the units. A gap of 100 on one feature contributes $100^2=10000$ to the squared distance, and a gap of 2 on another contributes 4. The large-range feature decides the neighbours. The same Euclidean geometry is what the scaling lesson repairs before k-NN, and before the assignment step of k-means. The five-point example below uses small coordinates so the vote, not the unit, is the lesson.\n\nThe choice of k is a bias-variance choice. With k=1, and with no two training rows sharing a feature vector and disagreeing on the label, every training point is its own nearest neighbour at distance 0, so the training error is 0. The boundary follows single points and moves when one point moves: high variance. A larger odd k smooths the vote. In binary classification an odd k avoids a tied vote, as long as the distances themselves are not tied. With the number of training points held fixed, as the dimension increases, the distance from a query to its nearest neighbour and the distance to its farthest neighbour become close relative to their size, so the nearest neighbours stop being a distinctly local set.",
+  "definitions": [
+    {
+      "term": "k-NN classification",
+      "body": "Predict the majority class among the k training points closest to the query. Ties in the vote are avoided in a two-class problem by an odd k, when the distances themselves have a unique order."
+    },
+    {
+      "term": "k-NN regression",
+      "body": "Predict the average of the numeric labels of the k nearest training points. The same neighbours that produce a class vote produce a number when the labels are amounts."
+    },
+    {
+      "term": "k = 1",
+      "body": "The prediction is the label of the single nearest training point. On the training set, with no duplicate feature vectors that disagree on the label, the training error is 0. The predictor has high variance."
+    },
+    {
+      "term": "Curse of dimensionality",
+      "body": "With the number of training points held fixed, as the dimension increases, nearest and farthest Euclidean distances become close relative to their size, so the k nearest points stop forming a distinctly local neighbourhood."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Squared Euclidean distance",
+      "latex": "\\|x-z\\|^2=\\sum_{j=1}^{d}(x_j-z_j)^2",
+      "note": "Minimising this ranks neighbours the same way as minimising the Euclidean distance. Scaling the coordinates changes the ranking."
+    },
+    {
+      "name": "Regression prediction",
+      "latex": "\\hat y=\\frac{1}{k}\\sum_{i\\in N_k(x)} y_i",
+      "note": "$N_k(x)$ is the set of k nearest training indexes. Classification replaces the average by a majority vote."
+    }
+  ],
+  "properties": [
+    "Classification is a majority vote. Regression is an average. Both use the same neighbours. Euclidean distance is the default.",
+    "Odd k avoids a tied vote in binary classification when no two distances are equal. Here k=2 would tie, because the two nearest labels are 0 and 1.",
+    "k=1 memorises the training set when no duplicate features disagree on the label: training error is 0. That number is not a test error, because each point was allowed to be its own neighbour.",
+    "A gap of 100 contributes 10,000 to the squared distance and a gap of 2 contributes 4. Euclidean k-NN needs scaling when columns have different ranges, just as k-means does.",
+    "With the training count held fixed, higher dimension makes nearest and farthest Euclidean distances relatively close. Locality is what fails. The method can still store the rows.",
+    "The five-point query below is class 0 for k=1 and for k=3, and class 1 for k=5. The prediction depends on k."
+  ],
+  "examples": [
+    {
+      "title": "Five points in the plane, three values of k",
+      "prompt": "Training points are A $(0,0)$ class 0, B $(1,0)$ class 0, C $(0,1)$ class 1, D $(5,5)$ class 1, and E $(6,5)$ class 1. Classify the query $(2,1)$ for k=1, k=3, and k=5, using Euclidean distance.",
+      "steps": [
+        "Squared distances from $(2,1)$ are A: $(2-0)^2+(1-0)^2=5$, B: $(2-1)^2+(1-0)^2=2$, C: $(2-0)^2+(1-1)^2=4$, D: $(2-5)^2+(1-5)^2=25$, E: $(2-6)^2+(1-5)^2=32$.",
+        "The order is B, C, A, D, E. For k=1 the neighbour is B and the class is 0. For k=3 the labels are 0, 1, 0, and the majority is 0.",
+        "For k=5 every point votes: labels 0, 0, 1, 1, 1, so the majority is 1. The two nearest labels differ, so k=2 would have been a tie. Odd k is what avoided it."
+      ],
+      "answer": "k=1 predicts class 0, k=3 predicts class 0, and k=5 predicts class 1. The nearest squared distance is 2."
+    },
+    {
+      "title": "The same geometry, numeric labels",
+      "prompt": "A different training set, still five points in the plane: $(0,2)$ with label 5, $(3,0)$ with label 8, $(0,-1)$ with label 2, $(10,10)$ with label 100, and $(-4,0)$ with label 1. Predict the query $(0,0)$ by 3-nearest-neighbour regression.",
+      "steps": [
+        "Squared distances to $(0,0)$ are $2^2=4$, $3^2=9$, $(-1)^2=1$, $10^2+10^2=200$, and $(-4)^2=16$.",
+        "The three nearest labels are 2, then 5, then 8.",
+        "The regression prediction is $(2+5+8)/3=5$. A 1-nearest-neighbour regression would have returned 2, the nearest label alone. Averaging is the regression rule; a majority vote is the classification rule."
+      ],
+      "answer": "The 3-nearest-neighbour regression prediction is 5."
+    }
+  ],
+  "traps": [
+    "Using k=2 on the five-point query. The two nearest labels are 0 and 1, a tie. Odd k avoids that tie in binary classification when the distances are unique.",
+    "Skipping scaling. A squared gap of 10,000 against a squared gap of 4 means the large-range feature chooses the neighbour. k-NN uses the same Euclidean distance that feature scaling is meant to balance.",
+    "Reporting the k=1 training error as a test error. It is 0 when each training point is allowed to match itself and no duplicate features conflict. A new query has no such free neighbour.",
+    "Averaging class codes and calling the result the classification rule. Classification is the majority. On the regression example the prediction 5 is an average of numeric labels, not a vote.",
+    "Reading the curse of dimensionality as 'k-NN cannot store high-dimensional rows'. Storage is not the claim. The claim is that nearest and farthest distances become relatively close, so the neighbourhood stops being local."
+  ],
+  "python": "q = (2, 1)\npts = [(0, 0), (1, 0), (0, 1), (5, 5), (6, 5)]\nlabels = [0, 0, 1, 1, 1]\nsq = [((a - q[0]) ** 2 + (b - q[1]) ** 2, lab) for (a, b), lab in zip(pts, labels)]\nsq.sort()\nassert [d for d, _ in sq] == [2, 4, 5, 25, 32]\nassert [lab for _, lab in sq[:1]] == [0]\nassert [lab for _, lab in sq[:3]] == [0, 1, 0]\nassert sum(lab for _, lab in sq) == 3\nreg = [(0, 2, 5), (3, 0, 8), (0, -1, 2), (10, 10, 100), (-4, 0, 1)]\norder = sorted(((x * x + y * y), val) for x, y, val in reg)\nnearest = [val for _, val in order[:3]]\nassert nearest == [2, 5, 8]\nassert sum(nearest) / 3 == 5\nprint(sum(nearest) / 3)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For the query $(2,1)$ and the five training points in the lesson, the 3-nearest-neighbour class is",
+      "options": [
+        "0",
+        "1",
+        "a tie between 0 and 1",
+        "5, the squared distance to A"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, class 0. The three nearest points are B, C, and A, with squared distances 2, 4, and 5 and labels 0, 1, and 0. The majority is 0. Option C would be the k=2 vote, which does tie."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "For the same query and the same five points, the 5-nearest-neighbour class is",
+      "options": [
+        "1",
+        "0",
+        "a tie",
+        "the average $1/3$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, class 1. All five labels are 0, 0, 1, 1, and 1, so class 1 has three votes and class 0 has two. There is no tie. The average of the codes is a regression reading, not the majority vote."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of the query $(2,1)$ and of k=1?",
+      "options": [
+        "The squared Euclidean distances to A, B, C, D, and E are 5, 2, 4, 25, and 32.",
+        "k=1 predicts class 0.",
+        "k=1 has training error 0 when no two training rows share features and disagree on the label.",
+        "Binary classification requires an even k so that ties are possible."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The squared distances are those five numbers, the nearest is B with class 0, and k=1 reproduces each training label when a point is its own neighbour and duplicates do not conflict. D has the parity backwards: an odd k avoids a tied binary vote."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "k-NN regression predicts the average of the k nearest labels.",
+        "On the regression example, the k=3 prediction at $(0,0)$ is 5.",
+        "Euclidean k-NN needs feature scaling when one column's range dwarfs another's, because a large gap dominates the squared distance.",
+        "k=1 has high bias and zero variance."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. Regression averages the k labels, and $(2+5+8)/3=5$. A squared gap of $100^2$ swamps a squared gap of $2^2$, which is why the columns are scaled. D reverses the tradeoff: k=1 has training error 0 in the no-conflict case and high variance, not zero variance."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 1,
+      "stem": "The squared Euclidean distance from the query $(2,1)$ to its nearest training point is an integer. Enter it.",
+      "options": [],
+      "answer": [
+        "2"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **2**. The nearest training point is B at $(1,0)$, and $(2-1)^2+(1-0)^2=1+1=2$. The next squared distance is 4, to C."
+    }
+  ]
+}

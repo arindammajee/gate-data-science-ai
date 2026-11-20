@@ -1,0 +1,153 @@
+{
+  "slug": "conditional-variance",
+  "section": "probability",
+  "title": "Conditional variance",
+  "syllabus": "Conditional variance.",
+  "minutes": 30,
+  "summary": "Var(X given Y) is the variance inside a slice. The law of total variance splits Var(X) into the average slice variance plus the variance of the slice means.",
+  "keywords": [
+    "conditional variance",
+    "law of total variance",
+    "mixture",
+    "slice"
+  ],
+  "intuition": "A conditional variance measures how spread out $X$ is after $Y$ is known. Inside the slice $Y=y$ you compute an ordinary variance, using the conditional distribution of $X$. That number is $\\mathrm{Var}(X\\mid Y=y)$. Letting $y$ ride with $Y$ produces a random variable $\\mathrm{Var}(X\\mid Y)$, constant on each level set of $Y$, just as $E[X\\mid Y]$ is.\n\nThe law of total variance says the unconditional variance is the sum of two nonnegative pieces. The first is $E[\\mathrm{Var}(X\\mid Y)]$, the average of the within-slice variances. The second is $\\mathrm{Var}(E[X\\mid Y])$, the variance of the slice means themselves. A mixture can be noisy inside every group, or the groups can be tight while their means sit far apart. Both contributions show up in $\\mathrm{Var}(X)$, and neither one is optional.\n\nThe two pieces are not interchangeable with a sum of the unsmoothed slice variances. If two slices each have variance 4, the average within-slice variance is 4, not 8. Adding the slice variances without weighting them by $P(Y=y)$ double-counts the mixture. The formula that matches the cheat sheet is the expectation of the conditional variance, plus the variance of the conditional expectation.",
+  "definitions": [
+    {
+      "term": "Conditional variance given a value",
+      "body": "$\\mathrm{Var}(X\\mid Y=y)=E[X^2\\mid Y=y]-(E[X\\mid Y=y])^2$, when $P(Y=y)>0$ and $E[X^2\\mid Y=y]$ is finite. It is a number."
+    },
+    {
+      "term": "Conditional variance as a random variable",
+      "body": "$\\mathrm{Var}(X\\mid Y)$ equals $\\mathrm{Var}(X\\mid Y=y)$ on the event $\\{Y=y\\}$. It is a function of $Y$ and is nonnegative."
+    },
+    {
+      "term": "Law of total variance",
+      "body": "The decomposition $\\mathrm{Var}(X)=E[\\mathrm{Var}(X\\mid Y)]+\\mathrm{Var}(E[X\\mid Y])$, for $X$ with finite second moment. Both terms are nonnegative."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Slice variance",
+      "latex": "\\mathrm{Var}(X\\mid Y=y)=E[(X-E[X\\mid Y=y])^2\\mid Y=y]",
+      "note": "The same number as $E[X^2\\mid Y=y]-(E[X\\mid Y=y])^2$."
+    },
+    {
+      "name": "Law of total variance",
+      "latex": "\\mathrm{Var}(X)=E[\\mathrm{Var}(X\\mid Y)]+\\mathrm{Var}(E[X\\mid Y])",
+      "note": "The first term is the average within-slice variance. The second is the variance of the slice means."
+    }
+  ],
+  "properties": [
+    "Both terms in the law of total variance are nonnegative, so $E[\\mathrm{Var}(X\\mid Y)]\\le \\mathrm{Var}(X)$ and $\\mathrm{Var}(E[X\\mid Y])\\le \\mathrm{Var}(X)$.",
+    "If $X$ is a function of $Y$, then $\\mathrm{Var}(X\\mid Y)=0$ and the whole variance is $\\mathrm{Var}(E[X\\mid Y])=\\mathrm{Var}(X)$.",
+    "If $E[X\\mid Y]$ is constant, the second term vanishes and $\\mathrm{Var}(X)=E[\\mathrm{Var}(X\\mid Y)]$. Independence of $X$ and $Y$ is one way for the slice means to be constant.",
+    "The slice variances are weighted by $P(Y=y)$ before they enter the law. An unweighted sum of slice variances is not $E[\\mathrm{Var}(X\\mid Y)]$ unless the weights happen to make it so.",
+    "A slice with conditional variance 0 is a deterministic function of that value of $Y$. Other slices may still be noisy."
+  ],
+  "examples": [
+    {
+      "title": "Two slices with the same variance and different means",
+      "prompt": "$Y$ is 0 or 1 with probability $1/2$ each. Given $Y=0$, $X$ is 0 or 4 with probability $1/2$ each. Given $Y=1$, $X$ is 2 or 6 with probability $1/2$ each. Compute both terms of the law of total variance.",
+      "steps": [
+        "Given $Y=0$, the mean is $(0+4)/2=2$ and the second moment is $(0+16)/2=8$, so $\\mathrm{Var}(X\\mid Y=0)=8-4=4$. Given $Y=1$, the mean is $(2+6)/2=4$ and the second moment is $(4+36)/2=20$, so $\\mathrm{Var}(X\\mid Y=1)=20-16=4$.",
+        "The average within-slice variance is $E[\\mathrm{Var}(X\\mid Y)]=(4+4)/2=4$. The slice means are 2 and 4, each with probability $1/2$, so their variance is $\\mathrm{Var}(E[X\\mid Y])=((2-3)^2+(4-3)^2)/2=1$.",
+        "The law adds the terms: $\\mathrm{Var}(X)=4+1=5$. The four atoms $0,4,2,6$, each of probability $1/4$, have mean 3 and second moment 14, and $14-9=5$ confirms the split."
+      ],
+      "answer": "$E[\\mathrm{Var}(X\\mid Y)]=4$, $\\mathrm{Var}(E[X\\mid Y])=1$, and $\\mathrm{Var}(X)=5$."
+    },
+    {
+      "title": "One slice is deterministic",
+      "prompt": "$Y=1$ with probability $1/4$ and $Y=2$ with probability $3/4$. Given $Y=1$, $X$ equals 5 for certain. Given $Y=2$, $X$ is 0 or 2 with probability $1/2$ each. Compute both terms and $\\mathrm{Var}(X)$.",
+      "steps": [
+        "The slice $Y=1$ has mean 5 and variance 0. The slice $Y=2$ has mean 1 and second moment $(0+4)/2=2$, so its variance is $2-1=1$.",
+        "Average the slice variances with the distribution of $Y$: $E[\\mathrm{Var}(X\\mid Y)]=0\\cdot(1/4)+1\\cdot(3/4)=3/4$. The slice means 5 and 1 have mean $5/4+3/4=2$ and second moment $25/4+3/4=7$, so $\\mathrm{Var}(E[X\\mid Y])=7-4=3$.",
+        "Add the terms: $\\mathrm{Var}(X)=3/4+3=15/4$. Directly, $P(X=5)=1/4$, $P(X=0)=P(X=2)=3/8$, the mean is 2, and the second moment is $25/4+12/8=31/4$, so the variance is $31/4-4=15/4$."
+      ],
+      "answer": "The within-slice term is $3/4$, the variance of the slice means is $3$, and $\\mathrm{Var}(X)=15/4$."
+    }
+  ],
+  "traps": [
+    "Adding the slice variances without averaging them. In the first mixture both slices have variance 4, and $4+4=8$ is not $\\mathrm{Var}(X)$; the average is 4 and the total variance is 5.",
+    "Dropping $\\mathrm{Var}(E[X\\mid Y])$. The slice means 2 and 4 contribute an extra 1, and without it the variance would be reported as 4 instead of 5.",
+    "Swapping the two terms. $E[\\mathrm{Var}(X\\mid Y)]$ is 4 in the first mixture and $\\mathrm{Var}(E[X\\mid Y])$ is 1. They are not the same object.",
+    "Reporting a conditional variance as $\\mathrm{Var}(X)$. Knowing $Y$ can shrink the average remaining variance; it does not automatically equal the marginal variance."
+  ],
+  "python": "from fractions import Fraction\nvar0 = (0 + 16) / 2 - 4\nvar1 = (4 + 36) / 2 - 16\nassert var0 == var1 == 4\ne_var = (var0 + var1) / 2\nvar_mean = ((2 - 3) ** 2 + (4 - 3) ** 2) / 2\nassert e_var + var_mean == 5\nvals = [0, 4, 2, 6]\nmean = sum(vals) / 4\nassert sum(v * v for v in vals) / 4 - mean ** 2 == 5\ne_var2 = Fraction(3, 4)\nvar_mean2 = 7 - 4\nassert e_var2 + var_mean2 == Fraction(15, 4)\nprint(5, float(Fraction(15, 4)))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "$Y$ is 0 or 1 with probability $1/2$ each. Given $Y=0$, $X$ is 0 or 4 with probability $1/2$ each. Then $\\mathrm{Var}(X\\mid Y=0)$ equals",
+      "options": [
+        "$4$",
+        "$5$",
+        "$1$",
+        "$2$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $4$.\n\nThe slice mean is 2 and the slice second moment is $(0+16)/2=8$, so the slice variance is $8-4=4$. Option B is the unconditional variance of this mixture. Option C is the variance of the two slice means, not the variance inside the slice."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Which equation is the law of total variance, for $X$ with a finite second moment?",
+      "options": [
+        "$\\mathrm{Var}(X)=E[\\mathrm{Var}(X\\mid Y)]+\\mathrm{Var}(E[X\\mid Y])$.",
+        "$\\mathrm{Var}(X)=E[\\mathrm{Var}(X\\mid Y)]$.",
+        "$\\mathrm{Var}(X)=\\mathrm{Var}(E[X\\mid Y])$.",
+        "$\\mathrm{Var}(X)=E[X\\mid Y]+\\mathrm{Var}(X\\mid Y)$."
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**.\n\nThe law splits the variance into the average within-slice variance and the variance of the slice means. Options B and C each keep only one term. They are equal to $\\mathrm{Var}(X)$ only when the other term is zero. Option D adds a random variable to a number of a different kind."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "$Y$ is 0 or 1 with probability $1/2$ each. Given $Y=0$, $X$ is 0 or 4 with probability $1/2$ each. Given $Y=1$, $X$ is 2 or 6 with probability $1/2$ each. Which of the following are true?",
+      "options": [
+        "$E[\\mathrm{Var}(X\\mid Y)]=4$.",
+        "$\\mathrm{Var}(E[X\\mid Y])=1$.",
+        "$\\mathrm{Var}(X)=5$.",
+        "$\\mathrm{Var}(X)=\\mathrm{Var}(X\\mid Y=0)+\\mathrm{Var}(X\\mid Y=1)$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**.\n\nEach slice has variance 4, so the average within-slice variance is 4. The slice means are 2 and 4, and the variance of a random variable that equals 2 or 4 with equal probability is 1. The law adds them to 5, which matches $E[X^2]-(E[X])^2=14-9$. D adds the slice variances to 8 and skips both the averaging and the second term."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "$Y$ is 0 or 1 with probability $1/2$ each. Given $Y=0$, $X$ is 0 or 4 with probability $1/2$ each. Given $Y=1$, $X$ is 2 or 6 with probability $1/2$ each. Enter $\\mathrm{Var}(X)$.",
+      "options": [],
+      "answer": [
+        "5"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **5**.\n\nThe within-slice term is $(4+4)/2=4$ and the variance of the slice means 2 and 4 is 1. The law of total variance adds them: $4+1=5$. The four equally likely values 0, 4, 2, and 6 have second moment 14 and mean 3, and $14-9=5$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "$Y=1$ with probability $1/4$ and $Y=2$ with probability $3/4$. Given $Y=1$, $X=5$. Given $Y=2$, $X$ is 0 or 2 with probability $1/2$ each. Let $v=\\mathrm{Var}(X)$. Enter $4v$.",
+      "options": [],
+      "answer": [
+        "15"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **15**.\n\nThe slice variances are 0 and 1, so $E[\\mathrm{Var}(X\\mid Y)]=3/4$. The slice means 5 and 1 have variance $7-2^2=3$. Therefore $v=3/4+3=15/4$, and $4v=15$."
+    }
+  ]
+}

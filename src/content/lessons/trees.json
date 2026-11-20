@@ -1,0 +1,170 @@
+{
+  "slug": "trees",
+  "section": "programming",
+  "title": "Trees",
+  "syllabus": "Trees",
+  "minutes": 35,
+  "summary": "Root, leaf, height, depth, and the binary-search-tree property. Inorder lists keys in sorted order, search and update cost O(h), and h can be n-1.",
+  "keywords": [
+    "binary tree",
+    "binary search tree",
+    "inorder",
+    "height",
+    "traversal"
+  ],
+  "intuition": "A tree in this lesson is a finite set of nodes with a distinguished root and, for every other node, one parent. A binary tree gives each node at most two children, called left and right. A leaf has no children. Depth counts edges from the root, so the root has depth $0$. Height counts edges on a longest path downward to a leaf, so a leaf has height $0$ and a single-node tree has height $0$. The empty tree is given height $-1$ so that the recurrence `1 + max(left, right)` is consistent.\n\nA binary search tree adds an order. Every key in the left subtree is strictly less than the node's key, and every key in the right subtree is strictly greater. Search, insert, and delete then follow one root-to-leaf path and cost $O(h)$, where $h$ is the height. That height is about $\\lfloor \\log_2 n \\rfloor$ when the tree is balanced, and it is $n-1$ when every node has only a right child. The balanced figure is not a promise. AVL rotations are not on the syllabus.\n\nInorder traversal visits left subtree, then the node, then the right subtree. On a binary search tree that visit order is the sorted order of the keys. Preorder visits the node first, postorder visits it last, and level order walks depth by depth using a queue. An arbitrary binary tree does not become sorted just because it is walked inorder. The search-tree property is what sorts the walk.\n\n$$\\text{search, insert, delete are }O(h),\\qquad h\\text{ can be }n-1.$$",
+  "definitions": [
+    {
+      "term": "Root, leaf, depth, height",
+      "body": "The root is the top node. A leaf has no children. Depth is the number of edges from the root. Height of a node is the number of edges on a longest downward path to a leaf. A leaf has height $0$. A chain of $n$ nodes has height $n-1$."
+    },
+    {
+      "term": "Binary tree",
+      "body": "Each node has at most two children, ordered as left and right. Missing children are empty. This lesson does not use trees with three or more children."
+    },
+    {
+      "term": "Binary search tree",
+      "body": "For every node, keys in its left subtree are strictly smaller and keys in its right subtree are strictly larger. Equal keys are not inserted in the examples here. The property applies at every node, not only at the root."
+    },
+    {
+      "term": "Traversals",
+      "body": "Preorder is node, left, right. Inorder is left, node, right. Postorder is left, right, node. Level order visits nodes of depth $0$, then depth $1$, and so on, left to right. Level order is a queue walk."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "BST operations",
+      "latex": "\\text{search, insert, delete are }O(h)",
+      "note": "The work follows one path. A balanced tree has $h=\\lfloor \\log_2 n\\rfloor$. A chain has $h=n-1$."
+    },
+    {
+      "name": "Height recurrence",
+      "latex": "h(v)=1+\\max(h(\\text{left}), h(\\text{right})),\\quad h(\\text{empty})=-1",
+      "note": "A leaf then has height $0$. A chain of $n$ nodes has height $n-1$."
+    },
+    {
+      "name": "Inorder of a BST",
+      "latex": "\\text{inorder}(T)=\\text{sorted}(T)",
+      "note": "This uses the binary-search-tree property. Inorder of a binary tree that is not a search tree is not sorted."
+    }
+  ],
+  "properties": [
+    "Search, successful insert, and delete are $O(h)$. They are not automatically $O(\\log n)$. If inserts arrive already sorted, the tree is a chain and $h=n-1$.",
+    "Inorder of a binary search tree lists the keys from smallest to largest. Preorder, postorder, and level order do not.",
+    "A perfect tree on $n=2^{h+1}-1$ nodes has height $h=\\lfloor \\log_2 n\\rfloor$. For $n=7$, the height is $2$ and there are $4$ leaves.",
+    "Delete of a node with two children copies the inorder successor (the leftmost node of the right subtree) into the deleted slot, then deletes that successor. The cost is still $O(h)$.",
+    "AVL rotations are not on the syllabus. The fact to use is the $O(h)$ bound together with the possibility that $h=n-1$."
+  ],
+  "examples": [
+    {
+      "title": "Insert five keys and write the traversals",
+      "prompt": "Insert $5, 3, 8, 1, 4$ into an empty binary search tree. Give preorder, inorder, postorder, level order, and the height.",
+      "steps": [
+        "$5$ becomes the root. $3$ goes left of $5$. $8$ goes right of $5$. $1$ goes left of $3$. $4$ goes right of $3$. The longest root-to-leaf path has two edges, so the height is $2$.",
+        "Inorder visits left, node, right: $1, 3, 4, 5, 8$. That is the sorted order, which is the search-tree property at work.",
+        "Preorder visits the node before its children: $5, 3, 1, 4, 8$. Postorder visits the node after both children: $1, 4, 3, 8, 5$.",
+        "Level order uses a queue. Depth $0$ is $5$. Depth $1$ is $3$, then $8$. Depth $2$ is $1$, then $4$. The leaves are $1$, $4$, and $8$."
+      ],
+      "answer": "Inorder is $1, 3, 4, 5, 8$. Preorder is $5, 3, 1, 4, 8$. Postorder is $1, 4, 3, 8, 5$. Level order is $5, 3, 8, 1, 4$. The height is $2$."
+    },
+    {
+      "title": "Delete a node that has two children",
+      "prompt": "Build the search tree by inserting $5, 3, 7, 6, 8$. Delete $5$, using the inorder successor.",
+      "steps": [
+        "The tree has root $5$, left child $3$, and right child $7$. The node $7$ has left child $6$ and right child $8$. Height is $2$.",
+        "The node $5$ has two children. Its inorder successor is the leftmost node of the right subtree. The right child is $7$, and $7$ has a left child $6$, so the successor is $6$.",
+        "Copy $6$ into the root, then delete the original node $6$, which is a leaf. The root is now $6$, its left child is $3$, and its right child is $7$ with right child $8$.",
+        "Inorder after the deletion is $3, 6, 7, 8$, still sorted. The successor search and the deletion walked $O(h)$ nodes."
+      ],
+      "answer": "After deleting $5$, the inorder listing is $3, 6, 7, 8$ and the root key is $6$. The height is still $2$."
+    }
+  ],
+  "traps": [
+    "Quoting $O(\\log n)$ for every binary search tree. The bound is $O(h)$, and a chain of $n$ nodes has height $n-1$. Sorted insertions build that chain.",
+    "Expecting inorder of an arbitrary binary tree to be sorted. Sorted inorder needs the search-tree property at every node.",
+    "Counting height by nodes instead of edges without saying so. In this lesson a single node has height $0$, so a chain of $6$ nodes has height $5$, not $6$.",
+    "Learning AVL rotations for this syllabus. They are not required. The examinable fact is that nothing here forces $h$ down to $\\lfloor \\log_2 n\\rfloor$."
+  ],
+  "python": "class Node:\n    def __init__(self, key):\n        self.key = key\n        self.left = self.right = None\n\ndef insert(node, key):\n    if node is None:\n        return Node(key)\n    if key < node.key:\n        node.left = insert(node.left, key)\n    elif key > node.key:\n        node.right = insert(node.right, key)\n    return node\n\ndef collect(node, kind):\n    if node is None:\n        return []\n    left, right = collect(node.left, kind), collect(node.right, kind)\n    here = [node.key]\n    return {\"pre\": here + left + right, \"in\": left + here + right, \"post\": left + right + here}[kind]\n\ndef height(node):\n    return -1 if node is None else 1 + max(height(node.left), height(node.right))\n\ndef leaves(node):\n    if node is None:\n        return 0\n    if node.left is None and node.right is None:\n        return 1\n    return leaves(node.left) + leaves(node.right)\n\ndef build(keys):\n    root = None\n    for key in keys:\n        root = insert(root, key)\n    return root\n\nroot = build([5, 3, 8, 1, 4])\nassert collect(root, \"in\") == [1, 3, 4, 5, 8]\nassert collect(root, \"pre\") == [5, 3, 1, 4, 8]\nassert collect(root, \"post\") == [1, 4, 3, 8, 5]\nassert height(root) == 2\nassert height(build([1, 2, 3, 4, 5, 6])) == 5\nside = build([5, 2, 7, 6])\nassert collect(side, \"pre\") == [5, 2, 7, 6]\nassert height(side) == 2 and leaves(side) == 2\nassert leaves(build([4, 2, 6, 1, 3, 5, 7])) == 4\nprint(collect(root, \"in\"), height(root))\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Keys $6, 2, 8, 7$ are inserted, in that order, into an empty binary search tree. The inorder traversal is",
+      "options": [
+        "$2, 6, 7, 8$",
+        "$6, 2, 8, 7$",
+        "$2, 7, 8, 6$",
+        "$6, 2, 7, 8$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $2, 6, 7, 8$.\n\n$6$ is the root, $2$ is its left child, $8$ is its right child, and $7$ is the left child of $8$. Inorder visits the left subtree, the node, then the right subtree, which lists keys from small to large: $2$, then $6$, then $7$, then $8$. Option B is the preorder. Option C is the postorder. Option D is a level-order slip that places $7$ before $8$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "Height counts edges, and a single node has height $0$. A chain of $6$ nodes has height",
+      "options": [
+        "$5$",
+        "$6$",
+        "$2$",
+        "$1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $5$.\n\nA chain has one leaf at the bottom and one edge between each consecutive pair. Six nodes give five edges, so the height is $6-1=5$. The value $6$ counts nodes instead of edges. The value $2$ is $\\lfloor \\log_2 6\\rfloor$, the balanced height, which this chain does not have."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "Search, insert, and delete in a binary search tree are $O(h)$.",
+        "Every binary search tree on $n$ nodes has height $\\lfloor \\log_2 n\\rfloor$.",
+        "Inorder traversal of a binary search tree lists the keys in sorted order.",
+        "The syllabus requires AVL rotations to keep every tree balanced."
+      ],
+      "answer": [
+        "A",
+        "C"
+      ],
+      "solution": "The correct options are **A and C**.\n\nEach of search, insert, and delete follows a path whose length is governed by the height, so the cost is $O(h)$. Inorder walks smaller keys, then the node, then larger keys, so the output is sorted.\n\nHeight is $\\lfloor \\log_2 n\\rfloor$ for a balanced shape and $n-1$ for a chain. Nothing in the insertion algorithm forces the balanced shape. AVL rotations are not on the syllabus."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Keys $5, 2, 7, 6$ are inserted into an empty binary search tree. Height counts edges. Which of the following are true?",
+      "options": [
+        "Preorder is $5, 2, 7, 6$.",
+        "The height is $2$.",
+        "Level order is $5, 2, 6, 7$.",
+        "The tree has $2$ leaves."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nThe root is $5$, with left child $2$ and right child $7$, and $6$ hangs to the left of $7$. Preorder emits the node before its subtrees: $5, 2, 7, 6$. The longest path, $5$ to $7$ to $6$, has two edges, so the height is $2$. The leaves are $2$ and $6$.\n\nLevel order visits a whole depth before the next: $5$, then $2$ and $7$, then $6$. That is $5, 2, 7, 6$, not $5, 2, 6, 7$."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Insert $4, 2, 6, 1, 3, 5, 7$ into an empty binary search tree. Enter the number of leaves.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**.\n\nThe insertions build a perfect tree: root $4$, children $2$ and $6$, and four grandchildren $1, 3, 5, 7$. A leaf has no children, so the four grandchildren are the leaves. The internal nodes are $4$, $2$, and $6$. The height, counting edges, is $2$, which is not the number asked for."
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "slug": "marginal-probability",
+  "section": "probability",
+  "title": "Marginal probability",
+  "syllabus": "Marginal probability.",
+  "minutes": 30,
+  "summary": "A marginal probability adds a discrete joint or integrates a joint density, and the law of total probability does the same sum over a partition.",
+  "keywords": [
+    "marginal",
+    "joint",
+    "law of total probability",
+    "partition",
+    "density"
+  ],
+  "intuition": "A joint model describes two things at once. A marginal probability throws one of them away. In a table, you add along the unwanted column or row. In a density on the plane, you integrate out the unwanted variable. What remains is an ordinary probability for the variable you kept, and those probabilities still sum, or integrate, to 1.\n\nThe law of total probability is the same idea written with a partition instead of a table. If the events $A_i$ are disjoint and cover the sample space, then $B$ is the disjoint union of the slices $B\\cap A_i$. Add the slice probabilities $P(B\\mid A_i)P(A_i)$. Forgetting a block of the partition, or using blocks that overlap, produces a number that is not $P(B)$.\n\nA marginal is not a conditional. Summing a row gives $P(X=x)$. Dividing a cell by that row sum gives $P(Y=y\\mid X=x)$. The two operations answer different questions, and the conditional probabilities in one row sum to 1 while the joint cells in that row sum to the marginal.",
+  "definitions": [
+    {
+      "term": "Marginal probability",
+      "body": "The probability of an event that mentions only some of the variables in a joint model, obtained by summing or integrating the joint over the variables that were dropped."
+    },
+    {
+      "term": "Marginal from a joint table",
+      "body": "For discrete random variables, $P(X=x)=\\sum_y P(X=x,Y=y)$. The sum runs over every value of the discarded variable."
+    },
+    {
+      "term": "Law of total probability",
+      "body": "If $\\{A_i\\}$ is a partition of the sample space and $P(A_i)>0$ whenever the term is used, then $P(B)=\\sum_i P(B\\mid A_i)P(A_i)$."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Discrete marginal",
+      "latex": "P(X=x)=\\sum_y P(X=x,Y=y)",
+      "note": "Sum the joint row, or the joint column, for the variable you keep."
+    },
+    {
+      "name": "Continuous marginal",
+      "latex": "f_X(x)=\\int f_{X,Y}(x,y)\\,dy",
+      "note": "Integrate the joint density over the unwanted coordinate. The result is a density, not a probability, until you integrate it over a set."
+    },
+    {
+      "name": "Marginal from a partition",
+      "latex": "P(B)=\\sum_i P(B\\mid A_i)P(A_i)",
+      "note": "The sets $A_i$ partition the sample space. This is the denominator in Bayes' theorem."
+    }
+  ],
+  "properties": [
+    "Marginal probabilities of a discrete random variable are nonnegative and sum to 1, because the joint cells do.",
+    "A joint cell is at most each of its marginals: $P(X=x,Y=y)\\le P(X=x)$ and $P(X=x,Y=y)\\le P(Y=y)$.",
+    "The law of total probability needs a partition. Overlapping blocks double-count, and a missing block drops probability.",
+    "If $X$ and $Y$ are independent, the joint cell equals the product of the marginals. A marginal can be computed either way; the product is a special case, not the definition.",
+    "Integrating a joint density over the whole unwanted line produces a function of the remaining variable. Integrating that function over the whole line returns 1."
+  ],
+  "examples": [
+    {
+      "title": "Margins of a 2 by 3 table",
+      "prompt": "The joint probabilities $P(X=x,Y=y)$, in hundredths, are 10, 5, and 15 in the row $X=0$, and 20, 30, and 20 in the row $X=1$, for $Y=0,1,2$ in that order. Find the marginal distributions of $X$ and of $Y$.",
+      "steps": [
+        "The six cells sum to $10+5+15+20+30+20=100$, so they are probabilities once each is divided by 100.",
+        "Add across rows: $P(X=0)=(10+5+15)/100=30/100=3/10$ and $P(X=1)=70/100=7/10$.",
+        "Add down columns: $P(Y=0)=(10+20)/100=3/10$, $P(Y=1)=(5+30)/100=7/20$, and $P(Y=2)=(15+20)/100=7/20$. The three column sums are 30, 35, and 35 hundredths, which add to 1."
+      ],
+      "answer": "$P(X=0)=3/10$, $P(X=1)=7/10$, $P(Y=0)=3/10$, and $P(Y=1)=P(Y=2)=7/20$."
+    },
+    {
+      "title": "Integrate out one coordinate",
+      "prompt": "The joint density $f(x,y)=x+y$ on the unit square $0<x<1$, $0<y<1$, and it is 0 elsewhere. Find the marginal density of $X$ and $P(X\\le 1/2)$.",
+      "steps": [
+        "Check that the joint is a density: $\\int_0^1\\int_0^1(x+y)\\,dy\\,dx=\\int_0^1(x+1/2)\\,dx=1/2+1/2=1$.",
+        "The marginal density is $f_X(x)=\\int_0^1(x+y)\\,dy=x+1/2$ for $x$ in $(0,1)$.",
+        "Then $P(X\\le 1/2)=\\int_0^{1/2}(x+1/2)\\,dx=\\big[x^2/2+x/2\\big]_0^{1/2}=1/8+1/4=3/8$."
+      ],
+      "answer": "The marginal density is $f_X(x)=x+1/2$ on $(0,1)$, and $P(X\\le 1/2)=3/8$."
+    },
+    {
+      "title": "A failure probability across three states",
+      "prompt": "A machine is in state $S_1$, $S_2$, or $S_3$ with probabilities $1/4$, $2/5$, and $7/20$. The conditional failure probabilities are $1/5$, $1/2$, and $1/10$. Find the marginal probability that the machine fails.",
+      "steps": [
+        "The three states form a partition: $1/4+2/5+7/20=5/20+8/20+7/20=1$, and a machine is in exactly one state.",
+        "Weight each conditional probability by the state probability: $(1/4)(1/5)=1/20$, $(2/5)(1/2)=1/5$, and $(7/20)(1/10)=7/200$.",
+        "Add on the denominator 200: $10/200+40/200+7/200=57/200$."
+      ],
+      "answer": "The marginal failure probability is $57/200$."
+    }
+  ],
+  "traps": [
+    "Dividing a cell by a marginal and calling the result a marginal. That quotient is a conditional probability.",
+    "Summing only the favourable column and forgetting the other values of the discarded variable. A marginal uses the whole row or the whole column.",
+    "Applying the law of total probability to events that overlap or that leave part of the sample space out. The sets have to be a partition.",
+    "Integrating a joint density in both variables when a marginal density was asked for. The inner integral leaves a function of the remaining variable."
+  ],
+  "python": "from fractions import Fraction\ncells = [10, 5, 15, 20, 30, 20]\nassert sum(cells) == 100\nassert 10 + 5 + 15 == 30\nassert 10 + 20 == 30\nassert 5 + 30 == 35\np_fail = (\n    Fraction(1, 4) * Fraction(1, 5)\n    + Fraction(2, 5) * Fraction(1, 2)\n    + Fraction(7, 20) * Fraction(1, 10)\n)\nassert p_fail == Fraction(57, 200)\n# int_0^{1/2} (x + 1/2) dx = 1/8 + 1/4\nassert Fraction(1, 8) + Fraction(1, 4) == Fraction(3, 8)\nprint(30, 57, 3)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A joint table, in hundredths, has row $X=0$ equal to 10, 5, 15 and row $X=1$ equal to 20, 30, 20, for $Y=0,1,2$. Then $P(X=1)$ equals",
+      "options": [
+        "$7/10$",
+        "$3/10$",
+        "$1/2$",
+        "$1/5$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $7/10$.\n\nAdd the row $X=1$: $20+30+20=70$ hundredths, so $P(X=1)=70/100=7/10$. Option B is the other marginal, $P(X=0)=30/100$. Option D is a single cell, $20/100$."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The joint density $f(x,y)=x+y$ on the unit square $0<x<1$, $0<y<1$ integrates to 1. Then $P(X\\le 1/2)$ equals",
+      "options": [
+        "$3/8$",
+        "$1/2$",
+        "$1/4$",
+        "$5/8$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $3/8$.\n\nThe marginal density is $f_X(x)=\\int_0^1(x+y)\\,dy=x+1/2$. Integrate it from 0 to $1/2$: $\\int_0^{1/2}(x+1/2)\\,dx=1/8+1/4=3/8$. Option B treats $X$ as uniform. Option C stops after the $x^2/2$ term."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true?",
+      "options": [
+        "A marginal probability of a discrete joint is obtained by summing out the unwanted variable, and a marginal density is obtained by integrating it out.",
+        "If the events $A_i$ partition the sample space, then $P(B)=\\sum_i P(B\\mid A_i)P(A_i)$.",
+        "The marginal distribution of $X$ is the same object as the conditional distribution of $X$ given $Y$.",
+        "For a discrete random variable whose joint distribution sums to 1, the marginal probabilities of all of its values also sum to 1."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nA is the sum-or-integral definition. B is the law of total probability over a partition. D holds because summing the marginals sums every joint cell exactly once. C is false: a conditional distribution divides by a marginal and still depends on the conditioning value."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 1,
+      "stem": "A joint table, in hundredths, has row $X=0$ equal to 10, 5, 15 and row $X=1$ equal to 20, 30, 20, for $Y=0,1,2$. Let $p=P(Y=0)$. Enter $100p$.",
+      "options": [],
+      "answer": [
+        "30"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **30**.\n\nThe column $Y=0$ contains 10 and 20 hundredths. Their sum is 30, so $p=30/100$ and $100p=30$. The row sum 30 for $X=0$ is a different marginal that happens to have the same value."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "States $S_1,S_2,S_3$ partition the sample space, with probabilities $1/4$, $2/5$, and $7/20$. The conditional probabilities of failure are $1/5$, $1/2$, and $1/10$. Let $p$ be the marginal probability of failure. Enter $200p$.",
+      "options": [],
+      "answer": [
+        "57"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **57**.\n\nThe law of total probability gives $(1/4)(1/5)+(2/5)(1/2)+(7/20)(1/10)=1/20+1/5+7/200=10/200+40/200+7/200=57/200$. Therefore $200p=57$."
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "slug": "maps-and-tables",
+  "section": "aptitude",
+  "title": "Maps and tables",
+  "syllabus": "Routes from a distance table and a missing table entry",
+  "minutes": 20,
+  "summary": "Compare three routes on a distance table by adding the legs, and fill a missing cell from a stated row total. The shortest route is the smallest of those sums.",
+  "keywords": [
+    "distance table",
+    "shortest route",
+    "missing cell",
+    "row total",
+    "map distances"
+  ],
+  "intuition": "A small map in this block is a list of distances. If the stem gives every leg you are allowed to use, you do not need a picture of the roads. A path is the sum of its legs. The shortest route among three paths is the smallest of the three sums. There is no weighted graph to search and no reason to discard a direct leg unless the question says that leg is closed.\n\nA table with a missing cell is the same kind of arithmetic when the stem states the total. If a row is morning plus evening and the row total is given, the blank is the total minus the cell you can see. Check the arithmetic by adding the recovered cell back to the known cell and matching the stated total.\n\nRead the row and the column labels before you add. The distance from P to R is the distance from R to P in the table below, and it is not the distance from P to S. A comparison of routes is only a comparison of the sums you were asked to form.",
+  "definitions": [
+    {
+      "term": "Leg",
+      "body": "One entry of the distance table: the distance between two named places, used as a single stretch of a route."
+    },
+    {
+      "term": "Route length",
+      "body": "The sum of the legs along a stated sequence of places. Different sequences are different routes even when they share a place."
+    },
+    {
+      "term": "Shortest of a listed set",
+      "body": "The minimum of the route lengths you were asked to compare. It is a comparison, not a search over routes the question did not list."
+    },
+    {
+      "term": "Missing cell",
+      "body": "The unknown entry fixed by a stated total. For a two-cell row, it is the total minus the known cell."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Route length",
+      "latex": "L=d_1+d_2+\\cdots+d_k",
+      "note": "Add the legs of that path only. Do not multiply distances."
+    },
+    {
+      "name": "Missing cell from a total",
+      "latex": "\\text{missing}=\\text{total}-\\text{known}",
+      "note": "Use this when the stem says the two cells add to the printed total."
+    }
+  ],
+  "properties": [
+    "Among three explicitly listed paths, the shortest is the one with the smallest sum.",
+    "A direct leg can be shorter than a path with more towns. More towns do not imply a shorter trip.",
+    "A symmetric distance table repeats each pair: the entry for P to R equals the entry for R to P.",
+    "A missing cell defined by a row total is fixed. It is not a free guess that makes one route look shorter.",
+    "The difference between two route lengths is a comparison of sums, not a new road on the map."
+  ],
+  "examples": [
+    {
+      "title": "Three routes, one comparison",
+      "prompt": "Distances in kilometres: P to Q is 7, P to R is 11, P to S is 13, Q to R is 5, Q to S is 9, and R to S is 4. Compare P$\\to$S, P$\\to$R$\\to$S, and P$\\to$Q$\\to$R$\\to$S. Which is shortest?",
+      "steps": [
+        "The direct route P to S is the table entry 13.",
+        "P to R to S is $11+4=15$. P to Q to R to S is $7+5+4=16$.",
+        "The three lengths are 13, 15, and 16. The minimum is 13, the direct route."
+      ],
+      "answer": "The shortest of the three routes is P to S, with length 13 km."
+    },
+    {
+      "title": "A blank cell fixed by the row total",
+      "prompt": "A dispatch table says the South row total is 26. The morning cell is 14 and the evening cell is blank. The North row, for checking the same rule, is morning 18 and evening 12, total 30. Find the blank.",
+      "steps": [
+        "The stem defines the row total as the sum of the two cells.",
+        "The North row checks the rule: $18+12=30$.",
+        "The South evening cell is $26-14=12$. Adding it back gives $14+12=26$."
+      ],
+      "answer": "The missing South evening cell is 12."
+    }
+  ],
+  "traps": [
+    "Choosing the route with the most stops, or the fewest, without adding the legs.",
+    "Reading the P-to-R entry, 11, as if it were already the length of P to R to S.",
+    "Filling a blank by copying a neighbouring cell. The South evening cell equals 12 because $26-14=12$, not because the North evening cell happens to be 12.",
+    "Subtracting a distance from a row total that belongs to a different table. The budget of a route is the sum of its own legs."
+  ],
+  "python": "direct = 13\nvia_r = 11 + 4\nvia_qrs = 7 + 5 + 4\nassert via_r == 15\nassert via_qrs == 16\nassert min(direct, via_r, via_qrs) == 13\nassert (26 - 14) == 12\nassert 18 + 12 == 30\nassert 14 + 12 == 26\nprint(13)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Distances in km: P–Q 7, P–R 11, P–S 13, Q–R 5, R–S 4. The three routes are P to S, P to R to S, and P to Q to R to S. The shortest has length",
+      "options": [
+        "13 km",
+        "15 km",
+        "16 km",
+        "11 km"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 13 km. The direct route is 13. P to R to S is $11+4=15$. P to Q to R to S is $7+5+4=16$. The smallest of 13, 15, and 16 is 13."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "In a dispatch table the South row total is 26, the morning cell is 14, and the evening cell is missing. The missing evening value is",
+      "options": [
+        "12",
+        "14",
+        "26",
+        "40"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 12. The stated total is the sum of the two cells, so the blank is $26-14=12$. Option D adds the cells instead of subtracting. Option B repeats the morning cell."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Distances in km: P–S is 13, P–R is 11, R–S is 4, P–Q is 7, and Q–R is 5. Which of the following are true?",
+      "options": [
+        "The direct route from P to S is 13 km.",
+        "The route P to R to S is 15 km.",
+        "The route P to Q to R to S is 16 km.",
+        "P to R to S is shorter than the direct route from P to S."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "C"
+      ],
+      "solution": "The correct options are **A, B, and C**. The direct distance is the table entry 13. P to R to S is $11+4=15$. P to Q to R to S is $7+5+4=16$. Option D reverses the comparison: 15 is longer than 13, not shorter."
+    },
+    {
+      "id": "q4",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Using P–Q 7 km, Q–R 5 km, and R–S 4 km, the length in km of the route P to Q to R to S is an integer. Enter that length.",
+      "options": [],
+      "answer": [
+        "16"
+      ],
+      "solution": "The answer is **16**. Add the three legs that the route actually uses: $7+5+4=16$. The direct P-to-S distance is a different route and is not part of this sum.",
+      "tolerance": 0
+    },
+    {
+      "id": "q5",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "P to S is 13 km and P to R to S is $11+4=15$ km. How much longer is P to R to S than the direct route?",
+      "options": [
+        "2 km",
+        "3 km",
+        "4 km",
+        "1 km"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 2 km. The difference of the two route lengths is $15-13=2$. Option B is the gap between the longest listed three-leg route, 16, and the direct route, which was not the comparison asked here."
+    }
+  ]
+}

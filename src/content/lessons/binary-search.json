@@ -1,0 +1,170 @@
+{
+  "slug": "binary-search",
+  "section": "programming",
+  "title": "Binary search",
+  "syllabus": "Binary search",
+  "minutes": 30,
+  "summary": "Binary search needs a sorted array with random access. Inclusive bounds shrink by setting low = mid + 1 or high = mid - 1, the cost is O(log n), and an off-by-one loop may never finish.",
+  "keywords": [
+    "binary search",
+    "sorted",
+    "random access",
+    "off-by-one",
+    "logarithm"
+  ],
+  "intuition": "Binary search throws away half of the remaining array on every comparison. That is possible only when two facts hold at once: the array is sorted, and any index in the middle can be read in constant time. A sorted linked list has the order and does not have the jump, so the middle element is not free and this algorithm does not apply. An unsorted array has the jump and does not have the order, so discarding a half can discard the target.\n\nThe inclusive version sets `low = 0` and `high = n - 1`, and it continues while `low <= high`. The middle index is `(low + high) // 2`. If `a[mid]` is the target, return `mid`. If `a[mid]` is smaller, the target can only sit strictly to the right, so set `low = mid + 1`. If `a[mid]` is larger, set `high = mid - 1`. Each of those assignments moves the bound past `mid`, so the open interval of candidates shrinks, including the iteration where `low` and `high` are already equal and the key does not match.\n\nSetting `low = mid` when the middle element is too small does not shrink the interval: when `high = low + 1`, the midpoint is `low`, and assigning `low = mid` repeats the same pair forever. That is the off-by-one trap. Starting `high` at `n` instead of `n - 1` is the other trap, because the last legal index is `n - 1` and a read at `n` is past the end. The successful search is $O(\\log n)$ comparisons because the remaining length halves.\n\n$$T(n)=T(\\lfloor n/2\\rfloor)+\\Theta(1)=O(\\log n).$$",
+  "definitions": [
+    {
+      "term": "Binary search",
+      "body": "On a sorted array, compare the target with the middle element and discard the half that cannot contain it. Return the index of a match, or $-1$ if the remaining interval becomes empty."
+    },
+    {
+      "term": "Inclusive bounds",
+      "body": "`low` and `high` are both legal indexes. The loop condition is `low <= high`. The initial values are `low = 0` and `high = n - 1`."
+    },
+    {
+      "term": "Shrinking update",
+      "body": "On `a[mid] < target`, set `low = mid + 1`. On `a[mid] > target`, set `high = mid - 1`. On equality, return `mid`. Every iteration that does not return removes at least the middle index."
+    },
+    {
+      "term": "Random access",
+      "body": "Reading `a[mid]` must be $O(1)$. An array provides that. A linked list does not: reaching the middle node from the head is already linear, and the total cost is no longer logarithmic."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Recurrence",
+      "latex": "T(n)=T(\\lfloor n/2\\rfloor)+\\Theta(1)",
+      "note": "One midpoint read, then one half remains. The solution is $T(n)=O(\\log n)$."
+    },
+    {
+      "name": "Inclusive loop",
+      "latex": "\\text{low}=0,\\ \\text{high}=n-1,\\quad \\text{while low}\\le\\text{high}",
+      "note": "The midpoint is $\\lfloor(\\text{low}+\\text{high})/2\\rfloor$. Equality returns. A miss sets low to mid+1 or high to mid-1."
+    },
+    {
+      "name": "Failure",
+      "latex": "\\text{low}>\\text{high}\\Rightarrow \\text{return }-1",
+      "note": "The interval is empty. The target is not among the indexes that were still possible."
+    }
+  ],
+  "properties": [
+    "Binary search requires sorted data and $O(1)$ random access. A sorted linked list is not enough. An unsorted array is not enough.",
+    "The inclusive loop uses `high = n - 1` and `while low <= high`. On a miss it sets `low = mid + 1` or `high = mid - 1`, so the interval shrinks even when `low == high` and the key is not there.",
+    "The cost is $O(\\log n)$ comparisons. For the seven-element trace below, a successful search of $14$ examines three midpoints, and $\\lfloor \\log_2 7\\rfloor+1=3$.",
+    "On the unsorted array `[1, 3, 2]`, this algorithm searches for $2$ and returns $-1$. The key is present at index $2$ and the discarded half contained it, because the array was not sorted.",
+    "Setting `low = mid` when `a[mid]` is too small fails to shrink the interval whenever `mid` equals `low`. The loop does not terminate."
+  ],
+  "examples": [
+    {
+      "title": "Trace a successful search",
+      "prompt": "Binary-search for $14$ in `[2, 5, 8, 11, 14, 17, 20]`, using inclusive bounds.",
+      "steps": [
+        "Start with `low = 0` and `high = 6`. The midpoint is $(0+6)//2=3$, and `a[3] = 11`. Since $11<14$, set `low = 3+1 = 4`.",
+        "Now `low = 4` and `high = 6`. The midpoint is $(4+6)//2=5$, and `a[5] = 17`. Since $17>14$, set `high = 5-1 = 4`.",
+        "Now `low = high = 4`. The midpoint is $4$, and `a[4] = 14`, which matches. Return index $4$.",
+        "Three iterations examined indexes $3$, $5$, and $4$. Each non-matching iteration discarded `mid` itself, so the interval shrank."
+      ],
+      "answer": "The search returns index $4$ after examining $11$, then $17$, then $14$."
+    },
+    {
+      "title": "An absent key, and the interval becoming empty",
+      "prompt": "Binary-search for $6$ in the same array `[2, 5, 8, 11, 14, 17, 20]`.",
+      "steps": [
+        "`low = 0`, `high = 6`, midpoint $3$, value $11$. Since $11>6$, set `high = 2`.",
+        "`low = 0`, `high = 2`, midpoint $1$, value $5$. Since $5<6$, set `low = 2`.",
+        "`low = 2`, `high = 2`, midpoint $2$, value $8$. Since $8>6$, set `high = 1`. Now `low = 2 > 1 = high`, so the loop stops.",
+        "The algorithm returns $-1$. The key $6$ is not in the array. The equal-endpoint iteration still shrank the interval, because the miss set `high = mid - 1` rather than `high = mid`."
+      ],
+      "answer": "The search returns $-1$ after three midpoint comparisons, with values $11$, $5$, and $8$."
+    }
+  ],
+  "traps": [
+    "Setting `low = mid` when `a[mid]` is too small. If `high = low + 1`, then `mid` equals `low`, the assignment does not move, and the loop never ends. The repair is `low = mid + 1`.",
+    "Initialising `high` to `n`. The last legal index is `n - 1`. A search past the largest element then reads `a[n]` and raises `IndexError`, or it accepts a phantom slot.",
+    "Running the algorithm on unsorted data. On `[1, 3, 2]` a search for $2$ compares $3$, discards the right half, compares $1$, and returns $-1$ even though $2$ is present.",
+    "Using binary search on a linked list because the nodes happen to be sorted. Finding each midpoint from the head is linear, so the total cost is not $O(\\log n)$."
+  ],
+  "python": "def binary_search(items, target):\n    low, high = 0, len(items) - 1\n    steps = []\n    while low <= high:\n        mid = (low + high) // 2\n        steps.append((low, mid, high, items[mid]))\n        if items[mid] == target:\n            return mid, steps\n        if items[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1, steps\n\nfound, steps = binary_search([2, 5, 8, 11, 14, 17, 20], 14)\nassert found == 4\nassert steps == [(0, 3, 6, 11), (4, 5, 6, 17), (4, 4, 4, 14)]\nmissing, miss = binary_search([2, 5, 8, 11, 14, 17, 20], 6)\nassert missing == -1\nassert miss == [(0, 3, 6, 11), (0, 1, 2, 5), (2, 2, 2, 8)]\nidx, trace = binary_search([3, 6, 10, 15, 18, 21], 18)\nassert idx == 4 and trace[0] == (0, 2, 5, 10) and trace[1] == (3, 4, 5, 18)\nassert binary_search([1, 3, 2], 2)[0] == -1\nassert binary_search([1, 4, 7, 10, 13, 16, 19, 22], 19)[0] == 6\nprint(found, len(steps), binary_search([1, 4, 7, 10, 13, 16, 19, 22], 19)[0])\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Binary search, as used for an $O(\\log n)$ lookup, requires",
+      "options": [
+        "a sorted array",
+        "a sorted linked list, because each jump to the middle is still $O(1)$",
+        "an unsorted array, because the halving does not use order",
+        "a hash table with load factor $1$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, a sorted array.\n\nThe discard step is valid only when everything on one side of the midpoint is too small or too large, which is the sorted-array hypothesis. Reading the midpoint must be $O(1)$, which an array provides and a linked list does not. An unsorted array can hide the target in the discarded half. A hash table is a different structure, with average constant time rather than this halving argument."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 2,
+      "stem": "The number of comparisons used by binary search on a sorted array of $n$ elements is",
+      "options": [
+        "$O(\\log n)$",
+        "$O(n)$",
+        "$O(1)$",
+        "$O(n^{2})$"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, $O(\\log n)$.\n\nEach comparison keeps one half of the remaining interval, so the recurrence is $T(n)=T(\\lfloor n/2\\rfloor)+\\Theta(1)$. Unrolling it produces a constant number of comparisons per time the length is halved, which is $O(\\log n)$. Linear search is the $O(n)$ bound. A hash table's average lookup is the constant bound, and it is not this algorithm."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 1,
+      "stem": "Which of the following are true?",
+      "options": [
+        "The inclusive implementation starts with `low = 0` and `high = n - 1`, and loops while `low <= high`.",
+        "When `a[mid]` is less than the target, setting `low = mid` keeps this `low <= high` loop finite.",
+        "Binary search on a sorted linked list is $O(\\log n)$ because the middle node is reached in constant time.",
+        "On the unsorted array `[1, 3, 2]`, the algorithm searches for $2$ and returns $-1$."
+      ],
+      "answer": [
+        "A",
+        "D"
+      ],
+      "solution": "The correct options are **A and D**.\n\nInclusive bounds use the last legal index `n - 1` and continue while the interval still contains at least one index. On `[1, 3, 2]` the first midpoint is index $1$, value $3$. Because $3>2$ the right side is discarded, the remaining element $1$ is too small, and the search returns $-1$ even though $2$ is sitting at index $2$.\n\nSetting `low = mid` does not move when `mid` equals `low`, which happens as soon as `high = low + 1` and the middle value is still too small. The loop does not finish. A linked list does not read its middle node in constant time, so the logarithmic bound does not transfer."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Binary search runs on `[3, 6, 10, 15, 18, 21]` looking for $18$. Which of the following are true?",
+      "options": [
+        "The first midpoint index is $2$ and the value there is $10$.",
+        "The search returns index $4$.",
+        "The search returns index $3$.",
+        "The second midpoint index is $4$."
+      ],
+      "answer": [
+        "A",
+        "B",
+        "D"
+      ],
+      "solution": "The correct options are **A, B, and D**.\n\nIndexes run from $0$ to $5$. The first midpoint is $(0+5)//2=2$, and `a[2] = 10`, which is less than $18$, so `low` becomes $3$. The next midpoint is $(3+5)//2=4$, and `a[4] = 18`, which matches. The returned index is $4$.\n\nIndex $3$ holds $15$, which was never the midpoint of this search. Returning it would be an off-by-one on the successful comparison."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "Binary search looks for $19$ in `[1, 4, 7, 10, 13, 16, 19, 22]`. Enter the index it returns.",
+      "options": [],
+      "answer": [
+        "6"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **6**.\n\nThe array has indexes $0$ through $7$. The first midpoint is $(0+7)//2=3$, value $10$, so `low` becomes $4$. The next midpoint is $(4+7)//2=5$, value $16$, so `low` becomes $6$. The next midpoint is $(6+7)//2=6$, value $19$, which matches. The returned index is $6$. The value $22$ is at index $7$ and is not examined."
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "slug": "indexing",
+  "section": "databases",
+  "title": "Indexes",
+  "syllabus": "Indexing",
+  "minutes": 30,
+  "summary": "How primary and secondary indexes are built, when they are clustered, dense, or sparse, and why a B+ tree serves ranges while a hash index serves equality.",
+  "keywords": [
+    "primary index",
+    "secondary index",
+    "clustered",
+    "B+ tree",
+    "hash index",
+    "selectivity"
+  ],
+  "intuition": "An index is a second structure that finds rows without reading the whole file. The useful distinctions are physical, not naming conventions. A primary index sits on the ordering key of a file that is already sorted by that key, so one entry per block is enough: the rest of the block is next to the anchor. A secondary index sits on some other field. The file is not sorted by that field, so consecutive index keys need not share a block, and the index has to point at every record.\n\nClustered means the file order matches the index order. A file has one physical order, so it has at most one clustered index. Dense means one index entry per record. Sparse means one entry per block, which is only honest when the file is ordered by the indexed field. The cheat-sheet line is the one to memorise: dense is one entry per record, sparse is one entry per block, and clustered means the orders match.\n\nA B+ tree keeps every record pointer in a leaf, and it links those leaves. Finding one key costs a number of node reads that grows as the logarithm of the number of records, because each level multiplies the fanout. A range does not restart from the root: after the first key, the scan walks the leaf chain. A hash index does the other job. The key hashes to a bucket, equality is expected constant time when chains stay short, and there is no order to walk, so a range predicate gets nothing from it.\n\nAn index is not free help. It does nothing for a predicate that never mentions its column. It is also the wrong tool when selectivity is low, in the sense used here: the predicate matches a large fraction of the rows. An unclustered index then hands you a long list of scattered record addresses, and a sequential scan of the blocks is cheaper.",
+  "definitions": [
+    {
+      "term": "Primary index",
+      "body": "An index on the ordering key of a sorted file. The key is unique, the index is clustered, and it can be sparse: one entry per data block, holding the first key of that block."
+    },
+    {
+      "term": "Secondary index",
+      "body": "An index on a field that is not the file's ordering field. It is unclustered, and it is dense: every record is pointed at, because records with adjacent key values need not lie in the same block."
+    },
+    {
+      "term": "Clustered and unclustered",
+      "body": "Clustered means the physical order of the file matches the index order. Unclustered means it does not. One file order means at most one clustered index."
+    },
+    {
+      "term": "Dense and sparse",
+      "body": "A dense index has one entry per record. A sparse index has one entry per block. Sparse is valid only when the file is ordered by the indexed field, so the records between two anchors are the records you want."
+    },
+    {
+      "term": "Low selectivity",
+      "body": "A predicate has low selectivity when it matches a large fraction of the rows. An unclustered index on that predicate returns so many scattered addresses that a scan of the file is cheaper."
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Sparse index size",
+      "latex": "E_{\\mathrm{sparse}}=\\left\\lceil\\frac{N}{b}\\right\\rceil",
+      "note": "$N$ is the number of records and $b$ is the number of records in a data block. A dense index on the same file has $N$ entries, not $E_{\\mathrm{sparse}}$."
+    },
+    {
+      "name": "B+ tree search",
+      "latex": "O(\\log_{d} N)",
+      "note": "$d$ is the fanout and $N$ is the number of leaf records. On a full tree the path from the root to a leaf has $\\log_{d} N$ edges when $N$ is a power of $d$. The leaves are linked, so a range continues along sibling pointers."
+    }
+  ],
+  "properties": [
+    "A file has at most one clustered index, because it has one physical order. Any other index on that file is unclustered.",
+    "A primary index on a sorted unique key can be sparse. A secondary index is dense. Using one entry per block for a non-ordering key skips records that sit in other blocks.",
+    "A B+ tree supports equality and range. Internal nodes are separators; the record pointers live at the leaves, and the leaf chain is what makes the range sequential.",
+    "A hash index supports equality. It does not support a range, an order-by on the hashed key, or a walk from key 40 to key 55.",
+    "An index does not help when the predicate ignores its column, or when selectivity is low and the index is unclustered. A predicate that matches 15 scattered rows can be cheaper by index than a 200-block scan; a predicate that matches 6,000 of those rows is not.",
+    "Search cost on a B+ tree is logarithmic in the number of records. Going from $d^{3}$ leaves to $d^{6}$ leaves adds three edges to a full tree of fanout $d$, not a linear pass over the new records."
+  ],
+  "examples": [
+    {
+      "title": "Sparse primary index versus dense secondary index",
+      "prompt": "A sorted file holds 8,000 records, 40 records to a block. The primary index is sparse, one entry per data block. A secondary index on another column is dense. Each index block holds 50 entries. How many entries and how many blocks does each index use?",
+      "steps": [
+        "The file occupies $8000/40=200$ data blocks, so the sparse primary index has 200 entries.",
+        "Those 200 entries fill $200/50=4$ index blocks.",
+        "The dense secondary index has one entry per record, which is 8,000 entries, and $8000/50=160$ index blocks."
+      ],
+      "answer": "The sparse primary index is 200 entries in 4 blocks. The dense secondary index is 8,000 entries in 160 blocks."
+    },
+    {
+      "title": "A full B+ tree and its leaf chain",
+      "prompt": "A full B+ tree has fanout 4 and 64 leaves, one record pointer per leaf. How many edges are on the path from the root to a leaf, and how is a range read after the first key is found?",
+      "steps": [
+        "Fanout 4 means each internal node has 4 children. The leaf counts by level, from the bottom, are 64, then $64/4=16$ parents, then $16/4=4$, then $4/4=1$ root.",
+        "That is four node levels. The path from the root down to a leaf crosses 3 edges, and $3=\\log_{4} 64$.",
+        "A range such as keys 40 through 55 searches once, to the leaf that holds 40, then follows sibling pointers across the leaf chain until the key exceeds 55. It does not search from the root for each key."
+      ],
+      "answer": "The root-to-leaf path has 3 edges, so the search reads 4 nodes. The range is a single search plus a scan of the linked leaves."
+    },
+    {
+      "title": "When the unclustered index loses to a scan",
+      "prompt": "The same 8,000 records sit in 200 blocks. An unclustered index exists on status. One query matches 15 rows. Another matches 6,000 rows. Compare index lookups with a scan, counting one random read per matching row against 200 sequential block reads.",
+      "steps": [
+        "Fifteen scattered reads are far fewer than 200 block reads, so the unclustered index helps the selective query.",
+        "Six thousand scattered reads are far more than 200 block reads. The predicate matches $6000/8000=3/4$ of the rows, which is low selectivity in the sense of this lesson.",
+        "The index also does nothing for a predicate on a different column. An index on status is not an access path for a filter that only mentions city."
+      ],
+      "answer": "The index helps the 15-row predicate. It does not help the 6,000-row predicate, and it does not help a predicate that never uses the indexed column."
+    }
+  ],
+  "traps": [
+    "Calling every primary-key index clustered. Clustered means the file is stored in that key's order. A primary-key index on a heap is unclustered.",
+    "Making a secondary index sparse. One entry per block on a non-ordering field misses records of that key that live in other blocks. Secondary indexes are dense.",
+    "Using a hash index for BETWEEN, or for any range. Equality hashes to a bucket. A range needs order, which a B+ tree has and a hash index does not.",
+    "Expecting an index on salary to speed a filter on department. If the predicate does not use the indexed column, that index is not a candidate.",
+    "Treating low selectivity as 'matches a handful of rows'. Here a low-selectivity predicate matches a large fraction of the table, and an unclustered index on it loses to a scan."
+  ],
+  "python": "records = 8000\nper_block = 40\ndata_blocks = records // per_block\nassert data_blocks == 200\nassert data_blocks // 50 == 4\nassert records // 50 == 160\nassert 12000 // 30 == 400\nassert 400 // 100 == 4\nleaves, hops = 64, 0\nwhile leaves > 1:\n    leaves //= 4\n    hops += 1\nassert hops == 3\nassert 6000 / 8000 == 0.75\nprint(hops)\n",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "A sorted file of 12,000 records stores 30 records in each block. A sparse primary index has one entry per data block. The number of index entries is",
+      "options": [
+        "400",
+        "12,000",
+        "30",
+        "360,000"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**, 400. The file has $12000/30=400$ data blocks, and a sparse primary index stores one entry for each of those blocks. Option B is the dense-index count, one entry per record. Option C is the block size, not the number of entries."
+    },
+    {
+      "id": "q2",
+      "type": "mcq",
+      "marks": 1,
+      "stem": "Which structure answers an equality lookup and then a range by walking linked leaves, at a search cost logarithmic in the number of records?",
+      "options": [
+        "A B+ tree index",
+        "A hash index",
+        "A heap file with no index",
+        "A sparse index built on a column the predicate does not mention"
+      ],
+      "answer": [
+        "A"
+      ],
+      "solution": "The answer is **A**. A B+ tree search follows a logarithmic path to the first leaf, and the leaf chain carries the rest of the range. A hash index answers equality and has no ordered leaf chain. A heap is a scan. An index on an unused column is not an access path for that predicate."
+    },
+    {
+      "id": "q3",
+      "type": "msq",
+      "marks": 2,
+      "stem": "Which of the following are true of indexes on a single file?",
+      "options": [
+        "A clustered index has the same order as the file.",
+        "A secondary index on a non-ordering field is dense.",
+        "A hash index evaluates a range predicate by scanning a linked leaf level.",
+        "The file can carry two clustered indexes on two different columns."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. Clustered means the file order matches the index, and a secondary index is dense because the file is not ordered by that field. A hash index has buckets, not a B+ leaf chain, so C is false. A file has one physical order, so it has at most one clustered index, and D is false."
+    },
+    {
+      "id": "q4",
+      "type": "msq",
+      "marks": 2,
+      "stem": "An unclustered index exists only on salary. A query filters on city, and a second query asks for the 90 percent of rows with salary greater than 0. Which of the following are true?",
+      "options": [
+        "The city predicate gets no help from the salary index, because it does not use that column.",
+        "The salary predicate has low selectivity, so the unclustered index is a poor access path next to a scan.",
+        "Low selectivity means the predicate matches only one or two rows.",
+        "A hash index on salary would walk a leaf chain to answer salary greater than 0."
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "solution": "The correct options are **A and B**. An index is a candidate only for a predicate that uses its column, so the city filter ignores the salary index. Matching 90 percent of the rows is low selectivity: an unclustered index would point at most of the file, and a scan is the saner plan. C reverses the definition used here. D describes a B+ tree range, not a hash index."
+    },
+    {
+      "id": "q5",
+      "type": "nat",
+      "marks": 2,
+      "stem": "A sorted file of 12,000 records stores 30 records per block. One hundred index entries fit in an index block. The sparse primary index occupies how many blocks? Enter that integer.",
+      "options": [],
+      "answer": [
+        "4"
+      ],
+      "tolerance": 0,
+      "solution": "The answer is **4**. Data blocks: $12000/30=400$. A sparse primary index has one entry per data block, so 400 entries. At 100 entries per index block, the index occupies $400/100=4$ blocks."
+    }
+  ]
+}
