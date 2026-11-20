@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MD } from "@/components/markdown";
 import { SectionLessons } from "@/components/section-lessons";
 import { getCatalog } from "@/lib/content";
 import { getSection, sections } from "@/lib/sections";
+import { pageMetadata } from "@/lib/site";
 
 export function generateStaticParams() {
   return sections.map((section) => ({ slug: section.slug }));
@@ -12,14 +12,21 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const section = getSection(slug);
-  return { title: section ? section.title : "Section" };
+  if (!section) {
+    return pageMetadata({
+      title: "Section not found | GATE DA 2027 Notes",
+      description: "This section is not part of the GATE DA 2027 Data Science and AI syllabus.",
+      path: `/section/${slug}`,
+    });
+  }
+  return pageMetadata({
+    title: `${section.title} Notes | GATE DA 2027 Data Science and AI`,
+    description: `${section.title} notes and practice questions for GATE DA 2027. ${section.blurb}`,
+    path: `/section/${slug}`,
+  });
 }
 
 export default async function SectionPage({ params }: { params: Promise<{ slug: string }> }) {

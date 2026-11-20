@@ -197,10 +197,9 @@ export function AppShell({
               Menu
             </button>
           )}
-          <Link href="/" className="font-serif text-xl tracking-tight">
-            Pramana
+          <Link href="/" className="min-w-0 truncate font-serif text-sm leading-tight tracking-tight sm:text-lg">
+            GATE Data Science &amp; AI Guide
           </Link>
-          <span className="hidden text-sm text-faint sm:inline">GATE 2027 DA</span>
           <nav className="ml-auto flex items-center gap-1 sm:gap-2">
             <Link href="/track" className="rounded-full px-3 py-1 text-sm text-muted hover:text-ink">
               Track

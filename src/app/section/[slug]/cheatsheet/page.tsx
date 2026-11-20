@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MD } from "@/components/markdown";
@@ -6,6 +5,7 @@ import { PrintButton } from "@/components/print-button";
 import { Tex } from "@/components/tex";
 import { getCheatsheet } from "@/lib/cheatsheets";
 import { getSection, sections } from "@/lib/sections";
+import { pageMetadata } from "@/lib/site";
 
 export function generateStaticParams() {
   return sections.map((section) => ({ slug: section.slug }));
@@ -13,14 +13,21 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const section = getSection(slug);
-  return { title: section ? `${section.short} cheat sheet` : "Cheat sheet" };
+  if (!section) {
+    return pageMetadata({
+      title: "Cheat sheet not found | GATE DA 2027",
+      description: "This formula sheet is not part of the GATE DA 2027 Data Science and AI notes.",
+      path: `/section/${slug}/cheatsheet`,
+    });
+  }
+  return pageMetadata({
+    title: `${section.short} Formula Cheat Sheet | GATE DA 2027`,
+    description: `${section.title} formulas and shortcuts for GATE Data Science and AI (GATE DA 2027). A one-page cheat sheet for the notes and practice questions.`,
+    path: `/section/${section.slug}/cheatsheet`,
+  });
 }
 
 export default async function CheatSheetPage({ params }: { params: Promise<{ slug: string }> }) {

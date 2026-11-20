@@ -28,9 +28,9 @@ export function Home({ catalog }: { catalog: CatalogItem[] }) {
               The paper, one subtopic at a time.
             </h1>
             <p className="mt-6 max-w-xl text-lg text-muted">
-              Pramana is a study vault for the DA paper. Every line of the official syllabus has a lesson:
-              a definition you can use, the formula written properly, two worked examples, the traps that
-              cost the mark, and five original questions in MCQ, MSQ, and NAT form.
+              GATE Data Science &amp; AI Guide is a study vault for the GATE DA 2027 paper. Every line of the
+              official syllabus has notes: a definition you can use, the formula written properly, two worked
+              examples, the traps that cost the mark, and five original practice questions in MCQ, MSQ, and NAT form.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ContinueLink lessons={catalog} />
